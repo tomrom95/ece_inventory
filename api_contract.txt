@@ -1,0 +1,242 @@
+/inventory
+GET
+params:
+{
+	tag: String array [optional],
+  name: String [optional],
+  model_number: String [optional],
+  location: String [optional],
+}
+returns:
+[
+  {
+    id: String [unique],
+    name: String [unique],
+    quantity: Integer,
+    model_number: String,
+    description: String,
+    location: String,
+    tags: String array,
+    has_instance_objects: Boolean,
+  }
+]
+POST
+params:
+{
+  name: String [required],
+  quantity: Integer [required],
+  model_number: String,
+  description: String,
+  location: String,
+  tags: String array
+}
+return:
+{
+  id: String [unique],
+  name: String [unique],
+  quantity: Integer,
+  model_number: String,
+  description: String,
+  location: String,
+  tags: String array,
+  has_instance_objects: Boolean,
+}
+
+/inventory/<id>
+GET
+return:
+{
+  id: String [unique],
+  name: String [unique],
+  quantity: Integer,
+  model_number: String,
+  description: String,
+  location: String,
+  tags: String array,
+  has_instance_objects: Boolean,
+}
+
+PUT
+params:
+{
+	name: String [optional],
+  quantity: Integer [optional],
+  model_number: String [optional],
+  description: String [optional],
+  location: String [optional],
+  tags: String array [optional]
+}
+return:
+{
+  id: String [unique],
+  name: String [unique],
+  quantity: Integer,
+  model_number: String,
+  description: String,
+  location: String,
+  tags: String array,
+  has_instance_objects: Boolean,
+}
+
+DELETE
+return:
+{
+	"success"
+}
+
+/inventory/<id>/instances
+GET
+return:
+[
+  {
+  	id: String,
+    serial_number: String,
+    condition: String,
+    status: String,
+  }
+]
+POST
+params:
+{
+  serial_number: String,
+  condition: String [optional],
+  status: String [optional],
+}
+return:
+{
+  id: String,
+  serial_number: String,
+  condition: String,
+  status: String,
+}
+
+/inventory/<id>/<serial-number>
+GET
+return:
+{
+  id: String,
+  serial_number: String,
+  condition: String,
+  status: String,
+}
+
+PUT
+params:
+{
+  serial_number: String [optional],
+  condition: String [optional],
+  status: String [optional],
+}
+return:
+{
+  id: String,
+  serial_number: String,
+  condition: String,
+  status: String,
+}
+
+DELETE
+returns:
+{
+  "success"
+}
+
+
+/requests
+GET
+return:
+[
+  {
+		id: String,
+    user_id: String,
+    item_id: String,
+    reason: String,
+    time_stamp: String,
+    status: String,
+    quantity: Integer,
+    comment: String,
+  }
+]
+
+POST
+params:
+{
+  item_id: String,
+  reason: String,
+  time_stamp: String,
+  status: String,
+  quantity: Integer,
+}
+
+return:
+{
+  id: String,
+  user_id: String,
+  item_id: String,
+  reason: String,
+  time_stamp: String,
+  status: String,
+  quantity: Integer,
+  comment: String,
+}
+
+/requests/<id>
+GET
+return:
+{
+  id: String,
+  user_id: String,
+  item_id: String,
+  reason: String,
+  time_stamp: String,
+  status: String,
+  quantity: Integer,
+  comment: String,
+}
+
+PUT
+params:
+{
+  user_id: String,
+  item_id: String,
+  reason: String,
+  time_stamp: String,
+  status: String,
+  quantity: Integer,
+  comment: String,
+}
+
+return:
+{
+  id: String,
+  user_id: String,
+  item_id: String,
+  reason: String,
+  time_stamp: String,
+  status: String,
+  quantity: Integer,
+  comment: String,
+}
+
+DELETE
+return:
+{
+	"success"
+}
+
+/log
+GET
+params:
+
+return:
+[
+  {
+    id: String,
+    created_by: String,
+  	type: String,
+    quantity: Integer,
+    time_stamp: String,
+  }
+]
+
+/login

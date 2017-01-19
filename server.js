@@ -23,8 +23,30 @@ app.use(function(req, res, next) {
   next();
 });
 
-router.get('/', function(req, res) {
-  res.json({ message: 'API Initialized!'});
+router.get('/inventory', function(req, res) {
+  res.json([{
+    id: "12345",
+    quantity: 1,
+    description: "It's an oscilloscope",
+    has_instance_objects: true,
+  	tag: ["machine", "expensive"],
+    name: "oscilloscope",
+    model_number: "23451",
+    location: "stockroom",
+  }]);
+});
+
+router.get('inventory/:id', function(req, res) {
+  res.json({
+    id: "12345",
+    quantity: 1,
+    description: "It's an oscilloscope",
+    has_instance_objects: true,
+  	tag: ["machine", "expensive"],
+    name: "oscilloscope",
+    model_number: "23451",
+    location: "stockroom",
+  });
 });
 
 app.use('/api', router);
