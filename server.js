@@ -3,6 +3,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
+var Item = require('./model/items');
 
 var app = express();
 var router = express.Router();
