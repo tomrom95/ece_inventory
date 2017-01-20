@@ -1,0 +1,2 @@
+web: react-scripts build && pushstate-server build
+api: node server.js
