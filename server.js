@@ -8,9 +8,11 @@ var Item = require('./model/items');
 var app = express();
 var router = express.Router();
 
-var port = 3001;
+var port = process.env.API_PORT || 3001;
+var dbUser = process.env.DB_USER || "admin";
+var dbPassword = process.env.DB_PASSWORD || "ece458duke";
 
-mongoose.connect('mongodb://admin:ece458duke@localhost/inventory');
+mongoose.connect('mongodb://' + dbUser + ':' + dbPassword + '@localhost/inventory');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
