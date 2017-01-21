@@ -7,21 +7,26 @@ To install:
 You may need to download curl using "sudo apt-get install curl"
 3) Install mongodb - https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/ .
 4) Make user admin in mongodb. Use these steps:
+
 Enter mongo shell
-- mongod
+ > mongod --shell
+ 
 Switch to inventory database
-- use inventory
+ > use inventory
+ 
 Create admin user
-- db.createUser({user:"admin", pwd:"ece458duke",roles:["readWrite","dbAdmin"]})
+ > db.createUser({user:"admin", pwd:"ece458duke",roles:["readWrite","dbAdmin"]})
+ 
 Check if you're authenticated (should return 1)
-- db.auth("admin", "ece458duke")
+> db.auth("admin", "ece458duke")
+
 5) Download some extra global node packages
-- sudo npm install -g pushstate-server
-- sudo npm install -g create-react-app
-6) Download our repo, change into repo directory
+> sudo npm install -g pushstate-server
+> sudo npm install -g create-react-app
+6) Install Git (sudo apt-get git), download our repo, change into repo directory
 7) Download app packages
-- sudo npm install
+> sudo npm install
 8) Run in development using
-- npm run start-dev
+> npm run start-dev
 Run in production using
-- npm run start-prod
+> npm run start-prod
