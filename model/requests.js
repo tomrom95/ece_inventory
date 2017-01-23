@@ -27,7 +27,8 @@ var RequestSchema = new mongoose.Schema({
     enum: ['NEW', 'APPROVED', 'DENIED', 'FULFILLED'],
     default: 'NEW'
   },
-  comment: String
+  requestor_comment: String,
+  reviewer_comment: String
 })
 
 module.exports = mongoose.model('Request', RequestSchema);
