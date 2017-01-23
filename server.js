@@ -13,7 +13,7 @@ var dbUser = process.env.DB_USER || "admin";
 var dbPassword = process.env.DB_PASSWORD || "ece458duke";
 
 mongoose.connect('mongodb://' + dbUser + ':' + dbPassword + '@localhost/inventory');
-
+app.use('/', router);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -26,34 +26,43 @@ app.use(function(req, res, next) {
   next();
 });
 
-router.get('/inventory', function(req, res) {
-  res.json([{
-    id: "12345",
-    quantity: 1,
-    description: "It's an oscilloscope",
-    has_instance_objects: true,
-  	tag: ["machine", "expensive"],
-    name: "oscilloscope",
-    model_number: "23451",
-    location: "stockroom",
-  }]);
-});
+router.route('/inventory')
+  .get(function(req, res) {
+    Item.find(function(err, items){
+      if (err)
+        res.send(err);
+      res.json(items);
+    });
+  })
+  .post(function(req, res){
+    var item = new Item();
+    item.name = req.body.name;
+    item.quantity = req.body.quantity;
+    item.model_number = req.body.model_number;
+    item.location = req.body.location;
+    item.description = req.body.description;
+    item.tags = req.body.tags;
+    item.has_instance_objects = req.body.has_instance_objects;
+    item.save(function(err){
+      if(err)
+        return res.send(err);
+      res.json(item);
+    })
+  })
 
 router.get('inventory/:id', function(req, res) {
-  res.json({
-    id: "12345",
-    quantity: 1,
-    description: "It's an oscilloscope",
-    has_instance_objects: true,
-  	tag: ["machine", "expensive"],
-    name: "oscilloscope",
-    model_number: "23451",
-    location: "stockroom",
-  });
+  // res.json({
+  //   id: "12345",
+  //   quantity: 1,
+  //   description: "It's an oscilloscope",
+  //   has_instance_objects: true,
+  // 	tag: ["machine", "expensive"],
+  //   name: "oscilloscope",
+  //   model_number: "23451",
+  //   location: "stockroom",
+  // });
 });
 
-app.use('/api', router);
-
 app.listen(port, function() {
-  console.log('api running on port ${port}');
+  console.log('API running on port ' + port);
 });
