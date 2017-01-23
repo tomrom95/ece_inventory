@@ -32,7 +32,7 @@ describe('/Inventory Test', function () {
   })
   describe('POST /inventory', () =>{
     let item = {
-        name: "Resistor",
+        name: "TEST_ITEM",
         quantity: 100,
         model_number:"1234",
         location:"Perkins",
@@ -97,13 +97,5 @@ describe('/Inventory Test', function () {
         })
         done();
     })
-
   })
-  // it('Successful POST /inventory', function testPath(done) {
-  //   request(server)
-  //     .post({
-  //
-  //     })
-  //     .expect(200, done);
-  // });
 });
