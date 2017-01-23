@@ -13,7 +13,6 @@ var dbUser = process.env.DB_USER || "admin";
 var dbPassword = process.env.DB_PASSWORD || "ece458duke";
 
 mongoose.connect('mongodb://' + dbUser + ':' + dbPassword + '@localhost/inventory');
-app.use('/', router);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -62,7 +61,10 @@ router.get('inventory/:id', function(req, res) {
   //   location: "stockroom",
   // });
 });
+app.use('/', router);
 
 app.listen(port, function() {
   console.log('API running on port ' + port);
 });
+
+module.exports = app;
