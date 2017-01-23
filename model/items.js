@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var InstanceSchema = require('./instances.js').schema
 
 var ItemSchema = new mongoose.Schema({
   name: {
@@ -21,7 +22,8 @@ var ItemSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: false
-  }
+  },
+  instances: [InstanceSchema]
 })
 
 module.exports = mongoose.model('Item', ItemSchema);
