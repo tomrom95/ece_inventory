@@ -33,20 +33,20 @@ mongoose.connect('mongodb://' + secrets.dbUser + ':' + secrets.dbPassword + '@lo
 // passport setup
 var opts = {
   jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeader(),
-  secretOrKey: 'secret',
+  secretOrKey: secrets.hashSecret,
 }
 
 passport.use(new passportJWT.Strategy(opts, function(jwt_payload, done) {
-    User.findOne({id: jwt_payload.sub}, function(err, user) {
-        if (err) {
-            return done(err, false);
-        }
-        if (user) {
-            done(null, user);
-        } else {
-            done(null, false);
-        }
-    });
+  User.findById(jwt_payload._doc._id, function(err, user) {
+      if (err) {
+          return done(err, false);
+      }
+      if (user) {
+          done(null, user);
+      } else {
+          done(null, false);
+      }
+  });
 }));
 
 auth_router.post('/login', auth_routes.login);
@@ -78,7 +78,7 @@ router.get('inventory/:id', function(req, res) {
   });
 });
 
-app.use('/api', router);
+app.use('/api', passport.authenticate('jwt', { session: false }), router);
 app.use('/auth', auth_router);
 
 app.listen(secrets.port, function() {
