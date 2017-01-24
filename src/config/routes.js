@@ -6,7 +6,6 @@ import { Route, IndexRoute } from 'react-router';
 export default (
   <Route>
     <Route path="/" component={Home}></Route>
-    <Route path="/inventory" component={Inventory}></Route>
-    
+    <Route path="/Inventory" component={Inventory}></Route>
   </Route>
 );

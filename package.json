@@ -1,4 +1,5 @@
-me": "eceInventory",
+{
+  "name": "eceInventory",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -13,6 +14,7 @@ me": "eceInventory",
     "mongoose": "^4.7.7",
     "nodemon": "^1.11.0",
     "react": "^15.4.2",
+    "react-bootstrap": "0.30.7",
     "react-dom": "^15.4.2"
   },
   "scripts": {

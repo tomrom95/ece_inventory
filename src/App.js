@@ -1,31 +1,15 @@
 import React, { Component } from 'react';
-import './App.css';
-import UserProfile from './components/UserProfile';
-import Inventory from './components/Inventory';
-import { Link } from 'react-router';
+import ReactDOM from 'react-dom';
+import { Route, Router, browserHistory } from 'react-router';
+import routes from './config/routes';
+import Home from './components/Home';
 
 class App extends Component {
   render() {
+    console.log("test App");
     return (
-      <div className="App">
-        <div className="App-header">
-          <h2>ECE Laboratory</h2>
-        </div>
-        <p className="App-intro">
-          login
-        </p>
-	<a className="navbar-brand" href="/components/Inventory"">inventory</a>
-	<div className="collapse navbar-toggleable-md" id="navbarResponsive">
-          <ul className="nav navbar-nav">
-            <li className="nav-item">
-              <Link to="/components/Inventory" className="nav-link">Inventory</Link>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <Router history = {browserHistory}>{routes}</Router>
     );
   }
 }
-
 export default App;
-
