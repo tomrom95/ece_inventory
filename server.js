@@ -78,6 +78,8 @@ router.get('inventory/:id', function(req, res) {
   });
 });
 
+router.post('/register', auth_routes.register);
+
 app.use('/api', passport.authenticate('jwt', { session: false }), router);
 app.use('/auth', auth_router);
 
