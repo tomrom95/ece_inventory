@@ -33,8 +33,6 @@ module.exports.login = function(req, res) {
 
 module.exports.register = function(req, res) {
   var user = req.user;
-  console.log("USER");
-  console.log(user);
   if (!user.is_admin) {
     res.send({error: 'You do not have sufficient priveleges to use this endpoint'});
   } else {
@@ -45,23 +43,12 @@ module.exports.register = function(req, res) {
       res.send({error: 'Username and password required for new account'});
       return;
     }
-    helpers.createPasswordHash(newPassword, function(error, hash) {
+    helpers.createNewUser(newUsername, newPassword, adminStatus, function(error, user) {
       if (error != null) {
         res.send(error);
-        return;
+      } else {
+        res.json({user: user});
       }
-      var newUser = new User({
-        username: newUsername,
-        password_hash: hash,
-        is_admin: adminStatus,
-      });
-      newUser.save(function (error, user) {
-        if (error != null) {
-          res.send(error);
-        } else {
-          res.json({user: user});
-        }
-      });
     });
   }
 }
