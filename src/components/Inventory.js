@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import '../App.css';
+import NavBar from './NavBar.js';
 
 var products = [{
       id: 1,
@@ -19,11 +20,14 @@ function priceFormatter(cell, row){
 class Inventory extends React.Component {
   render() {
     return (
-      <BootstrapTable data={ products }>
-        <TableHeaderColumn dataField='id' isKey>Product ID</TableHeaderColumn>
-        <TableHeaderColumn dataField='name'>Product Name</TableHeaderColumn>
-        <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
-      </BootstrapTable>
+      <div>
+        <NavBar />
+        <BootstrapTable data={ products }>
+          <TableHeaderColumn dataField='id' isKey>Product ID</TableHeaderColumn>
+          <TableHeaderColumn dataField='name'>Product Name</TableHeaderColumn>
+          <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
+        </BootstrapTable>
+      </div>
     );
   }
 }
