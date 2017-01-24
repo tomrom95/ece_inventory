@@ -6,7 +6,6 @@ var InstanceSchema = new mongoose.Schema({
   serial_number: {
     type: String,
     required: true,
-    unique: true
   },
   condition: {
     type: String,
