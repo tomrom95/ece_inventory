@@ -4,7 +4,8 @@ var mongoose = require('mongoose');
 
 var LogSchema = new mongoose.Schema({
   created_by: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   }, // TODO will be replaced with user id when created
   type: {
