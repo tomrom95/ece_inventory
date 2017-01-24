@@ -12,7 +12,7 @@ var port = process.env.API_PORT || 3001;
 var dbUser = process.env.DB_USER || "admin";
 var dbPassword = process.env.DB_PASSWORD || "ece458duke";
 
-mongoose.connect('mongodb://' + dbUser + ':' + dbPassword + '@localhost/inventory');
+mongoose.connect('mongodb://' + 'localhost/test/inventory');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -35,6 +35,8 @@ router.route('/inventory')
   })
   .post(function(req, res){
     var item = new Item();
+    if(!req.body.name || !req.body.name.length)
+        return res.send({"error": "Name is empty!"});
     item.name = req.body.name;
     item.quantity = req.body.quantity;
     item.model_number = req.body.model_number;
@@ -61,7 +63,7 @@ router.get('inventory/:id', function(req, res) {
   //   location: "stockroom",
   // });
 });
-app.use('/', router);
+app.use('/api', router);
 
 app.listen(port, function() {
   console.log('API running on port ' + port);
