@@ -1,5 +1,4 @@
-{
-  "name": "eceInventory",
+me": "eceInventory",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -21,7 +20,7 @@
     "start-dev": "nf start -p 3000 --procfile Procfile.dev",
     "start-prod": "nf start -p 3000 --procfile Procfile.prod",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "mocha",
     "eject": "react-scripts eject"
   }
 }
