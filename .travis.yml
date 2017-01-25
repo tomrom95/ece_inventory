@@ -1,0 +1,9 @@
+language: node_js
+sudo: true
+node_js:
+  - "node"
+install:
+  - npm install -g create-react-app mocha pushstate-server
+  - npm install
+script:
+  - npm test
