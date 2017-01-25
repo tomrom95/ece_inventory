@@ -3,7 +3,7 @@ var Request = require('../model/requests.js');
 var Item = require('../model/items.js');
 var assert = require('chai').assert
 
-describe('Instance', function() {
+describe('Requests', function() {
   it('should throw error for invalid object', function(done) {
     var request = new Request({
       user_id: '1234',
@@ -18,7 +18,7 @@ describe('Instance', function() {
   it('should validate a valid object', function(done) {
     var requestJSON = {
       item_id: '53cb6b9b4f4ddef1ad47f943', // fake valid item id
-      user_id: '1234',
+      user_id: '53cb6b9b4f4ddef1ad47f943',
       reason: 'dunno',
       quantity: 2
     };

@@ -29,7 +29,12 @@ app.use(function(req, res, next) {
   next();
 });
 
-mongoose.connect('mongodb://' + secrets.dbUser + ':' + secrets.dbPassword + '@localhost/inventory');
+if (process.env.NODE_ENV == 'test') {
+  mongoose.connect('mongodb://localhost/test');
+} else {
+  mongoose.connect('mongodb://' + secrets.dbUser + ':' + secrets.dbPassword + '@localhost/inventory');
+}
+
 
 // passport setup
 var opts = {
@@ -63,8 +68,6 @@ router.route('/inventory')
   })
   .post(function(req, res){
     var item = new Item();
-    if(!req.body.name || !req.body.name.length)
-        return res.send({"error": "Name is empty!"});
     item.name = req.body.name;
     item.quantity = req.body.quantity;
     item.model_number = req.body.model_number;
@@ -91,6 +94,8 @@ router.get('inventory/:id', function(req, res) {
   //   location: "stockroom",
   // });
 });
+
+router.post('/register', auth_routes.register);
 
 app.use('/api', passport.authenticate('jwt', { session: false }), router);
 

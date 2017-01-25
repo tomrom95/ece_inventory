@@ -1,4 +1,4 @@
-/inventory
+/api/inventory
 GET
 params:
 {
@@ -42,7 +42,7 @@ return:
   has_instance_objects: Boolean,
 }
 
-/inventory/<id>
+/api/inventory/<id>
 GET
 return:
 {
@@ -84,7 +84,7 @@ return:
 	"success"
 }
 
-/inventory/<id>/instances
+/api/inventory/<id>/instances
 GET
 return:
 [
@@ -110,7 +110,7 @@ return:
   status: String,
 }
 
-/inventory/<id>/<serial-number>
+/api/inventory/<id>/<serial-number>
 GET
 return:
 {
@@ -142,7 +142,7 @@ returns:
 }
 
 
-/requests
+/api/requests
 GET
 return:
 [
@@ -180,7 +180,7 @@ return:
   comment: String,
 }
 
-/requests/<id>
+/api/requests/<id>
 GET
 return:
 {
@@ -224,7 +224,7 @@ return:
 	"success"
 }
 
-/log
+/api/log
 GET
 params:
 
@@ -239,4 +239,34 @@ return:
   }
 ]
 
-/login
+/api/register
+POST
+params:
+{
+	username: String,
+	password: String
+}
+return {
+	user: {
+		username: String,
+		password_hash: String,
+		is_admin: Boolean
+	}
+}
+
+/auth/login
+POST
+params:
+{
+	username: String,
+	password: String
+}
+
+return {
+	token: String,
+	user: {
+		username: String,
+		password_hash: String,
+		is_admin: Boolean
+	}
+}
