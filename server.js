@@ -33,38 +33,39 @@ router.route('/inventory')
   // Remove required_tags and excluded_tags first
   var required_tags = req.query.required_tags;
   var excluded_tags = req.query.excluded_tags;
-  if(required_tags) required_tags = required_tags.split(',');
-  if(excluded_tags) excluded_tags = excluded_tags.split(',');
+  if(required_tags){
+    required_tags = required_tags.split(',').map(function(item){
+      return item.trim();
+    });
+    var required_tags_regex = []; // case-insensitive
+    required_tags.forEach(function(opt){
+      required_tags_regex.push(new RegExp(opt, "i"));
+    });
+  }
+  if(excluded_tags) {
+    excluded_tags = excluded_tags.split(',').map(function(item){
+      return item.trim();
+    });
+    var excluded_tags_regex = []; // case-insensitive
+    excluded_tags.forEach(function(opt){
+      excluded_tags_regex.push(new RegExp(opt, "i"));
+    });
+  }
   delete req.query.required_tags;
   delete req.query.excluded_tags;
-
   if(req.query.name)
     req.query.name = {'$regex': req.query.name, '$options':'i'};
-  console.log(req.query);
+  if(required_tags_regex && excluded_tags_regex)
+    req.query.tags = { $all : required_tags_regex, $nin : excluded_tags_regex};
+  else if(required_tags_regex)
+    req.query.tags = { $all : required_tags_regex};
+  else if(excluded_tags_regex)
+    req.query.tags = { $nin : excluded_tags_regex};
   Item.find(req.query, function(err, items){
     if(err) res.send(err);
-    var filteredList = [];
-    itemLoop:
-    for (var i in items){
-      var itemTagArray = items[i].tags.map(function(x){
-        return x.toLowerCase();
-      })
-      console.log(itemTagArray);
-      for (var j in required_tags){
-        // Go to the next item if any of the required tags are not in that item's tag list.
-        if(!itemTagArray.includes(required_tags[j].toLowerCase())) continue itemLoop;
-      }
-      for (var k in excluded_tags){
-        // Go to the next item if any of the excluded tags are in that item's tag list.
-        if(itemTagArray.includes(excluded_tags[k].toLowerCase())) continue itemLoop;
-      }
-      // Item is added as it has passed both required and excluded tag filters
-      filteredList.push(items[i]);
-    }
-    res.json(filteredList);
+      res.json(items);
   });
   })
-
   .post(function(req, res){
     var item = new Item();
     item.name = req.body.name;
