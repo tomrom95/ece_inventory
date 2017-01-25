@@ -2,6 +2,8 @@ process.env.NODE_ENV = 'test';
 
 let mongoose = require("mongoose");
 let Item = require('../../model/items');
+let User = require('../../model/users');
+let helpers = require('../../server/auth_helpers');
 let server = require('../../server');
 
 let chai = require('chai');
@@ -13,15 +15,22 @@ chai.use(chaiHttp);
 // require = require('really-need');
 
 describe('/Inventory Test', function () {
+  var token;
   beforeEach((done) => { //Before each test we empty the database
-        Item.remove({}, (err) => {
-           done();
+      Item.remove({}, (err) => {
+        User.remove({}, (err) => {
+          helpers.createNewUser('test_user', 'test', false, function(error, user) {
+            token = helpers.createAuthToken(user);
+            done();
+          });
         });
+      });
     });
   describe('GET /inventory', () =>{
     it('GETs all inventory', (done) => {
       chai.request(server)
-        .get('/inventory')
+        .get('/api/inventory')
+        .set('Authorization', token)
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('array');
@@ -73,7 +82,8 @@ describe('/Inventory Test', function () {
     }
     it('Should not POST without name field', (done) => {
       chai.request(server)
-        .post('/inventory')
+        .post('/api/inventory')
+        .set('Authorization', token)
         .send(itemNoName)
         .end((err, res) => {
           res.should.have.status(200);
@@ -85,7 +95,8 @@ describe('/Inventory Test', function () {
     });
     it('Should not POST without quantity field', (done) => {
       chai.request(server)
-        .post('/inventory')
+        .post('/api/inventory')
+        .set('Authorization', token)
         .send(itemNoQuantity)
         .end((err, res) => {
           res.should.have.status(200);
@@ -97,7 +108,8 @@ describe('/Inventory Test', function () {
     });
     it('Should not POST without has_instance_objects field', (done) => {
       chai.request(server)
-        .post('/inventory')
+        .post('/api/inventory')
+        .set('Authorization', token)
         .send(itemNoHasInstanceObjects)
         .end((err, res) => {
           res.should.have.status(200);
@@ -109,7 +121,8 @@ describe('/Inventory Test', function () {
     });
     it('POSTs successfully', (done)=>{
       chai.request(server)
-        .post('/inventory')
+        .post('/api/inventory')
+        .set('Authorization', token)
         .send(item)
         .end((err, res)=>{
           res.should.have.status(200);
