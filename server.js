@@ -33,33 +33,36 @@ router.route('/inventory')
   // Remove required_tags and excluded_tags first
   var required_tags = req.query.required_tags;
   var excluded_tags = req.query.excluded_tags;
-
   if(required_tags) required_tags = required_tags.split(',');
   if(excluded_tags) excluded_tags = excluded_tags.split(',');
-
   delete req.query.required_tags;
   delete req.query.excluded_tags;
 
+  if(req.query.name)
+    req.query.name = {'$regex': req.query.name, '$options':'i'};
+  console.log(req.query);
   Item.find(req.query, function(err, items){
     if(err) res.send(err);
     var filteredList = [];
     itemLoop:
     for (var i in items){
-      var itemTagArray = items[i].tags;
+      var itemTagArray = items[i].tags.map(function(x){
+        return x.toLowerCase();
+      })
+      console.log(itemTagArray);
       for (var j in required_tags){
         // Go to the next item if any of the required tags are not in that item's tag list.
-        if(!itemTagArray.includes(required_tags[j])) continue itemLoop;
+        if(!itemTagArray.includes(required_tags[j].toLowerCase())) continue itemLoop;
       }
       for (var k in excluded_tags){
         // Go to the next item if any of the excluded tags are in that item's tag list.
-        if(itemTagArray.includes(excluded_tags[k])) continue itemLoop;
+        if(itemTagArray.includes(excluded_tags[k].toLowerCase())) continue itemLoop;
       }
       // Item is added as it has passed both required and excluded tag filters
       filteredList.push(items[i]);
     }
     res.json(filteredList);
   });
-
   })
 
   .post(function(req, res){
