@@ -2,7 +2,6 @@
 var jwt = require('jsonwebtoken');
 var User = require('../model/users');
 var helpers = require('./auth_helpers');
-var secrets = require('./secrets');
 var User = require('../model/users.js');
 
 module.exports.login = function(req, res) {
@@ -20,9 +19,9 @@ module.exports.login = function(req, res) {
         } else if (!matched) {
           res.send({error: 'Incorrect password'});
         } else {
-          var jwtToken = jwt.sign(user, secrets.hashSecret, {expiresIn: 60*60*24});
+          var jwtToken = helpers.createAuthToken(user);
           res.json({
-            token: 'JWT ' + jwtToken,
+            token: jwtToken,
             user: user
           });
         }

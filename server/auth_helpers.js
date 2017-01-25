@@ -2,8 +2,11 @@
 
 var bcrypt = require('bcrypt-nodejs');
 var User = require('../model/users.js');
+var jwt = require('jsonwebtoken');
+var secrets = require('./secrets');
 
 const SALT_NUM = 5;
+const TOKEN_EXPIRY = 60*60*24;
 
 var createPasswordHash = function(password, next) {
   bcrypt.genSalt(SALT_NUM, function(error, salt) {
@@ -49,6 +52,11 @@ var createNewUser = function(username, password, adminStatus, next) {
   });
 }
 
+var createAuthToken = function(user) {
+  return 'JWT ' + jwt.sign(user, secrets.hashSecret, {expiresIn: TOKEN_EXPIRY});
+}
+
 module.exports.createPasswordHash = createPasswordHash;
 module.exports.compare = compare;
 module.exports.createNewUser = createNewUser;
+module.exports.createAuthToken = createAuthToken;

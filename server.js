@@ -63,8 +63,6 @@ router.route('/inventory')
   })
   .post(function(req, res){
     var item = new Item();
-    if(!req.body.name || !req.body.name.length)
-        return res.send({"error": "Name is empty!"});
     item.name = req.body.name;
     item.quantity = req.body.quantity;
     item.model_number = req.body.model_number;
