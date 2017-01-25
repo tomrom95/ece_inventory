@@ -29,7 +29,27 @@ describe('/Inventory Test', function () {
         done();
       });
     });
+    // Gets by exact name
+    // Gets by name case-insensitive
+    // Null name
+    // Gets by model_number exact
+    // Gets by model_number case-insensitive
+    // Null Model number
+    // Gets by location exact
+    // Gets by location case-insensitive
+    // null location
+    // Gets by 1 required tag
+    // Gets by multiple required tags
+    // null required tag
+    // Gets by 1 excluded tag
+    // Gets by multiple excluded tags
+    // null excluded tag
+    // Gets by multiple required and excluded tags
+    // Gets by name and multiple required and excluded tags
+    // Gets by name, location, model_number, multiple required and excluded tags
+    // Wrong parameters
   })
+
   describe('POST /inventory', () =>{
     let item = {
         name: "TEST_ITEM",
