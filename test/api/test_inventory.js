@@ -5,6 +5,7 @@ let Item = require('../../model/items');
 let User = require('../../model/users');
 let helpers = require('../../server/auth_helpers');
 let server = require('../../server');
+let fakeJSONData = require('./test_inventory_GETdata');
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -21,11 +22,23 @@ describe('/Inventory Test', function () {
         User.remove({}, (err) => {
           helpers.createNewUser('test_user', 'test', false, function(error, user) {
             token = helpers.createAuthToken(user);
-            done();
+            fakeJSONData.forEach(function(object){
+              chai.request(server)
+                .post('/api/inventory')
+                .set('Authorization', token)
+                .send(object)
+                .end((err,res) => {
+                  if(err) console.log(err);
+                  //console.log(res.body);
+                });
+              });
+              done();
+            });
           });
         });
       });
-    });
+
+
   describe('GET /inventory', () =>{
     it('GETs all inventory', (done) => {
       chai.request(server)
@@ -34,18 +47,80 @@ describe('/Inventory Test', function () {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('array');
-          res.body.length.should.be.eql(0);
+          //console.log(res.body);
+          res.body.length.should.be.eql(12);
         done();
       });
     });
-    // Gets by exact name
-    // Gets by name case-insensitive
-    // Null name
-    // Gets by model_number exact
-    // Gets by model_number case-insensitive
-    // Null Model number
-    // Gets by location exact
-    // Gets by location case-insensitive
+    // Gets by name
+    describe('GET Query /inventory', ()=>{
+    it('GETs item by exact name', (done)=>{
+      chai.request(server)
+      .get('/api/inventory?name=osCiLloSCope')
+      .set('Authorization', token)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('array');
+        res.body.length.should.be.eql(1);
+        res.body[0].name.should.be.eql("Oscilloscope");
+        res.body[0].model_number.should.be.eql("123");
+        res.body[0].location.should.be.eql("HUDSON");
+      done();
+    });
+    });
+      it('GETs all inventory with null name', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?name=')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(12);
+        done();
+      });
+      });
+      it('GETs item by model number', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?model_number=123')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(1);
+          res.body[0].name.should.be.eql("Oscilloscope");
+          res.body[0].model_number.should.be.eql("123");
+          res.body[0].location.should.be.eql("HUDSON");
+        done();
+      });
+      });
+      it('GETs all inventory with null model number', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?model_number=')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(12);
+        done();
+      });
+      });
+      it('GETs items with location', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?location=HuDSoN')
+        .set('Authorization', token)
+        .end((err, res) => {
+          console.log(res.body);
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(3);
+          res.body[0].location.should.be.eql("HUDSON");
+          res.body[1].location.should.be.eql("HUDSON");
+          res.body[2].location.should.be.eql("HUDSON");
+        done();
+      });
+      });
+
+  });
     // null location
     // Gets by 1 required tag
     // Gets by multiple required tags
@@ -57,7 +132,7 @@ describe('/Inventory Test', function () {
     // Gets by name and multiple required and excluded tags
     // Gets by name, location, model_number, multiple required and excluded tags
     // Wrong parameters
-  })
+  });
 
   describe('POST /inventory', () =>{
     let item = {
