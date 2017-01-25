@@ -4,7 +4,8 @@ var mongoose = require('mongoose');
 
 var RequestSchema = new mongoose.Schema({
   user_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true
   }, // TODO when user schema is created, will be id reference
   item_id: {
