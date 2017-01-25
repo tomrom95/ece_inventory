@@ -29,7 +29,12 @@ app.use(function(req, res, next) {
   next();
 });
 
-mongoose.connect('mongodb://' + secrets.dbUser + ':' + secrets.dbPassword + '@localhost/inventory');
+if (process.env.NODE_ENV == 'test') {
+  mongoose.connect('mongodb://localhost/test');
+} else {
+  mongoose.connect('mongodb://' + secrets.dbUser + ':' + secrets.dbPassword + '@localhost/inventory');
+}
+
 
 // passport setup
 var opts = {
