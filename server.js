@@ -51,17 +51,20 @@ router.route('/inventory')
       excluded_tags_regex.push(new RegExp(opt, "i"));
     });
   }
-  delete req.query.required_tags;
-  delete req.query.excluded_tags;
+  var location = req.query.location;
+  var query = {};
   if(req.query.name)
-    req.query.name = {'$regex': req.query.name, '$options':'i'};
+    query.name = {'$regex': req.query.name, '$options':'i'};
   if(required_tags_regex && excluded_tags_regex)
-    req.query.tags = { $all : required_tags_regex, $nin : excluded_tags_regex};
+    query.tags = { $all : required_tags_regex, $nin : excluded_tags_regex};
   else if(required_tags_regex)
-    req.query.tags = { $all : required_tags_regex};
+    query.tags = { $all : required_tags_regex};
   else if(excluded_tags_regex)
-    req.query.tags = { $nin : excluded_tags_regex};
-  Item.find(req.query, function(err, items){
+    query.tags = { $nin : excluded_tags_regex};
+  if(req.query.location) query.location = {'$regex': req.query.location, '$options':'i'};
+  if(req.query.model_number) query.model_number = {'$regex': req.query.model_number, '$options':'i'};
+
+  Item.find(query, function(err, items){
     if(err) res.send(err);
       res.json(items);
   });
