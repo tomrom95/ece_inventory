@@ -2,7 +2,8 @@
 GET
 params:
 {
-	tag: String array [optional],
+	required_tags: String (CSV),
+	excluded_tags: String (CSV),
   name: String [optional],
   model_number: String [optional],
   location: String [optional],
