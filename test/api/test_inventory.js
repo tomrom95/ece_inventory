@@ -22,18 +22,10 @@ describe('/Inventory Test', function () {
         User.remove({}, (err) => {
           helpers.createNewUser('test_user', 'test', false, function(error, user) {
             token = helpers.createAuthToken(user);
-            fakeJSONData.forEach(function(object){
-              chai.request(server)
-                .post('/api/inventory')
-                .set('Authorization', token)
-                .send(object)
-                .end((err,res) => {
-                  if(err) console.log(err);
-                  //console.log(res.body);
-                });
-              });
-              done();
-            });
+          });
+          Item.insertMany(fakeJSONData).then(function(obj){
+            done();
+          });
           });
         });
       });
@@ -52,6 +44,7 @@ describe('/Inventory Test', function () {
         done();
       });
     });
+  });
     // Gets by name
     describe('GET Query /inventory', ()=>{
     it('GETs item by exact name', (done)=>{
@@ -109,7 +102,6 @@ describe('/Inventory Test', function () {
         .get('/api/inventory?location=HuDSoN')
         .set('Authorization', token)
         .end((err, res) => {
-          console.log(res.body);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(3);
@@ -132,7 +124,7 @@ describe('/Inventory Test', function () {
     // Gets by name and multiple required and excluded tags
     // Gets by name, location, model_number, multiple required and excluded tags
     // Wrong parameters
-  });
+
 
   describe('POST /inventory', () =>{
     let item = {
