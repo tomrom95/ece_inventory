@@ -40,7 +40,6 @@ describe('/Inventory Test', function () {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('array');
-          //console.log(res.body);
           res.body.length.should.be.eql(12);
         done();
       });
@@ -129,23 +128,135 @@ describe('/Inventory Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(9);
+          res.body.should.satisfy(function(items){
+            return items.every(function(item){
+              return item.tags.should.include("component");
+            })
+          });
         done();
       });
       });
-
+      it('GETs items with multiple required tags', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?required_tags=component,eLeCtRiC')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(7);
+          res.body.should.satisfy(function(items){
+            return items.every(function(item){
+              return item.tags.should.include("component").and.include("electric");
+            })
+          });
+        done();
+      });
+      });
+      it('GETs all inventory with no required tags', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?required_tags=')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(12);
+        done();
+      });
+      });
+      it('GETs items with 1 excluded tag', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?excluded_tags=cHeAp')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(5);
+          res.body.should.satisfy(function(items){
+            return items.every(function(item){
+              return item.tags.should.not.include("cheap").and.not.include("electric");
+            })
+          });
+        done();
+      });
+      });
+      it('GETs items with multiple excluded tags', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?excluded_tags=cHeAp,pOwEr')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(2);
+          res.body.should.satisfy(function(items){
+            return items.every(function(item){
+              return item.tags.should.not.include("cheap").and.not.include("Power");
+            })
+          });
+        done();
+      });
+      });
+      it('GETs all inventory with no excluded tags', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?excluded_tags=')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(12);
+        done();
+      });
+      });
+      it('GETs items with multiple required and excluded tags', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?required_tags=electrIc, compOnent&excluded_tags=magneTic, Power')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(5);
+          res.body.should.satisfy(function(items){
+            return items.every(function(item){
+              return item.tags.should.include("electric")
+                              .and.include("component")
+                              .and.not.include("magnetic")
+                              .and.not.include("Power");
+            })
+          });
+        done();
+      });
+      });
+      it('GETs items with name, multiple required and excluded tags', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?name=100k&required_tags=electrIc, compOnent&excluded_tags=magneTic, Power')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(1);
+          res.body[0].name.should.be.eql("100k resistor");
+          res.body.should.satisfy(function(items){
+            return items.every(function(item){
+              return item.tags.should.include("electric")
+                              .and.include("component")
+                              .and.not.include("magnetic")
+                              .and.not.include("Power");
+            })
+          });
+        done();
+      });
+      });
+      it('GETs all inventory with wrong parameter fields', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?fds=sdot&dwer=fjks')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(12);
+        done();
+      });
+      });
   });
-// Gets by 1 required tag
-    // Gets by multiple required tags
-    // null required tag
-    // Gets by 1 excluded tag
-    // Gets by multiple excluded tags
-    // null excluded tag
-    // Gets by multiple required and excluded tags
-    // Gets by name and multiple required and excluded tags
-    // Gets by name, location, model_number, multiple required and excluded tags
-    // Wrong parameters
-
-
   describe('POST /inventory', () =>{
     let item = {
         name: "TEST_ITEM",
