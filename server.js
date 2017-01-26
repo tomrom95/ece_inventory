@@ -116,17 +116,13 @@ router.route('/inventory')
   })
 
 
-router.get('inventory/:id', function(req, res) {
-  // res.json({
-  //   id: "12345",
-  //   quantity: 1,
-  //   description: "It's an oscilloscope",
-  //   has_instance_objects: true,
-  // 	tag: ["machine", "expensive"],
-  //   name: "oscilloscope",
-  //   model_number: "23451",
-  //   location: "stockroom",
-  // });
+router.route('/inventory/:item_id')
+  .get(function(req, res) {
+  Item.findById(req.params.item_id, function(err, item) {
+            if (err)
+                res.send(err);
+            res.json(item);
+        });
 });
 
 router.post('/register', auth_routes.register);
