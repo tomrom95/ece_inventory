@@ -1,2 +1,2 @@
-web: react-scripts build && pushstate-server build
+web: react-scripts build && node client.js
 api: node server.js
