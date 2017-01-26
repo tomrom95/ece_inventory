@@ -11,6 +11,7 @@ let chai = require('chai');
 let chaiHttp = require('chai-http');
 let should = chai.should();
 chai.use(chaiHttp);
+chai.use(require('chai-things'));
 
 // var request = require('supertest');
 // require = require('really-need');
@@ -22,9 +23,9 @@ describe('/Inventory Test', function () {
         User.remove({}, (err) => {
           helpers.createNewUser('test_user', 'test', false, function(error, user) {
             token = helpers.createAuthToken(user);
-          });
-          Item.insertMany(fakeJSONData).then(function(obj){
-            done();
+            Item.insertMany(fakeJSONData).then(function(obj){
+              done();
+            });
           });
           });
         });
@@ -55,9 +56,9 @@ describe('/Inventory Test', function () {
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(1);
-        res.body[0].name.should.be.eql("Oscilloscope");
-        res.body[0].model_number.should.be.eql("123");
-        res.body[0].location.should.be.eql("HUDSON");
+        res.body.should.all.have.property("name","Oscilloscope");
+        res.body.should.all.have.property("model_number","123");
+        res.body.should.all.have.property("location","HUDSON");
       done();
     });
     });
@@ -80,9 +81,9 @@ describe('/Inventory Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(1);
-          res.body[0].name.should.be.eql("Oscilloscope");
-          res.body[0].model_number.should.be.eql("123");
-          res.body[0].location.should.be.eql("HUDSON");
+          res.body.should.all.have.property("name","Oscilloscope");
+          res.body.should.all.have.property("model_number","123");
+          res.body.should.all.have.property("location","HUDSON");
         done();
       });
       });
@@ -105,16 +106,35 @@ describe('/Inventory Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(3);
-          res.body[0].location.should.be.eql("HUDSON");
-          res.body[1].location.should.be.eql("HUDSON");
-          res.body[2].location.should.be.eql("HUDSON");
+          res.body.should.all.have.property("location","HUDSON");
+        done();
+      });
+      });
+      it('GETs all inventory with null location', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?location=')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(12);
+        done();
+      });
+      });
+      it('GETs items with one required tag', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?required_tags=component')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(9);
         done();
       });
       });
 
   });
-    // null location
-    // Gets by 1 required tag
+// Gets by 1 required tag
     // Gets by multiple required tags
     // null required tag
     // Gets by 1 excluded tag
