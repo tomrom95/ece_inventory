@@ -11,7 +11,10 @@ class NavBar extends Component {
               <a className="App-header" href="">ECE Laboratory</a>
               <ul className="nav navbar-nav">
                 <li className="nav-item">
-                  <Link to="/" className="nav-link">Profile</Link>
+                  <Link to="/" className="nav-link">Home</Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/UserProfile" className="nav-link">Profile</Link>
                 </li>
                 <li className="nav-item">
                   <Link to="/Inventory" className="nav-link">Inventory</Link>
