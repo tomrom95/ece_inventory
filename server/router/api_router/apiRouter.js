@@ -11,7 +11,7 @@ router.route('/inventory')
 router.route('/inventory/:item_id')
       .get(inventory_routes.getAPIbyID)
       .put(inventory_routes.putAPI)
-      .delete(inventory_routes.deleteAPI);     
+      .delete(inventory_routes.deleteAPI);
 
 router.route('/register')
       .post(user_routes.register);
