@@ -6,7 +6,4 @@ var router = express.Router();
 router.route('/login')
       .post(auth_routes.login);
 
-router.route('/register')
-      .post(auth_routes.register);
-
 module.exports = router;
