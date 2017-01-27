@@ -47,7 +47,7 @@ module.exports.getAPI = function (req, res) {
 module.exports.getAPIbyID = function(req,res){
   Item.findById(req.params.item_id, function (err, item){
     if(err) res.send(err);
-    res.json(item);
+    (!item) ? res.send({message: 'Item does not exist'}) : res.json(item);
   });
 };
 
@@ -70,9 +70,27 @@ module.exports.postAPI = function(req, res){
 module.exports.putAPI = function(req, res){
   Item.findById(req.params.item_id, function (err, item){
     if(err) res.send(err);
-    Object.assign(item, req.body).save((err,item) =>{
+    if(!item)
+      res.send({message: 'Item does not exist'});
+    else{
+      Object.assign(item, req.body).save((err,item) =>{
       if(err) res.send(err);
       res.json(item);
     })
+  }
   });
 };
+
+module.exports.deleteAPI = function(req, res){
+  Item.findById(req.params.item_id, function(err, item){
+    if(err) res.send(err);
+    if(!item)
+     res.send({message: 'Item does not exist'});
+    else{
+      item.remove(function(err){
+        if(err) res.send(err);
+        res.send({message: 'SUCCESS'});
+    });
+  }
+  })
+}

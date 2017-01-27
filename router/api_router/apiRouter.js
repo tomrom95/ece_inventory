@@ -9,6 +9,7 @@ router.route('/inventory')
 
 router.route('/inventory/:item_id')
       .get(inventory_routes.getAPIbyID)
-      .put(inventory_routes.putAPI);
+      .put(inventory_routes.putAPI)
+      .delete(inventory_routes.deleteAPI);     
 
 module.exports = router;

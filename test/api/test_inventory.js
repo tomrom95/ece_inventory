@@ -313,6 +313,12 @@ describe('/Inventory Test', function () {
       });
     });
   });
+
+  // Deletes successfully
+  // Delete followed by Delete - item does not exist
+  // Delete followed by Put - item does not exist
+  // Delete followed by GETbyID - item does not exist
+  
   describe('POST /inventory', () =>{
     let item = {
         name: "TEST_ITEM",
