@@ -18,8 +18,10 @@ router.route('/inventory/:item_id/instances')
       .get(instance_routes.getAPI)
       .post(instance_routes.postAPI);
 
-router.route('./inventory/:item_id/:instance_id')
-      
+router.route('/inventory/:item_id/:instance_id')
+      .get(instance_routes.getAPIbyID)
+      .put(instance_routes.putAPI)
+      .delete(instance_routes.deleteAPI);
 
 router.route('/register')
       .post(user_routes.register);

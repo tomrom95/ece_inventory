@@ -22,7 +22,43 @@ module.exports.getAPI = function (req, res) {
   });
 };
 
+// Route: /inventory/:item_id/:instance_id
+module.exports.getAPIbyID = function(req,res){
+  Item.findById(req.params.item_id, function (err, item){
+    if(err) return res.send({error: err});
+    if(!item){
+      res.send({error: 'Item does not exist'});
+    } else {
+      // find instance from contained schema
+      // Handle if the id doesn't exist
+      var instance = item.instances.id(req.params.instance_id);
+      res.json(instance ? instance : {error: "Instance does not exist in item"});
+    }
+  });
+};
 
+// Route: /inventory/:item_id/:instance_id
+module.exports.putAPI = function(req,res){
+  Item.findById(req.params.item_id, function (err, item){
+    if(err) return res.send({error: err});
+    if(!item){
+      res.send({error: 'Item does not exist'});
+    } else {
+      // find instance from contained schema
+      // Handle if the id doesn't exist
+      var instance = item.instances.id(req.params.instance_id);
+      if(!instance){
+        return res.send({error: "Instance does not exist in item"});
+      } else {
+        Object.assign(instance, req.body);
+        item.save((err, item) => {
+          if(err) return res.send({error:err});
+          res.json(instance);
+        })
+      }
+    }
+  });
+};
 
 module.exports.postAPI = function(req, res){
   Item.findById(req.params.item_id, function (err, item){
@@ -49,3 +85,23 @@ module.exports.postAPI = function(req, res){
     }
   });
 };
+
+module.exports.deleteAPI = function(req, res){
+  Item.findById(req.params.item_id, function(err, item){
+    if(err) return res.send({error: err});
+    if(!item)
+     return res.send({error: 'Item does not exist'});
+    else{
+      var instance = item.instances.id(req.params.instance_id);
+      if(!instance){
+        return res.send({error: "Instance does not exist in item"});
+      } else {
+        instance.remove();
+        item.save(function(err){
+          if(err) return res.send({error: err});
+          res.send({message: 'Delete successful'});
+        })
+      }
+    }
+  })
+}
