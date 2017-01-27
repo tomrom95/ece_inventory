@@ -1,5 +1,5 @@
 var inventory_routes = require('./routes/inventory_routes');
-
+var instances_routes = require('./routes/instances_routes');
 var express = require('express');
 var router = express.Router();
 
@@ -10,6 +10,9 @@ router.route('/inventory')
 router.route('/inventory/:item_id')
       .get(inventory_routes.getAPIbyID)
       .put(inventory_routes.putAPI)
-      .delete(inventory_routes.deleteAPI);     
+      .delete(inventory_routes.deleteAPI);
+
+router.route('/inventory/:item_id/instances')
+      .get(instances_route.getAPI);
 
 module.exports = router;

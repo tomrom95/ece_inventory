@@ -29,11 +29,11 @@ module.exports.getAPI = function (req, res) {
   if(req.query.name)
   query.name = {'$regex': req.query.name, '$options':'i'};
   if(required_tags_regex && excluded_tags_regex)
-  query.tags = { $all : required_tags_regex, $nin : excluded_tags_regex};
+    query.tags = { $all : required_tags_regex, $nin : excluded_tags_regex};
   else if(required_tags_regex)
-  query.tags = { $all : required_tags_regex};
+    query.tags = { $all : required_tags_regex};
   else if(excluded_tags_regex)
-  query.tags = { $nin : excluded_tags_regex};
+    query.tags = { $nin : excluded_tags_regex};
   if(req.query.location) query.location = {'$regex': req.query.location, '$options':'i'};
   if(req.query.model_number) query.model_number = {'$regex': req.query.model_number, '$options':'i'};
 
