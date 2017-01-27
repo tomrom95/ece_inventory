@@ -16,4 +16,7 @@ router.route('/inventory/:item_id')
 router.route('/register')
       .post(user_routes.register);
 
+router.route('/register')
+      .post(user_routes.register);
+
 module.exports = router;
