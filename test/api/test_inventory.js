@@ -3,7 +3,7 @@ process.env.NODE_ENV = 'test';
 let mongoose = require("mongoose");
 let Item = require('../../model/items');
 let User = require('../../model/users');
-let helpers = require('../../server/auth_helpers');
+let helpers = require('../../router/auth_router/auth_helpers');
 let server = require('../../server');
 let fakeJSONData = require('./test_inventory_GETdata');
 

@@ -1,8 +1,8 @@
 'use strict';
 var jwt = require('jsonwebtoken');
-var User = require('../model/users');
-var helpers = require('./auth_helpers');
-var User = require('../model/users.js');
+var User = require('../../../model/users');
+var helpers = require('../auth_helpers');
+var User = require('../../../model/users');
 
 module.exports.login = function(req, res) {
   User.findOne({ username: req.body.username }, function(error, user) {
