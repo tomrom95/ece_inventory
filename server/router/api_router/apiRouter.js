@@ -1,5 +1,5 @@
 var inventory_routes = require('./routes/inventory_routes');
-var instances_routes = require('./routes/instances_routes');
+var instance_routes = require('./routes/instance_routes');
 var user_routes = require('./routes/user_routes');
 
 var express = require('express');
@@ -15,7 +15,12 @@ router.route('/inventory/:item_id')
       .delete(inventory_routes.deleteAPI);
 
 router.route('/inventory/:item_id/instances')
-      .get(instances_route.getAPI);
+      .get(instance_routes.getAPI)
+      .post(instance_routes.postAPI);
+
+router.route('./inventory/:item_id/:instance_id')
+      
+
 router.route('/register')
       .post(user_routes.register);
 

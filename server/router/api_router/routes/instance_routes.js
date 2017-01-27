@@ -1,7 +1,6 @@
 'use strict';
 var Item = require('../../../model/items');
 var Instance = require('../../../model/instances');
-var helper = require('../api_helpers');
 
 module.exports.getAPI = function (req, res) {
   // queryable by serial number, condition and status
@@ -14,21 +13,39 @@ module.exports.getAPI = function (req, res) {
   if(condition)     query.condition = condition;
   if(status)        query.status = status;
 
-  Item.find(query, function(err, items){
-    if(err) res.send({error: err});
-    res.json(items);
+  Item.findById(req.params.item_id, function (err, item){
+    if(err) return res.send({error: err});
+    if (!item) return res.send({error: 'Item does not exist'})
+    else {
+      res.json(item.instances);
+    }
   });
-});
+};
+
+
 
 module.exports.postAPI = function(req, res){
-  var instance = new Instance();
-  instance.serial_number = req.body.serial_number;
-  instance.condition = req.body.condition;
-  instance.status = req.body.status;
-  instance.save(function(err){
-    if(err)
-    return res.send({error:err});
-    res.json(item);
-  })
+  Item.findById(req.params.item_id, function (err, item){
+    if(err) return res.send({error: err});
+    if (!item) return res.send({error: 'Item does not exist'})
+    else {
+      var instance = new Instance();
+      var serial_number = req.body.serial_number;
+      var condition = req.body.condition;
+      var status = req.body.status;
 
-}
+      if (!serial_number){
+        return res.send({error: 'Serial number is required'});
+      } else {
+        instance.serial_number = serial_number;
+      }
+      instance.condition = req.body.condition;
+      instance.status = req.body.status;
+      item.instances.push(instance);
+      item.save(function(err, item){
+        if(err) return res.send({error:err});
+        res.json(item.instances.id(instance.id));
+      });
+    }
+  });
+};
