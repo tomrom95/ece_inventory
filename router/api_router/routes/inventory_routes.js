@@ -89,7 +89,7 @@ module.exports.deleteAPI = function(req, res){
     else{
       item.remove(function(err){
         if(err) res.send(err);
-        res.send({message: 'SUCCESS'});
+        res.send({message: 'Delete successful'});
     });
   }
   })

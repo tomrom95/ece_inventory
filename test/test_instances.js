@@ -16,7 +16,6 @@ describe('Instance', function() {
       condition: 'NEEDS_REPAIR'
     });
     instance.validate(function (err) {
-      console.log(err);
       assert.isNull(err, 'Valid object');
       done();
     });
