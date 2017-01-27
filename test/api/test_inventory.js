@@ -5,7 +5,7 @@ let Item = require('../../server/model/items');
 let User = require('../../server/model/users');
 let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
-let fakeJSONData = require('./test_inventory_GETdata');
+let fakeJSONData = require('./test_inventory_data');
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
