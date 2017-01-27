@@ -8,6 +8,8 @@ var User = require('./model/users');
 var passportJWT = require('passport-jwt');
 var passport = require('passport');
 var secrets = require('./server/secrets.js');
+var fs = require('fs');
+var https = require('https');
 
 var app = express();
 var api_router = require('./router/api_router/apiRouter');
@@ -50,8 +52,13 @@ passport.use(new passportJWT.Strategy(opts, function(jwt_payload, done) {
 
 app.use('/api', passport.authenticate('jwt', { session: false }), api_router);
 app.use('/auth', auth_router);
-app.listen(secrets.port, function() {
-  console.log('API running on port ' + secrets.port);
+
+https.createServer({
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem'),
+  passphrase: secrets.sslSecret
+}, app).listen(secrets.apiPort, function() {
+  console.log('API running on port ' + secrets.apiPort);
 });
 
 module.exports = app;
