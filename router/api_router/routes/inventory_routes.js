@@ -42,19 +42,14 @@ module.exports.getAPI = function (req, res) {
     res.json(items);
   });
 };
-// Anoter route
-// router.get('/:id', function(req, res) {
-//   // res.json({
-//   //   id: "12345",
-//   //   quantity: 1,
-//   //   description: "It's an oscilloscope",
-//   //   has_instance_objects: true,
-//   // 	tag: ["machine", "expensive"],
-//   //   name: "oscilloscope",
-//   //   model_number: "23451",
-//   //   location: "stockroom",
-//   // });
-// });
+
+// Route: /inventory/:item_id
+module.exports.getAPIbyID = function(req,res){
+  Item.findById(req.params.item_id, function (err, item){
+    if(err) res.send(err);
+    res.json(item);
+  });
+};
 
 module.exports.postAPI = function(req, res){
   var item = new Item();
@@ -70,4 +65,14 @@ module.exports.postAPI = function(req, res){
     return res.send(err);
     res.json(item);
   })
+};
+
+module.exports.putAPI = function(req, res){
+  Item.findById(req.params.item_id, function (err, item){
+    if(err) res.send(err);
+    Object.assign(item, req.body).save((err,item) =>{
+      if(err) res.send(err);
+      res.json(item);
+    })
+  });
 };

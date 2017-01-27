@@ -256,6 +256,62 @@ describe('/Inventory Test', function () {
         done();
       });
       });
+
+
+  });
+  describe('GET /inventory/:item_id', ()=>{
+    it('GETs inventory item by item id', (done) => {
+      let item = new Item({
+        "location": "PERKINS",
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+      });
+      item.save((err, item) =>{
+        chai.request(server)
+        .get('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .send(item)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.location.should.be.eql("PERKINS");
+          res.body.name.should.be.eql("Laptop");
+          res.body.quantity.should.be.eql(1000);
+          res.body._id.should.be.eql(item.id);
+        done();
+        });
+      });
+    });
+  });
+  describe('PUT /inventory/:item_id', ()=>{
+    it('PUTs inventory item by item id', (done) => {
+      let item = new Item({
+        "location": "PERKINS",
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+      });
+      item.save((err, item) =>{
+        chai.request(server)
+        .put('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .send({
+          'name': 'Coaxial',
+          'location': 'HUDSON',
+          quantity: 3000
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.location.should.be.eql("HUDSON");
+          res.body.name.should.be.eql("Coaxial");
+          res.body.quantity.should.be.eql(3000);
+          res.body._id.should.be.eql(item.id);
+        done();
+        });
+      });
+    });
   });
   describe('POST /inventory', () =>{
     let item = {
