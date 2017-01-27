@@ -1,6 +1,8 @@
+process.env.NODE_ENV = 'test';
+
 var mongoose = require('mongoose');
-var Request = require('../model/requests.js');
-var Item = require('../model/items.js');
+var Request = require('../../server/model/requests.js');
+var Item = require('../../server/model/items.js');
 var assert = require('chai').assert
 
 describe('Requests', function() {

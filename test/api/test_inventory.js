@@ -1,9 +1,9 @@
 process.env.NODE_ENV = 'test';
 
 let mongoose = require("mongoose");
-let Item = require('../../model/items');
-let User = require('../../model/users');
-let helpers = require('../../router/auth_router/auth_helpers');
+let Item = require('../../server/model/items');
+let User = require('../../server/model/users');
+let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
 let fakeJSONData = require('./test_inventory_GETdata');
 
@@ -342,9 +342,9 @@ describe('/Inventory Test', function () {
         .send(itemNoName)
         .end((err, res) => {
           res.should.have.status(200);
-          res.body.should.have.property('errors');
-          res.body.errors.should.have.property('name');
-          res.body.errors.name.should.have.property('kind').eql('required');
+          res.body.should.have.property('error');
+          res.body.error.errors.should.have.property('name');
+          res.body.error.errors.name.should.have.property('kind').eql('required');
         done();
       });
     });
@@ -355,9 +355,9 @@ describe('/Inventory Test', function () {
         .send(itemNoQuantity)
         .end((err, res) => {
           res.should.have.status(200);
-          res.body.should.have.property('errors');
-          res.body.errors.should.have.property('quantity');
-          res.body.errors.quantity.should.have.property('kind').eql('required');
+          res.body.should.have.property('error');
+          res.body.error.errors.should.have.property('quantity');
+          res.body.error.errors.quantity.should.have.property('kind').eql('required');
         done();
       });
     });
@@ -368,9 +368,9 @@ describe('/Inventory Test', function () {
         .send(itemNoHasInstanceObjects)
         .end((err, res) => {
           res.should.have.status(200);
-          res.body.should.have.property('errors');
-          res.body.errors.should.have.property('has_instance_objects');
-          res.body.errors.has_instance_objects.should.have.property('kind').eql('required');
+          res.body.should.have.property('error');
+          res.body.error.errors.should.have.property('has_instance_objects');
+          res.body.error.errors.has_instance_objects.should.have.property('kind').eql('required');
         done();
       });
     });
