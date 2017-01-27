@@ -38,7 +38,7 @@ module.exports.getAPI = function (req, res) {
   if(req.query.model_number) query.model_number = {'$regex': req.query.model_number, '$options':'i'};
 
   Item.find(query, function(err, items){
-    if(err) res.send(err);
+    if(err) res.send({error: err});
     res.json(items);
   });
 };
@@ -46,7 +46,7 @@ module.exports.getAPI = function (req, res) {
 // Route: /inventory/:item_id
 module.exports.getAPIbyID = function(req,res){
   Item.findById(req.params.item_id, function (err, item){
-    if(err) res.send(err);
+    if(err) res.send({error: err});
     (!item) ? res.send({error: 'Item does not exist'}) : res.json(item);
   });
 };
@@ -62,19 +62,19 @@ module.exports.postAPI = function(req, res){
   item.has_instance_objects = req.body.has_instance_objects;
   item.save(function(err){
     if(err)
-    return res.send(err);
+    return res.send({error: err});
     res.json(item);
   })
 };
 
 module.exports.putAPI = function(req, res){
   Item.findById(req.params.item_id, function (err, item){
-    if(err) res.send(err);
+    if(err) res.send({error: err});
     if(!item)
       res.send({error: 'Item does not exist'});
     else{
       Object.assign(item, req.body).save((err,item) =>{
-      if(err) res.send(err);
+      if(err) res.send({error: err});
       res.json(item);
     })
   }
@@ -83,12 +83,12 @@ module.exports.putAPI = function(req, res){
 
 module.exports.deleteAPI = function(req, res){
   Item.findById(req.params.item_id, function(err, item){
-    if(err) res.send(err);
+    if(err) res.send({error: err});
     if(!item)
      res.send({error: 'Item does not exist'});
     else{
       item.remove(function(err){
-        if(err) res.send(err);
+        if(err) res.send({error: err});
         res.send({message: 'Delete successful'});
     });
   }

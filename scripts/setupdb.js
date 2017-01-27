@@ -2,6 +2,7 @@ var Db = require('mongodb').Db,
   Server = require('mongodb').Server;
 var mongoose = require('mongoose');
 let Item = require('../model/items');
+var helpers = require('../auth/auth_helpers');
 
 var db = new Db('inventory', new Server('localhost', 27017));
 var fakeJSONData = require('../test/api/test_inventory_GETdata');
@@ -23,9 +24,13 @@ db.open(function(err, db) {
         }
         console.log("Added.");
         mongoose.connect('mongodb://admin:ece458duke@localhost/inventory');
-        Item.insertMany(fakeJSONData).then(function(obj){
-          console.log("inserted items");
-          end();
+        helpers.createNewUser('admin', 'ece458duke', true, function(err, user) {
+          if (!err) {
+            console.log("inserted user");
+          }
+          Item.insertMany(fakeJSONData).then(function(obj){
+            console.log("inserted items");
+          });
         });
     });
 });

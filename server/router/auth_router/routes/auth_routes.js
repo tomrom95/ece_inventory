@@ -1,13 +1,13 @@
 'use strict';
 var jwt = require('jsonwebtoken');
 var User = require('../../../model/users');
-var helpers = require('../auth_helpers');
+var helpers = require('../../../auth/auth_helpers');
 var User = require('../../../model/users');
 
 module.exports.login = function(req, res) {
   User.findOne({ username: req.body.username }, function(error, user) {
     if (error != null) {
-      res.send(err);
+      res.send({error: err});
       return;
     } else if (user == null) {
       res.send({error: 'User does not exist'});
@@ -28,26 +28,4 @@ module.exports.login = function(req, res) {
       })
     }
   });
-}
-
-module.exports.register = function(req, res) {
-  var user = req.user;
-  if (!user.is_admin) {
-    res.send({error: 'You do not have sufficient priveleges to use this endpoint'});
-  } else {
-    var newUsername = req.body.username;
-    var newPassword = req.body.password;
-    var adminStatus = req.body.is_admin || false;
-    if (!newUsername || !newPassword) {
-      res.send({error: 'Username and password required for new account'});
-      return;
-    }
-    helpers.createNewUser(newUsername, newPassword, adminStatus, function(error, user) {
-      if (error != null) {
-        res.send(error);
-      } else {
-        res.json({user: user});
-      }
-    });
-  }
 }
