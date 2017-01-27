@@ -1,8 +1,8 @@
 process.env.NODE_ENV = 'test';
 
 let mongoose = require("mongoose");
-let User = require('../../model/users');
-let helpers = require('../../auth/auth_helpers');
+let User = require('../../server/model/users');
+let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
 
 let chai = require('chai');

@@ -3,7 +3,7 @@
 var bcrypt = require('bcrypt-nodejs');
 var User = require('../model/users');
 var jwt = require('jsonwebtoken');
-var secrets = require('../server/secrets');
+var secrets = require('../secrets');
 
 const SALT_NUM = 5;
 const TOKEN_EXPIRY = 60*60*24;

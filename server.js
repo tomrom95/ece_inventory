@@ -3,8 +3,8 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-var Item = require('./model/items');
-var User = require('./model/users');
+var Item = require('./server/model/items');
+var User = require('./server/model/users');
 var passportJWT = require('passport-jwt');
 var passport = require('passport');
 var secrets = require('./server/secrets.js');
@@ -12,8 +12,8 @@ var fs = require('fs');
 var https = require('https');
 
 var app = express();
-var api_router = require('./router/api_router/apiRouter');
-var auth_router = require('./router/auth_router/authRouter');
+var api_router = require('./server/router/api_router/apiRouter');
+var auth_router = require('./server/router/auth_router/authRouter');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
