@@ -425,7 +425,7 @@ describe('/Inventory Test', function () {
               .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
-                res.body.should.have.a.property('message').eql('Item does not exist');
+                res.body.should.have.a.property('error').eql('Item does not exist');
                 done();
           });
         });
@@ -449,7 +449,7 @@ describe('/Inventory Test', function () {
               .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
-                res.body.should.have.a.property('message').eql('Item does not exist');
+                res.body.should.have.a.property('error').eql('Item does not exist');
                 done();
           });
         });
@@ -473,7 +473,7 @@ describe('/Inventory Test', function () {
               .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
-                res.body.should.have.a.property('message').eql('Item does not exist');
+                res.body.should.have.a.property('error').eql('Item does not exist');
                 done();
           });
         });
