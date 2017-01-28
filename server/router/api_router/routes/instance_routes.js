@@ -7,7 +7,6 @@ module.exports.getAPI = function (req, res) {
   var serial_number = req.query.serial_number;
   var condition = req.query.condition;
   var status = req.query.status;
-
   var query = {};
   if(serial_number) query['instances.serial_number'] = serial_number;
   if(condition)     query['instances.condition'] = condition;
@@ -27,7 +26,7 @@ module.exports.getAPI = function (req, res) {
       if(err) return res.send({error: err});
       else {
           // Result is Array with 1 object
-          res.json(result[0].filteredList);
+          res.json(result.length ? result[0].filteredList : []);
       }
   });
 };
