@@ -13,10 +13,7 @@ let should = chai.should();
 chai.use(chaiHttp);
 chai.use(require('chai-things'));
 
-// var request = require('supertest');
-// require = require('really-need');
-
-describe('/Inventory Test', function () {
+describe('Inventory API Test', function () {
   var token;
   beforeEach((done) => { //Before each test we empty the database
       Item.remove({}, (err) => {

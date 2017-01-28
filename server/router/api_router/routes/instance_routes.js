@@ -1,7 +1,7 @@
 'use strict';
 var Item = require('../../../model/items');
 var Instance = require('../../../model/instances');
-
+var mongoose = require('mongoose');
 module.exports.getAPI = function (req, res) {
   // queryable by serial number, condition and status
   var serial_number = req.query.serial_number;
@@ -9,16 +9,26 @@ module.exports.getAPI = function (req, res) {
   var status = req.query.status;
 
   var query = {};
-  if(serial_number) query.serial_number = serial_number;
-  if(condition)     query.condition = condition;
-  if(status)        query.status = status;
+  if(serial_number) query['instances.serial_number'] = serial_number;
+  if(condition)     query['instances.condition'] = condition;
+  if(status)        query['instances.status'] = status;
 
-  Item.findById(req.params.item_id, function (err, item){
-    if(err) return res.send({error: err});
-    if (!item) return res.send({error: 'Item does not exist'})
-    else {
-      res.json(item.instances);
-    }
+  var item_id = req.params.item_id;
+  Item.aggregate(
+    // Find the Item
+    [{$match: { _id: mongoose.Types.ObjectId(item_id)}},
+    // Separate item for each instance it has
+    {$unwind: '$instances'},
+    // Filter out each separated item according to instance query
+    {$match: query},
+    // Regroup separated items into one object with list of instances
+    {$group: {_id:'$_id', filteredList:{$push: '$instances'}}}],
+    function(err, result){
+      if(err) return res.send({error: err});
+      else {
+          // Result is Array with 1 object
+          res.json(result[0].filteredList);
+      }
   });
 };
 
