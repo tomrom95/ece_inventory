@@ -38,7 +38,11 @@ module.exports.getAPI = function (req, res) {
   if(req.query.location) query.location = {'$regex': req.query.location, '$options':'i'};
   if(req.query.model_number) query.model_number = {'$regex': req.query.model_number, '$options':'i'};
 
-  Item.find(query, function(err, items){
+  let projection = {
+    instances: 0
+  }
+
+  Item.find(query, projection, function(err, items){
     if(err) return res.send({error: err});
     res.json(items);
   });
