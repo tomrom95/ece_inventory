@@ -14,7 +14,20 @@ module.exports.register = function(req, res) {
     if (error != null) {
       res.send({error: error});
     } else {
-      res.json({user: user});
+      res.json({user: {
+        _id: user._id,
+        username: user.username,
+        is_admin: user.is_admin
+      }});
     }
+  });
+}
+
+module.exports.getAPI = function(req, res) {
+  var user = req.user;
+  res.json({
+    _id: user._id,
+    username: user.username,
+    is_admin: user.is_admin
   });
 }

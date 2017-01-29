@@ -25,7 +25,8 @@ router.route('/inventory/:item_id/:instance_id')
       .put(restrictToAdmins, instance_routes.putAPI)
       .delete(restrictToAdmins, instance_routes.deleteAPI);
 
-router.route('/register')
+router.route('/user')
+      .get(user_routes.getAPI)
       .post(restrictToAdmins, user_routes.register);
 
 router.route('/logs')
