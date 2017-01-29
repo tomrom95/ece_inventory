@@ -1,5 +1,6 @@
 'use strict';
 var Item = require('../../../model/items');
+var Log = require('../../../model/logs');
 
 module.exports.getAPI = function (req, res) {
   // required_tags and excluded_tags: CSV separated values
@@ -29,11 +30,11 @@ module.exports.getAPI = function (req, res) {
   if(req.query.name)
   query.name = {'$regex': req.query.name, '$options':'i'};
   if(required_tags_regex && excluded_tags_regex)
-    query.tags = { $all : required_tags_regex, $nin : excluded_tags_regex};
+  query.tags = { $all : required_tags_regex, $nin : excluded_tags_regex};
   else if(required_tags_regex)
-    query.tags = { $all : required_tags_regex};
+  query.tags = { $all : required_tags_regex};
   else if(excluded_tags_regex)
-    query.tags = { $nin : excluded_tags_regex};
+  query.tags = { $nin : excluded_tags_regex};
   if(req.query.location) query.location = {'$regex': req.query.location, '$options':'i'};
   if(req.query.model_number) query.model_number = {'$regex': req.query.model_number, '$options':'i'};
 
@@ -67,17 +68,41 @@ module.exports.postAPI = function(req, res){
   })
 };
 
+function logQuantityChange(change, userID, itemID, next) {
+  if (change == 0) {
+    return next(null);
+  }
+  var log = new Log({
+    created_by: userID,
+    type: change > 0 ? 'ACQUISITION' : 'LOSS',
+    item: itemID,
+    quantity: Math.abs(change),
+  });
+  log.save(function(err) {
+    next(err);
+  });
+}
+
 module.exports.putAPI = function(req, res){
-  Item.findById(req.params.item_id, function (err, item){
+  Item.findById(req.params.item_id, function (err, old_item){
     if(err) return res.send({error: err});
-    if(!item)
+    if(!old_item)
       return res.send({error: 'Item does not exist'});
     else{
-      Object.assign(item, req.body).save((err,item) =>{
-      if(err) return res.send({error: err});
-      res.json(item);
-    })
-  }
+      var old_quantity = old_item.quantity
+      Object.assign(old_item, req.body).save((err,item) => {
+        if(err) return res.send({error: err});
+        if (req.body.quantity) {
+          logQuantityChange(req.body.quantity - old_quantity, req.user._id, item._id, function(error) {
+            if(err) {
+              return res.send({error: err});
+            } else {
+              res.json(item);
+            }
+          });
+        }
+      });
+    }
   });
 };
 

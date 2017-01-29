@@ -7,7 +7,7 @@ var LogSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
-  }, // TODO will be replaced with user id when created
+  },
   type: {
     type: String,
     enum: ['ACQUISITION', 'LOSS'],

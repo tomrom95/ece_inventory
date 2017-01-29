@@ -234,6 +234,9 @@ return:
   {
     id: String,
     created_by: String,
+		created_by_name: String,
+		item_id: String,
+		item_name: String,
   	type: String,
     quantity: Integer,
     time_stamp: String,
