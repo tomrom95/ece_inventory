@@ -29,16 +29,16 @@ module.exports.getAPI = function (req, res) {
   if(req.query.name)
   query.name = {'$regex': req.query.name, '$options':'i'};
   if(required_tags_regex && excluded_tags_regex)
-  query.tags = { $all : required_tags_regex, $nin : excluded_tags_regex};
+    query.tags = { $all : required_tags_regex, $nin : excluded_tags_regex};
   else if(required_tags_regex)
-  query.tags = { $all : required_tags_regex};
+    query.tags = { $all : required_tags_regex};
   else if(excluded_tags_regex)
-  query.tags = { $nin : excluded_tags_regex};
+    query.tags = { $nin : excluded_tags_regex};
   if(req.query.location) query.location = {'$regex': req.query.location, '$options':'i'};
   if(req.query.model_number) query.model_number = {'$regex': req.query.model_number, '$options':'i'};
 
   Item.find(query, function(err, items){
-    if(err) res.send({error: err});
+    if(err) return res.send({error: err});
     res.json(items);
   });
 };
@@ -46,7 +46,7 @@ module.exports.getAPI = function (req, res) {
 // Route: /inventory/:item_id
 module.exports.getAPIbyID = function(req,res){
   Item.findById(req.params.item_id, function (err, item){
-    if(err) res.send({error: err});
+    if(err) return res.send({error: err});
     (!item) ? res.send({error: 'Item does not exist'}) : res.json(item);
   });
 };
@@ -69,12 +69,12 @@ module.exports.postAPI = function(req, res){
 
 module.exports.putAPI = function(req, res){
   Item.findById(req.params.item_id, function (err, item){
-    if(err) res.send({error: err});
+    if(err) return res.send({error: err});
     if(!item)
-      res.send({error: 'Item does not exist'});
+      return res.send({error: 'Item does not exist'});
     else{
       Object.assign(item, req.body).save((err,item) =>{
-      if(err) res.send({error: err});
+      if(err) return res.send({error: err});
       res.json(item);
     })
   }
@@ -83,12 +83,12 @@ module.exports.putAPI = function(req, res){
 
 module.exports.deleteAPI = function(req, res){
   Item.findById(req.params.item_id, function(err, item){
-    if(err) res.send({error: err});
+    if(err) return res.send({error: err});
     if(!item)
-     res.send({error: 'Item does not exist'});
+     return res.send({error: 'Item does not exist'});
     else{
       item.remove(function(err){
-        if(err) res.send({error: err});
+        if(err) return res.send({error: err});
         res.send({message: 'Delete successful'});
     });
   }
