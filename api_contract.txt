@@ -152,10 +152,11 @@ return:
     user_id: String,
     item_id: String,
     reason: String,
-    time_stamp: String,
+    created: String,
     status: String,
     quantity: Integer,
-    comment: String,
+    requestor_comment: String,
+		reviewer_comment: String
   }
 ]
 
@@ -164,9 +165,11 @@ params:
 {
   item_id: String,
   reason: String,
-  time_stamp: String,
+  created: String,
   status: String,
   quantity: Integer,
+	requestor_comment: String,
+	reviewer_comment: String
 }
 
 return:

@@ -7,7 +7,7 @@ var RequestSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
-  }, // TODO when user schema is created, will be id reference
+  },
   item_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Item',
@@ -25,8 +25,8 @@ var RequestSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['NEW', 'APPROVED', 'DENIED', 'FULFILLED'],
-    default: 'NEW'
+    enum: ['PENDING', 'APPROVED', 'DENIED', 'FULFILLED'],
+    default: 'PENDING'
   },
   requestor_comment: String,
   reviewer_comment: String
