@@ -91,6 +91,7 @@ describe('Logs API Test', function () {
             res.body.should.be.a('array');
             res.body.length.should.be.eql(2);
             res.body[0].created_by.username.should.be.eql('test_user');
+            res.body[0].created_by._id.should.be.eql(String(adminUser._id));
             res.body[0].item.name.should.be.eql('Laptop');
             done();
           });
