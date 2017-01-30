@@ -1,7 +1,7 @@
 'use strict';
 var Log = require('../../../model/logs');
 
-module.exports.getLogs = function(req, res) {
+module.exports.getAPI = function(req, res) {
   Log
     .find({})
     .populate('created_by', 'username')

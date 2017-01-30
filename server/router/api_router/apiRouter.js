@@ -29,6 +29,6 @@ router.route('/register')
       .post(restrictToAdmins, user_routes.register);
 
 router.route('/logs')
-      .get(restrictToAdmins, log_routes.getLogs);
+      .get(restrictToAdmins, log_routes.getAPI);
 
 module.exports = router;
