@@ -22,7 +22,11 @@ module.exports.login = function(req, res) {
           var jwtToken = helpers.createAuthToken(user);
           res.json({
             token: jwtToken,
-            user: user
+            user: {
+              _id: user._id,
+              username: user.username,
+              is_admin: user.is_admin
+            }
           });
         }
       })
