@@ -69,10 +69,10 @@ describe('/register Test', function () {
     });
   });
 
-  describe('POST /register', () =>{
+  describe('POST /user', () =>{
     it('admin can register new user', (done) => {
       chai.request(server)
-        .post('/api/register')
+        .post('/api/user')
         .set('Authorization', adminToken)
         .send({
           username: 'test_user',
@@ -88,15 +88,28 @@ describe('/register Test', function () {
 
     it('non admin cannot register new user', (done) => {
       chai.request(server)
-        .post('/api/register')
+        .post('/api/user')
         .set('Authorization', normalToken)
         .send({
           username: 'other_user',
           password: 'test'
         })
         .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
+  });
+
+  describe('GET /user', () =>{
+    it('Gets information about a user', (done) => {
+      chai.request(server)
+        .get('/api/user')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
           res.should.have.status(200);
-          res.body.error.should.be.eql('You do not have sufficient priveleges to use this endpoint');
+          res.body.username.should.be.eql('admin_user');
+          res.body.is_admin.should.be.eql(true);
           done();
         });
     });
