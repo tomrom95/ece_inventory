@@ -1,11 +1,11 @@
 process.env.NODE_ENV = 'test';
 
 let mongoose = require("mongoose");
-let Item = require('../../model/items');
-let User = require('../../model/users');
-let helpers = require('../../server/auth_helpers');
+let Item = require('../../server/model/items');
+let User = require('../../server/model/users');
+let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
-let fakeJSONData = require('./test_inventory_GETdata');
+let fakeJSONData = require('./test_inventory_data');
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -13,10 +13,7 @@ let should = chai.should();
 chai.use(chaiHttp);
 chai.use(require('chai-things'));
 
-// var request = require('supertest');
-// require = require('really-need');
-
-describe('/Inventory Test', function () {
+describe('Inventory API Test', function () {
   var token;
   beforeEach((done) => { //Before each test we empty the database
       Item.remove({}, (err) => {
@@ -256,7 +253,64 @@ describe('/Inventory Test', function () {
         done();
       });
       });
+
+
   });
+  describe('GET /inventory/:item_id', ()=>{
+    it('GETs inventory item by item id', (done) => {
+      let item = new Item({
+        "location": "PERKINS",
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+      });
+      item.save((err, item) =>{
+        chai.request(server)
+        .get('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .send(item)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.location.should.be.eql("PERKINS");
+          res.body.name.should.be.eql("Laptop");
+          res.body.quantity.should.be.eql(1000);
+          res.body._id.should.be.eql(item.id);
+        done();
+        });
+      });
+    });
+  });
+  describe('PUT /inventory/:item_id', ()=>{
+    it('PUTs inventory item by item id', (done) => {
+      let item = new Item({
+        "location": "PERKINS",
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+      });
+      item.save((err, item) =>{
+        chai.request(server)
+        .put('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .send({
+          'name': 'Coaxial',
+          'location': 'HUDSON',
+          quantity: 3000
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.location.should.be.eql("HUDSON");
+          res.body.name.should.be.eql("Coaxial");
+          res.body.quantity.should.be.eql(3000);
+          res.body._id.should.be.eql(item.id);
+        done();
+        });
+      });
+    });
+  });
+
   describe('POST /inventory', () =>{
     let item = {
         name: "TEST_ITEM",
@@ -285,9 +339,9 @@ describe('/Inventory Test', function () {
         .send(itemNoName)
         .end((err, res) => {
           res.should.have.status(200);
-          res.body.should.have.property('errors');
-          res.body.errors.should.have.property('name');
-          res.body.errors.name.should.have.property('kind').eql('required');
+          res.body.should.have.property('error');
+          res.body.error.errors.should.have.property('name');
+          res.body.error.errors.name.should.have.property('kind').eql('required');
         done();
       });
     });
@@ -298,9 +352,9 @@ describe('/Inventory Test', function () {
         .send(itemNoQuantity)
         .end((err, res) => {
           res.should.have.status(200);
-          res.body.should.have.property('errors');
-          res.body.errors.should.have.property('quantity');
-          res.body.errors.quantity.should.have.property('kind').eql('required');
+          res.body.should.have.property('error');
+          res.body.error.errors.should.have.property('quantity');
+          res.body.error.errors.quantity.should.have.property('kind').eql('required');
         done();
       });
     });
@@ -311,9 +365,9 @@ describe('/Inventory Test', function () {
         .send(itemNoHasInstanceObjects)
         .end((err, res) => {
           res.should.have.status(200);
-          res.body.should.have.property('errors');
-          res.body.errors.should.have.property('has_instance_objects');
-          res.body.errors.has_instance_objects.should.have.property('kind').eql('required');
+          res.body.should.have.property('error');
+          res.body.error.errors.should.have.property('has_instance_objects');
+          res.body.error.errors.has_instance_objects.should.have.property('kind').eql('required');
         done();
       });
     });
@@ -329,4 +383,98 @@ describe('/Inventory Test', function () {
         done();
     })
   })
+
+  describe('DELETE /inventory/:item_id', ()=>{
+    it('DELETE inventory item by item id', (done) => {
+      let item = new Item({
+        "location": "PERKINS",
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+      });
+      item.save((err, item) =>{
+        chai.request(server)
+        .delete('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('message').eql('Delete successful');
+        done();
+        });
+      });
+    });
+    it('DELETE inventory item by item id, then DELETE should fail', (done) => {
+      let item = new Item({
+        "location": "PERKINS",
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+      });
+      item.save((err, item) =>{
+        chai.request(server)
+        .delete('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .end((err, res) => {
+              chai.request(server)
+              .delete('/api/inventory/'+item.id)
+              .set('Authorization', token)
+              .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.a.property('error').eql('Item does not exist');
+                done();
+          });
+        });
+      });
+    });
+    it('DELETE inventory item by item id, then GET should fail', (done) => {
+      let item = new Item({
+        "location": "PERKINS",
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+      });
+      item.save((err, item) =>{
+        chai.request(server)
+        .delete('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .end((err, res) => {
+              chai.request(server)
+              .get('/api/inventory/'+item.id)
+              .set('Authorization', token)
+              .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.a.property('error').eql('Item does not exist');
+                done();
+          });
+        });
+      });
+    });
+    it('DELETE inventory item by item id, then PUT should fail', (done) => {
+      let item = new Item({
+        "location": "PERKINS",
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+      });
+      item.save((err, item) =>{
+        chai.request(server)
+        .delete('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .end((err, res) => {
+              chai.request(server)
+              .put('/api/inventory/'+item.id)
+              .set('Authorization', token)
+              .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.a.property('error').eql('Item does not exist');
+                done();
+          });
+        });
+      });
+    });
+  });
 });

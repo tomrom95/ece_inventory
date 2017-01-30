@@ -1,5 +1,7 @@
+process.env.NODE_ENV = 'test';
+
 var mongoose = require('mongoose');
-var Instance = require('../model/instances.js');
+var Instance = require('../../server/model/instances.js');
 var assert = require('chai').assert
 
 describe('Instance', function() {
@@ -16,7 +18,6 @@ describe('Instance', function() {
       condition: 'NEEDS_REPAIR'
     });
     instance.validate(function (err) {
-      console.log(err);
       assert.isNull(err, 'Valid object');
       done();
     });
