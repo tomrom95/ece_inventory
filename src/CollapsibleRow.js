@@ -25,8 +25,8 @@ class CollapsibleRow extends Component {
 				<div className="panel-heading inventory-table-row">
 		      		<h4 className="panel-title">
 		      			<div className="row" data-toggle="collapse" data-parent="#accordion" href={"#"+this.props.itemName}>
-			        		<div className="col-xs-10"> {this.props.itemName} </div>
-			        		<div className="col-xs-2"> {this.state.qty} </div>
+			        		<div className="col-xs-10 panel-font"> {this.props.itemName} </div>
+			        		<div className="col-xs-2 panel-font"> {this.state.qty} </div>
 			        	</div>
 		      		</h4>
 

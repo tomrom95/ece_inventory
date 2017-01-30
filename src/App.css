@@ -42,8 +42,11 @@
 }
 
 .subtable-row {
-  min-height: 100px;
-  margin: -100px;
+}
+
+.panel-font {
+  font-size: 13px;
+  font-weight: bold;
 }
 
 .panel-group {
