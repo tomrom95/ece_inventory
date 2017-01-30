@@ -542,8 +542,8 @@ describe('Requests API Test', function () {
       });
     });
   });
-  describe('DELETE /inventory/:item_id', ()=>{
-    it('DELETE inventory item by item id', (done) =>{
+  describe('DELETE /request/:item_id', ()=>{
+    it('DELETE request by request id', (done) =>{
       var request = new Request({
         "reviewer_comment": "NONADMIN",
         "requestor_comment": "NONADMIN",
@@ -566,7 +566,7 @@ describe('Requests API Test', function () {
         });
       })
     });
-    it('DELETE inventory item by item id then DELETE should fail', (done) =>{
+    it('DELETE request by request id then DELETE should fail', (done) =>{
       var request = new Request({
         "reviewer_comment": "NONADMIN",
         "requestor_comment": "NONADMIN",
@@ -594,7 +594,7 @@ describe('Requests API Test', function () {
         });
       })
     });
-    it('DELETE inventory item by item id then GET should fail', (done) =>{
+    it('DELETE request by request id then GET should fail', (done) =>{
       var request = new Request({
         "reviewer_comment": "NONADMIN",
         "requestor_comment": "NONADMIN",
@@ -622,7 +622,7 @@ describe('Requests API Test', function () {
         });
       });
     });
-    it('DELETE inventory item by item id then PUT should fail', (done) =>{
+    it('DELETE request by request id then PUT should fail', (done) =>{
       var request = new Request({
         "reviewer_comment": "NONADMIN",
         "requestor_comment": "NONADMIN",
