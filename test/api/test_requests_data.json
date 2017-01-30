@@ -5,7 +5,7 @@
     "reason": "greed",
     "quantity": 2000,
     "status": "APPROVED",
-    "created": "2019-01-29T05:00:00.000Z"
+    "created": "2019-01-29"
   },
   {
     "reviewer_comment": "Bye",
@@ -13,7 +13,7 @@
     "reason": "greed",
     "quantity": 2000,
     "status": "DENIED",
-    "created": "2019-01-29T05:00:00.000Z"
+    "created": "2019-01-29"
   },
   {
     "reviewer_comment": "Bye",
@@ -21,7 +21,7 @@
     "reason": "happiness",
     "quantity": 2000,
     "status": "PENDING",
-    "created": "2019-01-29T05:00:00.000Z"
+    "created": "2019-01-29"
   },
   {
     "reviewer_comment": "Fine",
@@ -29,7 +29,7 @@
     "reason": "happiness",
     "quantity": 2000,
     "status": "PENDING",
-    "created": "2019-01-29T05:00:00.000Z"
+    "created": "2029-01-29"
   },
   {
     "reviewer_comment": "Fine",
@@ -37,6 +37,6 @@
     "reason": "happiness",
     "quantity": 2000,
     "status": "FULFILLED",
-    "created": "2019-01-29T05:00:00.000Z"
+    "created": "2029-01-29"
   }
 ]
