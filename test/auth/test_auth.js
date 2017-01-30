@@ -95,8 +95,7 @@ describe('/register Test', function () {
           password: 'test'
         })
         .end((err, res) => {
-          res.should.have.status(200);
-          res.body.error.should.be.eql('You do not have sufficient priveleges to use this endpoint');
+          res.should.have.status(403);
           done();
         });
     });
