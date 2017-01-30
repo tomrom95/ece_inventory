@@ -13,7 +13,6 @@ export default (
     <Route path="/Inventory" component={Inventory}></Route>
     <Route path="/CurrentOrders" component={CurrentOrders}></Route>
     <Route path="/PastOrders" component={PastOrders}></Route>
-
   </Route>
 );
 

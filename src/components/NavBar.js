@@ -8,7 +8,7 @@ class NavBar extends Component {
     return (
         <nav className="navbar navbar-light bg-faded navbar-fixed-top">
             <div className="collapse navbar-toggleable-md" id="navbarResponsive">
-              <a className="App-header" href="">ECE Laboratory</a>
+              <a className="App-header" href="#">ECE Laboratory</a>
               <ul className="nav navbar-nav">
                 <li className="nav-item">
                   <Link to="/" className="nav-link">Home</Link>
