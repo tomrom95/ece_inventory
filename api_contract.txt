@@ -150,7 +150,10 @@ return:
   {
 		id: String,
     user_id: String,
-    item_id: String,
+    item: {
+			id: String,
+			name: String 
+		}
     reason: String,
     created: String,
     status: String,

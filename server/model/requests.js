@@ -8,10 +8,10 @@ var RequestSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  item_id: {
+  item: {
     type: mongoose.Schema.Types.ObjectId,
+    required: true,
     ref: 'Item',
-    required: true
   },
   reason: String,
   created: {
