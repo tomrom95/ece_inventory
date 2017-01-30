@@ -126,37 +126,37 @@ describe('Requests API Test', function () {
         });
       });
     });
-   it('GETs requests by item id, for new item', (done) => {
-       var item2_id;
-       Item.findOne({"name": "2k resistor"}, function(err, item2){
-         var request = new Request({
-           "reviewer_comment": "NONADMIN",
-           "requestor_comment": "NONADMIN",
-           "reason": "NONADMIN",
-           "quantity": 2000,
-           "status": "PENDING",
-           "created": "2019-01-29T05:00:00.000Z"
-         });
-         request.item = item2._id;
-         request.user_id = user_id;
-         request.save(function(err){
-           chai.request(server)
-           .get('/api/requests?item_id='+item2._id)
-           .set('Authorization', token)
-           .end((err, res) => {
-             res.should.have.status(200);
-             res.body.should.be.a('array');
-             res.body.length.should.be.eql(1);
-             res.body.should.all.have.property("user_id");
-             res.body.should.all.have.property("quantity");
-             res.body.should.all.have.property("item");
-             res.body[0].item.should.have.property("name","2k resistor");
-             res.body[0].item._id.should.eql(item2._id.toString());
-             done();
-           });
-         });
-       });
-     });
+    it('GETs requests by item id, for new item', (done) => {
+      var item2_id;
+      Item.findOne({"name": "2k resistor"}, function(err, item2){
+        var request = new Request({
+          "reviewer_comment": "NONADMIN",
+          "requestor_comment": "NONADMIN",
+          "reason": "NONADMIN",
+          "quantity": 2000,
+          "status": "PENDING",
+          "created": "2019-01-29T05:00:00.000Z"
+        });
+        request.item = item2._id;
+        request.user_id = user_id;
+        request.save(function(err){
+          chai.request(server)
+          .get('/api/requests?item_id='+item2._id)
+          .set('Authorization', token)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body.length.should.be.eql(1);
+            res.body.should.all.have.property("user_id");
+            res.body.should.all.have.property("quantity");
+            res.body.should.all.have.property("item");
+            res.body[0].item.should.have.property("name","2k resistor");
+            res.body[0].item._id.should.eql(item2._id.toString());
+            done();
+          });
+        });
+      });
+    });
 
     it('GETs NO requests by incorrect item id', (done) => {
       chai.request(server)
@@ -295,20 +295,20 @@ describe('Requests API Test', function () {
         done();
       });
     });
-    it('GETs requests by date (case-insensitive)', (done) => {
-      chai.request(server)
-      .get('/api/requests?created=2029-01-29')
-      .set('Authorization', token)
-      .end((err, res) => {
-        res.should.have.status(200);
-        res.body.should.be.a('array');
-        res.body.length.should.be.eql(2);
-        res.body.should.all.have.property("reviewer_comment", "Fine");
-        res.body.should.all.have.property("created", "2029-01-29T00:00:00.000Z");
-        res.body.should.all.have.property("quantity", 2000);
-        done();
-      });
-    });
+    // it('GETs requests by date (case-insensitive)', (done) => {
+    //   chai.request(server)
+    //   .get('/api/requests?created=2029-01-29')
+    //   .set('Authorization', token)
+    //   .end((err, res) => {
+    //     res.should.have.status(200);
+    //     res.body.should.be.a('array');
+    //     res.body.length.should.be.eql(2);
+    //     res.body.should.all.have.property("reviewer_comment", "Fine");
+    //     res.body.should.all.have.property("created", "2029-01-29T00:00:00.000Z");
+    //     res.body.should.all.have.property("quantity", 2000);
+    //     done();
+    //   });
+    // });
     it('GETs NO requests by non-existent date (case-insensitive)', (done) => {
       chai.request(server)
       .get('/api/requests?created=9999-01-29')
@@ -320,10 +320,6 @@ describe('Requests API Test', function () {
         done();
       });
     });
-    // GET status works for all enums
-    // POST - not entering Date should return today's date string
-    // Should error with POSTing without rrequired fields
-    // POST should post for specific user id
   });
 
   describe('GET by ID /requests', () =>{
@@ -394,15 +390,15 @@ describe('Requests API Test', function () {
           "created": "2019-01-29"
         });
         chai.request(server)
-          .post('/api/requests/')
-          .set('Authorization', token)
-          .send(request)
-          .end((err, res) => {
-            res.should.have.status(200);
-            res.body.should.be.a('object');
-            res.body.should.have.property("error", "Item ID null");
-            done();
-          });
+        .post('/api/requests/')
+        .set('Authorization', token)
+        .send(request)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property("error", "Item ID null");
+          done();
+        });
       });
     });
     it('Should POST without Date, defaulting to Today', (done) => {
@@ -417,24 +413,24 @@ describe('Requests API Test', function () {
         request.item = item2._id;
         request.save(function(err){
           chai.request(server)
-            .post('/api/requests/')
-            .set('Authorization', token)
-            .send(request)
-            .end((err, res) => {
-              // This test case may fail if ran straddling a minute because of how the times are compared.
-              // Run again.
-              res.should.have.status(200);
-              res.body.should.be.a('object');
-              var bodyDate = new Date(res.body.created);
-              bodyDate.setSeconds(0,0);
-              bodyDate = bodyDate.toISOString();
-              var compareDate = new Date();
-              compareDate.setSeconds(0,0);
-              compareDate = compareDate.toISOString();
-              bodyDate.should.be.eql(compareDate);
-              done();
-            });
-          })
+          .post('/api/requests/')
+          .set('Authorization', token)
+          .send(request)
+          .end((err, res) => {
+            // This test case may fail if ran straddling a minute because of how the times are compared.
+            // Run again.
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            var bodyDate = new Date(res.body.created);
+            bodyDate.setSeconds(0,0);
+            bodyDate = bodyDate.toISOString();
+            var compareDate = new Date();
+            compareDate.setSeconds(0,0);
+            compareDate = compareDate.toISOString();
+            bodyDate.should.be.eql(compareDate);
+            done();
+          });
+        })
 
       });
     });
@@ -449,19 +445,19 @@ describe('Requests API Test', function () {
         });
         request.item = item2._id;
         chai.request(server)
-          .post('/api/requests/')
-          .set('Authorization', token)
-          .send(request)
-          .end((err, res) => {
-            res.should.have.status(200);
-            res.body.should.be.a('object');
-            res.body.should.have.property("error");
-            res.body.error.should.have.property("errors");
-            res.body.error.errors.quantity.should.have.property("message","Path `quantity` is required.");
-            res.body.error.errors.quantity.should.have.property("name", "ValidatorError");
-            res.body.error.errors.quantity.should.have.property("kind", "required");
-            done();
-          });
+        .post('/api/requests/')
+        .set('Authorization', token)
+        .send(request)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property("error");
+          res.body.error.should.have.property("errors");
+          res.body.error.errors.quantity.should.have.property("message","Path `quantity` is required.");
+          res.body.error.errors.quantity.should.have.property("name", "ValidatorError");
+          res.body.error.errors.quantity.should.have.property("kind", "required");
+          done();
+        });
       });
     });
     it('Should not POST with wrong status enum', (done) => {
@@ -476,19 +472,19 @@ describe('Requests API Test', function () {
         });
         request.item = item2._id;
         chai.request(server)
-          .post('/api/requests/')
-          .set('Authorization', token)
-          .send(request)
-          .end((err, res) => {
-            res.should.have.status(200);
-            res.body.should.be.a('object');
-            res.body.should.have.property("error");
-            res.body.error.should.have.property("errors");
-            res.body.error.errors.status.should.have.property("message","`DSFJHK` is not a valid enum value for path `status`.");
-            res.body.error.errors.status.should.have.property("name", "ValidatorError");
-            res.body.error.errors.status.should.have.property("kind", "enum");
-            done();
-          });
+        .post('/api/requests/')
+        .set('Authorization', token)
+        .send(request)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property("error");
+          res.body.error.should.have.property("errors");
+          res.body.error.errors.status.should.have.property("message","`DSFJHK` is not a valid enum value for path `status`.");
+          res.body.error.errors.status.should.have.property("name", "ValidatorError");
+          res.body.error.errors.status.should.have.property("kind", "enum");
+          done();
+        });
       });
     });
     it('Should POST with minimal fields', (done) => {
@@ -499,22 +495,160 @@ describe('Requests API Test', function () {
         });
         request.item = item2._id;
         chai.request(server)
-          .post('/api/requests/')
-          .set('Authorization', token)
-          .send(request)
-          .end((err, res) => {
-            res.should.have.status(200);
-            res.body.should.be.a('object');
-            res.body.should.have.property("status", "PENDING");
-            res.body.should.have.property("quantity", 2000);
-            res.body.item.should.be.eql(item2._id.toString());
-            done();
-          });
+        .post('/api/requests/')
+        .set('Authorization', token)
+        .send(request)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property("status", "PENDING");
+          res.body.should.have.property("quantity", 2000);
+          res.body.item.should.be.eql(item2._id.toString());
+          done();
+        });
       });
     });
   });
-  describe('PUT /requests', ()=> {
-    
+  describe('PUT /requests/:request_id', ()=> {
+    it('PUTS request by request id', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "PENDING",
+        "quantity": 2000,
+        "created": "2019-01-29"
+      });
+      request.item = item_id;
+      request.user_id = user_id;
+      request.save((err, request) => {
+        chai.request(server)
+        .put('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'reason': 'NONE',
+          'status': 'FULFILLED',
+          'quantity': 3000
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.reason.should.be.eql('NONE');
+          res.body.status.should.be.eql('FULFILLED');
+          res.body.quantity.should.be.eql(3000);
+          res.body._id.should.be.eql(request._id.toString());
+          done();
+        });
+      });
+    });
   });
-
+  describe('DELETE /inventory/:item_id', ()=>{
+    it('DELETE inventory item by item id', (done) =>{
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "PENDING",
+        "quantity": 2000,
+        "created": "2019-01-29"
+      });
+      request.item = item_id;
+      request.user_id = user_id;
+      request.save((err, request)=>{
+        chai.request(server)
+        .delete('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property('message').eql('Delete successful');
+        done();
+        });
+      })
+    });
+    it('DELETE inventory item by item id then DELETE should fail', (done) =>{
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "PENDING",
+        "quantity": 2000,
+        "created": "2019-01-29"
+      });
+      request.item = item_id;
+      request.user_id = user_id;
+      request.save((err, request)=>{
+        chai.request(server)
+        .delete('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .end((err, res) => {
+          chai.request(server)
+          .delete('/api/requests/'+request._id)
+          .set('Authorization', token)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('error').eql('Request does not exist');
+            done();
+          });
+        });
+      })
+    });
+    it('DELETE inventory item by item id then GET should fail', (done) =>{
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "PENDING",
+        "quantity": 2000,
+        "created": "2019-01-29"
+      });
+      request.item = item_id;
+      request.user_id = user_id;
+      request.save((err, request)=>{
+        chai.request(server)
+        .delete('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .end((err, res) => {
+          chai.request(server)
+          .get('/api/requests/'+request._id)
+          .set('Authorization', token)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('error').eql('Request does not exist');
+            done();
+          });
+        });
+      });
+    });
+    it('DELETE inventory item by item id then PUT should fail', (done) =>{
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "PENDING",
+        "quantity": 2000,
+        "created": "2019-01-29"
+      });
+      request.item = item_id;
+      request.user_id = user_id;
+      request.save((err, request)=>{
+        chai.request(server)
+        .delete('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .end((err, res) => {
+          chai.request(server)
+          .put('/api/requests/'+request._id)
+          .set('Authorization', token)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('error').eql('Request does not exist');
+            done();
+          });
+        });
+      });
+    });
+  });
 });
