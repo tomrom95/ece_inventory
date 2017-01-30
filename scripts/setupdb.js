@@ -1,11 +1,11 @@
 var Db = require('mongodb').Db,
   Server = require('mongodb').Server;
 var mongoose = require('mongoose');
-let Item = require('../model/items');
-var helpers = require('../auth/auth_helpers');
+let Item = require('../server/model/items');
+var helpers = require('../server/auth/auth_helpers');
 
 var db = new Db('inventory', new Server('localhost', 27017));
-var fakeJSONData = require('../test/api/test_inventory_GETdata');
+var fakeJSONData = require('../test/api/test_inventory_data');
 
 db.open(function(err, db) {
   if (err) { return console.log(err); }
@@ -19,14 +19,16 @@ db.open(function(err, db) {
           if (err.codeName == 'DuplicateKey') {
             console.log("you already made an admin user");
           } else {
-            return console.log(err);
+            console.log(err);
           }
         }
-        console.log("Added.");
         mongoose.connect('mongodb://admin:ece458duke@localhost/inventory');
         helpers.createNewUser('admin', 'ece458duke', true, function(err, user) {
           if (!err) {
             console.log("inserted user");
+          } else {
+            console.log("it's likely the admin user already exists, here's the error:");
+            console.log(err.message);
           }
           Item.insertMany(fakeJSONData).then(function(obj){
             console.log("inserted items");
