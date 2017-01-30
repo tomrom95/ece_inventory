@@ -56,7 +56,16 @@ var createAuthToken = function(user) {
   return 'JWT ' + jwt.sign(user, secrets.hashSecret, {expiresIn: TOKEN_EXPIRY});
 }
 
+var restrictToAdmins = function(req, res, next) {
+  if (!req.user.is_admin) {
+    res.status(403).send({error: 'Unauthorized'});
+  } else {
+    next();
+  }
+}
+
 module.exports.createPasswordHash = createPasswordHash;
 module.exports.compare = compare;
 module.exports.createNewUser = createNewUser;
 module.exports.createAuthToken = createAuthToken;
+module.exports.restrictToAdmins = restrictToAdmins;

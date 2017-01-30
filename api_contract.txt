@@ -11,7 +11,7 @@ params:
 returns:
 [
   {
-    id: String [unique],
+    _id: String [unique],
     name: String [unique],
     quantity: Integer,
     model_number: String,
@@ -33,7 +33,7 @@ params:
 }
 return:
 {
-  id: String [unique],
+  _id: String [unique],
   name: String [unique],
   quantity: Integer,
   model_number: String,
@@ -47,7 +47,7 @@ return:
 GET
 return:
 {
-  id: String [unique],
+  _id: String [unique],
   name: String [unique],
   quantity: Integer,
   model_number: String,
@@ -69,7 +69,7 @@ params:
 }
 return:
 {
-  id: String [unique],
+  _id: String [unique],
   name: String [unique],
   quantity: Integer,
   model_number: String,
@@ -90,7 +90,7 @@ GET
 return:
 [
   {
-  	id: String,
+  	_id: String,
     serial_number: String,
     condition: String,
     status: String,
@@ -105,7 +105,7 @@ params:
 }
 return:
 {
-  id: String,
+  _id: String,
   serial_number: String,
   condition: String,
   status: String,
@@ -115,7 +115,7 @@ return:
 GET
 return:
 {
-  id: String,
+  _id: String,
   serial_number: String,
   condition: String,
   status: String,
@@ -130,7 +130,7 @@ params:
 }
 return:
 {
-  id: String,
+  _id: String,
   serial_number: String,
   condition: String,
   status: String,
@@ -148,7 +148,7 @@ GET
 return:
 [
   {
-		id: String,
+		_id: String,
     user_id: String,
     item: {
 			id: String,
@@ -177,7 +177,7 @@ params:
 
 return:
 {
-  id: String,
+  _id: String,
   user_id: String,
   item_id: String,
   reason: String,
@@ -191,7 +191,7 @@ return:
 GET
 return:
 {
-  id: String,
+  _id: String,
   user_id: String,
   item_id: String,
   reason: String,
@@ -215,7 +215,7 @@ params:
 
 return:
 {
-  id: String,
+  _id: String,
   user_id: String,
   item_id: String,
   reason: String,
@@ -238,15 +238,29 @@ params:
 return:
 [
   {
-    id: String,
-    created_by: String,
+    _id: String,
+    created_by: {
+			_id: String,
+			username: String
+		},
+		item: {
+			_id: String,
+			name: String,
+		},
   	type: String,
     quantity: Integer,
     time_stamp: String,
   }
 ]
 
-/api/register
+/api/user
+GET
+return {
+	_id: String,
+	username: String,
+	is_admin: String
+}
+
 POST
 params:
 {
@@ -255,8 +269,8 @@ params:
 }
 return {
 	user: {
+		_id: String,
 		username: String,
-		password_hash: String,
 		is_admin: Boolean
 	}
 }
