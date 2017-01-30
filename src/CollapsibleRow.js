@@ -13,8 +13,22 @@ class CollapsibleRow extends Component {
 	}
 
 	makeSubtable() {
+
+		var tableData = [{
+					ModelNumber: "1", 
+					Description: "Larry", 
+					Location: "the Bird",
+					Quantity: 10,
+					Tags: "happy"
+					},
+					{ModelNumber: "1", 
+					Description: "Larry", 
+					Location: "the Bird",
+					Quantity: 10,
+					Tags: "sad"
+					}];
 		return (
-			<InventorySubTable ref={this.props.itemName+"-component"}/>
+			<InventorySubTable data={tableData} itemName={this.props.itemName} ref={this.props.itemName+"-component"}/>
 		);
 	}
 

@@ -6,6 +6,7 @@ class AccordionTable extends Component {
 
 	constructor(props) {
 		super(props);
+		
 		// props will include number of rows,
 		// number of columns, and names of columns.
 	}

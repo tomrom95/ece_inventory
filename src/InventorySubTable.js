@@ -2,6 +2,28 @@ import React, { Component } from 'react';
 import './App.css';
 import SubtableRow from './SubtableRow';
 
+function getKeys(data) {
+	if (data.length == 0)
+		return;
+	//console.log(Object.keys(data[0]));
+	return Object.keys(data[0]);
+}
+
+function getValues(data) {
+	var i; var j;
+	var keys = getKeys(data);
+	console.log(keys);
+	var vals = [];
+	for (i=0; i<data.length; i++) {
+		var row = [];
+		for (j=0; j<keys.length; j++) {
+			row.push(data[i][keys[j]]);
+		}
+		vals.push(row);
+	}
+	return vals;
+}
+
 class InventorySubTable extends Component {
 
 	constructor(props) {
@@ -16,19 +38,12 @@ class InventorySubTable extends Component {
 			<table className="table table-inverse subtable-body">
 			  <thead className="thread">
 			    <tr>
-			      <th>Model Number</th>
-			      <th>Description</th>
-			      <th>Location</th>
-			      <th>Quantity</th>
-  			      <th>Tags</th>
+		    	  {this.makeColumnKeyElements()}
   			      <th> </th>
 			    </tr>
 			  </thead>
 			  <tbody>
-			    <SubtableRow data={["1", "Larry", "the Bird", "@Twitter", "happy"]} itemName={"osc"} row={1}/>
-			    <SubtableRow data={["1", "Larry", "the Bird", "@Twitter", "happy"]} itemName={"osc"} row={2}/>
-			    <SubtableRow data={["1", "Larry", "the Bird", "@Twitter", "happy"]} itemName={"osc"} row={3}/>
-			    <SubtableRow data={["1", "Larry", "the Bird", "@Twitter", "happy"]} itemName={"osc"} row={4}/>
+			  	{this.makeRows()}
 			  </tbody>
 			</table>
 		);
@@ -42,6 +57,34 @@ class InventorySubTable extends Component {
 		}
 		return count;
 	}
+
+	makeColumnKeyElements() {
+		var i;
+		var list = [];
+		var keys = getKeys(this.state.data);
+		for (i=0; i<keys.length; i++) {
+			list.push(<th key={keys[i]}> {keys[i]} </th>);
+		}
+		return list;
+	}
+
+	makeRows() {
+		var i;
+		var list = [];
+		var rowData = getValues(this.state.data);
+		for (i=0; i<rowData.length; i++) {
+			console.log(rowData[i]);
+			list.push(<SubtableRow 
+						data={rowData[i]} 
+						itemName={this.props.itemName} 
+						row={i} 
+						key={this.props.itemName+"-"+i}/>
+					);
+		}
+		return list;
+	}
+
+	//["1", "Larry", "the Bird", "@Twitter", "happy"]
 }
 
 export default InventorySubTable
