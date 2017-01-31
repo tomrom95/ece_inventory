@@ -117,6 +117,29 @@ describe('Inventory API Test', function () {
         done();
       });
       });
+      it('GETs items with vendor info', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?vendor_info=Microsoft')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(4);
+          res.body.should.all.have.property("vendor_info","Microsoft");
+        done();
+      });
+      });
+      it('GETs items with no vendor info', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?vendor_info=')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(12);
+        done();
+      });
+      });
       it('GETs items with one required tag', (done)=>{
         chai.request(server)
         .get('/api/inventory?required_tags=component')
@@ -288,6 +311,7 @@ describe('Inventory API Test', function () {
         "quantity": 1000,
         "name": "Laptop",
         "has_instance_objects": true,
+        "vendor_info" : "Microsoft"
       });
       item.save((err, item) =>{
         chai.request(server)
@@ -296,12 +320,14 @@ describe('Inventory API Test', function () {
         .send({
           'name': 'Coaxial',
           'location': 'HUDSON',
-          quantity: 3000
+          'vendor_info': 'Apple',
+          'quantity': 3000
         })
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.location.should.be.eql("HUDSON");
+          res.body.vendor_info.should.be.eql("Apple");
           res.body.name.should.be.eql("Coaxial");
           res.body.quantity.should.be.eql(3000);
           res.body._id.should.be.eql(item.id);
@@ -318,6 +344,7 @@ describe('Inventory API Test', function () {
         model_number:"1234",
         location:"Perkins",
         tags:["One"],
+        vendor_info: "Microsoft",
         has_instance_objects:false
     }
     let itemNoName = {
@@ -378,7 +405,9 @@ describe('Inventory API Test', function () {
         .send(item)
         .end((err, res)=>{
           res.should.have.status(200);
-          // TODO: All fields are matching
+          res.body.should.have.property("name","TEST_ITEM");
+          res.body.should.have.property("quantity","100");
+          res.body.should.hvae.property("vendor_info", "Microsoft");
         })
         done();
     })

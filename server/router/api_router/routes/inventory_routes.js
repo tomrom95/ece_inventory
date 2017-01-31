@@ -36,6 +36,7 @@ module.exports.getAPI = function (req, res) {
   else if(excluded_tags_regex)
   query.tags = { $nin : excluded_tags_regex};
   if(req.query.location) query.location = {'$regex': req.query.location, '$options':'i'};
+  if(req.query.vendor_info) query.vendor_info = {'$regex': req.query.vendor_info, '$options':'i'};
   if(req.query.model_number) query.model_number = {'$regex': req.query.model_number, '$options':'i'};
 
   let projection = {
@@ -62,6 +63,7 @@ module.exports.postAPI = function(req, res){
   item.quantity = req.body.quantity;
   item.model_number = req.body.model_number;
   item.location = req.body.location;
+  item.vendor_info = req.body.vendor_info;
   item.description = req.body.description;
   item.tags = req.body.tags;
   item.has_instance_objects = req.body.has_instance_objects;
