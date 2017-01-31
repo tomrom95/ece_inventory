@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AccordionTable from './AccordionTable';
+import AccordionTable from './AccordionTable.js';
 import './index.css';
 
 
