@@ -33,7 +33,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start-dev": "nf start -p 3000 --procfile Procfile.dev",
-    "start-prod": "nf start -p 3000 --procfile Procfile.prod",
+    "start-prod": "react-scripts build && forever start client.js && forever start server.js",
     "build": "react-scripts build",
     "test": "mocha --recursive",
     "eject": "react-scripts eject"
