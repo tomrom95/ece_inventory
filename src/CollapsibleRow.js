@@ -13,22 +13,52 @@ class CollapsibleRow extends Component {
 	}
 
 	makeSubtable() {
-
 		var tableData = [{
-					ModelNumber: "1", 
-					Description: "Larry", 
-					Location: "the Bird",
+					Model: "123", 
+					Description: "LCD oscilloscope", 
+					Location: "Hudson",
 					Quantity: 10,
-					Tags: "happy"
+					Tags: "heavy, new, expensive, nice, fragile, white"
 					},
-					{ModelNumber: "1", 
-					Description: "Larry", 
-					Location: "the Bird",
+					{Model: "456", 
+					Description: "CRT oscilloscope", 
+					Location: "Hudson",
+					Quantity: 5,
+					Tags: "old"
+					},
+					{
+					Model: "123", 
+					Description: "LCD oscilloscope", 
+					Location: "Hudson",
 					Quantity: 10,
-					Tags: "sad"
+					Tags: "heavy"
+					},
+					{Model: "456", 
+					Description: "CRT oscilloscope", 
+					Location: "Hudson",
+					Quantity: 5,
+					Tags: "old"
+					},
+					{
+					Model: "123", 
+					Description: "LCD oscilloscope", 
+					Location: "Hudson",
+					Quantity: 10,
+					Tags: "heavy"
+					},
+					{Model: "456", 
+					Description: "CRT oscilloscope", 
+					Location: "Hudson",
+					Quantity: 5,
+					Tags: "old"
 					}];
 		return (
-			<InventorySubTable data={tableData} itemName={this.props.itemName} ref={this.props.itemName+"-component"}/>
+			<InventorySubTable 
+				data={tableData} 
+				itemName={this.props.itemName}
+				ref={this.props.itemName+"-component"} 
+				hasButton={true}
+				isInventorySubtable={true}/>
 		);
 	}
 
@@ -53,21 +83,6 @@ class CollapsibleRow extends Component {
 		    </div>
 		);
 	}
-
-	componentDidMount() {
-
-	}
-
-	componentWillUnmount() {
-
-	}
-
-	/*
-  		<h4 className="panel-title">
-    		<a data-toggle="collapse" data-parent="#accordion" href={"#"+this.props.itemName}>
-    		{this.props.itemName}</a>
-  		</h4>
-	*/
 
 }
 

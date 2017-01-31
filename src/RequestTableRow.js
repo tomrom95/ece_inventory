@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import RequestPopup from './RequestPopup.js';
 
-class SubtableRow extends Component {
+class RequestTableRow extends Component {
 
 	constructor(props) {
 		super(props);
@@ -15,7 +14,7 @@ class SubtableRow extends Component {
 		return (
 			<tr>
 				{this.makeList(this.state.data)}
-				{this.makeButton()}
+				{this.makeSelectionRegion()}
 			</tr>
 		);
 	}
@@ -32,12 +31,24 @@ class SubtableRow extends Component {
 		return htmlList;
 	}
 
-	makeButton() {
-			return (<RequestPopup
-						itemName={this.props.itemName} 
-						modelName={this.props.data[0]}/>);
-	}
+	makeSelectionRegion() {
 
+		// this is the quantity: hardcoded
+		if (this.props.data[3] == 1) {
+			return (
+				<div className="checkbox">
+	  				<label><input type="checkbox" value=""></input></label>
+				</div>
+			)
+		}
+		else {
+			return (
+				<div className="form-group">
+  					<input type="text" className="form-control" id="usr"></input>
+				</div>
+			);
+		}
+	}
 }
 
-export default SubtableRow
+export default RequestTableRow

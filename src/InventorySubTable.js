@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
 import SubtableRow from './SubtableRow';
+import RequestTableRow from './RequestTableRow';
 
 function getKeys(data) {
 	if (data.length == 0)
 		return;
-	//console.log(Object.keys(data[0]));
 	return Object.keys(data[0]);
 }
 
@@ -35,11 +35,10 @@ class InventorySubTable extends Component {
 
 	render() {
 		return (
-			<table className="table table-inverse subtable-body">
+			<table className="table subtable-body">
 			  <thead className="thread">
 			    <tr>
 		    	  {this.makeColumnKeyElements()}
-  			      <th> </th>
 			    </tr>
 			  </thead>
 			  <tbody>
@@ -65,6 +64,7 @@ class InventorySubTable extends Component {
 		for (i=0; i<keys.length; i++) {
 			list.push(<th key={keys[i]}> {keys[i]} </th>);
 		}
+		list.push(<th key={"buttonSpace"}> </th>);
 		return list;
 	}
 
@@ -74,17 +74,25 @@ class InventorySubTable extends Component {
 		var rowData = getValues(this.state.data);
 		for (i=0; i<rowData.length; i++) {
 			console.log(rowData[i]);
-			list.push(<SubtableRow 
+			var elem;
+			if (this.props.isInventorySubtable === true) {
+				elem = (<SubtableRow 
 						data={rowData[i]} 
 						itemName={this.props.itemName} 
 						row={i} 
-						key={this.props.itemName+"-"+i}/>
-					);
+						key={this.props.itemName+"-"+i}/>);
+			}
+			else if (this.props.isInventorySubtable === false) {
+				elem = (<RequestTableRow 
+						data={rowData[i]} 
+						itemName={this.props.itemName} 
+						row={i} 
+						key={this.props.itemName+"-"+i}/>);
+			}
+			list.push(elem);
 		}
 		return list;
 	}
-
-	//["1", "Larry", "the Bird", "@Twitter", "happy"]
 }
 
 export default InventorySubTable
