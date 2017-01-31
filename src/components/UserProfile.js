@@ -8,7 +8,6 @@ class UserProfile extends Component {
     console.log("test Home");
     return (
       <div className="App">
-        <NavBar />
         <p className="App-Intro">Some bull shit</p>
       </div>
     );
