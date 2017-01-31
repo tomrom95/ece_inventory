@@ -406,8 +406,8 @@ describe('Inventory API Test', function () {
         .end((err, res)=>{
           res.should.have.status(200);
           res.body.should.have.property("name","TEST_ITEM");
-          res.body.should.have.property("quantity","100");
-          res.body.should.hvae.property("vendor_info", "Microsoft");
+          res.body.should.have.property("quantity",100);
+          res.body.should.have.property("vendor_info", "Microsoft");
         })
         done();
     })
