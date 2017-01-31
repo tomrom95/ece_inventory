@@ -21,7 +21,6 @@ class CurrentOrders extends Component {
 	render(){
 		return(
 			<div>
-				<NavBar />,
 				<NumberList numbers={numbers} />
 			</div>
 		);

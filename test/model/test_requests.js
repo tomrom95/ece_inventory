@@ -19,7 +19,7 @@ describe('Requests', function() {
   });
   it('should validate a valid object', function(done) {
     var requestJSON = {
-      item_id: '53cb6b9b4f4ddef1ad47f943', // fake valid item id
+      item: '53cb6b9b4f4ddef1ad47f943', // fake valid item id
       user_id: '53cb6b9b4f4ddef1ad47f943',
       reason: 'dunno',
       quantity: 2

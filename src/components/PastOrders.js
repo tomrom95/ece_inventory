@@ -21,7 +21,6 @@ class PastOrders extends Component {
         render(){
                 return(
                         <div>
-                                <NavBar />,
                                 <NumberList numbers={numbers} />
                         </div>
                 );

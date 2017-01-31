@@ -8,7 +8,7 @@ var db = new Db('inventory', new Server('localhost', 27017));
 var fakeJSONData = require('../test/api/test_inventory_data');
 
 db.open(function(err, db) {
-  if (err) { return console.log(err); }
+  if (err) { console.log(err); }
   db.addUser('admin', 'ece458duke', {
         roles: [
             "readWrite",
