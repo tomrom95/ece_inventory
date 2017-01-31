@@ -4,15 +4,16 @@ import NavBar from './NavBar.js';
 import '../App.css';
 
 class UserProfile extends Component {
+  constructor(props){
+    super(props);
+  }
   render() {
-    console.log("test Home");
     return (
       <div className="App">
-        <p className="App-Intro">Some bull shit</p>
+        <p className="App-Header">User Info</p>
       </div>
     );
   }
 }
 
 export default UserProfile;
-

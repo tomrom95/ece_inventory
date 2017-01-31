@@ -4,10 +4,13 @@ import '../App.css';
 import NavBar from './NavBar.js';
 
 var products = [{
-      name: "admin",
-      id: 43,
-      serial: 329109,
-      quantity: 1
+      id: 1,
+      name: "Item name 1",
+      price: 100
+  },{
+      id: 2,
+      name: "Item name 2",
+      price: 100
   }];
 // It's a data format example.
 function priceFormatter(cell, row){
@@ -15,14 +18,16 @@ function priceFormatter(cell, row){
 }
 
 class Inventory extends React.Component {
+  constructor(props){
+    super(props);
+  }
   render() {
     return (
       <div>
         <BootstrapTable data={ products }>
-          <TableHeaderColumn dataField='name' isKey>UserName</TableHeaderColumn>
-          <TableHeaderColumn dataField='id'>Item ID</TableHeaderColumn>
-          <TableHeaderColumn dataField='serial'>Serial Number</TableHeaderColumn>
-          <TableHeaderColumn dataField='quantity'>Quantity</TableHeaderColumn>
+          <TableHeaderColumn dataField='id' isKey>Product ID</TableHeaderColumn>
+          <TableHeaderColumn dataField='name'>Product Name</TableHeaderColumn>
+          <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
         </BootstrapTable>
       </div>
     );

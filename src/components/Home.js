@@ -10,10 +10,12 @@ class Home extends Component {
     super(props);
     if(localStorage.getItem('user')){
       var user_stored = JSON.parse(localStorage.getItem('user'));
+      var token_store = JSON.parse(localStorage.getItem('token'));
       this.state = {user: user_stored};
     }
     else { this.state = {
       user: null,
+      token: null,
       name: '',
       passwrd: '',
     };
@@ -42,9 +44,11 @@ class Home extends Component {
 
       if(res.data.token){
         this.setState({
-          user: res.data.user
+          user: res.data.user,
+          token: res.data.token,
         });
         localStorage.setItem('user', JSON.stringify(this.state.user));
+        localStorage.setItem('token', JSON.stringify(this.state.token));
       }
       else{
         console.log(res.data.error);
@@ -57,10 +61,11 @@ class Home extends Component {
   }
 
   signOut() {
-    console.log("log out");
+    console.log(this.state.token);
     localStorage.clear();
     this.setState({
       user: null,
+      token: null,
       name: '',
       passwrd: '',
     });
@@ -78,10 +83,7 @@ class Home extends Component {
       console.log(this.state.user);
       return (
         <div className="App">
-	         <NavBar isAdmin={this.state.user.is_admin}  />
-           <button className="btn btn-primary" onClick={this.signOut}>
-             sign out
-           </button>
+	         <NavBar isAdmin={this.state.user.is_admin} onClick={this.signOut}/>
 
           <div className="main-container">
             {this.props.children}
@@ -92,7 +94,7 @@ class Home extends Component {
     } else {
       return (
         <div>
-          <h4>Log In</h4>
+          <h4>Please sign in to your account</h4>
           <form>
             <label>
               Username:

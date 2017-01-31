@@ -39,6 +39,11 @@ class NavBar extends Component {
                 <li className="nav-item">
                   <Link to="/Transactions" className="nav-link">Transactions</Link>
                 </li>
+                <li className="nav-item">
+                <button className="btn btn-primary" onClick={this.props.onClick}>
+                  sign out
+                </button>
+                </li>
               </ul>
             </div>
           </nav>
