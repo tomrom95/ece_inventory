@@ -2,8 +2,8 @@
 GET
 params:
 {
-	required_tags: String (CSV),
-	excluded_tags: String (CSV),
+	required_tags: String (CSV) [optional],
+	excluded_tags: String (CSV) [optional],
   name: String [optional],
   model_number: String [optional],
   location: String [optional],
@@ -11,7 +11,7 @@ params:
 returns:
 [
   {
-    id: String [unique],
+    _id: String [unique],
     name: String [unique],
     quantity: Integer,
     model_number: String,
@@ -33,7 +33,7 @@ params:
 }
 return:
 {
-  id: String [unique],
+  _id: String [unique],
   name: String [unique],
   quantity: Integer,
   model_number: String,
@@ -43,11 +43,11 @@ return:
   has_instance_objects: Boolean,
 }
 
-/api/inventory/<id>
+/api/inventory/:item_id
 GET
 return:
 {
-  id: String [unique],
+  _id: String [unique],
   name: String [unique],
   quantity: Integer,
   model_number: String,
@@ -58,7 +58,7 @@ return:
 }
 
 PUT
-params:
+body:
 {
 	name: String [optional],
   quantity: Integer [optional],
@@ -69,7 +69,7 @@ params:
 }
 return:
 {
-  id: String [unique],
+  _id: String [unique],
   name: String [unique],
   quantity: Integer,
   model_number: String,
@@ -85,19 +85,25 @@ return:
 	"success"
 }
 
-/api/inventory/<id>/instances
+/api/inventory/:item_id/instances
 GET
+params:{
+	serial_number: String [optional],
+	condition: String [optional],
+	status: String [optional]
+}
+
 return:
 [
   {
-  	id: String,
+  	_id: String,
     serial_number: String,
     condition: String,
     status: String,
   }
 ]
 POST
-params:
+body:
 {
   serial_number: String,
   condition: String [optional],
@@ -105,24 +111,24 @@ params:
 }
 return:
 {
-  id: String,
+  _id: String,
   serial_number: String,
   condition: String,
   status: String,
 }
 
-/api/inventory/<id>/<serial-number>
+/api/inventory/:item_id/:instance_id
 GET
 return:
 {
-  id: String,
+  _id: String,
   serial_number: String,
   condition: String,
   status: String,
 }
 
 PUT
-params:
+body:
 {
   serial_number: String [optional],
   condition: String [optional],
@@ -130,7 +136,7 @@ params:
 }
 return:
 {
-  id: String,
+  _id: String,
   serial_number: String,
   condition: String,
   status: String,
@@ -145,35 +151,52 @@ returns:
 
 /api/requests
 GET
+params:
+{
+	reviewer_comment: String [optional],
+	requestor_comment: String [optional],
+	reason: String [optional],
+	quantity: Number [optional],
+	status: String [optional],
+	created: Date [optional],
+	item_id: String [optional]
+}
+
 return:
 [
   {
-		id: String,
+		_id: String,
     user_id: String,
-    item_id: String,
+    item: {
+			id: String,
+			name: String
+		}
     reason: String,
-    time_stamp: String,
+    created: String,
     status: String,
     quantity: Integer,
-    comment: String,
+    requestor_comment: String,
+		reviewer_comment: String
   }
 ]
 
 POST
-params:
+body:
 {
   item_id: String,
-  reason: String,
-  time_stamp: String,
+  reason: String [optional],
+  created: String [optional],
   status: String,
   quantity: Integer,
+	requestor_comment: String [optional],
+	reviewer_comment: String [optional]
 }
 
 return:
 {
-  id: String,
+  _id: String,
   user_id: String,
-  item_id: String,
+  item: String,
   reason: String,
   time_stamp: String,
   status: String,
@@ -185,35 +208,34 @@ return:
 GET
 return:
 {
-  id: String,
+  _id: String,
   user_id: String,
-  item_id: String,
+  item: String,
   reason: String,
-  time_stamp: String,
+  created: String,
   status: String,
   quantity: Integer,
   comment: String,
 }
 
 PUT
-params:
+body:
 {
-  user_id: String,
-  item_id: String,
-  reason: String,
-  time_stamp: String,
-  status: String,
-  quantity: Integer,
-  comment: String,
+  item_id: String [optional],
+  reason: String [optional],
+  created: String [optional],
+  status: String [optional],
+  quantity: Integer [optional],
+  comment: String [optional],
 }
 
 return:
 {
-  id: String,
+  _id: String,
   user_id: String,
-  item_id: String,
+  item: String,
   reason: String,
-  time_stamp: String,
+  created: String,
   status: String,
   quantity: Integer,
   comment: String,
@@ -232,32 +254,46 @@ params:
 return:
 [
   {
-    id: String,
-    created_by: String,
+    _id: String,
+    created_by: {
+			_id: String,
+			username: String
+		},
+		item: {
+			_id: String,
+			name: String,
+		},
   	type: String,
     quantity: Integer,
     time_stamp: String,
   }
 ]
 
-/api/register
+/api/user
+GET
+return {
+	_id: String,
+	username: String,
+	is_admin: String
+}
+
 POST
-params:
+body:
 {
 	username: String,
 	password: String
 }
 return {
 	user: {
+		_id: String,
 		username: String,
-		password_hash: String,
 		is_admin: Boolean
 	}
 }
 
 /auth/login
 POST
-params:
+body:
 {
 	username: String,
 	password: String

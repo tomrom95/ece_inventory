@@ -1,0 +1,11 @@
+{
+  "location": "CIEMAS",
+  "quantity": 1000,
+  "name": "1k resistor",
+  "has_instance_objects": true,
+  "tags": [
+    "component",
+    "electric",
+    "cheap"
+  ]
+}

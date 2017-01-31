@@ -17,6 +17,7 @@ var ItemSchema = new mongoose.Schema({
   model_number: String,
   location: String,
   description: String,
+  vendor_info: String,
   tags: [String],
   has_instance_objects: {
     type: Boolean,
