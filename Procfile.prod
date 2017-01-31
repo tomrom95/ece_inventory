@@ -1,2 +1,0 @@
-web: react-scripts build && node client.js
-api: node server.js
