@@ -54,8 +54,6 @@ class Home extends Component {
         });
         localStorage.setItem('user', JSON.stringify(this.state.user));
         localStorage.setItem('token', this.state.token);
-
-
       }
       else{
         console.log(res.data.error);
@@ -79,16 +77,17 @@ class Home extends Component {
   }
 
   render() {
-    let children = null;
-    if (this.props.children) {
-      children = React.cloneElement(this.props.children, {
-        username: this.state.user.username,
-        isAdmin: this.state.user.is_admin,
-        token: this.state.token,
-      });
-    }
+
 
     if(this.state.user){
+      let children = null;
+      if (this.props.children) {
+        children = React.cloneElement(this.props.children, {
+          username: this.state.user.username,
+          isAdmin: this.state.user.is_admin,
+          token: this.state.token,
+        });
+      }
       console.log(this.state.user);
       return (
         <div className="App">
