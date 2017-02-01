@@ -9,6 +9,12 @@ User.findOne({'username': 'admin'}, function(err, user) {
     console.log(err);
     Item.insertMany(demoJSONData).then(function(obj){
       console.log(obj);
+
+      // Loop insert options here - helper method relocated to boolean choices
+      //1) Mass -insert e.g. 1000 batteries
+      // 2) Some with many 1000 instances
+      // 3) Some with many tags
+
       process.exit();
     });
   });

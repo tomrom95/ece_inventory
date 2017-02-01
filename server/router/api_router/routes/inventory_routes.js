@@ -98,7 +98,6 @@ module.exports.putAPI = function(req, res){
       var old_quantity = old_item.quantity;
       Object.assign(old_item, req.body).save((err,item) => {
         if(err) return res.send({error: err});
-        console.log(req.body);
         if (req.body.quantity) {
           logQuantityChange(req.body.quantity - old_quantity, req.user._id, item._id, function(error) {
             if(err) {
