@@ -2,8 +2,8 @@
 GET
 params:
 {
-	required_tags: String (CSV) [optional],
-	excluded_tags: String (CSV) [optional],
+	required_tags: String (CSV),
+	excluded_tags: String (CSV),
   name: String [optional],
   model_number: String [optional],
   location: String [optional],
@@ -43,7 +43,7 @@ return:
   has_instance_objects: Boolean,
 }
 
-/api/inventory/:item_id
+/api/inventory/<id>
 GET
 return:
 {
@@ -58,7 +58,7 @@ return:
 }
 
 PUT
-body:
+params:
 {
 	name: String [optional],
   quantity: Integer [optional],
@@ -85,14 +85,8 @@ return:
 	"success"
 }
 
-/api/inventory/:item_id/instances
+/api/inventory/<id>/instances
 GET
-params:{
-	serial_number: String [optional],
-	condition: String [optional],
-	status: String [optional]
-}
-
 return:
 [
   {
@@ -103,7 +97,7 @@ return:
   }
 ]
 POST
-body:
+params:
 {
   serial_number: String,
   condition: String [optional],
@@ -117,7 +111,7 @@ return:
   status: String,
 }
 
-/api/inventory/:item_id/:instance_id
+/api/inventory/<id>/<serial-number>
 GET
 return:
 {
@@ -128,7 +122,7 @@ return:
 }
 
 PUT
-body:
+params:
 {
   serial_number: String [optional],
   condition: String [optional],
@@ -151,52 +145,35 @@ returns:
 
 /api/requests
 GET
-params:
-{
-	reviewer_comment: String [optional],
-	requestor_comment: String [optional],
-	reason: String [optional],
-	quantity: Number [optional],
-	status: String [optional],
-	created: Date [optional],
-	item_id: String [optional]
-}
-
 return:
 [
   {
 		_id: String,
     user_id: String,
-    item: {
-			id: String,
-			name: String
-		}
+    item_id: String,
     reason: String,
-    created: String,
+    time_stamp: String,
     status: String,
     quantity: Integer,
-    requestor_comment: String,
-		reviewer_comment: String
+    comment: String,
   }
 ]
 
 POST
-body:
+params:
 {
   item_id: String,
-  reason: String [optional],
-  created: String [optional],
+  reason: String,
+  time_stamp: String,
   status: String,
   quantity: Integer,
-	requestor_comment: String [optional],
-	reviewer_comment: String [optional]
 }
 
 return:
 {
   _id: String,
   user_id: String,
-  item: String,
+  item_id: String,
   reason: String,
   time_stamp: String,
   status: String,
@@ -210,32 +187,33 @@ return:
 {
   _id: String,
   user_id: String,
-  item: String,
+  item_id: String,
   reason: String,
-  created: String,
+  time_stamp: String,
   status: String,
   quantity: Integer,
   comment: String,
 }
 
 PUT
-body:
+params:
 {
-  item_id: String [optional],
-  reason: String [optional],
-  created: String [optional],
-  status: String [optional],
-  quantity: Integer [optional],
-  comment: String [optional],
+  user_id: String,
+  item_id: String,
+  reason: String,
+  time_stamp: String,
+  status: String,
+  quantity: Integer,
+  comment: String,
 }
 
 return:
 {
   _id: String,
   user_id: String,
-  item: String,
+  item_id: String,
   reason: String,
-  created: String,
+  time_stamp: String,
   status: String,
   quantity: Integer,
   comment: String,
@@ -245,6 +223,21 @@ DELETE
 return:
 {
 	"success"
+}
+
+PATCH
+// if you use the action "DISBURSE" it will update the item quantity by subtracting
+// the requested amount and then set the request status to "FULFILLED"
+params: {
+	action: "DISBURSE" // for now this is the only action
+}
+return {
+	item: {
+		// same item body as before
+	},
+	request: {
+		// same request body as before
+	}
 }
 
 /api/log
@@ -278,7 +271,7 @@ return {
 }
 
 POST
-body:
+params:
 {
 	username: String,
 	password: String
@@ -293,12 +286,11 @@ return {
 
 /auth/login
 POST
-body:
+params:
 {
 	username: String,
 	password: String
 }
-
 return {
 	token: String,
 	user: {
