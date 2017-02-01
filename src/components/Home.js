@@ -10,7 +10,7 @@ class Home extends Component {
     super(props);
     if(localStorage.getItem('user')){
       var user_stored = JSON.parse(localStorage.getItem('user'));
-      var token_stored = JSON.parse(localStorage.getItem('token'));
+      var token_stored = localStorage.getItem('token');
       this.state = {user: user_stored,
                     token: token_stored,
                     name: '',
@@ -53,7 +53,7 @@ class Home extends Component {
           token: res.data.token,
         });
         localStorage.setItem('user', JSON.stringify(this.state.user));
-        localStorage.setItem('token', JSON.stringify(this.state.token));
+        localStorage.setItem('token', this.state.token);
       }
       else{
         console.log(res.data.error);

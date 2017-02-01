@@ -26,12 +26,6 @@ class NavBar extends Component {
                   <Link to="/Inventory" className="nav-link">Inventory</Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/CurrentOrders" className="nav-link">Current Orders</Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/PastOrders" className="nav-link">Past Orders</Link>
-                </li>
-                <li className="nav-item">
                   <Link to="/GlobalRequests" className="nav-link">User Requests</Link>
                 </li>
                 <li className="nav-item">
