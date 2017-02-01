@@ -247,6 +247,21 @@ return:
 	"success"
 }
 
+PATCH
+// if you use the action "DISBURSE" it will update the item quantity by subtracting
+// the requested amount and then set the request status to "FULFILLED"
+params: {
+	action: "DISBURSE" // for now this is the only action
+}
+return {
+	item: {
+		// same item body as before
+	},
+	request: {
+		// same request body as before
+	}
+}
+
 /api/log
 GET
 params:
