@@ -53,7 +53,9 @@ class Home extends Component {
           token: res.data.token,
         });
         localStorage.setItem('user', JSON.stringify(this.state.user));
+
         localStorage.setItem('token', JSON.stringify(this.state.token));
+
       }
       else{
         console.log(res.data.error);

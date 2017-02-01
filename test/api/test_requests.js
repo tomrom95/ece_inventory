@@ -651,4 +651,69 @@ describe('Requests API Test', function () {
       });
     });
   });
+
+  describe('PATCH /requests/:request_id', ()=> {
+    it('updates the request and item after disbursement', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "APPROVED",
+        "quantity": 400,
+        "created": "2019-01-29"
+      });
+      request.item = item_id;
+      request.user_id = user_id;
+      request.save((err, request) => {
+        chai.request(server)
+        .patch('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'action': 'DISBURSE'
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.request.status.should.be.eql('FULFILLED');
+          res.body.item.quantity.should.be.eql(600);
+          Item.findById(item_id, function(err, item) {
+            item.quantity.should.be.eql(600);
+            Request.findById(request._id, function(err, request) {
+              request.status.should.be.eql('FULFILLED');
+              done();
+            });
+          });
+        });
+      });
+    });
+
+    it('cannot update a quantity below 0', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "APPROVED",
+        "quantity": 2000,
+        "created": "2019-01-29"
+      });
+      request.item = item_id;
+      request.user_id = user_id;
+      request.save((err, request) => {
+        chai.request(server)
+        .patch('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'action': 'DISBURSE'
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.error.should.be.eql('Insufficient quantity');
+          Request.findById(request._id, function(err, request) {
+            request.status.should.be.eql('APPROVED');
+            done();
+          });
+        });
+      });
+    });
+  });
+
 });
