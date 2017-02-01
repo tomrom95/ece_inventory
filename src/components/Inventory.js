@@ -22,7 +22,7 @@ class Inventory extends React.Component {
   constructor(props){
     super(props);
   }
-  /*
+  
   render() {
     return (
       <div>
@@ -34,14 +34,15 @@ class Inventory extends React.Component {
       </div>
     );
   }
-  */
+  
+  /*
   render() {
     return (
       <div>
-        <AccordionTable/>
       </div>
       );    
   }
+  */
 }
 
 export default Inventory;
