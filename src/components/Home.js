@@ -10,8 +10,13 @@ class Home extends Component {
     super(props);
     if(localStorage.getItem('user')){
       var user_stored = JSON.parse(localStorage.getItem('user'));
-      var token_store = JSON.parse(localStorage.getItem('token'));
-      this.state = {user: user_stored};
+      var token_stored = JSON.parse(localStorage.getItem('token'));
+      this.state = {user: user_stored,
+                    token: token_stored,
+                    name: '',
+                    passwrd: '',
+                  };
+
     }
     else { this.state = {
       user: null,

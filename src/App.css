@@ -20,6 +20,51 @@
   font-size: large;
 }
 
+.inventory-table-heading {
+  background-color: gray!important;
+  color: white!important;
+  font-weight: bold;
+  margin-bottom: 1.5px;
+  margin-top: 2px;
+}
+
+.inventory-table-row {
+  max-height: 30px;
+  margin-bottom: -4px;
+  background-color: black!important;
+  color: white!important;
+}
+
+.subtable-body{
+  margin: 0;
+  margin-top:0.5px;
+  margin-bottom: 0;
+  border-style: solid;
+  border-color: black;
+}
+
+.subtable-row {
+  max-width:50px;
+}
+
+.panel-font {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.panel-group {
+  margin: 0;
+}
+
+.main-table {
+  max-width: 700px;
+}
+
+.modal-title{
+  font-size: 18px;
+  font-weight:bold;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

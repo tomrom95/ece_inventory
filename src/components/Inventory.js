@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import '../App.css';
 import NavBar from './NavBar.js';
+import AccordionTable from '../AccordionTable.js';
 
 var products = [{
       id: 1,
@@ -12,7 +13,7 @@ var products = [{
       name: "Item name 2",
       price: 100
   }];
-// It's a data format example. 
+// It's a data format example.
 function priceFormatter(cell, row){
   return '<i class="glyphicon glyphicon-usd"></i> ' + cell;
 }
@@ -21,6 +22,7 @@ class Inventory extends React.Component {
   constructor(props){
     super(props);
   }
+  /*
   render() {
     return (
       <div>
@@ -31,6 +33,14 @@ class Inventory extends React.Component {
         </BootstrapTable>
       </div>
     );
+  }
+  */
+  render() {
+    return (
+      <div>
+        <AccordionTable/>
+      </div>
+      );
   }
 }
 
