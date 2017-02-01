@@ -10,10 +10,17 @@ class Home extends Component {
     super(props);
     if(localStorage.getItem('user')){
       var user_stored = JSON.parse(localStorage.getItem('user'));
-      this.state = {user: user_stored};
+      var token_stored = localStorage.getItem('token');
+      this.state = {user: user_stored,
+                    token: token_stored,
+                    name: '',
+                    passwrd: '',
+                  };
+
     }
     else { this.state = {
       user: null,
+      token: null,
       name: '',
       passwrd: '',
     };
@@ -42,10 +49,11 @@ class Home extends Component {
 
       if(res.data.token){
         this.setState({
-          user: res.data.user
+          user: res.data.user,
+          token: res.data.token,
         });
         localStorage.setItem('user', JSON.stringify(this.state.user));
-        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('token', this.state.token);
       }
       else{
         console.log(res.data.error);
@@ -58,34 +66,35 @@ class Home extends Component {
   }
 
   signOut() {
-    console.log("log out");
+    console.log(this.state.token);
     localStorage.clear();
     this.setState({
       user: null,
+      token: null,
       name: '',
       passwrd: '',
     });
   }
 
   render() {
-    let children = null;
-    if (this.props.children) {
-      children = React.cloneElement(this.props.children, {
-        path: this.props.route.path
-      })
-    }
+
 
     if(this.state.user){
+      let children = null;
+      if (this.props.children) {
+        children = React.cloneElement(this.props.children, {
+          username: this.state.user.username,
+          isAdmin: this.state.user.is_admin,
+          token: this.state.token,
+        });
+      }
       console.log(this.state.user);
       return (
         <div className="App">
-	         <NavBar isAdmin={this.state.user.is_admin}  />
-           <button className="btn btn-primary" onClick={this.signOut}>
-             sign out
-           </button>
+	         <NavBar isAdmin={this.state.user.is_admin} onClick={this.signOut}/>
 
           <div className="main-container">
-            {this.props.children}
+            {children}
           </div>
         </div>
 
@@ -93,7 +102,7 @@ class Home extends Component {
     } else {
       return (
         <div>
-          <h4>Log In</h4>
+          <h4>Please sign in to your account</h4>
           <form>
             <label>
               Username:
