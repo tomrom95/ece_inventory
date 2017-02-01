@@ -34,12 +34,6 @@ class ItemDetailView extends React.Component {
       }.bind(this));
   }
 
-  clearFields() {
-    this.refs.username.value = '';
-    this.refs.password.value = '';
-    this.refs.isAdmin.checked = false;
-  }
-
   render() {
     if (this.state.error) {
       return (<div>{this.state.error}</div>);
