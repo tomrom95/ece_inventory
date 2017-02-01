@@ -659,7 +659,7 @@ describe('Requests API Test', function () {
         "requestor_comment": "NONADMIN",
         "reason": "NONADMIN",
         "status": "APPROVED",
-        "quantity": 500,
+        "quantity": 400,
         "created": "2019-01-29"
       });
       request.item = item_id;
@@ -674,9 +674,9 @@ describe('Requests API Test', function () {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.request.status.should.be.eql('FULFILLED');
-          res.body.item.quantity.should.be.eql(500);
+          res.body.item.quantity.should.be.eql(600);
           Item.findById(item_id, function(err, item) {
-            item.quantity.should.be.eql(500);
+            item.quantity.should.be.eql(600);
             Request.findById(request._id, function(err, request) {
               request.status.should.be.eql('FULFILLED');
               done();
