@@ -12,9 +12,10 @@ class NavBar extends Component {
 
       return (
         <nav className="navbar navbar-light bg-faded navbar-fixed-top">
-            <div className="collapse navbar-toggleable-md" id="navbarResponsive">
-              <a className="App-header" href="">ECE Laboratory</a>
+            <div className="navbar-toggleable-md" id="navbarResponsive">
+
               <ul className="nav navbar-nav">
+                <a className="App-header" href="">ECE Laboratory</a>
                 <li className="nav-item">
                   <Link to="/" className="nav-link">Home</Link>
                 </li>
