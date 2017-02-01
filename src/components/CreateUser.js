@@ -57,6 +57,9 @@ class CreateUser extends React.Component {
   }
 
   render() {
+    if (this.state.currUser == null) {
+      return (<div></div>);
+    }
     if (!this.state.currUser.is_admin) {
       return (
         <div>
