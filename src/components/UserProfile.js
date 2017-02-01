@@ -8,9 +8,18 @@ class UserProfile extends Component {
     super(props);
   }
   render() {
+    console.log(this.props.username);
+    var status = '';
+    if(this.props.isAdmin){
+      status = 'is admin';
+    }
+    else{
+      status = 'is not admin';
+    }
     return (
-      <div className="App">
-        <p className="App-Header">User Info</p>
+      <div className="App-Header">
+        <p className="App-Header">Username: {this.props.username}</p>
+        <p className="App-Header">Admin Status: {status}</p>
       </div>
     );
   }

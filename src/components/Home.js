@@ -75,8 +75,10 @@ class Home extends Component {
     let children = null;
     if (this.props.children) {
       children = React.cloneElement(this.props.children, {
-        path: this.props.route.path
-      })
+        username: this.state.user.username,
+        isAdmin: this.state.user.is_admin,
+        token: this.state.token,
+      });
     }
 
     if(this.state.user){
@@ -86,7 +88,7 @@ class Home extends Component {
 	         <NavBar isAdmin={this.state.user.is_admin} onClick={this.signOut}/>
 
           <div className="main-container">
-            {this.props.children}
+            {children}
           </div>
         </div>
 
