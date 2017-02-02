@@ -1,7 +1,6 @@
 'use strict';
 var Item = require('../../../model/items');
 var Log = require('../../../model/logs');
-var last_id = 0; // initially
 
 module.exports.getAPI = function (req, res) {
   // required_tags and excluded_tags: CSV separated values
