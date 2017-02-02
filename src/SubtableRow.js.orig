@@ -1,0 +1,78 @@
+import React, { Component } from 'react';
+import './App.css';
+import RequestPopup from './RequestPopup.js';
+
+class SubtableRow extends Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			data: this.props.data
+		}
+	}
+
+	render() {
+		return (
+			<tr>
+				{this.makeList(this.state.data)}
+				{this.makeButton()}
+			</tr>
+		);
+	}
+
+	makeList(elems) {
+		var i;
+		var htmlList = [];
+		for (i=0; i<elems.length; i++) {
+<<<<<<< HEAD
+			var columnTag = this.props.idTag + "-" + i;
+=======
+			// column tag is used as key. It is a tag for each column cell rendered.
+			// Required for React DOM.
+			var columnTag = this.props.itemName + "-" + this.props.rowNumber + "-" + i;
+>>>>>>> b47e8def71f41bec6fbb846fdb190c9df40e8208
+			htmlList.push(<td className="subtable-row" key={columnTag}> {elems[i]} </td>);
+		}
+		return htmlList;
+	}
+
+	makeButton() {
+<<<<<<< HEAD
+  			//console.log("ID tag is:" + this.props.idTag);
+			return (<RequestPopup
+						data={[]}
+						itemName={this.props.data[0]} 
+						modelName={this.props.data[1]}
+						itemId={this.props.idTag}
+						api={this.props.api}
+						ref={this.props.idTag}/>);
+	}
+
+	loadData() {
+		var tableData;
+		var id = this.props.idTag;
+		var popupRef = this.refs[this.props.idTag];
+		this.props.api.get("api/inventory/" + id)
+			.then(function (response) {
+    			tableData = response.data.instances;
+    			//console.log(tableData);
+    			popupRef.update(tableData);
+  			});
+	}
+
+	componentDidMount() {
+		this.loadData();
+=======
+			return (<RequestPopup
+						itemName={this.props.itemName}
+						modelName={this.props.data[0]}/>);
+>>>>>>> b47e8def71f41bec6fbb846fdb190c9df40e8208
+	}
+
+}
+
+<<<<<<< HEAD
+export default SubtableRow
+=======
+export default SubtableRow
+>>>>>>> b47e8def71f41bec6fbb846fdb190c9df40e8208

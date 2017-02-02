@@ -1,5 +1,6 @@
 'use strict';
 var Request = require('../../../model/requests');
+var Item = require('../../../model/items');
 var mongoose = require('mongoose');
 var itemFieldsToReturn = 'name model_number location description';
 
@@ -91,4 +92,42 @@ module.exports.deleteAPI = function(req,res){
       })
     }
   });
+}
+
+function disperse(requestID, next) {
+  Request.findById(requestID, function(err, request) {
+    if (err) return next(err);
+    if (!request) return next('Request does not exist');
+    Item.findById(request.item, function(err, item) {
+      if (item.quantity < request.quantity) {
+        return next('Insufficient quantity');
+      }
+      item.quantity -= request.quantity;
+      item.save(function(err, updatedItem) {
+        if (err) return next(err);
+        if (!updatedItem) return next('Item does not exist');
+
+        // Only update request if item quantity change was successful.
+        // This prevents a request from being fulfilled if there isn't enough
+        // of a certain item to disburse.
+        request.status = "FULFILLED";
+        request.save(function(err, updatedRequest) {
+          next(null, updatedRequest, updatedItem);
+        });
+      });
+    });
+  });
+}
+
+module.exports.patchAPI = function(req, res) {
+  if (req.body.action == 'DISBURSE') {
+    disperse(req.params.request_id, function(err, request, item) {
+      if (err) return res.send({error: err});
+      res.json({
+        message: 'Disbursement successful',
+        request: request,
+        item: item
+      });
+    });
+  }
 }

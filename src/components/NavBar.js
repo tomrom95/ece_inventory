@@ -12,9 +12,10 @@ class NavBar extends Component {
 
       return (
         <nav className="navbar navbar-light bg-faded navbar-fixed-top">
-            <div className="collapse navbar-toggleable-md" id="navbarResponsive">
-              <a className="App-header" href="">ECE Laboratory</a>
+            <div className="navbar-toggleable-md" id="navbarResponsive">
+
               <ul className="nav navbar-nav">
+                <a className="App-header" href="">ECE Laboratory</a>
                 <li className="nav-item">
                   <Link to="/" className="nav-link">Home</Link>
                 </li>
@@ -25,12 +26,6 @@ class NavBar extends Component {
                   <Link to="/Inventory" className="nav-link">Inventory</Link>
                 </li>
                 <li className="nav-item">
-                  <Link to="/CurrentOrders" className="nav-link">Current Orders</Link>
-                </li>
-                <li className="nav-item">
-                  <Link to="/PastOrders" className="nav-link">Past Orders</Link>
-                </li>
-                <li className="nav-item">
                   <Link to="/GlobalRequests" className="nav-link">User Requests</Link>
                 </li>
                 <li className="nav-item">
@@ -38,6 +33,11 @@ class NavBar extends Component {
                 </li>
                 <li className="nav-item">
                   <Link to="/Transactions" className="nav-link">Transactions</Link>
+                </li>
+                <li className="nav-item">
+                <button className="btn btn-primary" onClick={this.props.onClick}>
+                  sign out
+                </button>
                 </li>
               </ul>
             </div>

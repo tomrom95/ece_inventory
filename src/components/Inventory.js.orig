@@ -22,7 +22,11 @@ class Inventory extends React.Component {
   constructor(props){
     super(props);
   }
+<<<<<<< HEAD
+  
+=======
   /*
+>>>>>>> b47e8def71f41bec6fbb846fdb190c9df40e8208
   render() {
     return (
       <div>
@@ -34,6 +38,17 @@ class Inventory extends React.Component {
       </div>
     );
   }
+<<<<<<< HEAD
+  
+  /*
+  render() {
+    return (
+      <div>
+      </div>
+      );    
+  }
+  */
+=======
   */
   render() {
     return (
@@ -42,6 +57,7 @@ class Inventory extends React.Component {
       </div>
       );
   }
+>>>>>>> b47e8def71f41bec6fbb846fdb190c9df40e8208
 }
 
 export default Inventory;

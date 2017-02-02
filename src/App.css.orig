@@ -41,6 +41,12 @@
   margin-bottom: 0;
   border-style: solid;
   border-color: black;
+<<<<<<< HEAD
+  max-width: 900px;
+  background-color: white;
+  color: black;
+=======
+>>>>>>> b47e8def71f41bec6fbb846fdb190c9df40e8208
 }
 
 .subtable-row {
@@ -57,11 +63,15 @@
 }
 
 .main-table {
+<<<<<<< HEAD
+  max-width: 900px;
+=======
   max-width: 700px;
 }
 
 .main-container {
   padding-top: 80px;
+>>>>>>> b47e8def71f41bec6fbb846fdb190c9df40e8208
 }
 
 .modal-title{
@@ -69,6 +79,13 @@
   font-weight:bold;
 }
 
+<<<<<<< HEAD
+td {
+  text-wrap: normal;
+}
+
+=======
+>>>>>>> b47e8def71f41bec6fbb846fdb190c9df40e8208
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
