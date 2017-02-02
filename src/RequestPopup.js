@@ -1,47 +1,30 @@
 import React, { Component } from 'react';
 import './App.css';
-import InventorySubTable from './InventorySubTable.js'
-
-function makeData() {
-	var tableData = [{
-		Serial: "1676394",
-		Condition: "New",
-		Status: "Missing",
-		Quantity: 1,
-	},
-	{
-		Serial: "N/A",
-		Condition: "New",
-		Status: "Missing",
-		Quantity: 53,
-	}];
-	console.log("Called!");
-	return tableData;
-}
+import RequestSubtable from './RequestSubtable.js';
 
 class RequestPopup extends Component {
 
 	constructor(props) {
 		super(props);
-		var tableData = makeData();
 		this.state = {
-			data: tableData
+			data: this.props.data
 		}
-		console.log("Model name: " + this.props.modelName)
 	}
 
 	render() {
-
+		console.log("Rendering with: ");
+		console.log(this.state.data);
+		var modalBody = this.makeModalBody();
 		return (
 			<td>
-				<button type="button" className="btn btn-primary" data-toggle="modal"
-					data-target={"#requestPopup-"+this.props.itemName+"-"+this.props.modelName}>
-					Request
+				<button type="button" className="btn btn-primary" data-toggle="modal" 
+					data-target={"#requestPopup-"+this.props.itemId}> 
+					Request 
 				</button>
-				<div className="modal fade"
-					id={"requestPopup-"+this.props.itemName+"-"+this.props.modelName}
-					tabIndex="-1" role="dialog"
-					aria-labelledby="modalLabel"
+				<div className="modal fade" 
+					id={"requestPopup-"+this.props.itemId}  
+					tabIndex="-1" role="dialog" 
+					aria-labelledby="modalLabel" 
 					aria-hidden="true">
 				  <div className="modal-dialog" role="document">
 				    <div className="modal-content">
@@ -50,7 +33,7 @@ class RequestPopup extends Component {
 				        	{this.props.itemName + ": " + this.props.modelName}
 				        </h5>
 				      </div>
-				      	{this.makeModalBody()}
+				      	{modalBody}
 				      <div className="modal-footer">
 				        <button type="button" className="btn btn-primary" data-dismiss="modal">Cancel</button>
 				        <button type="button" className="btn btn-primary">Request</button>
@@ -58,24 +41,40 @@ class RequestPopup extends Component {
 				    </div>
 				  </div>
 				</div>
-
+			
 			</td>
 		);
 	}
 
 	makeModalBody() {
+		console.log("Data is: ");
+		console.log(this.state.data);
+
 		return (
 		<div className="modal-body row">
-			<InventorySubTable
+			<RequestSubtable
 				className="col-xs-12"
 				data={this.state.data}
-				itemName={this.props.modelName}
-				ref={this.props.modelName+"-component"}
-				hasButton={false}
-				isInventorySubtable={false}/>
+				itemId={this.props.itemId}/>
 		</div>
 		);
 	}
+
+	update(newData) {
+		console.log("UPDATING! " + this.props.itemId);
+		this.setState({
+			data: [{
+				Serial: "YES",
+				Condition: "YES",
+				Status: "YES",
+				Quantity: "YES"
+			}]
+		});
+		//this.render();
+	}
+
+	// left to do: from InventorySubtable, you need to extract the quantities that were selected per row (from RequestTableRow)
+	// using refs, you can call a method that gets all the item id's and then posts a request.
 }
 
 export default RequestPopup;

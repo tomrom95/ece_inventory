@@ -39,14 +39,27 @@ module.exports.getAPI = function (req, res) {
   if(req.query.vendor_info) query.vendor_info = {'$regex': req.query.vendor_info, '$options':'i'};
   if(req.query.model_number) query.model_number = {'$regex': req.query.model_number, '$options':'i'};
 
-  let projection = {
-    instances: 0
+  // isNaN - checks whether object is not a number
+  if(req.query.page && req.query.per_page && !isNaN(req.query.per_page)){
+    let paginateOptions = {
+      // page number (not offset)\
+      select: {instances:0},
+      page: req.query.page,
+      limit: Number(req.query.per_page)
+    }
+    Item.paginate(query, paginateOptions, function(err, obj){
+        if(err) return res.send({error: err});
+        res.json(obj.docs);
+      });
+  } else {
+    let projection = {
+      instances: 0
+    }
+    Item.find(query, projection, function (err, items){
+      if(err) return res.send({error: err});
+      res.json(items);
+    })
   }
-
-  Item.find(query, projection, function(err, items){
-    if(err) return res.send({error: err});
-    res.json(items);
-  });
 };
 
 // Route: /inventory/:item_id
@@ -95,7 +108,7 @@ module.exports.putAPI = function(req, res){
     if(!old_item)
       return res.send({error: 'Item does not exist'});
     else{
-      var old_quantity = old_item.quantity
+      var old_quantity = old_item.quantity;
       Object.assign(old_item, req.body).save((err,item) => {
         if(err) return res.send({error: err});
         if (req.body.quantity) {
@@ -106,6 +119,8 @@ module.exports.putAPI = function(req, res){
               res.json(item);
             }
           });
+        } else {
+          res.json(item);
         }
       });
     }

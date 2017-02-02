@@ -32,6 +32,7 @@ db.open(function(err, db) {
           }
           Item.insertMany(fakeJSONData).then(function(obj){
             console.log("inserted items");
+            process.exit();
           });
         });
     });
