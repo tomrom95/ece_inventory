@@ -105,11 +105,12 @@ module.exports.deleteAPI = function(req, res){
       if(!instance){
         return res.send({error: "Instance does not exist in item"});
       } else {
-        instance.remove();
-        item.save(function(err){
-          if(err) return res.send({error: err});
-          res.send({message: 'Delete successful'});
-        })
+        instance.remove(function(err){
+          item.save(function(err){
+            if(err) return res.send({error: err});
+            res.send({message: 'Delete successful'});
+          });
+        });
       }
     }
   })
