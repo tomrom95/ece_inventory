@@ -1,6 +1,7 @@
 'use strict';
 var Item = require('../../../model/items');
 var Log = require('../../../model/logs');
+var last_id = 0; // initially
 
 module.exports.getAPI = function (req, res) {
   // required_tags and excluded_tags: CSV separated values
@@ -43,10 +44,23 @@ module.exports.getAPI = function (req, res) {
     instances: 0
   }
 
-  Item.find(query, projection, function(err, items){
-    if(err) return res.send({error: err});
-    res.json(items);
-  });
+  let paginateOptions = {
+    // page number (not offset)
+    page: req.query.page,
+    limit: Number(req.query.per_page)
+  }
+  // isNaN - checks whether object is not a number
+  if(req.query.page && req.query.per_page && !isNaN(req.query.per_page)){
+    Item.paginate(query, paginateOptions, function(err, obj){
+        if(err) return res.send({error: err});
+        res.json(obj.docs);
+      });
+  } else {
+    Item.find(query, projection, function (err, items){
+      if(err) return res.send({error: err});
+      res.json(items);
+    })
+  }
 };
 
 // Route: /inventory/:item_id
