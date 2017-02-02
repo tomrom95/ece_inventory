@@ -84,7 +84,7 @@ module.exports.postAPI = function(req, res){
         instance.serial_number = serial_number;
       }
       instance.condition = req.body.condition;
-      instance.status = req.body.status;
+      instance.status = req.body.status; 
       if(!item.instances.length) item.has_instance_objects = true;
       item.instances.push(instance);
       item.save(function(err, item){
