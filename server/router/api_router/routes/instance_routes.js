@@ -78,7 +78,6 @@ module.exports.postAPI = function(req, res){
       var serial_number = req.body.serial_number;
       var condition = req.body.condition;
       var status = req.body.status;
-
       if (!serial_number){
         return res.send({error: 'Serial number is required'});
       } else {
@@ -86,6 +85,7 @@ module.exports.postAPI = function(req, res){
       }
       instance.condition = req.body.condition;
       instance.status = req.body.status;
+      if(!item.instances.length) item.has_instance_objects = true;
       item.instances.push(instance);
       item.save(function(err, item){
         if(err) return res.send({error:err});
