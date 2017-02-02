@@ -44,7 +44,8 @@ module.exports.getAPI = function (req, res) {
   }
 
   let paginateOptions = {
-    // page number (not offset)
+    // page number (not offset)\
+    select: {instances:0},
     page: req.query.page,
     limit: Number(req.query.per_page)
   }
