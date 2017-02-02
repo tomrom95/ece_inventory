@@ -145,25 +145,21 @@
     ],
     "instances": [
       {
-        "_id": "58926c179e065c189f8716fe",
         "serial_number": "11111",
         "status": "IN_USE",
         "condition": "GOOD"
       },
       {
-        "_id": "58926c229e065c189f8716ff",
         "serial_number": "22222",
         "status": "LOST",
         "condition": "GOOD"
       },
       {
-        "_id": "58926c279e065c189f871700",
         "serial_number": "33333",
         "status": "AVAILABLE",
         "condition": "GOOD"
       },
       {
-        "_id": "58926c349e065c189f871701",
         "serial_number": "44444",
         "status": "AVAILABLE",
         "condition": "NEEDS_REPAIR"
