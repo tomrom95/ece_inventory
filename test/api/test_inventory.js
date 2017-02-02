@@ -371,7 +371,7 @@ describe('Inventory API Test', function () {
     });
   });
   describe('PUT /inventory/:item_id', ()=>{
-    it('PUTs inventory item by item id', (done) => {
+    it('PUTs inventory item by item id with quantity change', (done) => {
       let item = new Item({
         "location": "PERKINS",
         "quantity": 1000,
@@ -396,6 +396,35 @@ describe('Inventory API Test', function () {
           res.body.vendor_info.should.be.eql("Apple");
           res.body.name.should.be.eql("Coaxial");
           res.body.quantity.should.be.eql(3000);
+          res.body._id.should.be.eql(item.id);
+        done();
+        });
+      });
+    });
+    it('PUTs inventory item by item id without quantity change', (done) => {
+      let item = new Item({
+        "location": "PERKINS",
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+        "vendor_info" : "Microsoft"
+      });
+      item.save((err, item) =>{
+        chai.request(server)
+        .put('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .send({
+          'name': 'Coaxial',
+          'location': 'HUDSON',
+          'vendor_info': 'Apple',
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.location.should.be.eql("HUDSON");
+          res.body.vendor_info.should.be.eql("Apple");
+          res.body.name.should.be.eql("Coaxial");
+          res.body.quantity.should.be.eql(1000); 
           res.body._id.should.be.eql(item.id);
         done();
         });
