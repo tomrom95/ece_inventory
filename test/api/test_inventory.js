@@ -277,6 +277,13 @@ describe('Inventory API Test', function () {
       });
       });
 
+      // Pagination GETS:
+      // Gets exactly n items for n per page
+      // Gets the whole array for invalid params
+      // Gets e.g 2 matched items for e.g. 3rd page
+      // Gets [] for page exceeding limit
+      // Gets whole array for per page exceeding limit
+
 
   });
   describe('GET /inventory/:item_id', ()=>{
