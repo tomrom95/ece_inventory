@@ -1,11 +1,11 @@
 var Db = require('mongodb').Db,
   Server = require('mongodb').Server;
 var mongoose = require('mongoose');
-let Item = require('../server/model/items');
+let Request = require('../server/model/requests');
 var helpers = require('../server/auth/auth_helpers');
 
 var db = new Db('inventory', new Server('localhost', 27017));
-var fakeJSONData = require('../test/api/test_inventory_data');
+var fakeJSONData = require('../test/api/test_requests_data.json');
 
 db.open(function(err, db) {
   if (err) { console.log(err); }
@@ -30,9 +30,9 @@ db.open(function(err, db) {
             console.log("it's likely the admin user already exists, here's the error:");
             console.log(err.message);
           }
-          Item.insertMany(fakeJSONData).then(function(obj){
+          Request.insertMany(fakeJSONData).then(function(obj){
             console.log("inserted items");
-          });
+          }).catch(function(error) {console.log(error);});
         });
     });
 });
