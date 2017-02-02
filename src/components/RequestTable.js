@@ -5,11 +5,9 @@ import Request from './Request.js';
 import '../App.css';
 
 function getKeys(data) {
-  if(data != null){
     if (data.length == 0)
     	return;
     return Object.keys(data[0]);
-  }
 }
 
 function getValues(data) {
@@ -31,8 +29,9 @@ class RequestTable extends Component {
   constructor(props){
     super(props);
     this.state = {
-      request: this.props.requests
+      requests: this.props.requests
     };
+    console.log(this.state.requests);
   }
   makeColumnKeyElements() {
     var i;
@@ -54,11 +53,10 @@ class RequestTable extends Component {
       var elem;
       var request = rowData[i];
       elem = (<Request
+          key={rowData[i]._id}
           data={rowData[i]}
+          isAdmin={this.props.isAdmin}
           />);
-
-
-
       list.push(elem);
     }
     return list;

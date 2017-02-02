@@ -8,6 +8,7 @@ class Request extends Component {
     super(props);
     this.state = {
 			data: this.props.data
+      status: this.props.data.Status
 		}
   }
   render() {
@@ -30,6 +31,8 @@ class Request extends Component {
 		}
 		return htmlList;
 	}
+
+  setStatus
 }
 
 export default Request;
