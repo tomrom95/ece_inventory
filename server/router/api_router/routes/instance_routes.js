@@ -106,6 +106,7 @@ module.exports.deleteAPI = function(req, res){
         return res.send({error: "Instance does not exist in item"});
       } else {
         instance.remove(function(err){
+          if(!item.instances.length) item.has_instance_objects = false;
           item.save(function(err){
             if(err) return res.send({error: err});
             res.send({message: 'Delete successful'});
