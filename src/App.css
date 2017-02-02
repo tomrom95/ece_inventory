@@ -41,6 +41,9 @@
   margin-bottom: 0;
   border-style: solid;
   border-color: black;
+  max-width: 900px;
+  background-color: white;
+  color: black;
 }
 
 .subtable-row {
@@ -57,12 +60,16 @@
 }
 
 .main-table {
-  max-width: 700px;
+  max-width: 900px;
 }
 
 .modal-title{
   font-size: 18px;
   font-weight:bold;
+}
+
+td {
+  text-wrap: normal;
 }
 
 @keyframes App-logo-spin {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import SubtableRow from './SubtableRow';
+import RequestTableRow from './RequestTableRow';
 
 var meta;
 
@@ -35,7 +35,7 @@ function getValues(data, keys) {
 	return vals;
 }
 
-class InventorySubTable extends Component {
+class RequestSubtable extends Component {
 
 	constructor(props) {
 		super(props);
@@ -46,6 +46,8 @@ class InventorySubTable extends Component {
 	}
 
 	render() {
+		console.log("Request subtable rendering with:");
+		console.log(this.state.rows);
 		return (
 			<table className="table subtable-body">
 			  <thead className="thread">
@@ -64,9 +66,8 @@ class InventorySubTable extends Component {
 		var i;
 		var list = [];
 		for (i=0; i<keys.length; i++) {
-			list.push(<th key={keys[i]+"-inventorycol"}> {keys[i]} </th>);
+			list.push(<th key={keys[i]+"-requestcol"}> {keys[i]} </th>);
 		}
-		list.push(<th key={"buttonSpace"}> </th>);
 		return list;
 	}
 
@@ -75,18 +76,17 @@ class InventorySubTable extends Component {
 		var list = [];
 		for (i=0; i<rowData.length; i++) {
 			var elem;
-			var id = this.props.data[i]["meta"]["id"];
-			elem = (<SubtableRow
-					columnKeys={this.props.columnKeys}
-					data={rowData[i]}
-					idTag={id}
+			elem = (<RequestTableRow
+					data={rowData[i]} 
 					row={i}
-					key={id+"-row"}
-					api={this.props.api}/>);
+					key={this.props.itemId+"-"+rowData[i][0]+"-"+i}
+					rowId={this.props.itemId+"-row-"+i}/>);
+					// 0 index is SN. Change to something else. 
+			
 			list.push(elem);
 		}
 		return list;
 	}
 }
 
-export default InventorySubTable
+export default RequestSubtable
