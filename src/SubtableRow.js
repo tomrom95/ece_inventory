@@ -31,9 +31,14 @@ class SubtableRow extends Component {
 	}
 
 	makeButton() {
-  			//console.log("ID tag is:" + this.props.idTag);
 			return (<RequestPopup
-						data={[]}
+						data={[ {
+									Serial: "", 
+									Condition: "", 
+									Status: "",
+									Quantity: ""
+								}
+							]}
 						itemName={this.props.data[0]} 
 						modelName={this.props.data[1]}
 						itemId={this.props.idTag}

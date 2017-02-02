@@ -1,38 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
-import RequestSubtable from './RequestSubtable.js'
-
-function makeData() {
-	var tableData = [{
-		Serial: "1676394", 
-		Condition: "New", 
-		Status: "Missing",
-		Quantity: 1,
-	},
-	{
-		Serial: "N/A", 
-		Condition: "New", 
-		Status: "Missing",
-		Quantity: 53,
-	}];
-	console.log("Called!");
-	return tableData;
-}
+import RequestSubtable from './RequestSubtable.js';
 
 class RequestPopup extends Component {
 
 	constructor(props) {
 		super(props);
-		var tableData = makeData();
 		this.state = {
-			data: [{
-				Serial: "123",
-				Condition: "222",
-				Status: "222",
-				Quantity: "444"
-			}]
+			data: this.props.data
 		}
-		console.log(this.props.data);
 	}
 
 	render() {
@@ -86,15 +62,15 @@ class RequestPopup extends Component {
 
 	update(newData) {
 		console.log("UPDATING! " + this.props.itemId);
-		this.state = {
+		this.setState({
 			data: [{
 				Serial: "YES",
 				Condition: "YES",
 				Status: "YES",
 				Quantity: "YES"
 			}]
-		};
-		this.render();
+		});
+		//this.render();
 	}
 
 	// left to do: from InventorySubtable, you need to extract the quantities that were selected per row (from RequestTableRow)

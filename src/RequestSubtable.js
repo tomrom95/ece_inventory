@@ -45,6 +45,13 @@ class RequestSubtable extends Component {
 		}
 	}
 
+	componentWillReceiveProps(newProps) {
+		this.setState({
+			columnKeys: getKeys(newProps.data),
+			rows: getValues(newProps.data, getKeys(newProps.data))
+		});
+	}
+
 	render() {
 		console.log("Request subtable rendering with:");
 		console.log(this.state.rows);
