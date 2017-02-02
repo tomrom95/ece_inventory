@@ -1,6 +1,6 @@
 // Generation of inventory items for insertManyItems method (in addition to existing JSON items in demo data file).
 var willInsertManyItems = true;
-var itemQuantity = 100;
+var itemQuantity = 1000;
 
 var mongoose = require('mongoose');
 let Item = require('../server/model/items');
@@ -15,7 +15,7 @@ User.findOne({'username': 'admin'}, function(err, user) {
       console.log("Successful insert from demo inventory data file");
       if(willInsertManyItems){
         // A set of N items will then be added to test pagination and show more item entries.
-        insertManyItems(function(){
+        insertManyItems(itemQuantity, function(){
          process.exit();
        });
      } else {
@@ -25,7 +25,7 @@ User.findOne({'username': 'admin'}, function(err, user) {
   });
 });
 
-var insertManyItems = function(callback){
+var insertManyItems = function(quantity, callback){
   var itemArray = [];
   let item = {
     "location": "HUDSON",
@@ -44,7 +44,7 @@ var insertManyItems = function(callback){
       }
     ]
   };
-  for(i = 0; i<itemQuantity; i++){
+  for(i = 0; i<quantity; i++){
     var item_copy = JSON.parse(JSON.stringify(item));
     item_copy.name = (i + 1) +" V Function Generator";
     item_copy.tags.push((i%3==0) ? "heavy" : "large");
@@ -52,7 +52,9 @@ var insertManyItems = function(callback){
     itemArray.push(item_copy);
   }
   Item.insertMany(itemArray).then(function(obj){
-    console.log("Successful insert for "+itemQuantity+" inventory items (insertManyItems())");
+    console.log("Successful insert for "+quantity+" inventory items (insertManyItems())");
     callback();
   })
 }
+
+module.exports.insertManyItems = insertManyItems;

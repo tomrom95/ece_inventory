@@ -6,7 +6,6 @@ let User = require('../../server/model/users');
 let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
 let fakeJSONData = require('./test_inventory_data');
-
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let should = chai.should();
@@ -276,15 +275,75 @@ describe('Inventory API Test', function () {
         done();
       });
       });
-
-      // Pagination GETS:
-      // Gets exactly n items for n per page
-      // Gets the whole array for invalid params
-      // Gets e.g 2 matched items for e.g. 3rd page
-      // Gets [] for page exceeding limit
-      // Gets whole array for per page exceeding limit
-
-
+      it('GETs 3rd page with 3 items per page', (done)=>{
+          chai.request(server)
+          .get('/api/inventory?page=3&per_page=3')
+          .set('Authorization', token)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body.length.should.be.eql(3);
+            res.body[0].name.should.be.eql("150k inductor");
+            res.body[1].name.should.be.eql("1m Wire");
+            res.body[2].name.should.be.eql("5M Wire");
+            done();
+          });
+      });
+      it('GETs 3rd page with 100 items per page - should return empty []', (done)=>{
+          chai.request(server)
+          .get('/api/inventory?page=3&per_page=100')
+          .set('Authorization', token)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body.length.should.be.eql(0);
+            done();
+          });
+      });
+      it('GETs 100th page with 3 items per page - should return empty []', (done)=>{
+          chai.request(server)
+          .get('/api/inventory?page=100&per_page=3')
+          .set('Authorization', token)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body.length.should.be.eql(0);
+            done();
+          });
+      });
+      it('GETs 100th page with 100 items per page - should return empty []', (done)=>{
+          chai.request(server)
+          .get('/api/inventory?page=100&per_page=100')
+          .set('Authorization', token)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body.length.should.be.eql(0);
+            done();
+          });
+      });
+      it('GETs whole array for invalid per_page param', (done)=>{
+          chai.request(server)
+          .get('/api/inventory?page=3&per_pge=3')
+          .set('Authorization', token)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body.length.should.be.eql(12);
+            done();
+          });
+      });
+      it('GETs whole array for invalid page param', (done)=>{
+          chai.request(server)
+          .get('/api/inventory?pag=3&per_page=3')
+          .set('Authorization', token)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body.length.should.be.eql(12);
+            done();
+          });
+      });
   });
   describe('GET /inventory/:item_id', ()=>{
     it('GETs inventory item by item id', (done) => {
