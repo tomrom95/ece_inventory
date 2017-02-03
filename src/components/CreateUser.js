@@ -68,55 +68,59 @@ class CreateUser extends React.Component {
       );
     }
     return (
-      <div>
-        <div className="row">
-          <div className="col-xs-6"><h4>Add a new user</h4></div>
-        </div>
-        <div className="form-fields">
-          <div>
-            <label>Username *</label>
-            <input
-              className="form-control"
-              type="text"
-              ref="username"
-              defaultValue=""
-            />
-          </div>
-          <div>
-            <label>Password *</label>
-            <input
-              className="form-control"
-              type="text"
-              ref="password"
-              defaultValue=""
-            />
-          </div>
-          <div>
-            <label>Make admin?</label>
-            <input type="checkbox" ref="isAdmin"></input>
-          </div>
-          <div className="form-footer">
-            <button
-              className="btn btn-primary pull-right"
-              onClick={this.submitForm.bind(this)}
-            >
-              Submit
-            </button>
-          </div>
-          {this.state.error ? (
-            <div className="pull-right">
-              <div className="alert alert-danger">
-                <strong>Error:</strong> {this.state.error}
-              </div>
+      <div className="row">
+        <div className="offset-md-4 col-md-4">
+          <div className="row">
+            <div className="center-text">
+              <h4>Add a new user</h4>
             </div>
-          ): null}
-          {this.state.success ? (
-            <div className="pull-right">
-              <div className="alert alert-success">
-                <strong>Success!</strong> {this.state.success}
-              </div>
+          </div>
+          <div className="form-fields">
+            <div>
+              <label>Username *</label>
+              <input
+                className="form-control"
+                type="text"
+                ref="username"
+                defaultValue=""
+              />
             </div>
-          ): null}
+            <div>
+              <label>Password *</label>
+              <input
+                className="form-control"
+                type="text"
+                ref="password"
+                defaultValue=""
+              />
+            </div>
+            <div>
+              <label>Make admin?</label>
+              <input type="checkbox" ref="isAdmin"></input>
+            </div>
+            <div className="form-footer">
+              <button
+                className="btn btn-primary pull-right"
+                onClick={this.submitForm.bind(this)}
+              >
+                Submit
+              </button>
+            </div>
+            {this.state.error ? (
+              <div className="pull-right">
+                <div className="alert alert-danger">
+                  <strong>Error:</strong> {this.state.error}
+                </div>
+              </div>
+            ): null}
+            {this.state.success ? (
+              <div className="pull-right">
+                <div className="alert alert-success">
+                  <strong>Success!</strong> {this.state.success}
+                </div>
+              </div>
+            ): null}
+          </div>
         </div>
       </div>
     );
