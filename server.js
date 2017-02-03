@@ -58,12 +58,18 @@ passport.use(new passportJWT.Strategy(opts, function(jwt_payload, done) {
 app.use('/api', passport.authenticate('jwt', { session: false }), api_router);
 app.use('/auth', auth_router);
 
-https.createServer({
-  key: fs.readFileSync('key.pem'),
-  cert: fs.readFileSync('cert.pem'),
-  passphrase: secrets.sslSecret
-}, app).listen(secrets.apiPort, function() {
-  console.log('API running on port ' + secrets.apiPort);
-});
+if (process.env.NODE_ENV == 'test') {
+  app.listen(secrets.apiPort, function () {
+    console.log('API running but not on https');
+  });
+} else {
+  https.createServer({
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem'),
+    passphrase: secrets.sslSecret
+  }, app).listen(secrets.apiPort, function() {
+    console.log('API running on port ' + secrets.apiPort);
+  });
+}
 
 module.exports = app;
