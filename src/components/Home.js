@@ -110,7 +110,7 @@ class Home extends Component {
             </label>
             <label>
               Password:
-              <input type="text" value={this.state.passwrd} onChange={this.handlePasswrdChange} />
+              <input type="password" value={this.state.passwrd} onChange={this.handlePasswrdChange} />
             </label>
           </form>
           <button className="btn btn-primary" onClick={this.login}>
