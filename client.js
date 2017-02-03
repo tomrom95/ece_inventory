@@ -13,7 +13,6 @@ var publicPath = path.resolve(__dirname, 'build');
 app.use(express.static(publicPath))
 
 app.get('/*', function (request, response){
-  console.log("here");
   response.sendFile('index.html', {root: publicPath});
 })
 
