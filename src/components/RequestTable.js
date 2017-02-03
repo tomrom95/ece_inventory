@@ -29,9 +29,10 @@ class RequestTable extends Component {
   constructor(props){
     super(props);
     this.state = {
-      requests: this.props.requests
+      requests: this.props.requests,
+      isAdmin: this.props.isAdmin,
     };
-    console.log(this.state.requests);
+    //console.log(this.state.requests);
   }
   makeColumnKeyElements() {
     var i;
@@ -53,9 +54,8 @@ class RequestTable extends Component {
       var elem;
       var request = rowData[i];
       elem = (<Request
-          key={rowData[i]._id}
           data={rowData[i]}
-          isAdmin={this.props.isAdmin}
+          isAdmin={this.state.isAdmin}
           />);
       list.push(elem);
     }

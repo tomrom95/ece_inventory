@@ -8,13 +8,12 @@ class Request extends Component {
     super(props);
     this.state = {
 			data: this.props.data
-      status: this.props.data.Status
 		}
   }
   render() {
 
     return (
-      <tr>
+      <tr key={this.state.data[0]}>
         {this.makeList(this.state.data)}
       </tr>
     );
@@ -23,16 +22,17 @@ class Request extends Component {
   makeList(elems) {
 		var i;
 		var htmlList = [];
+    console.log(elems);
 		for (i=0; i<elems.length; i++) {
 			// column tag is used as key. It is a tag for each column cell rendered.
 			// Required for React DOM.
-			var columnTag = this.state._id + "-" + this.state.user_id + "-" + i;
+			var columnTag = this.state.data[6]._id + "-" + this.state.data[6].name + "-" + i;
 			htmlList.push(<td className="subtable-row" key={columnTag}> {elems[i]} </td>);
 		}
 		return htmlList;
 	}
 
-  setStatus
+
 }
 
 export default Request;

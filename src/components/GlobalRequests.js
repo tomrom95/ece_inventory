@@ -3,15 +3,16 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import '../App.css';
 import NavBar from './NavBar.js';
 import axios from 'axios';
-
 import RequestTable from './RequestTable.js';
 
-
 var products = [{
-      name: "admin",
-      id: 43,
-      serial: 329109,
-      quantity: 1
+      id: 1,
+      name: "Item name 1",
+      price: 100
+  },{
+      id: 2,
+      name: "Item name 2",
+      price: 100
   }];
 // It's a data format example.
 function priceFormatter(cell, row){
@@ -21,53 +22,40 @@ function priceFormatter(cell, row){
 class GlobalRequests extends React.Component {
   constructor(props){
     super(props);
-
-     this.state = {
+    this.state = {
       requests: []
-      };
-
-    this.getAllRequests = this.getAllRequests.bind(this);
-
-
+    };
   }
 
   componentWillMount() {
-
-    this.getAllRequests();
+    this.axiosInstance = axios.create({
+      baseURL: 'https://' + location.hostname + ':3001',
+      headers: {'Authorization': localStorage.getItem('token')}
+    });
+    this.axiosInstance.get('/api/requests')
+    .then(function(response) {
+      console.log(response.data);
+      this.setState({requests: response.data});
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    }.bind(this));
 
   }
 
-  getAllRequests() {
-    console.log("hey");
-    this.axiosInstance = axios.create({
-      baseURL: 'https:' + '//' + location.hostname + ':3001',
-      headers: {'Authorization': localStorage.getItem('token')}
-    });
-		this.axiosInstance.get('/api/requests')
-    .then(function(res) {
-      this.setState({
-        requests: res.data
-      });
-
-      console.log(this.state.requests);
-    }.bind(this))
-    .catch(function (error) {
-      console.log(error);
-    }.bind(this));
-	}
   render() {
     if(!this.state.requests || this.state.requests.length == 0){
-      return (<div></div>);
+      return(<div></div>);
     }
     else{
+      console.log("success");
       return (
         <div>
-          <RequestTable requests={this.state.requests} isAdmin={true}/>
+          <RequestTable requests={this.state.requests} isAdmin={true} />
           <BootstrapTable data={ products }>
-            <TableHeaderColumn dataField='name' isKey>UserName</TableHeaderColumn>
-            <TableHeaderColumn dataField='id'>Item ID</TableHeaderColumn>
-            <TableHeaderColumn dataField='serial'>Serial Number</TableHeaderColumn>
-            <TableHeaderColumn dataField='quantity'>Quantity</TableHeaderColumn>
+            <TableHeaderColumn dataField='id' isKey>Product ID</TableHeaderColumn>
+            <TableHeaderColumn dataField='name'>Product Name</TableHeaderColumn>
+            <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
           </BootstrapTable>
         </div>
       );
