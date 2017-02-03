@@ -33,7 +33,7 @@ router.route('/requests')
 router.route('/requests/:request_id')
       .get(request_routes.getAPIbyID)
       .put(request_routes.putAPI)
-      .delete(restrictToAdmins, request_routes.deleteAPI)
+      .delete(request_routes.deleteAPI)
       .patch(restrictToAdmins, request_routes.patchAPI);
 
 router.route('/user')
