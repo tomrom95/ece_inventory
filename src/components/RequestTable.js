@@ -61,6 +61,23 @@ class RequestTable extends Component {
     }
     return list;
   }
+
+
+  deleteButton(index){
+    return(
+      <button className="btn btn-primary" onClick={e => this.removeRequest(index)}>
+        Delete
+      </button>
+    );
+  }
+
+
+  removeRequest(index){
+    this.setState({
+      requests: this.state.requests.filter((_, i) => i !== index)
+    })
+  }
+
   render() {
 
     return (
