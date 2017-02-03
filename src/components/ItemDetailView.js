@@ -59,7 +59,7 @@ class ItemDetailView extends React.Component {
           </div>
         </div>
         <div className="row pad-sides">
-          <GlobalRequests itemID={this.props.params.itemID} />
+          <GlobalRequests itemID={this.props.params.itemID} status="PENDING"/>
         </div>
       </div>
     );
