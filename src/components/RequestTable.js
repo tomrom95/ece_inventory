@@ -45,6 +45,7 @@ class RequestTable extends Component {
 			rows: getValues(this.props.data, getKeys(this.props.data)),
       isAdmin: this.props.isAdmin
 		}
+
 	}
 
 
@@ -64,7 +65,7 @@ class RequestTable extends Component {
 		var list = [];
 		for (i=0; i<rowData.length; i++) {
 			var elem;
-			var id = this.props.data[i]["Object"]["_id"];
+			var id = this.props.data[i]["item"]["_id"] + this.props.data[i]["item"]["user_id"] + i;
 			elem = (<SubtableRow
 					columnKeys={this.props.columnKeys}
 					data={rowData[i]}
