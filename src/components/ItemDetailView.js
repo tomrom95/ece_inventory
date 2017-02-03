@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import GlobalRequests from './GlobalRequests';
 
 class ItemDetailView extends React.Component {
   constructor(props) {
@@ -25,13 +26,6 @@ class ItemDetailView extends React.Component {
       .catch(function(error) {
         this.setState({error: 'Could not load item'});
       }.bind(this));
-    this.axiosInstance.get('/requests?item_id=' + this.props.params.itemID)
-      .then(function(response) {
-        this.setState({requests: response.data})
-      }.bind(this))
-      .catch(function(error) {
-        this.setState({erroe: 'Could not load requests'});
-      }.bind(this));
   }
 
   render() {
@@ -43,14 +37,29 @@ class ItemDetailView extends React.Component {
     return (
       <div>
         <div className="row">
-          <div className="col-xs-6"><h4>{this.state.item.name}</h4></div>
+          <div className="offset-md-4 col-md-4 center-text"><h4>{this.state.item.name}</h4></div>
         </div>
         <div className="row">
-          <p><strong>Quantity: </strong>{this.state.item.quantity}</p>
-          <p><strong>Location: </strong>{this.state.item.location}</p>
-          <p><strong>Description: </strong>{this.state.item.description}</p>
-          <p><strong>Vendor Info: </strong>{this.state.item.vendor_info}</p>
-          <p><strong>Tags: </strong>{this.state.item.tags.join(', ')}</p>
+          <div className="offset-md-1 col-md-10">
+            <div className="row">
+              <p><strong>Quantity: </strong>{this.state.item.quantity}</p>
+            </div>
+            <div className="row">
+              <p><strong>Location: </strong>{this.state.item.location}</p>
+            </div>
+            <div className="row">
+              <p><strong>Description: </strong>{this.state.item.description}</p>
+            </div>
+            <div className="row">
+              <p><strong>Vendor Info: </strong>{this.state.item.vendor_info}</p>
+            </div>
+            <div className="row">
+              <p><strong>Tags: </strong>{this.state.item.tags.join(', ')}</p>
+            </div>
+          </div>
+        </div>
+        <div className="row pad-sides">
+          <GlobalRequests itemID={this.props.params.itemID} status="PENDING"/>
         </div>
       </div>
     );
