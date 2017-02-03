@@ -5,25 +5,6 @@ import NavBar from './NavBar.js';
 import InventorySubTable from '../InventorySubTable.js';
 import axios from 'axios';
 
-var instance = axios.create({
-  baseURL: 'https://' + location.hostname + ':3001'
-});
-
-var table;
-
-function initialize() {
-  var token = localStorage.getItem("token");
-  instance.defaults.headers.common['Authorization'] = token;
-  loadTable();
-}
-
-function loadTable() {
-  instance.get('/api/inventory/')
-    .then(function (response) {
-      table = makeTable(processData(response));
-    })
-}
-
 function processData(responseData) {
   var inventoryItems = responseData.data;
   var i;
@@ -49,37 +30,39 @@ function processData(responseData) {
   return items;
 }
 
-function makeTable(prop) {
-  return(
-      <InventorySubTable 
-        data={prop} 
-        hasButton={true} 
-        isInventorySubtable={true}
-        api={instance} />);
-}
-
 class Inventory extends React.Component {
   constructor(props){
     super(props);
-    initialize();
+    this.state = {
+      items: []
+    }
   }
-  /*
+
+  componentWillMount() {
+    this.instance = axios.create({
+      baseURL: 'https://' + location.hostname + ':3001',
+      headers: {'Authorization': localStorage.getItem('token')}
+    });
+
+    this.instance.get('/api/inventory/')
+      .then(function (response) {
+        this.setState({
+          items: processData(response),
+        });
+      }.bind(this))
+  }
+
   render() {
+    if (this.state.items.length == 0) {
+      return (<div></div>)
+    }
     return (
       <div>
-        <BootstrapTable data={ products }>
-          <TableHeaderColumn dataField='id' isKey>Product ID</TableHeaderColumn>
-          <TableHeaderColumn dataField='name'>Product Name</TableHeaderColumn>
-          <TableHeaderColumn dataField='price'>Product Price</TableHeaderColumn>
-        </BootstrapTable>
-      </div>
-    );
-  }
-  */
-  render() {
-    return (
-      <div>
-        {table}
+        <InventorySubTable
+          data={this.state.items}
+          hasButton={true}
+          isInventorySubtable={true}
+          api={this.instance} />);
       </div>
       );
   }
