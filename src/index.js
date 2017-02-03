@@ -11,10 +11,3 @@ ReactDOM.render(<App />,
 	document.getElementById('root')
 	);
 
-ReactDOM.render(<ItemWizard 
-		data={
-			{"Name": "", "Quantity": 33, "Model Number": "", "Description": "", "Location": "", "Tags": ""}
-		}/>, 
-	document.getElementById('test')
-	);
-
