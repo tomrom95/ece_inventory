@@ -20,6 +20,15 @@
   font-size: large;
 }
 
+.wide {
+  width:100%;
+}
+
+.pad-sides {
+  padding-right: 50px;
+  padding-left: 50px;
+}
+
 .inventory-table-heading {
   background-color: gray!important;
   color: white!important;
