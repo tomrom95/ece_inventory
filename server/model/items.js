@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose');
 var InstanceSchema = require('./instances.js').schema
+var mongoosePaginate = require('mongoose-paginate');
 
 var ItemSchema = new mongoose.Schema({
   name: {
@@ -26,5 +27,6 @@ var ItemSchema = new mongoose.Schema({
   },
   instances: [InstanceSchema]
 })
+ItemSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Item', ItemSchema);

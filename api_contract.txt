@@ -7,6 +7,8 @@ params:
   name: String [optional],
   model_number: String [optional],
   location: String [optional],
+	page: String [optional], // needs per_page if included
+	per_page: String [optional] // needs age if included
 }
 returns:
 [
