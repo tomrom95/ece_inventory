@@ -82,17 +82,23 @@ module.exports.putAPI = function(req,res){
 };
 
 module.exports.deleteAPI = function(req,res){
+  // Non-admin users can only delete their own requests.
   Request.findById(req.params.request_id, function(err,request){
     if(err) return res.send({error:err});
     if(!request) return res.send({error: 'Request does not exist'});
     else{
-      request.remove(function(err){
-        if(err) return res.send({error:err});
-        res.json({message: 'Delete successful'});
-      })
+      // If id of current user matches the one in the request, or user is an admin
+      if(req.user._id.toString() == request.user_id.toString() || req.user.is_admin){
+        request.remove(function(err){
+          if(err) return res.send({error:err});
+          res.json({message: 'Delete successful'});
+        });
+      } else {
+        res.json({error: "You are not authorized to remove this request"});
+      }
     }
   });
-}
+};
 
 function disperse(requestID, next) {
   Request.findById(requestID, function(err, request) {
