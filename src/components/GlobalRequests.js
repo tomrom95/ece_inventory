@@ -41,8 +41,8 @@ class GlobalRequests extends React.Component {
       headers: {'Authorization': localStorage.getItem('token')}
     });
     var api = '/api/requests';
-    if (this.props.itemID) {
-      api += '?item_id=' + this.props.itemID;
+    if (this.props.itemID && this.props.status) {
+      api += '?item_id=' + this.props.itemID + "&status=" + this.props.status;
     }
     this.axiosInstance.get(api)
     .then(function(response) {
