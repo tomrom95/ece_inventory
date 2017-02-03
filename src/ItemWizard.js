@@ -110,7 +110,7 @@ class ItemWizard extends Component {
 	}
 
 	componentDidMount() {
-		this.onSubmission();
+		//this.onSubmission();
 	}
 
 }
