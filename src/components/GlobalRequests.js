@@ -3,49 +3,71 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import '../App.css';
 import NavBar from './NavBar.js';
 import axios from 'axios';
+import RequestTable from './RequestTable.js';
 
-
-var products = [{
-      name: "admin",
-      id: 43,
-      serial: 329109,
-      quantity: 1
-  }];
-// It's a data format example.
-function priceFormatter(cell, row){
-  return '<i class="glyphicon glyphicon-usd"></i> ' + cell;
+function processData(responseData) {
+  var requests = responseData;
+  var i;
+  var items = [];
+  for (i=0; i<requests.length; i++) {
+    var obj = requests[i];
+    var item = {
+      "Item": obj.item.name,
+      "Time Stamp": obj.created,
+      "Quantity": obj.quantity,
+      "Reason": obj.reason,
+      "Status": obj.status,
+      "_id": obj._id,
+      "user_id": obj.user_id,
+    };
+    items.push(item);
+  }
+  console.log(items);
+  return items;
 }
 
-class Inventory extends React.Component {
+
+class GlobalRequests extends React.Component {
   constructor(props){
     super(props);
-    this.getAllRequests = this.getAllRequests.bind(this);
+    this.state = {
+      requests: []
+    };
   }
-  getAllRequests() {
-		axios.get('https:' + '//' + location.hostname + ':3001' + '/api/requests', {
 
-    })
-    .then(res => {
-      console.log(res);
-
-    })
-    .catch(function (error) {
-      console.log(error);
+  componentWillMount() {
+    this.axiosInstance = axios.create({
+      baseURL: 'https://' + location.hostname + ':3001',
+      headers: {'Authorization': localStorage.getItem('token')}
     });
-	}
+    var api = '/api/requests';
+    if (this.props.itemID && this.props.status) {
+      api += '?item_id=' + this.props.itemID + "&status=" + this.props.status;
+    }
+    this.axiosInstance.get(api)
+    .then(function(response) {
+      console.log(response.data);
+      this.setState({requests: processData(response.data)});
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    }.bind(this));
+
+  }
+
   render() {
-    this.getAllRequests();
-    return (
-      <div>
-        <BootstrapTable data={ products }>
-          <TableHeaderColumn dataField='name' isKey>UserName</TableHeaderColumn>
-          <TableHeaderColumn dataField='id'>Item ID</TableHeaderColumn>
-          <TableHeaderColumn dataField='serial'>Serial Number</TableHeaderColumn>
-          <TableHeaderColumn dataField='quantity'>Quantity</TableHeaderColumn>
-        </BootstrapTable>
-      </div>
-    );
+    if(!this.state.requests || this.state.requests.length == 0){
+      return(<div></div>);
+    }
+    else{
+      return (
+        <div className="wide">
+          <RequestTable data={this.state.requests} isAdmin={true} />
+
+        </div>
+      );
+    }
   }
 }
 
-export default Inventory;
+export default GlobalRequests;
