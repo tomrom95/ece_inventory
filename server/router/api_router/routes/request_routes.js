@@ -35,14 +35,10 @@ module.exports.postAPI = function(req,res){
   if(!req.user._id) {
     return res.send({error: "User ID null"})
   } else {
-    // If admin filled in the user_id param (non-empty)
-    if(req.body.user_id && req.user.is_admin){
-      // Use the user_id provided by the admin (to create request on behalf of another user)
-      request.user_id = req.body.user_id;
-    } else {
-      // Otherwise, use the id of the current user performing POST
-      request.user_id = req.user._id;
-    }
+  // If admin filled in the user_id param (non-empty),
+  // Use the user_id provided by the admin (to create request on behalf of another user)
+  // Otherwise, use the id of the current user performing POST
+    request.user_id = (req.body.user_id && req.user.is_admin) ? req.body.user_id : req.user._id;
   }
   if(!req.body.item_id && !req.body.item) {
     return res.send({error: "Item ID null"});
