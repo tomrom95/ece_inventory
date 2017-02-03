@@ -44,7 +44,7 @@ class RequestTable extends Component {
 			rows: getValues(this.props.data, getKeys(this.props.data)),
       isAdmin: this.props.isAdmin
 		}
-
+    this.denyButton = this.denyButton.bind(this);
 	}
 
 
@@ -71,29 +71,27 @@ class RequestTable extends Component {
 					idTag={id}
 					row={i}
 					key={id+"-row"}
-					api={this.props.api}/>);
+					api={this.props.api}
+          buttons={this.denyButton(i)}/>)
 			list.push(elem);
 		}
 		return list;
 	}
 
-
-
-
-
-  deleteButton(index){
+  denyButton(index){
     return(
-      <button className="btn btn-primary" onClick={e => this.removeRequest(index)}>
-        Delete
+      <button className="btn btn-primary" onClick={e => this.denyRequest(index)}>
+        Deny
       </button>
     );
   }
 
 
-  removeRequest(index){
-    this.setState({
-      requests: this.state.requests.filter((_, i) => i !== index)
-    })
+  denyRequest(index){
+    console.log(this.state.rows);
+
+    this.state.rows[index][4] = 'Eat a dick'
+    this.forceUpdate();
   }
 
   render() {
