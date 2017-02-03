@@ -46,6 +46,7 @@
 
 .subtable-row {
   max-width:50px;
+  text-align: left;
 }
 
 .panel-font {
@@ -82,6 +83,22 @@
 .center-text {
   width: 100%;
   text-align: center;
+}
+
+.signout-button {
+  position: absolute;
+  right: 6%;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.nav-link {
+  font-size: 14px;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 
 body {
