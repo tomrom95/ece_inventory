@@ -40,7 +40,11 @@ class GlobalRequests extends React.Component {
       baseURL: 'https://' + location.hostname + ':3001',
       headers: {'Authorization': localStorage.getItem('token')}
     });
-    this.axiosInstance.get('/api/requests')
+    var api = '/api/requests';
+    if (this.props.itemID) {
+      api += '?item_id=' + this.props.itemID;
+    }
+    this.axiosInstance.get(api)
     .then(function(response) {
       console.log(response.data);
       this.setState({requests: processData(response.data)});
@@ -57,7 +61,7 @@ class GlobalRequests extends React.Component {
     }
     else{
       return (
-        <div>
+        <div className="wide">
           <RequestTable data={this.state.requests} isAdmin={true} />
 
         </div>
