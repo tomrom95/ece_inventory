@@ -31,15 +31,18 @@ class SubtableRow extends Component {
 	}
 
 	makeButton() {
+			if(this.props.buttons){
+				return(<div>{this.props.buttons}</div>);
+			}
 			return (<RequestPopup
 						data={[ {
-									Serial: "", 
-									Condition: "", 
+									Serial: "",
+									Condition: "",
 									Status: "",
 									Quantity: ""
 								}
 							]}
-						itemName={this.props.data[0]} 
+						itemName={this.props.data[0]}
 						modelName={this.props.data[1]}
 						itemId={this.props.idTag}
 						api={this.props.api}

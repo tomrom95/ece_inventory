@@ -46,6 +46,7 @@ class InventorySubTable extends Component {
 	}
 
 	render() {
+		console.log(this.state.columnKeys);
 		return (
 			<table className="table subtable-body">
 			  <thead className="thread">
