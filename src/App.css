@@ -79,6 +79,11 @@
     background-color: #4CAF50;
 }
 
+.center-text {
+  width: 100%;
+  text-align: center;
+}
+
 body {
     background-color: gray;
 }
