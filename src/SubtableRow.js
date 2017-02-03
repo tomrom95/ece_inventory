@@ -24,9 +24,7 @@ class SubtableRow extends Component {
 		var i;
 		var htmlList = [];
 		for (i=0; i<elems.length; i++) {
-			// column tag is used as key. It is a tag for each column cell rendered.
-			// Required for React DOM.
-			var columnTag = this.props.itemName + "-" + this.props.rowNumber + "-" + i;
+			var columnTag = this.props.idTag + "-" + i;
 			htmlList.push(<td className="subtable-row" key={columnTag}> {elems[i]} </td>);
 		}
 		return htmlList;
@@ -34,8 +32,34 @@ class SubtableRow extends Component {
 
 	makeButton() {
 			return (<RequestPopup
-						itemName={this.props.itemName}
-						modelName={this.props.data[0]}/>);
+						data={[ {
+									Serial: "", 
+									Condition: "", 
+									Status: "",
+									Quantity: ""
+								}
+							]}
+						itemName={this.props.data[0]} 
+						modelName={this.props.data[1]}
+						itemId={this.props.idTag}
+						api={this.props.api}
+						ref={this.props.idTag}/>);
+	}
+
+	loadData() {
+		var tableData;
+		var id = this.props.idTag;
+		var popupRef = this.refs[this.props.idTag];
+		this.props.api.get("api/inventory/" + id)
+			.then(function (response) {
+    			tableData = response.data.instances;
+    			//console.log(tableData);
+    			popupRef.update(tableData);
+  			});
+	}
+
+	componentDidMount() {
+		this.loadData();
 	}
 
 }
