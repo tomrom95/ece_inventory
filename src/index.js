@@ -13,7 +13,7 @@ ReactDOM.render(<App />,
 
 ReactDOM.render(<ItemWizard 
 		data={
-			{"Name": "michael", "Model Name": "", "Description": "", "Location": "", "Tags": "", "Quantity": ""}
+			{"Name": "", "Quantity": 33, "Model Number": "", "Description": "", "Location": "", "Tags": ""}
 		}/>, 
 	document.getElementById('test')
 	);

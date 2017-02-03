@@ -101,6 +101,10 @@
   margin-bottom: 2px;
 }
 
+tr {
+  max-height: 15px!important;
+}
+
 body {
     background-color: gray;
 }
