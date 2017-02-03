@@ -1,24 +1,35 @@
 import React, { Component } from 'react';
-import { RouteHandler, Link } from 'react-router';
-import SubtableRow from '../SubtableRow.js';
-import Request from './Request.js';
 import '../App.css';
+import SubtableRow from '../SubtableRow';
+import Request from './Request.js';
+
+var meta;
 
 function getKeys(data) {
-    if (data.length == 0)
-    	return;
-    return Object.keys(data[0]);
+
+	if (data.length == 0)
+		return;
+
+	var keys = Object.keys(data[0]);
+	var i;
+	var ret = [];
+	for (i=0; i<keys.length; i++) {
+		if (keys[i] === "meta") {
+			meta = keys[i];
+			continue;
+		}
+		else ret.push(keys[i]);
+	}
+	return ret;
 }
 
-function getValues(data) {
+function getValues(data, keys) {
 	var i; var j;
-	var keys = getKeys(data);
-	console.log(keys);
 	var vals = [];
 	for (i=0; i<data.length; i++) {
 		var row = [];
 		for (j=0; j<keys.length; j++) {
-			row.push(data[i][keys[j]]);
+			row.push(String(data[i][keys[j]]).replace(/,/g,', '));
 		}
 		vals.push(row);
 	}
@@ -26,41 +37,48 @@ function getValues(data) {
 }
 
 class RequestTable extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      requests: this.props.requests,
-      isAdmin: this.props.isAdmin,
-    };
-    //console.log(this.state.requests);
-  }
-  makeColumnKeyElements() {
-    var i;
-    var list = [];
-    var keys = getKeys(this.state.requests);
-    for (i=0; i<keys.length; i++) {
-      list.push(<th key={keys[i]}> {keys[i]} </th>);
-    }
-    list.push(<th key={"buttonSpace"}> </th>);
-    return list;
-  }
 
-  makeRows() {
-    var i;
-    var list = [];
-    var rowData = getValues(this.state.requests);
-    for (i=0; i<rowData.length; i++) {
-      console.log(rowData[i]);
-      var elem;
-      var request = rowData[i];
-      elem = (<Request
-          data={rowData[i]}
-          isAdmin={this.state.isAdmin}
-          />);
-      list.push(elem);
-    }
-    return list;
-  }
+	constructor(props) {
+		super(props);
+		this.state = {
+			columnKeys: getKeys(this.props.data),
+			rows: getValues(this.props.data, getKeys(this.props.data)),
+      isAdmin: this.props.isAdmin
+		}
+	}
+
+
+
+	makeColumnKeyElements(keys) {
+		var i;
+		var list = [];
+		for (i=0; i<keys.length; i++) {
+			list.push(<th key={keys[i]+"-requestcol"}> {keys[i]} </th>);
+		}
+		list.push(<th key={"buttonSpace"}> </th>);
+		return list;
+	}
+
+	makeRows(rowData) {
+		var i;
+		var list = [];
+		for (i=0; i<rowData.length; i++) {
+			var elem;
+			var id = this.props.data[i]["Object"]["_id"];
+			elem = (<SubtableRow
+					columnKeys={this.props.columnKeys}
+					data={rowData[i]}
+					idTag={id}
+					row={i}
+					key={id+"-row"}
+					api={this.props.api}/>);
+			list.push(elem);
+		}
+		return list;
+	}
+
+
+
 
 
   deleteButton(index){
@@ -79,23 +97,20 @@ class RequestTable extends Component {
   }
 
   render() {
+		return (
+			<table className="table subtable-body">
+			  <thead className="thread">
+			    <tr>
+		    	  {this.makeColumnKeyElements(this.state.columnKeys)}
+			    </tr>
+			  </thead>
+			  <tbody>
+			  	{this.makeRows(this.state.rows)}
+			  </tbody>
+			</table>
+		);
+	}
 
-    return (
-      <div className="subtable-body">
-        <table className="table subtable-body">
-          <thead className="thread">
-            <tr>
-              {this.makeColumnKeyElements()}
-            </tr>
-          </thead>
-          <tbody>
-            {this.makeRows()}
-          </tbody>
-        </table>
-      </div>
-    );
-
-  }
 
 }
 

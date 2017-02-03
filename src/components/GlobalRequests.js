@@ -51,7 +51,7 @@ class GlobalRequests extends React.Component {
       console.log("success");
       return (
         <div>
-          <RequestTable requests={this.state.requests} isAdmin={true} />
+          <RequestTable data={this.state.requests} isAdmin={true} />
           <BootstrapTable data={ products }>
             <TableHeaderColumn dataField='id' isKey>Product ID</TableHeaderColumn>
             <TableHeaderColumn dataField='name'>Product Name</TableHeaderColumn>
