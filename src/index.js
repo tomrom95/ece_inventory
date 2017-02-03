@@ -10,3 +10,11 @@ import axios from 'axios';
 ReactDOM.render(<App />, 
 	document.getElementById('root')
 	);
+
+ReactDOM.render(<ItemWizard 
+		data={
+			{"Name": "michael", "Model Name": "", "Description": "", "Location": "", "Tags": "", "Quantity": ""}
+		}/>, 
+	document.getElementById('test')
+	);
+
