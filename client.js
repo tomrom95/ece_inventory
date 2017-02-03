@@ -1,13 +1,21 @@
 'use strict'
 //imports
 var express = require('express');
+var path = require('path');
 var fs = require('fs');
 var https = require('https');
 var secrets = require('./server/secrets');
 
 var app = express();
 
-app.use(express.static('build'));
+var publicPath = path.resolve(__dirname, 'build');
+
+app.use(express.static(publicPath))
+
+app.get('/*', function (request, response){
+  console.log("here");
+  response.sendFile('index.html', {root: publicPath});
+})
 
 https.createServer({
   key: fs.readFileSync('key.pem'),
