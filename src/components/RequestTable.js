@@ -14,8 +14,7 @@ function getKeys(data) {
 	var i;
 	var ret = [];
 	for (i=0; i<keys.length; i++) {
-		if (keys[i] === "meta") {
-			meta = keys[i];
+    if (keys[i] === "_id" || keys[i] == "user_id") {
 			continue;
 		}
 		else ret.push(keys[i]);
@@ -65,7 +64,7 @@ class RequestTable extends Component {
 		var list = [];
 		for (i=0; i<rowData.length; i++) {
 			var elem;
-			var id = this.props.data[i]["item"]["_id"] + this.props.data[i]["item"]["user_id"] + i;
+			var id = this.props.data[i]["_id"] + this.props.data[i]["user_id"] + i;
 			elem = (<SubtableRow
 					columnKeys={this.props.columnKeys}
 					data={rowData[i]}

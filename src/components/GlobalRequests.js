@@ -5,6 +5,28 @@ import NavBar from './NavBar.js';
 import axios from 'axios';
 import RequestTable from './RequestTable.js';
 
+function processData(responseData) {
+  var requests = responseData;
+  var i;
+  var items = [];
+  for (i=0; i<requests.length; i++) {
+    var obj = requests[i];
+    var item = {
+      "Item": obj.item.name,
+      "Time Stamp": obj.created,
+      "Quantity": obj.quantity,
+      "Reason": obj.reason,
+      "Status": obj.status,
+      "_id": obj._id,
+      "user_id": obj.user_id,
+    };
+    items.push(item);
+  }
+  console.log(items);
+  return items;
+}
+
+
 class GlobalRequests extends React.Component {
   constructor(props){
     super(props);
@@ -21,7 +43,7 @@ class GlobalRequests extends React.Component {
     this.axiosInstance.get('/api/requests')
     .then(function(response) {
       console.log(response.data);
-      this.setState({requests: response.data});
+      this.setState({requests: processData(response.data)});
     }.bind(this))
     .catch(function(error) {
       console.log(error);
