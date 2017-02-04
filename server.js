@@ -21,7 +21,7 @@ app.use(passport.initialize());
 app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH');
   res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Accept, Authorization');
   res.setHeader('Cache-Control', 'no-cache');
   if ('OPTIONS' == req.method) {
@@ -58,12 +58,18 @@ passport.use(new passportJWT.Strategy(opts, function(jwt_payload, done) {
 app.use('/api', passport.authenticate('jwt', { session: false }), api_router);
 app.use('/auth', auth_router);
 
-https.createServer({
-  key: fs.readFileSync('key.pem'),
-  cert: fs.readFileSync('cert.pem'),
-  passphrase: secrets.sslSecret
-}, app).listen(secrets.apiPort, function() {
-  console.log('API running on port ' + secrets.apiPort);
-});
+if (process.env.NODE_ENV == 'test') {
+  app.listen(secrets.apiPort, function () {
+    console.log('API running but not on https');
+  });
+} else {
+  https.createServer({
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem'),
+    passphrase: secrets.sslSecret
+  }, app).listen(secrets.apiPort, function() {
+    console.log('API running on port ' + secrets.apiPort);
+  });
+}
 
 module.exports = app;

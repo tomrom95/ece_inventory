@@ -3,7 +3,7 @@
     "location": "CIEMAS",
     "quantity": 1000,
     "name": "1k resistor",
-    "has_instance_objects": true,
+    "has_instance_objects": false,
     "vendor_info": "IBM",
     "tags": [
       "component",
@@ -15,7 +15,7 @@
     "location": "CIEMAS",
     "quantity": 1000,
     "name": "2k resistor",
-    "has_instance_objects": true,
+    "has_instance_objects": false,
     "vendor_info": "IBM",
     "tags": [
       "component",
@@ -27,7 +27,7 @@
     "location": "CIEMAS",
     "quantity": 1000,
     "name": "5k resistor",
-    "has_instance_objects": true,
+    "has_instance_objects": false,
     "vendor_info": "IBM",
     "tags": [
       "component",
@@ -39,7 +39,7 @@
     "location": "CIEMAS",
     "quantity": 1000,
     "name": "10k resistor",
-    "has_instance_objects": true,
+    "has_instance_objects": false,
     "vendor_info": "IBM",
     "tags": [
       "component",
@@ -51,7 +51,7 @@
     "location": "CIEMAS",
     "quantity": 1000,
     "name": "100k resistor",
-    "has_instance_objects": true,
+    "has_instance_objects": false,
     "vendor_info": "Qualcomm",
     "tags": [
       "component",
@@ -63,7 +63,7 @@
     "location": "CIEMAS",
     "quantity": 1000,
     "name": "100k inductor",
-    "has_instance_objects": true,
+    "has_instance_objects": false,
     "vendor_info": "Qualcomm",
     "tags": [
       "component",
@@ -76,7 +76,7 @@
     "location": "CIEMAS",
     "quantity": 1000,
     "name": "150k inductor",
-    "has_instance_objects": true,
+    "has_instance_objects": false,
     "vendor_info": "Qualcomm",
     "tags": [
       "component",
@@ -136,7 +136,7 @@
     "model_number": "123",
     "quantity": 1000,
     "name": "Oscilloscope",
-    "has_instance_objects": false,
+    "has_instance_objects": true,
     "vendor_info": "Qualcomm",
     "tags": [
       "Power",
