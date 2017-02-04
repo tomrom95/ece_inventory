@@ -651,9 +651,9 @@ describe('Requests API Test', function () {
       });
     });
     it('DELETE own request by non-admin user', (done) =>{
-      helpers.createNewUser('standard', 'standard', false , function(error, user) {
-        token = helpers.createAuthToken(user);
-        user_id = user._id;
+      helpers.createNewUser('standard', 'standard', false , function(error, standard_user) {
+        token = helpers.createAuthToken(standard_user);
+        user_id = standard_user._id;
         var request = new Request({
           "reviewer_comment": "NONADMIN",
           "requestor_comment": "NONADMIN",
@@ -663,7 +663,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29"
         });
         request.item = item_id;
-        request.user_id = user_id;
+        request.user = user_id;
         request.save((err, request)=>{
           chai.request(server)
           .delete('/api/requests/'+request._id)
@@ -696,11 +696,11 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       admin_request.item = item_id;
-      admin_request.user_id = user_id;
+      admin_request.user = user_id;
       admin_request.save(function(err, admin_request){
-        helpers.createNewUser('standard', 'standard', false , function(error, user) {
-          var standard_token = helpers.createAuthToken(user);
-          standard_user_id = user._id;
+        helpers.createNewUser('standard', 'standard', false , function(error, standard_user) {
+          var standard_token = helpers.createAuthToken(standard_user);
+          standard_user_id = standard_user._id;
           var standard_request = new Request({
             "reviewer_comment": "NONADMIN",
             "requestor_comment": "NONADMIN",
@@ -710,7 +710,7 @@ describe('Requests API Test', function () {
             "created": "2019-01-29"
           });
           standard_request.item = item_id;
-          standard_request.user_id = standard_user_id;
+          standard_request.user = standard_user_id;
           standard_request.save(function(err, request){
             chai.request(server)
             .delete('/api/requests/'+admin_request._id)
@@ -726,9 +726,9 @@ describe('Requests API Test', function () {
       });
     });
     it('DELETE another request by admin user', (done) =>{
-      helpers.createNewUser('standard', 'standard', false , function(error, user) {
-        standard_token = helpers.createAuthToken(user);
-        standard_user_id = user._id;
+      helpers.createNewUser('standard', 'standard', false , function(error, standard_user) {
+        standard_token = helpers.createAuthToken(standard_user);
+        standard_user_id = standard_user._id;
         var standard_request = new Request({
           "reviewer_comment": "NONADMIN",
           "requestor_comment": "NONADMIN",
@@ -738,7 +738,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29"
         });
         standard_request.item = item_id;
-        standard_request.user_id = standard_user_id;
+        standard_request.user = standard_user_id;
         standard_request.save((err, request)=>{
           chai.request(server)
           .delete('/api/requests/'+request._id)

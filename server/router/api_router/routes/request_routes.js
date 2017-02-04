@@ -90,7 +90,7 @@ module.exports.deleteAPI = function(req,res){
     if(!request) return res.send({error: 'Request does not exist'});
     else{
       // If id of current user matches the one in the request, or user is an admin
-      if(req.user._id.toString() == request.user_id.toString() || req.user.is_admin){
+      if(req.user._id.toString() == request.user.toString() || req.user.is_admin){
         request.remove(function(err){
           if(err) return res.send({error:err});
           res.json({message: 'Delete successful'});
