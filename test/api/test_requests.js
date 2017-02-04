@@ -1,5 +1,3 @@
-
-
 process.env.NODE_ENV = 'test';
 
 let mongoose = require("mongoose");
@@ -562,7 +560,7 @@ describe('Requests API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.should.have.property('message').eql('Delete successful');
-        done();
+          done();
         });
       })
     });
@@ -646,6 +644,117 @@ describe('Requests API Test', function () {
             res.body.should.be.a('object');
             res.body.should.have.property('error').eql('Request does not exist');
             done();
+          });
+        });
+      });
+    });
+    it('DELETE own request by non-admin user', (done) =>{
+      helpers.createNewUser('standard', 'standard', false , function(error, user) {
+        token = helpers.createAuthToken(user);
+        user_id = user._id;
+        var request = new Request({
+          "reviewer_comment": "NONADMIN",
+          "requestor_comment": "NONADMIN",
+          "reason": "NONADMIN",
+          "status": "PENDING",
+          "quantity": 2000,
+          "created": "2019-01-29"
+        });
+        request.item = item_id;
+        request.user_id = user_id;
+        request.save((err, request)=>{
+          chai.request(server)
+          .delete('/api/requests/'+request._id)
+          .set('Authorization', token)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('message').eql('Delete successful');
+            // Check to make sure it does not exist in db
+            chai.request(server)
+            .get('/api/requests/'+request._id)
+            .set('Authorization', token)
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a('object');
+              res.body.should.have.property('error').eql('Request does not exist');
+              done();
+            });
+          });
+        });
+      });
+    });
+    it('DELETE someone elses request by non-admin user', (done) =>{
+      var admin_request = new Request({
+        "reviewer_comment": "ADMIN",
+        "requestor_comment": "ADMIN",
+        "reason": "ADMIN",
+        "status": "PENDING",
+        "quantity": 2000,
+        "created": "2019-01-29"
+      });
+      admin_request.item = item_id;
+      admin_request.user_id = user_id;
+      admin_request.save(function(err, admin_request){
+        helpers.createNewUser('standard', 'standard', false , function(error, user) {
+          var standard_token = helpers.createAuthToken(user);
+          standard_user_id = user._id;
+          var standard_request = new Request({
+            "reviewer_comment": "NONADMIN",
+            "requestor_comment": "NONADMIN",
+            "reason": "NONADMIN",
+            "status": "PENDING",
+            "quantity": 2000,
+            "created": "2019-01-29"
+          });
+          standard_request.item = item_id;
+          standard_request.user_id = standard_user_id;
+          standard_request.save(function(err, request){
+            chai.request(server)
+            .delete('/api/requests/'+admin_request._id)
+            .set('Authorization', standard_token)
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a('object');
+              res.body.should.have.property('error').eql('You are not authorized to remove this request');
+              done();
+            });
+          });
+        });
+      });
+    });
+    it('DELETE another request by admin user', (done) =>{
+      helpers.createNewUser('standard', 'standard', false , function(error, user) {
+        standard_token = helpers.createAuthToken(user);
+        standard_user_id = user._id;
+        var standard_request = new Request({
+          "reviewer_comment": "NONADMIN",
+          "requestor_comment": "NONADMIN",
+          "reason": "NONADMIN",
+          "status": "PENDING",
+          "quantity": 2000,
+          "created": "2019-01-29"
+        });
+        standard_request.item = item_id;
+        standard_request.user_id = standard_user_id;
+        standard_request.save((err, request)=>{
+          chai.request(server)
+          .delete('/api/requests/'+request._id)
+          .set('Authorization', token) // admin token
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('message').eql('Delete successful');
+            // Check to make sure it does not exist in db
+            chai.request(server)
+            .get('/api/requests/'+request._id)
+            .set('Authorization', token)
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a('object');
+              res.body.should.have.property('error').eql('Request does not exist');
+              done();
+            });
           });
         });
       });

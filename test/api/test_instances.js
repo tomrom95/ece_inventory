@@ -24,6 +24,7 @@ describe('Instance API Test', function() {
         auth_helpers.createNewUser('test_user', 'test', true, function(error, user) {
           token = auth_helpers.createAuthToken(user);
           fakeJSONData.instances = instances_helpers.createMockInstances();
+          fakeJSONData.has_instance_objects=true;
           Item.insertMany(fakeJSONData).then(function(obj){
             item_id = obj[0]._id;
             done();
@@ -270,7 +271,6 @@ describe('Instance API Test', function() {
           status: 'IN_USE',
           condition: 'NEEDS_REPAIR'
         });
-        item.instances.push(instance);
         chai.request(server)
         // PUT the modified item
         .post('/api/inventory/'+item_id+'/instances')
@@ -291,7 +291,6 @@ describe('Instance API Test', function() {
           status: 'IN_USE',
           condition: 'NEEDS_REPAIR'
         });
-        item.instances.push(instance);
         chai.request(server)
         .post('/api/inventory/'+'900000000000000000000000'+'/instances')
         .set('Authorization', token)
@@ -311,7 +310,6 @@ describe('Instance API Test', function() {
           statusssss: 'IN_USE',
           conditionnnnn: 'NEEDS_REPAIR'
         });
-        item.instances.push(instance);
         chai.request(server)
         .post('/api/inventory/'+ item_id + '/instances')
         .set('Authorization', token)
@@ -326,6 +324,91 @@ describe('Instance API Test', function() {
         });
       });
     });
+    it('Should POST instance with has_instance_objects from F -> T', (done) => {
+      let item =   {
+        "location": "CIEMAS",
+        "quantity": 1000,
+        "name": "5M Wire",
+        "has_instance_objects": false,
+        "vendor_info": "Qualcomm",
+        "tags": [
+          "component",
+          "connector"
+        ]
+      };
+      var item_id;
+      chai.request(server)
+      .post('/api/inventory')
+      .set('Authorization', token)
+      .send(item)
+      .end((err, res) => {
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.has_instance_objects.should.be.false;
+        item_id = res.body._id;
+        let instance = new Instance({
+          serial_number: '888',
+          status: 'IN_USE',
+          condition: 'NEEDS_REPAIR'
+        });
+        chai.request(server)
+        .post('/api/inventory/'+item_id+'/instances')
+        .set('Authorization', token)
+        .send(instance)
+        .end((err, res) => {
+          res.should.have.status(200);
+          Item.findById(item_id, function(err, item){
+            item.has_instance_objects.should.be.true;
+            done();
+          });
+        });
+      });
+    });
+    it('Should POST instance with existing instances, has_instance_objects stays T', (done) => {
+      let item = new Item({
+        "location": "CIEMAS",
+        "quantity": 1000,
+        "name": "1k BJT",
+        "has_instance_objects": true,
+        "tags": [
+          "component",
+          "electric",
+          "cheap"
+        ],
+        "instances":[
+          {
+            "serial_number": "11111",
+            "status": "IN_USE",
+            "condition": "GOOD"
+          },
+          {
+            "serial_number": "11112",
+            "status": "IN_USE",
+            "condition": "GOOD"
+          }
+        ]
+      });
+      let instance = {
+        "serial_number": "11111",
+        "status": "IN_USE",
+        "condition": "GOOD"
+      }
+      item.save(function(err, item){
+        chai.request(server)
+        // DELETE the modified item
+        .post('/api/inventory/'+item._id+'/instances')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          Item.findById(item._id, function(err,item){
+            item.has_instance_objects.should.be.true;
+            done();
+          });
+        });
+      });
+    });
+
     it('Should POST instance successfully', (done) => {
       Item.findById(item_id, function (err, item){
         let instance = new Instance({
@@ -333,7 +416,6 @@ describe('Instance API Test', function() {
           status: 'IN_USE',
           condition: 'NEEDS_REPAIR'
         });
-        item.instances.push(instance);
         chai.request(server)
         .post('/api/inventory/'+ item_id + '/instances')
         .set('Authorization', token)
@@ -364,14 +446,101 @@ describe('Instance API Test', function() {
           .delete('/api/inventory/'+item_id+'/'+instance.id)
           .set('Authorization', token)
           .end((err, res) => {
-              res.should.have.status(200);
-              res.body.should.be.a('object');
-              res.body.message.should.be.eql('Delete successful');
-              done();
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.message.should.be.eql('Delete successful');
+            done();
           });
         });
       });
     });
+    it('DELETE remaining instance with has_instance_objects from T -> F', (done) => {
+      let item = {
+        "location": "CIEMAS",
+        "quantity": 1000,
+        "name": "1k BJT",
+        "has_instance_objects": true,
+        "tags": [
+          "component",
+          "electric",
+          "cheap"
+        ]
+      };
+      chai.request(server)
+      .post('/api/inventory')
+      .set('Authorization', token)
+      .send(item)
+      .end((err, res) => {
+        // Post an instance
+        let instance = {
+          "serial_number": "11111",
+          "status": "IN_USE",
+          "condition": "GOOD"
+        };
+        var itemID = res.body._id;
+        chai.request(server)
+        .post('/api/inventory/'+res.body._id+'/instances')
+        .set('Authorization', token)
+        .send(instance)
+        .end((err,res) => {
+          Item.findById(itemID, function(err, item){
+            item.has_instance_objects.should.be.true;
+            chai.request(server)
+            .delete('/api/inventory/'+itemID+'/'+res.body._id)
+            .set('Authorization', token)
+            .end((err,res)=>{
+              Item.findById(itemID, function(err, item){
+                item.has_instance_objects.should.be.false;
+                done();
+              });
+            });
+          });
+
+        });
+      });
+    });
+    it('DELETE instance with existing instances, has_instance_objects remains T', (done) => {
+      let item = new Item({
+        "location": "CIEMAS",
+        "quantity": 1000,
+        "name": "1k BJT",
+        "has_instance_objects": true,
+        "tags": [
+          "component",
+          "electric",
+          "cheap"
+        ],
+        "instances":[
+          {
+            "serial_number": "11111",
+            "status": "IN_USE",
+            "condition": "GOOD"
+          },
+          {
+            "serial_number": "11112",
+            "status": "IN_USE",
+            "condition": "GOOD"
+          }
+        ]
+      });
+      item.save(function(err, item){
+        var instance_id = item.instances[0]._id;
+        chai.request(server)
+        // DELETE the modified item
+        .delete('/api/inventory/'+item._id+'/'+instance_id)
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.message.should.be.eql("Delete successful");
+          Item.findById(item._id, function(err,item){
+            item.has_instance_objects.should.be.true;
+            done();
+          });
+        });
+      });
+    });
+
     it('DELETE instance by instance id, then DELETE should fail', (done)=> {
       let instance = new Instance({
         serial_number: '999',
@@ -386,18 +555,18 @@ describe('Instance API Test', function() {
           .delete('/api/inventory/'+item_id+'/'+instance.id)
           .set('Authorization', token)
           .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.message.should.be.eql('Delete successful');
+            chai.request(server)
+            // DELETE the modified item
+            .delete('/api/inventory/'+item_id+'/'+instance.id)
+            .set('Authorization', token)
+            .end((err, res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
-              res.body.message.should.be.eql('Delete successful');
-              chai.request(server)
-              // DELETE the modified item
-              .delete('/api/inventory/'+item_id+'/'+instance.id)
-              .set('Authorization', token)
-              .end((err, res) => {
-                res.should.have.status(200);
-                res.body.should.be.a('object');
-                res.body.error.should.be.eql('Instance does not exist in item');
-                done();
+              res.body.error.should.be.eql('Instance does not exist in item');
+              done();
             });
           });
         });
@@ -417,18 +586,18 @@ describe('Instance API Test', function() {
           .delete('/api/inventory/'+item_id+'/'+instance.id)
           .set('Authorization', token)
           .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.message.should.be.eql('Delete successful');
+            chai.request(server)
+            // DELETE the modified item
+            .get('/api/inventory/'+item_id+'/'+instance.id)
+            .set('Authorization', token)
+            .end((err, res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
-              res.body.message.should.be.eql('Delete successful');
-              chai.request(server)
-              // DELETE the modified item
-              .get('/api/inventory/'+item_id+'/'+instance.id)
-              .set('Authorization', token)
-              .end((err, res) => {
-                res.should.have.status(200);
-                res.body.should.be.a('object');
-                res.body.error.should.be.eql('Instance does not exist in item');
-                done();
+              res.body.error.should.be.eql('Instance does not exist in item');
+              done();
             });
           });
         });
@@ -448,19 +617,19 @@ describe('Instance API Test', function() {
           .delete('/api/inventory/'+item_id+'/'+instance.id)
           .set('Authorization', token)
           .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.message.should.be.eql('Delete successful');
+            chai.request(server)
+            // DELETE the modified item
+            .put('/api/inventory/'+item_id+'/'+instance.id)
+            .set('Authorization', token)
+            .send(instance)
+            .end((err, res) => {
               res.should.have.status(200);
               res.body.should.be.a('object');
-              res.body.message.should.be.eql('Delete successful');
-              chai.request(server)
-              // DELETE the modified item
-              .put('/api/inventory/'+item_id+'/'+instance.id)
-              .set('Authorization', token)
-              .send(instance)
-              .end((err, res) => {
-                res.should.have.status(200);
-                res.body.should.be.a('object');
-                res.body.error.should.be.eql('Instance does not exist in item');
-                done();
+              res.body.error.should.be.eql('Instance does not exist in item');
+              done();
             });
           });
         });
