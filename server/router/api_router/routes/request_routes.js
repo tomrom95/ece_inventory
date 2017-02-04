@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var itemFieldsToReturn = 'name model_number location description';
 
 module.exports.getAPI = function (req, res) {
-  // searchable by user_id, item_id, reason, created, quantity, status
+  // searchable by user, item_id, reason, created, quantity, status
   var reason = req.query.reason;
   var quantity = req.query.quantity;
   var status = req.query.status;
@@ -14,7 +14,7 @@ module.exports.getAPI = function (req, res) {
 
   var query = {};
   // An admin can GET all requests, but users can only get their requests
-  if(!req.user.is_admin) query.user_id = mongoose.Types.ObjectId(req.user._id);
+  if(!req.user.is_admin) query.user = mongoose.Types.ObjectId(req.user._id);
   if(req.query.item_id) query.item = mongoose.Types.ObjectId(req.query.item_id);
   if(reason) query.reason = {'$regex': reason, '$options':'i'};
   if(req.query.created) query.created = new Date(req.query.created);
@@ -24,6 +24,7 @@ module.exports.getAPI = function (req, res) {
   if(reviewer_comment) query.reviewer_comment = {'$regex': reviewer_comment, '$options': 'i'};
   Request.find(query)
     .populate('item', itemFieldsToReturn)
+    .populate('user', 'username')
     .exec(function(err, requests){
       if(err) return res.send({error:err});
       res.json(requests);
@@ -35,7 +36,7 @@ module.exports.postAPI = function(req,res){
   if(!req.user._id) {
     return res.send({error: "User ID null"})
   }  else {
-    request.user_id = req.user._id;
+    request.user = req.user._id;
   }
   if(!req.body.item_id && !req.body.item) {
     return res.send({error: "Item ID null"});
@@ -59,6 +60,7 @@ module.exports.postAPI = function(req,res){
 module.exports.getAPIbyID = function(req, res){
   Request.findById(req.params.request_id)
          .populate('item', itemFieldsToReturn)
+         .populate('user', 'username')
          .exec(function(err,request){
     if(err) return res.send({error:err});
     if(!request) return res.send({error: 'Request does not exist'});
@@ -82,17 +84,23 @@ module.exports.putAPI = function(req,res){
 };
 
 module.exports.deleteAPI = function(req,res){
+  // Non-admin users can only delete their own requests.
   Request.findById(req.params.request_id, function(err,request){
     if(err) return res.send({error:err});
     if(!request) return res.send({error: 'Request does not exist'});
     else{
-      request.remove(function(err){
-        if(err) return res.send({error:err});
-        res.json({message: 'Delete successful'});
-      })
+      // If id of current user matches the one in the request, or user is an admin
+      if(req.user._id.toString() == request.user.toString() || req.user.is_admin){
+        request.remove(function(err){
+          if(err) return res.send({error:err});
+          res.json({message: 'Delete successful'});
+        });
+      } else {
+        res.json({error: "You are not authorized to remove this request"});
+      }
     }
   });
-}
+};
 
 function disperse(requestID, next) {
   Request.findById(requestID, function(err, request) {
