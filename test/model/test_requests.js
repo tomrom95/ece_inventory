@@ -8,7 +8,7 @@ var assert = require('chai').assert
 describe('Requests', function() {
   it('should throw error for invalid object', function(done) {
     var request = new Request({
-      user_id: '1234',
+      user: '1234',
       reason: 'dunno',
       quantity: 2
     });
@@ -20,7 +20,7 @@ describe('Requests', function() {
   it('should validate a valid object', function(done) {
     var requestJSON = {
       item: '53cb6b9b4f4ddef1ad47f943', // fake valid item id
-      user_id: '53cb6b9b4f4ddef1ad47f943',
+      user: '53cb6b9b4f4ddef1ad47f943',
       reason: 'dunno',
       quantity: 2
     };

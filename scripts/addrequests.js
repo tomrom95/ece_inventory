@@ -14,10 +14,10 @@ User.findOne({'username': 'admin'}, function(err, user) {
       for (var i = 0; i < fakeJSONData.length; i++) {
         if (i%2 == 0) {
           fakeJSONData[i].item = item_one_id;
-          fakeJSONData[i].user_id = user._id;
+          fakeJSONData[i].user = user._id;
         } else {
           fakeJSONData[i].item = item_two_id;
-          fakeJSONData[i].user_id = user._id;
+          fakeJSONData[i].user = user._id;
         }
       }
       Request.insertMany(fakeJSONData, function(obj){
