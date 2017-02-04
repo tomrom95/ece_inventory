@@ -17,14 +17,14 @@ chai.use(require('chai-things'));
 describe('Requests API Test', function () {
   var token;
   var item_id;
-  var user_id;
+  var user;
   beforeEach((done) => { //Before each test we empty the database
     Item.remove({}, (err) => {
       Request.remove({}, (err)=>{
         User.remove({}, (err) => {
-          helpers.createNewUser('test_user', 'test', true, function(error, user) {
-            token = helpers.createAuthToken(user);
-            user_id = user._id;
+          helpers.createNewUser('test_user', 'test', true, function(error, test_user) {
+            token = helpers.createAuthToken(test_user);
+            user = test_user._id;
             Item.insertMany(fakeItemData).then(function(obj){
               // Get the id from one item
               Item.findOne({'name':'1k resistor'}, function(err,items){
@@ -32,7 +32,7 @@ describe('Requests API Test', function () {
                 // Add the user id manually, and the item associated
                 fakeRequestData.forEach(function(obj){
                   obj.item = item_id;
-                  obj.user_id = user._id;
+                  obj.user = test_user._id;
                 });
                 Request.insertMany(fakeRequestData, function(obj){
                   done();
@@ -54,10 +54,11 @@ describe('Requests API Test', function () {
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(5);
-        res.body.should.all.have.property("user_id");
+        res.body.should.all.have.property("user");
         res.body.should.all.have.property("quantity");
         res.body.should.all.have.property("item");
         res.body[0].item.should.have.property("name","1k resistor");
+        res.body[0].user.should.have.property("username", "test_user");
         res.body[0].item._id.should.eql(item_id.toString());
         done();
       });
@@ -74,7 +75,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29T05:00:00.000Z"
         });
         request.item = item_id;
-        request.user_id = user._id;
+        request.user = user._id;
         request.save(function(err){
           chai.request(server)
           .get('/api/requests')
@@ -105,7 +106,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29T05:00:00.000Z"
         });
         request.item = item2._id;
-        request.user_id = user_id;
+        request.user = user;
         request.save(function(err){
           chai.request(server)
           .get('/api/requests?item_id='+item_id)
@@ -114,7 +115,7 @@ describe('Requests API Test', function () {
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(5);
-            res.body.should.all.have.property("user_id");
+            res.body.should.all.have.property("user");
             res.body.should.all.have.property("quantity");
             res.body.should.all.have.property("item");
             res.body[0].item.should.have.property("name","1k resistor");
@@ -136,7 +137,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29T05:00:00.000Z"
         });
         request.item = item2._id;
-        request.user_id = user_id;
+        request.user = user;
         request.save(function(err){
           chai.request(server)
           .get('/api/requests?item_id='+item2._id)
@@ -145,7 +146,7 @@ describe('Requests API Test', function () {
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(1);
-            res.body.should.all.have.property("user_id");
+            res.body.should.all.have.property("user");
             res.body.should.all.have.property("quantity");
             res.body.should.all.have.property("item");
             res.body[0].item.should.have.property("name","2k resistor");
@@ -332,7 +333,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29"
         });
         request.item = item2._id;
-        request.user_id = user_id;
+        request.user = user;
         request.save(function(err){
           chai.request(server)
           .get('/api/requests/' + request._id)
@@ -343,6 +344,7 @@ describe('Requests API Test', function () {
             res.body.should.have.property("reviewer_comment", "NONADMIN");
             res.body.should.have.property("created", "2019-01-29T00:00:00.000Z");
             res.body.should.have.property("quantity", 2000);
+            res.body.user.should.have.property("username", "test_user");
             res.body._id.should.be.eql(request._id.toString());
             res.body.item._id.should.be.eql(item2._id.toString());
             done();
@@ -361,7 +363,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29"
         });
         request.item = item2._id;
-        request.user_id = user_id;
+        request.user = user;
         request.save(function(err){
           chai.request(server)
           .get('/api/requests/' + '988f8c2448c10662691386ab')
@@ -518,7 +520,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user;
       request.save((err, request) => {
         chai.request(server)
         .put('/api/requests/'+request._id)
@@ -551,7 +553,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user;
       request.save((err, request)=>{
         chai.request(server)
         .delete('/api/requests/'+request._id)
@@ -574,7 +576,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user;
       request.save((err, request)=>{
         chai.request(server)
         .delete('/api/requests/'+request._id)
@@ -602,7 +604,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user;
       request.save((err, request)=>{
         chai.request(server)
         .delete('/api/requests/'+request._id)
@@ -630,7 +632,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user;
       request.save((err, request)=>{
         chai.request(server)
         .delete('/api/requests/'+request._id)
@@ -649,9 +651,9 @@ describe('Requests API Test', function () {
       });
     });
     it('DELETE own request by non-admin user', (done) =>{
-      helpers.createNewUser('standard', 'standard', false , function(error, user) {
-        token = helpers.createAuthToken(user);
-        user_id = user._id;
+      helpers.createNewUser('standard', 'standard', false , function(error, standard_user) {
+        token = helpers.createAuthToken(standard_user);
+        user_id = standard_user._id;
         var request = new Request({
           "reviewer_comment": "NONADMIN",
           "requestor_comment": "NONADMIN",
@@ -661,7 +663,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29"
         });
         request.item = item_id;
-        request.user_id = user_id;
+        request.user = user_id;
         request.save((err, request)=>{
           chai.request(server)
           .delete('/api/requests/'+request._id)
@@ -694,11 +696,11 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       admin_request.item = item_id;
-      admin_request.user_id = user_id;
+      admin_request.user = user_id;
       admin_request.save(function(err, admin_request){
-        helpers.createNewUser('standard', 'standard', false , function(error, user) {
-          var standard_token = helpers.createAuthToken(user);
-          standard_user_id = user._id;
+        helpers.createNewUser('standard', 'standard', false , function(error, standard_user) {
+          var standard_token = helpers.createAuthToken(standard_user);
+          standard_user_id = standard_user._id;
           var standard_request = new Request({
             "reviewer_comment": "NONADMIN",
             "requestor_comment": "NONADMIN",
@@ -708,7 +710,7 @@ describe('Requests API Test', function () {
             "created": "2019-01-29"
           });
           standard_request.item = item_id;
-          standard_request.user_id = standard_user_id;
+          standard_request.user = standard_user_id;
           standard_request.save(function(err, request){
             chai.request(server)
             .delete('/api/requests/'+admin_request._id)
@@ -724,9 +726,9 @@ describe('Requests API Test', function () {
       });
     });
     it('DELETE another request by admin user', (done) =>{
-      helpers.createNewUser('standard', 'standard', false , function(error, user) {
-        standard_token = helpers.createAuthToken(user);
-        standard_user_id = user._id;
+      helpers.createNewUser('standard', 'standard', false , function(error, standard_user) {
+        standard_token = helpers.createAuthToken(standard_user);
+        standard_user_id = standard_user._id;
         var standard_request = new Request({
           "reviewer_comment": "NONADMIN",
           "requestor_comment": "NONADMIN",
@@ -736,7 +738,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29"
         });
         standard_request.item = item_id;
-        standard_request.user_id = standard_user_id;
+        standard_request.user = standard_user_id;
         standard_request.save((err, request)=>{
           chai.request(server)
           .delete('/api/requests/'+request._id)
@@ -772,7 +774,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user;
       request.save((err, request) => {
         chai.request(server)
         .patch('/api/requests/'+request._id)
@@ -805,7 +807,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user;
       request.save((err, request) => {
         chai.request(server)
         .patch('/api/requests/'+request._id)
