@@ -168,7 +168,10 @@ return:
 [
   {
 		_id: String,
-    user_id: String,
+    user: {
+			_id: String,
+			username: String
+		},
     item: {
 			id: String,
 			name: String
