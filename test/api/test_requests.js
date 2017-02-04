@@ -506,6 +506,51 @@ describe('Requests API Test', function () {
         });
       });
     });
+    it('Should POST as admin with specified user id', (done) => {
+      Item.findOne({"name": "2k resistor"}, function(err, item2){
+        var request = new Request({
+          "status": "PENDING",
+          "quantity": 2000,
+        });
+        request.user_id = "5896510c820ada1a8d7b5875";
+        request.item = item2._id;
+        chai.request(server)
+        .post('/api/requests/')
+        .set('Authorization', token)
+        .send(request)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property("status", "PENDING");
+          res.body.should.have.property("quantity", 2000);
+          res.body.should.have.property("user_id","5896510c820ada1a8d7b5875");
+          done();
+        });
+      });
+    });
+    it('Should not POST as standard user with specified different user id in body', (done) => {
+      helpers.createNewUser('standard_user', 'test', false , function(error, user) {
+        var standard_token = helpers.createAuthToken(user);
+        Item.findOne({"name": "2k resistor"}, function(err, item2){
+          var request = new Request({
+            "status": "PENDING",
+            "quantity": 2000,
+          });
+          request.user_id = "1896510c820ada1a8d7b5875";
+          request.item = item2._id;
+          chai.request(server)
+          .post('/api/requests/')
+          .set('Authorization', standard_token)
+          .send(request)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.error.should.be.eql("You are not authorized to modify another user's request");
+            done();
+          });
+        });
+    });
+  });
   });
   describe('PUT /requests/:request_id', ()=> {
     it('PUTS request by request id', (done) => {
@@ -534,11 +579,107 @@ describe('Requests API Test', function () {
           res.body.reason.should.be.eql('NONE');
           res.body.status.should.be.eql('FULFILLED');
           res.body.quantity.should.be.eql(3000);
+          res.body.user_id.should.be.eql(user_id.toString());
           res.body._id.should.be.eql(request._id.toString());
           done();
         });
       });
     });
+    it('PUTS request - admin user can specify user id', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "PENDING",
+        "quantity": 2000,
+        "created": "2019-01-29"
+      });
+      request.item = item_id;
+      request.user_id = "1896510c820ada1a8d7b5875";
+      request.save((err, request) => {
+        chai.request(server)
+        .put('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'reason': 'NONE',
+          'status': 'FULFILLED',
+          'quantity': 3000
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.reason.should.be.eql('NONE');
+          res.body.status.should.be.eql('FULFILLED');
+          res.body.quantity.should.be.eql(3000);
+          res.body.user_id.should.be.eql("1896510c820ada1a8d7b5875");
+          res.body._id.should.be.eql(request._id.toString());
+          done();
+        });
+      });
+    });
+    it('Should not PUT request for standard user specifying another user id in PUT body', (done) => {
+        helpers.createNewUser('standard_user', 'test', false , function(error, user) {
+        var standard_token = helpers.createAuthToken(user);
+        var request = new Request({
+          "reviewer_comment": "NONADMIN",
+          "requestor_comment": "NONADMIN",
+          "reason": "NONADMIN",
+          "status": "PENDING",
+          "quantity": 2000,
+          "created": "2019-01-29"
+        });
+        request.item = item_id;
+        request.user_id = user._id;
+        request.save((err, request) => {
+          chai.request(server)
+          .put('/api/requests/'+request._id)
+          .set('Authorization', standard_token)
+          .send({
+            'reason': 'NONE',
+            'status': 'FULFILLED',
+            'quantity': 3000,
+            'user_id': "1896510c820ada1a8d7b5875"
+          })
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.error.should.be.eql("You are not authorized to modify another user's request");
+            done();
+          });
+        });
+      });
+  });
+  it('Should not PUT request for standard user with another user id in request', (done) => {
+      helpers.createNewUser('standard_user', 'test', false , function(error, user) {
+      var standard_token = helpers.createAuthToken(user);
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "PENDING",
+        "quantity": 2000,
+        "created": "2019-01-29"
+      });
+      request.item = item_id;
+      request.user_id = "1896510c820ada1a8d7b5875";
+      request.save((err, request) => {
+        chai.request(server)
+        .put('/api/requests/'+request._id)
+        .set('Authorization', standard_token)
+        .send({
+          'reason': 'NONE',
+          'status': 'FULFILLED',
+          'quantity': 3000
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.be.eql("You are not authorized to modify another user's request");
+          done();
+        });
+      });
+    });
+});
   });
   describe('DELETE /request/:item_id', ()=>{
     it('DELETE request by request id', (done) =>{
