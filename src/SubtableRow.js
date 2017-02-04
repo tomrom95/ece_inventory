@@ -32,7 +32,7 @@ class SubtableRow extends Component {
 
 	makeButton() {
 			if(this.props.buttons){
-				return(<div>{this.props.buttons}</div>);
+				return(<td>{this.props.buttons}</td>);
 			}
 			return (<RequestPopup
 						data={[ {
@@ -63,6 +63,12 @@ class SubtableRow extends Component {
 
 	componentDidMount() {
 		this.loadData();
+	}
+
+	componentWillReceiveProps(nextProps){
+		this.setState({
+			data: nextProps.data
+		});
 	}
 
 }

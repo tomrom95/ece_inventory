@@ -14,7 +14,7 @@ function getKeys(data) {
 	var i;
 	var ret = [];
 	for (i=0; i<keys.length; i++) {
-    if (keys[i] === "_id" || keys[i] == "user_id") {
+    if (keys[i] == "_id" || keys[i] === "user_id" || keys[i] === "item_id") {
 			continue;
 		}
 		else ret.push(keys[i]);
@@ -42,6 +42,7 @@ class RequestTable extends Component {
 		this.state = {
 			columnKeys: getKeys(this.props.data),
 			rows: getValues(this.props.data, getKeys(this.props.data)),
+      raw_data: this.props.data,
       isAdmin: this.props.isAdmin
 		}
     this.denyButton = this.denyButton.bind(this);
@@ -62,7 +63,15 @@ class RequestTable extends Component {
 	makeRows(rowData) {
 		var i;
 		var list = [];
+    var button_list = [];
+
 		for (i=0; i<rowData.length; i++) {
+      if(this.state.isAdmin){
+        button_list=[this.denyButton(i), this.approveButton(i), this.fulfillButton(i)];
+      }
+      else{
+        button_list=[this.deleteButton(i)];
+      }
 			var elem;
 			var id = this.props.data[i]["_id"] + this.props.data[i]["user_id"] + i;
 			elem = (<SubtableRow
@@ -72,7 +81,7 @@ class RequestTable extends Component {
 					row={i}
 					key={id+"-row"}
 					api={this.props.api}
-          buttons={this.denyButton(i)}/>)
+          buttons={button_list}/>);
 			list.push(elem);
 		}
 		return list;
@@ -80,18 +89,101 @@ class RequestTable extends Component {
 
   denyButton(index){
     return(
-      <button className="btn btn-primary" onClick={e => this.denyRequest(index)}>
+      <button key={"deny"+index} className="btn btn-primary" onClick={e => this.denyRequest(index)}>
         Deny
       </button>
     );
   }
 
+  approveButton(index){
+    return(
+      <button key={"approve"+index} className="btn btn-primary" onClick={e => this.approveRequest(index)}>
+        Approve
+      </button>
+    );
+  }
+
+  fulfillButton(index){
+    return(
+      <button key={"fulfill"+index} className="btn btn-primary" onClick={e => this.fulfillRequest(index)}>
+        Fulfill
+      </button>
+    );
+  }
+
+  deleteButton(index){
+    return(
+      <button className="btn btn-primary" onClick={e => this.deleteRequest(index)}>
+        Delete
+      </button>
+    )
+  }
+
+  approveRequest(index){
+    this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
+      {
+        status: 'APPROVED',
+      }
+    )
+    .then(function(response) {
+      if(response.data.error){
+        console.log("error denying request");
+      }
+      else{
+        this.state.rows[index][4] = 'APPROVED'
+        this.forceUpdate();
+      }
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    }.bind(this));
+
+  }
 
   denyRequest(index){
-    console.log(this.state.rows);
+    this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
+      {
+        status: 'DENIED',
+      }
+    )
+    .then(function(response) {
+      if(response.data.error){
+        console.log("error denying request");
+      }
+      else{
+        this.state.rows[index][4] = 'DENIED'
+        this.forceUpdate();
+      }
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    }.bind(this));
 
-    this.state.rows[index][4] = 'Eat a dick'
-    this.forceUpdate();
+  }
+
+  fulfillRequest(index){
+    this.props.api.patch('/api/requests/' + this.state.raw_data[index]._id,
+      {
+        action: "DISBURSE",
+      }
+    )
+    .then(function(response) {
+      if(response.data.error){
+        console.log("error denying request");
+      }
+      else{
+        this.state.rows[index][4] = 'FULFILLED'
+        this.forceUpdate();
+      }
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    }.bind(this));
+
+  }
+
+  deleteRequest(index){
+    console.log("delete");
   }
 
   render() {
