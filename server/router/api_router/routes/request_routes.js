@@ -35,8 +35,15 @@ module.exports.postAPI = function(req,res){
   var request = new Request();
   if(!req.user._id) {
     return res.send({error: "User ID null"})
-  }  else {
-    request.user = req.user._id;
+  } else {
+    // Throw error if standard user is posting with a user id not equal to its own
+    if(!req.user.is_admin && req.user._id != req.body._id){
+      return res.send({error:"You are not authorized to modify another user's request"});
+    }
+  // If admin filled in the user_id param (non-empty),
+  // Use the user_id provided by the admin (to create request on behalf of another user)
+  // Otherwise, use the id of the current user performing POST
+    request.user = (req.body.user && req.user.is_admin) ? req.body.user : req.user._id;
   }
   if(!req.body.item_id && !req.body.item) {
     return res.send({error: "Item ID null"});
@@ -75,7 +82,21 @@ module.exports.putAPI = function(req,res){
     if(err) return res.send({error:err});
     if(!request) return res.send({error: 'Request does not exist'});
     else{
-      Object.assign(request, req.body).save((err,request)=>{
+      var obj;
+      if(!req.user.is_admin){
+          if(req.user._id != request.user || req.user._id != req.body._id){
+            // Standard user cannot modify the user_id
+            return res.send({error: "You are not authorized to modify another user's request"});
+          } else {
+              // Standard user must keep its id in its own request.
+              obj = Object.assign(request, req.body);
+              obj.user = req.user._id;
+          }
+      } else {
+        // Admin cantake in user_id field
+         obj = Object.assign(request, req.body);
+      }
+      obj.save((err,request)=>{
         if(err) return res.send({error:err});
         res.json(request);
       })

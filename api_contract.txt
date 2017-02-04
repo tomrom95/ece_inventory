@@ -161,7 +161,8 @@ params:
 	quantity: Number [optional],
 	status: String [optional],
 	created: Date [optional],
-	item_id: String [optional]
+	item_id: String [optional],
+	user_id: String [optional] // Only for admin users assigning a user id
 }
 
 return:
