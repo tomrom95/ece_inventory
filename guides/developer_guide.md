@@ -37,6 +37,6 @@ This first builds the client code with react scripts. Then, it uses ForeverJS to
 ### Database Schema
 Here is a UML for our database:
 
-![alt text](https://github.com/tomrom95/ece_inventory/tree/master/guides/uml.png "UML Diagram")
+![alt text](https://github.com/tomrom95/ece_inventory/blob/master/guides/uml.png?raw=true "UML Diagram")
 
 To take advantage of MongoDB’s embedded objects, we could have each item store an array of Tag strings and an array of Instance objects. This way we avoid joins to return tags or instances for an item. Requests use foreign keys to connect it with items and users. We took advantage of Mongoose’s ‘populate’ function to populate the foreign key fields with the actual object in a query.
