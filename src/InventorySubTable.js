@@ -48,7 +48,7 @@ class InventorySubTable extends Component {
 	render() {
 		console.log(this.state.columnKeys);
 		return (
-			<table className="table subtable-body">
+			<table className="table subtable-body maintable-body">
 			  <thead className="thread">
 			    <tr>
 		    	  {this.makeColumnKeyElements(this.state.columnKeys)}

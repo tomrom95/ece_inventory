@@ -25,7 +25,10 @@ class SubtableRow extends Component {
 		var htmlList = [];
 		for (i=0; i<elems.length; i++) {
 			var columnTag = this.props.idTag + "-" + i;
-			htmlList.push(<td className="subtable-row" key={columnTag}> {elems[i]} </td>);
+			var value = elems[i];
+			if (value.length === 0 || value === "undefined") 
+				value = "N/A";
+			htmlList.push(<td className="subtable-row" key={columnTag}> {value} </td>);
 		}
 		return htmlList;
 	}
@@ -36,10 +39,10 @@ class SubtableRow extends Component {
 			}
 			return (<RequestPopup
 						data={[ {
-									Serial: "",
-									Condition: "",
-									Status: "",
-									Quantity: ""
+									Serial: "N/A",
+									Condition: "N/A",
+									Status: "N/A",
+									Quantity: this.props.data[4]
 								}
 							]}
 						itemName={this.props.data[0]}
@@ -56,7 +59,6 @@ class SubtableRow extends Component {
 		this.props.api.get("api/inventory/" + id)
 			.then(function (response) {
     			tableData = response.data.instances;
-    			//console.log(tableData);
     			popupRef.update(tableData);
   			});
 	}

@@ -3,6 +3,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import '../App.css';
 import NavBar from './NavBar.js';
 import InventorySubTable from '../InventorySubTable.js';
+import ItemWizard from '../ItemWizard.js';
 import axios from 'axios';
 
 function processData(responseData) {
@@ -62,7 +63,11 @@ class Inventory extends React.Component {
           data={this.state.items}
           hasButton={true}
           isInventorySubtable={true}
-          api={this.instance} />);
+          api={this.instance} />
+
+        <ItemWizard data=
+          {{"Name": "", "Quantity": undefined, "Model Number": "", "Description": "", "Location": "", "Vendor Info": "", "Tags": ""}}
+          api={this.instance} />
       </div>
       );
   }

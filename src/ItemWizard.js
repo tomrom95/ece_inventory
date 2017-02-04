@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-
+ 
 function getKeys(data) {
 	return Object.keys(data);
 }
@@ -35,14 +35,14 @@ class ItemWizard extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			tags: []
+		
 		}
 	}
 
 	makeForm() {
 		var keys = getKeys(this.props.data);
 		var vals = getValues(this.props.data, keys);
-		var types = ["text", " number", "text", "text", "text", "text"];
+		var types = ["text", " text", "text", "text", "text", "text"];
 		var list = []; var i;
 		for (i=0; i<keys.length; i++) {
 			list.push(this.makeTextBox(i, types[i], keys[i], vals[i]));
@@ -61,20 +61,20 @@ class ItemWizard extends Component {
 			  <div className="modal-dialog" role="document">
 			    <div className="modal-content">
 			      <div className="modal-header">
-			        <h5 className="modal-title" id="modalLabel">Modal title</h5>
+			        <h5 className="modal-title" id="modalLabel">Add an Item</h5>
 			      </div>
 			      <div className="modal-body">
 			        {this.makeForm()}
 			      </div>
 			      <div className="modal-footer">
-			        <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-			        <button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Create</button>
+			        <button type="button" onClick={e=>this.clearView()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			        <button onClick={e => {this.onSubmission(); this.clearView()}} type="button" data-dismiss="modal" className="btn btn-primary">Create</button>
 			      </div>
 			    </div>
 			  </div>
 			</div>
 		</div>
-			);
+		);
 	}
 
 	makeTextBox(id, type, label, defaultText){
@@ -86,32 +86,73 @@ class ItemWizard extends Component {
 		);
 	}
 
+	validItem(object) {
+		if (object.name.length === 0) {
+			alert("Name is a required field.");
+			return;
+		}
+
+		if (object.quantity.length === 0) {
+			alert("Quantity is a required field.");
+			return;
+		}
+
+		var val = isWholeNumber(object.quantity);
+
+  		if (val !== true) {
+  			alert(val);
+  			return;
+		}
+		var desc = object.description;
+		if (desc.length > 400) {
+			alert("Description must be less than 400 characters long.");
+			return;
+		}
+		return true;
+	}
+
 	onSubmission() {
-		// make the object you want to send over through axios.
-		console.log("Getting from form: ");
-		//console.log(document.getElementById("textform-0").value);
 		var object = {
 			name: document.getElementById("textform-0").value,
-	  		quantity: Number(document.getElementById("textform-1").value),
+	  		quantity: document.getElementById("textform-1").value,
 	 		model_number: document.getElementById("textform-2").value,
 	  		description: document.getElementById("textform-3").value,
 	  		location: document.getElementById("textform-4").value,
-	  		tags: (document.getElementById("textform-5").value).split(",")
+	  		tags: (document.getElementById("textform-5").value).split(","),
+	  		vendor_info: document.getElementById("textform-6").value,
+	  		has_instance_objects: false
   		}
-  		console.log(object);
-  		var val = isWholeNumber(object.quantity);
-  		if (val === true) {
-  			alert("success!");
 
+  		var i;
+  		for (i=0; i<object.length; i++) {
+  			object.tags[i] = object.tags[i].trim();
   		}
-  		else {
-  			alert(val);
-  		}
-	}
 
-	componentDidMount() {
-		//this.onSubmission();
-	}
+  		if (this.validItem(object) === true) {
+  			alert("Succssful submission!");
+  			object.quantity = Number(object.quantity);
+
+  			console.log(object);
+  			this.props.api.post('/api/inventory', object)
+			  	.then(function(response) {
+			        if (response.data.error) {
+			          console.log(response.data.error);
+			        } else {
+
+			        }
+			      }.bind(this))
+			      .catch(function(error) {
+			        console.log(error);
+			      }.bind(this));
+		}
+  	}
+
+  	clearView() {
+  		var i;
+  		for (i=0; i<getKeys(this.props.data).length; i++) {
+  			document.getElementById("textform-"+i).value = "";
+  		}
+  	}
 
 }
 
