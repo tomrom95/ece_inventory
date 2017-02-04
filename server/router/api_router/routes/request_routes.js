@@ -43,7 +43,7 @@ module.exports.postAPI = function(req,res){
   // If admin filled in the user_id param (non-empty),
   // Use the user_id provided by the admin (to create request on behalf of another user)
   // Otherwise, use the id of the current user performing POST
-    request.user_id = (req.body.user_id && req.user.is_admin) ? req.body.user_id : req.user._id;
+    request.user = (req.body.user && req.user.is_admin) ? req.body.user : req.user._id;
   }
   if(!req.body.item_id && !req.body.item) {
     return res.send({error: "Item ID null"});
@@ -84,13 +84,13 @@ module.exports.putAPI = function(req,res){
     else{
       var obj;
       if(!req.user.is_admin){
-          if(req.user._id != request.user_id || req.user._id != req.body._id){
+          if(req.user._id != request.user || req.user._id != req.body._id){
             // Standard user cannot modify the user_id
             return res.send({error: "You are not authorized to modify another user's request"});
           } else {
               // Standard user must keep its id in its own request.
               obj = Object.assign(request, req.body);
-              obj.user_id = req.user._id;
+              obj.user = req.user._id;
           }
       } else {
         // Admin cantake in user_id field
