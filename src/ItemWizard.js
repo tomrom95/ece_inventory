@@ -118,8 +118,8 @@ class ItemWizard extends Component {
 	 		model_number: document.getElementById("textform-2").value,
 	  		description: document.getElementById("textform-3").value,
 	  		location: document.getElementById("textform-4").value,
-	  		tags: (document.getElementById("textform-5").value).split(","),
-	  		vendor_info: document.getElementById("textform-6").value,
+	  		vendor_info: document.getElementById("textform-5").value,
+	  		tags: (document.getElementById("textform-6").value).split(","),
 	  		has_instance_objects: false
   		}
 

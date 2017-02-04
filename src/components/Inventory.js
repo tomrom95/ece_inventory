@@ -67,7 +67,7 @@ class Inventory extends React.Component {
 
         <ItemWizard data=
           {{"Name": "", "Quantity": undefined, "Model Number": "", "Description": "", "Location": "", "Vendor Info": "", "Tags": ""}}
-          api={this.instance} />
+          api={this.instance}/>
       </div>
       );
   }

@@ -46,6 +46,9 @@
 .subtable-row {
   max-width:50px;
   text-align: left;
+  color: gray;
+  font-size: 13px;
+  font-weight: bold;
 }
 
 .panel-font {
