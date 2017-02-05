@@ -35,13 +35,13 @@ class ItemWizard extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-		
+			data: props.data
 		}
 	}
 
 	makeForm() {
-		var keys = getKeys(this.props.data);
-		var vals = getValues(this.props.data, keys);
+		var keys = getKeys(this.state.data);
+		var vals = getValues(this.state.data, keys);
 		var types = ["text", " text", "text", "text", "text", "text"];
 		var list = []; var i;
 		for (i=0; i<keys.length; i++) {
@@ -54,27 +54,45 @@ class ItemWizard extends Component {
 		return (
 		<div>
 			<button type="button" className="btn btn-primary" data-toggle="modal" data-target="#wizardModal">
-			  Add Item
+			  {this.makeButtonText()}
 			</button>
 
 			<div className="modal fade" id="wizardModal" tabIndex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
 			  <div className="modal-dialog" role="document">
 			    <div className="modal-content">
 			      <div className="modal-header">
-			        <h5 className="modal-title" id="modalLabel">Add an Item</h5>
+			        <h5 className="modal-title" id="modalLabel">{this.makeModalTitle()}</h5>
 			      </div>
 			      <div className="modal-body">
 			        {this.makeForm()}
 			      </div>
 			      <div className="modal-footer">
 			        <button type="button" onClick={e=>this.clearView()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-			        <button onClick={e => {this.onSubmission(); this.clearView()}} type="button" data-dismiss="modal" className="btn btn-primary">Create</button>
+			        <button onClick={e => {this.onSubmission(); this.clearView()}} type="button" data-dismiss="modal" className="btn btn-primary">Submit</button>
 			      </div>
 			    </div>
 			  </div>
 			</div>
 		</div>
 		);
+	}
+
+	makeButtonText() {
+		if (this.props.type === "create") {
+			return "+";
+		}
+		if (this.props.type === "edit") {
+			return "Edit";
+		}
+	}
+
+	makeModalTitle() {
+		if (this.props.type === "create") {
+			return "Add an Item";
+		}
+		if (this.props.type === "edit") {
+			return "Edit Current Item";
+		}	
 	}
 
 	makeTextBox(id, type, label, defaultText){
@@ -133,17 +151,34 @@ class ItemWizard extends Component {
   			object.quantity = Number(object.quantity);
 
   			console.log(object);
-  			this.props.api.post('/api/inventory', object)
-			  	.then(function(response) {
-			        if (response.data.error) {
-			          console.log(response.data.error);
-			        } else {
 
-			        }
-			      }.bind(this))
-			      .catch(function(error) {
-			        console.log(error);
-			      }.bind(this));
+  			if (this.props.type === "create") {
+	  			this.props.api.post('/api/inventory', object)
+				  	.then(function(response) {
+				        if (response.data.error) {
+				          console.log(response.data.error);
+				        } else {
+				        	location.reload();
+				        }
+				      }.bind(this))
+				      .catch(function(error) {
+				        console.log(error);
+				      }.bind(this));
+			}
+			if (this.props.type === "edit") {
+				console.log("Item id is:" + this.props.itemId);
+	  			this.props.api.put('/api/inventory/'+ this.props.itemId, object)
+				  	.then(function(response) {
+				        if (response.data.error) {
+				          console.log(response.data.error);
+				        } else {
+
+				        }
+				      }.bind(this))
+				      .catch(function(error) {
+				        console.log(error);
+				      }.bind(this));
+			}
 		}
   	}
 

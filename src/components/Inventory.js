@@ -45,7 +45,11 @@ class Inventory extends React.Component {
       headers: {'Authorization': localStorage.getItem('token')}
     });
 
-    this.instance.get('/api/inventory/')
+    this.loadData();
+  }
+
+  loadData() {
+      this.instance.get('/api/inventory/')
       .then(function (response) {
         this.setState({
           items: processData(response),
@@ -63,10 +67,6 @@ class Inventory extends React.Component {
           data={this.state.items}
           hasButton={true}
           isInventorySubtable={true}
-          api={this.instance} />
-
-        <ItemWizard data=
-          {{"Name": "", "Quantity": undefined, "Model Number": "", "Description": "", "Location": "", "Vendor Info": "", "Tags": ""}}
           api={this.instance}/>
       </div>
       );

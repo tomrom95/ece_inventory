@@ -93,13 +93,22 @@
   margin-left: 50px;
 }
 
+.delete-button {
+  margin-left: -50px;
+}
+
+.add-button {
+  position: relative;
+  right: -69px;
+}
+
 .request-quantity {
   width: 200px;
   margin-left: 10px;
 }
 
 .request-subtable {
-  width: 350px;
+  width: 380px;
 }
 
 @keyframes App-logo-spin {

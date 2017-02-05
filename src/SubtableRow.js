@@ -1,6 +1,19 @@
 import React, { Component } from 'react';
 import './App.css';
 import RequestPopup from './RequestPopup.js';
+import ItemWizard from './ItemWizard.js';
+
+function getPrefill(data) {
+	return ({
+		"Name": data[0], 
+		"Quantity": data[1], 
+		"Model Number": data[2], 
+		"Description": data[3], 
+		"Location": data[4], 
+		"Tags": data[5]
+	});
+}
+
 
 class SubtableRow extends Component {
 
@@ -16,6 +29,8 @@ class SubtableRow extends Component {
 			<tr>
 				{this.makeList(this.state.data)}
 				{this.makeButton()}
+				<td> {this.makeEditButton()} </td>
+				<td> {this.makeDeleteButton()} </td>
 			</tr>
 		);
 	}
@@ -34,23 +49,42 @@ class SubtableRow extends Component {
 	}
 
 	makeButton() {
-			if(this.props.buttons){
-				return(<div>{this.props.buttons}</div>);
-			}
-			return (<RequestPopup
-						data={[ {
-									Serial: "N/A",
-									Condition: "N/A",
-									Status: "N/A",
-									Quantity: this.props.data[4]
-								}
-							]}
-						itemName={this.props.data[0]}
-						modelName={this.props.data[1]}
-						itemId={this.props.idTag}
-						api={this.props.api}
-						ref={this.props.idTag}/>);
+			return (
+				<RequestPopup
+					data={[ {
+								Serial: "N/A",
+								Condition: "N/A",
+								Status: "N/A",
+								Quantity: this.props.data[4]
+							}
+						]}
+					itemName={this.props.data[0]}
+					modelName={this.props.data[1]}
+					itemId={this.props.idTag}
+					api={this.props.api}
+					ref={this.props.idTag}/>
+			);
 	}
+
+	makeEditButton() {
+		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+			return this.props.buttons;
+		}
+	}
+	makeDeleteButton(id) {
+		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+			return (
+				<button onClick={e=>{this.deleteItem(this.props.idTag); location.reload()}} type="button" className="btn btn-danger delete-button">X</button>
+			);
+		}
+	}
+
+	deleteItem(id) {
+		this.props.api.delete('api/inventory/' + id);
+		console.log("Deleting item number " + id);
+	}
+
+	/*
 
 	loadData() {
 		var tableData;
@@ -66,7 +100,7 @@ class SubtableRow extends Component {
 	componentDidMount() {
 		this.loadData();
 	}
-
+	*/
 }
 
 export default SubtableRow

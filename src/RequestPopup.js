@@ -73,7 +73,6 @@ class RequestPopup extends Component {
 				    </div>
 				  </div>
 				</div>
-			
 			</td>
 		);
 	}
