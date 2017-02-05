@@ -55,8 +55,6 @@ class Inventory extends React.Component {
         this.setState({
           items: processData(response),
         });
-        console.log("NEW DATA:");
-        console.log(this.state);
       }.bind(this))
   }
 
@@ -94,8 +92,9 @@ class Inventory extends React.Component {
       <div>
         <nav aria-label="page-buttons">
           <ul className="pagination maintable-body">
-            <li className="page-item"><a onClick={e=> this.previousPage()} className="page-link" href="#">Previous</a></li>
-            <li className="page-item"><a onClick={e=> this.nextPage()} className="page-link" href="#">Next</a></li>
+            <li className="page-item"><a onClick={e=> this.previousPage()} className="page-link" href="#">&lt;</a></li>
+            <li className="page-item"><a className="page-link" href="#">{this.state.page}</a></li>
+            <li className="page-item"><a onClick={e=> this.nextPage()} className="page-link" href="#">&gt;</a></li>
           </ul> 
         </nav>
 
@@ -103,7 +102,8 @@ class Inventory extends React.Component {
           data={this.state.items}
           hasButton={true}
           isInventorySubtable={true}
-          api={this.instance}/>
+          api={this.instance}
+          callback={e=> this.loadData(this.state.page)}/>
       </div>
       );
   }

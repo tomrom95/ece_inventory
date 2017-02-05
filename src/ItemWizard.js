@@ -158,7 +158,7 @@ class ItemWizard extends Component {
 				        if (response.data.error) {
 				          console.log(response.data.error);
 				        } else {
-				        	location.reload();
+				        	this.props.callback();
 				        }
 				      }.bind(this))
 				      .catch(function(error) {
@@ -172,7 +172,7 @@ class ItemWizard extends Component {
 				        if (response.data.error) {
 				          console.log(response.data.error);
 				        } else {
-
+				        	this.props.callback();
 				        }
 				      }.bind(this))
 				      .catch(function(error) {

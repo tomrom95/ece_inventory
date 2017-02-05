@@ -132,7 +132,8 @@ class InventorySubTable extends Component {
           className="request-button"
           itemId={id}
           key={"edit-"+ id}
-          ref={"edit-"+id}/>
+          ref={"edit-"+id}
+          callback={this.props.callback}/>
         );
 	}
 }
