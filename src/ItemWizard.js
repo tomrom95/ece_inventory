@@ -151,14 +151,15 @@ class ItemWizard extends Component {
   			object.quantity = Number(object.quantity);
 
   			console.log(object);
-
+  			var context = this;
   			if (this.props.type === "create") {
 	  			this.props.api.post('/api/inventory', object)
 				  	.then(function(response) {
 				        if (response.data.error) {
 				          console.log(response.data.error);
 				        } else {
-				        	this.props.callback();
+				        	console.log(context.props);
+				        	context.props.callback();
 				        }
 				      }.bind(this))
 				      .catch(function(error) {

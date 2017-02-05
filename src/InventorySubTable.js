@@ -128,12 +128,12 @@ class InventorySubTable extends Component {
 		return (
 		<ItemWizard data={getPrefill(data)}
           api={this.props.api}
+          callback={this.props.callback}
           type={"edit"}
           className="request-button"
           itemId={id}
           key={"edit-"+ id}
-          ref={"edit-"+id}
-          callback={this.props.callback}/>
+          ref={"edit-"+id} />
         );
 	}
 }

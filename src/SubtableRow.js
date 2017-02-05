@@ -74,7 +74,7 @@ class SubtableRow extends Component {
 	makeDeleteButton(id) {
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
 			return (
-				<button onClick={e=>{this.deleteItem(this.props.idTag)}} type="button" className="btn btn-danger delete-button">X</button>
+				<button onClick={()=>{this.deleteItem(this.props.idTag)}} type="button" className="btn btn-danger delete-button">X</button>
 			);
 		}
 	}

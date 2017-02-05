@@ -50,12 +50,19 @@ class Inventory extends React.Component {
   }
 
   loadData(page) {
-      this.instance.get('/api/inventory/?page='+page+'&per_page=5')
+      this.instance.get('/api/inventory/?page='+page+'&per_page=6')
       .then(function (response) {
-        this.setState({
-          items: processData(response),
-        });
-      }.bind(this))
+        console.log("NEW RESPONSE IS: ");
+        console.log(response);
+        if (response.data.length === 0) {
+          this.previousPage();
+        }
+        else {
+          this.setState({
+            items: processData(response),
+          });
+        }
+      }.bind(this));
   }
 
   previousPage() {
@@ -70,9 +77,22 @@ class Inventory extends React.Component {
 
   nextPage() {
     var nextPage = this.state.page + 1;
+
+    this.instance.get('/api/inventory/?page='+(this.state.page)+'&per_page=6')
+      .then(function (response) {
+        if (response.data.length > this.state.items.length) {
+          console.log("More results on this page");
+          this.setState({
+              page: this.state.page
+          });
+          this.loadData(this.state.page);
+        }
+      }.bind(this));
+
     this.instance.get('/api/inventory/?page='+nextPage+'&per_page=6')
       .then(function (response) {
         if (response.data.length === 0) {
+          console.log("NO RESULTS LEFT");
           return;
         }
         else {
@@ -103,7 +123,7 @@ class Inventory extends React.Component {
           hasButton={true}
           isInventorySubtable={true}
           api={this.instance}
-          callback={e=> this.loadData(this.state.page)}/>
+          callback={() => this.loadData(this.state.page)}/>
       </div>
       );
   }
