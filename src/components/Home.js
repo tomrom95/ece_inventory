@@ -18,12 +18,13 @@ class Home extends Component {
                   };
 
     }
-    else { this.state = {
-      user: null,
-      token: null,
-      name: '',
-      passwrd: '',
-    };
+    else {
+      this.state = {
+        user: null,
+        token: null,
+        name: '',
+        passwrd: '',
+      };
     }
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handlePasswrdChange = this.handlePasswrdChange.bind(this);
@@ -48,12 +49,12 @@ class Home extends Component {
     .then(res => {
 
       if(res.data.token){
+        localStorage.setItem('user', JSON.stringify(res.data.user));
+        localStorage.setItem('token', res.data.token);
         this.setState({
           user: res.data.user,
           token: res.data.token,
         });
-        localStorage.setItem('user', JSON.stringify(this.state.user));
-        localStorage.setItem('token', this.state.token);
       }
       else{
         console.log(res.data.error);

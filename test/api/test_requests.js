@@ -32,7 +32,7 @@ describe('Requests API Test', function () {
                 // Add the user id manually, and the item associated
                 fakeRequestData.forEach(function(obj){
                   obj.item = item_id;
-                  obj.user_id = user._id;
+                  obj.user = user._id;
                 });
                 Request.insertMany(fakeRequestData, function(obj){
                   done();
@@ -54,7 +54,7 @@ describe('Requests API Test', function () {
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(5);
-        res.body.should.all.have.property("user_id");
+        res.body.should.all.have.property("user");
         res.body.should.all.have.property("quantity");
         res.body.should.all.have.property("item");
         res.body[0].item.should.have.property("name","1k resistor");
@@ -74,7 +74,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29T05:00:00.000Z"
         });
         request.item = item_id;
-        request.user_id = user._id;
+        request.user = user._id;
         request.save(function(err){
           chai.request(server)
           .get('/api/requests')
@@ -105,7 +105,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29T05:00:00.000Z"
         });
         request.item = item2._id;
-        request.user_id = user_id;
+        request.user = user_id;
         request.save(function(err){
           chai.request(server)
           .get('/api/requests?item_id='+item_id)
@@ -114,7 +114,7 @@ describe('Requests API Test', function () {
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(5);
-            res.body.should.all.have.property("user_id");
+            res.body.should.all.have.property("user");
             res.body.should.all.have.property("quantity");
             res.body.should.all.have.property("item");
             res.body[0].item.should.have.property("name","1k resistor");
@@ -136,7 +136,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29T05:00:00.000Z"
         });
         request.item = item2._id;
-        request.user_id = user_id;
+        request.user = user_id;
         request.save(function(err){
           chai.request(server)
           .get('/api/requests?item_id='+item2._id)
@@ -145,7 +145,7 @@ describe('Requests API Test', function () {
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(1);
-            res.body.should.all.have.property("user_id");
+            res.body.should.all.have.property("user");
             res.body.should.all.have.property("quantity");
             res.body.should.all.have.property("item");
             res.body[0].item.should.have.property("name","2k resistor");
@@ -332,7 +332,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29"
         });
         request.item = item2._id;
-        request.user_id = user_id;
+        request.user = user_id;
         request.save(function(err){
           chai.request(server)
           .get('/api/requests/' + request._id)
@@ -361,7 +361,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29"
         });
         request.item = item2._id;
-        request.user_id = user_id;
+        request.user = user_id;
         request.save(function(err){
           chai.request(server)
           .get('/api/requests/' + '988f8c2448c10662691386ab')
@@ -399,39 +399,39 @@ describe('Requests API Test', function () {
         });
       });
     });
-    it('Should POST without Date, defaulting to Today', (done) => {
-      Item.findOne({"name": "2k resistor"}, function(err, item2){
-        var request = new Request({
-          "reviewer_comment": "NONADMIN",
-          "requestor_comment": "NONADMIN",
-          "reason": "NONADMIN",
-          "quantity": 2000,
-          "status": "PENDING",
-        });
-        request.item = item2._id;
-        request.save(function(err){
-          chai.request(server)
-          .post('/api/requests/')
-          .set('Authorization', token)
-          .send(request)
-          .end((err, res) => {
-            // This test case may fail if ran straddling a minute because of how the times are compared.
-            // Run again.
-            res.should.have.status(200);
-            res.body.should.be.a('object');
-            var bodyDate = new Date(res.body.created);
-            bodyDate.setSeconds(0,0);
-            bodyDate = bodyDate.toISOString();
-            var compareDate = new Date();
-            compareDate.setSeconds(0,0);
-            compareDate = compareDate.toISOString();
-            bodyDate.should.be.eql(compareDate);
-            done();
-          });
-        })
-
-      });
-    });
+    // it('Should POST without Date, defaulting to Today', (done) => {
+    //   Item.findOne({"name": "2k resistor"}, function(err, item2){
+    //     var request = new Request({
+    //       "reviewer_comment": "NONADMIN",
+    //       "requestor_comment": "NONADMIN",
+    //       "reason": "NONADMIN",
+    //       "quantity": 2000,
+    //       "status": "PENDING",
+    //     });
+    //     request.item = item2._id;
+    //     request.save(function(err){
+    //       chai.request(server)
+    //       .post('/api/requests/')
+    //       .set('Authorization', token)
+    //       .send(request)
+    //       .end((err, res) => {
+    //         // This test case may fail if ran straddling a minute because of how the times are compared.
+    //         // Run again.
+    //         res.should.have.status(200);
+    //         res.body.should.be.a('object');
+    //         var bodyDate = new Date(res.body.created);
+    //         bodyDate.setSeconds(0,0);
+    //         bodyDate = bodyDate.toISOString();
+    //         var compareDate = new Date();
+    //         compareDate.setSeconds(0,0);
+    //         compareDate = compareDate.toISOString();
+    //         bodyDate.should.be.eql(compareDate);
+    //         done();
+    //       });
+    //     })
+    //
+    //   });
+    // });
     it('Should not POST without quantity', (done) => {
       Item.findOne({"name": "2k resistor"}, function(err, item2){
         var request = new Request({
@@ -506,6 +506,51 @@ describe('Requests API Test', function () {
         });
       });
     });
+    it('Should POST as admin with specified user id', (done) => {
+      Item.findOne({"name": "2k resistor"}, function(err, item2){
+        var request = new Request({
+          "status": "PENDING",
+          "quantity": 2000,
+        });
+        request.user = "5896510c820ada1a8d7b5875";
+        request.item = item2._id;
+        chai.request(server)
+        .post('/api/requests/')
+        .set('Authorization', token)
+        .send(request)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.should.have.property("status", "PENDING");
+          res.body.should.have.property("quantity", 2000);
+          res.body.should.have.property("user","5896510c820ada1a8d7b5875");
+          done();
+        });
+      });
+    });
+    it('Should not POST as standard user with specified different user id in body', (done) => {
+      helpers.createNewUser('standard_user', 'test', false , function(error, user) {
+        var standard_token = helpers.createAuthToken(user);
+        Item.findOne({"name": "2k resistor"}, function(err, item2){
+          var request = new Request({
+            "status": "PENDING",
+            "quantity": 2000,
+          });
+          request.user = "1896510c820ada1a8d7b5875";
+          request.item = item2._id;
+          chai.request(server)
+          .post('/api/requests/')
+          .set('Authorization', standard_token)
+          .send(request)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.error.should.be.eql("You are not authorized to modify another user's request");
+            done();
+          });
+        });
+    });
+  });
   });
   describe('PUT /requests/:request_id', ()=> {
     it('PUTS request by request id', (done) => {
@@ -518,7 +563,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user_id;
       request.save((err, request) => {
         chai.request(server)
         .put('/api/requests/'+request._id)
@@ -534,11 +579,107 @@ describe('Requests API Test', function () {
           res.body.reason.should.be.eql('NONE');
           res.body.status.should.be.eql('FULFILLED');
           res.body.quantity.should.be.eql(3000);
+          res.body.user.should.be.eql(user_id.toString());
           res.body._id.should.be.eql(request._id.toString());
           done();
         });
       });
     });
+    it('PUTS request - admin user can specify user id', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "PENDING",
+        "quantity": 2000,
+        "created": "2019-01-29"
+      });
+      request.item = item_id;
+      request.user = "1896510c820ada1a8d7b5875";
+      request.save((err, request) => {
+        chai.request(server)
+        .put('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'reason': 'NONE',
+          'status': 'FULFILLED',
+          'quantity': 3000
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.reason.should.be.eql('NONE');
+          res.body.status.should.be.eql('FULFILLED');
+          res.body.quantity.should.be.eql(3000);
+          res.body.user.should.be.eql("1896510c820ada1a8d7b5875");
+          res.body._id.should.be.eql(request._id.toString());
+          done();
+        });
+      });
+    });
+    it('Should not PUT request for standard user specifying another user id in PUT body', (done) => {
+        helpers.createNewUser('standard_user', 'test', false , function(error, user) {
+        var standard_token = helpers.createAuthToken(user);
+        var request = new Request({
+          "reviewer_comment": "NONADMIN",
+          "requestor_comment": "NONADMIN",
+          "reason": "NONADMIN",
+          "status": "PENDING",
+          "quantity": 2000,
+          "created": "2019-01-29"
+        });
+        request.item = item_id;
+        request.user = user._id;
+        request.save((err, request) => {
+          chai.request(server)
+          .put('/api/requests/'+request._id)
+          .set('Authorization', standard_token)
+          .send({
+            'reason': 'NONE',
+            'status': 'FULFILLED',
+            'quantity': 3000,
+            'user': "1896510c820ada1a8d7b5875"
+          })
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.error.should.be.eql("You are not authorized to modify another user's request");
+            done();
+          });
+        });
+      });
+  });
+  it('Should not PUT request for standard user with another user id in request', (done) => {
+      helpers.createNewUser('standard_user', 'test', false , function(error, user) {
+      var standard_token = helpers.createAuthToken(user);
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "PENDING",
+        "quantity": 2000,
+        "created": "2019-01-29"
+      });
+      request.item = item_id;
+      request.user = "1896510c820ada1a8d7b5875";
+      request.save((err, request) => {
+        chai.request(server)
+        .put('/api/requests/'+request._id)
+        .set('Authorization', standard_token)
+        .send({
+          'reason': 'NONE',
+          'status': 'FULFILLED',
+          'quantity': 3000
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.be.eql("You are not authorized to modify another user's request");
+          done();
+        });
+      });
+    });
+});
   });
   describe('DELETE /request/:item_id', ()=>{
     it('DELETE request by request id', (done) =>{
@@ -551,7 +692,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user_id;
       request.save((err, request)=>{
         chai.request(server)
         .delete('/api/requests/'+request._id)
@@ -574,7 +715,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user_id;
       request.save((err, request)=>{
         chai.request(server)
         .delete('/api/requests/'+request._id)
@@ -602,7 +743,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user_id;
       request.save((err, request)=>{
         chai.request(server)
         .delete('/api/requests/'+request._id)
@@ -630,7 +771,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user_id;
       request.save((err, request)=>{
         chai.request(server)
         .delete('/api/requests/'+request._id)
@@ -661,7 +802,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29"
         });
         request.item = item_id;
-        request.user_id = user_id;
+        request.user = user_id;
         request.save((err, request)=>{
           chai.request(server)
           .delete('/api/requests/'+request._id)
@@ -694,7 +835,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       admin_request.item = item_id;
-      admin_request.user_id = user_id;
+      admin_request.user = user_id;
       admin_request.save(function(err, admin_request){
         helpers.createNewUser('standard', 'standard', false , function(error, user) {
           var standard_token = helpers.createAuthToken(user);
@@ -708,7 +849,7 @@ describe('Requests API Test', function () {
             "created": "2019-01-29"
           });
           standard_request.item = item_id;
-          standard_request.user_id = standard_user_id;
+          standard_request.user = standard_user_id;
           standard_request.save(function(err, request){
             chai.request(server)
             .delete('/api/requests/'+admin_request._id)
@@ -736,7 +877,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29"
         });
         standard_request.item = item_id;
-        standard_request.user_id = standard_user_id;
+        standard_request.user = standard_user_id;
         standard_request.save((err, request)=>{
           chai.request(server)
           .delete('/api/requests/'+request._id)
@@ -772,7 +913,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user_id;
       request.save((err, request) => {
         chai.request(server)
         .patch('/api/requests/'+request._id)
@@ -805,7 +946,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user_id = user_id;
+      request.user = user_id;
       request.save((err, request) => {
         chai.request(server)
         .patch('/api/requests/'+request._id)
