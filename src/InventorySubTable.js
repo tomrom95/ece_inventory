@@ -38,11 +38,11 @@ function getValues(data, keys) {
 
 function getPrefill(data) {
 	return ({
-		"Name": data["Name"], 
-		"Quantity": data["Quantity"], 
-		"Model Number": data["Model"], 
-		"Description": data["Description"], 
-		"Location": data["Location"], 
+		"Name": data["Name"],
+		"Quantity": data["Quantity"],
+		"Model Number": data["Model"],
+		"Description": data["Description"],
+		"Location": data["Location"],
 		"Tags": data["Tags"]
 	});
 }
@@ -65,7 +65,6 @@ class InventorySubTable extends Component {
 	}
 
 	render() {
-		console.log(this.state.columnKeys);
 		return (
 			<table className="table subtable-body maintable-body">
 			  <thead className="thread">
@@ -89,12 +88,12 @@ class InventorySubTable extends Component {
 		list.push(<th key={"buttonSpace-0"}> </th>);
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
 			list.push(
-				<th className="add-button" key={"item-wizard-slot"}>        
+				<th className="add-button" key={"item-wizard-slot"}>
 					<ItemWizard data=
 	          			{{"Name": "", "Quantity": undefined, "Model Number": "", "Description": "", "Location": "", "Vendor Info": "", "Tags": ""}}
 	          			api={this.props.api}
 	          			type={"create"}
-	          			key={"makeitem-button"}/> 
+	          			key={"makeitem-button"}/>
 	          	</th>);
 		}
 
@@ -122,9 +121,6 @@ class InventorySubTable extends Component {
 	}
 
 	makeEditButton(data, id) {
-		console.log("Edit button data is: ");
-		console.log(data);
-		console.log(id);
 		return (
 		<ItemWizard data={getPrefill(data)}
           api={this.props.api}

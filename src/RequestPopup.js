@@ -18,7 +18,7 @@ function isWholeNumber(num) {
 		}
 		else return true;
 	}
-} 
+}
 
 function getDate() {
     var d = new Date(),
@@ -39,23 +39,20 @@ class RequestPopup extends Component {
 		this.state = {
 			data: this.props.data
 		}
-		console.log(getDate());
 	}
 
 	render() {
-		console.log("Rendering with: ");
-		console.log(this.state.data);
 		var modalBody = this.makeModalBody();
 		return (
 			<td>
-				<button type="button" className="btn btn-primary request-button" data-toggle="modal" 
-					data-target={"#requestPopup-"+this.props.itemId}> 
-					Request 
+				<button type="button" className="btn btn-primary request-button" data-toggle="modal"
+					data-target={"#requestPopup-"+this.props.itemId}>
+					Request
 				</button>
-				<div className="modal fade" 
-					id={"requestPopup-"+this.props.itemId}  
-					tabIndex="-1" role="dialog" 
-					aria-labelledby="modalLabel" 
+				<div className="modal fade"
+					id={"requestPopup-"+this.props.itemId}
+					tabIndex="-1" role="dialog"
+					aria-labelledby="modalLabel"
 					aria-hidden="true">
 				  <div className="modal-dialog request-subtable" role="document">
 				    <div className="modal-content">
@@ -78,8 +75,6 @@ class RequestPopup extends Component {
 	}
 
 	makeModalBody() {
-		console.log("Data is: ");
-		console.log(this.state.data);
 
 		return (
 		<div className="modal-body request-subtable">
