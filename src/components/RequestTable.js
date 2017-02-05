@@ -67,7 +67,18 @@ class RequestTable extends Component {
 
 		for (i=0; i<rowData.length; i++) {
       if(this.state.isAdmin){
-        button_list=[this.denyButton(i), this.approveButton(i), this.fulfillButton(i)];
+        if(rowData[i][4] === 'PENDING'){
+          button_list=[this.denyButton(i), this.approveButton(i)];
+        }
+        else if (rowData[i][4] === 'APPROVED') {
+          button_list=[this.denyButton(i), this.fulfillButton(i)];
+        }
+        else if (rowData[i][4] === 'DENIED') {
+          button_list=[this.approveButton(i)];
+        }
+        else if (rowData[i][4] === 'FULFILLED') {
+          button_list=[];
+        }
       }
       else{
         button_list=[this.deleteButton(i)];
@@ -169,7 +180,7 @@ class RequestTable extends Component {
     )
     .then(function(response) {
       if(response.data.error){
-        console.log("error denying request");
+        console.log(response.data.error);
       }
       else{
         this.state.rows[index][4] = 'FULFILLED'
