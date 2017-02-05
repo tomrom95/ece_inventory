@@ -24,10 +24,8 @@ function processData(responseData) {
         "hasInstanceObjects": obj.has_instance_objects
       }
     };
-    console.log("id is: " + item["meta"]["id"]);
     items.push(item);
   }
-  console.log(items);
   return items;
 }
 
@@ -50,17 +48,23 @@ class Inventory extends React.Component {
   }
 
   loadData(page) {
+
+      if (page <= 0) {
+        document.getElementById("pageNum").value = this.state.page;
+        return;
+      }
+
       this.instance.get('/api/inventory/?page='+page+'&per_page=6')
       .then(function (response) {
-        console.log("NEW RESPONSE IS: ");
-        console.log(response);
         if (response.data.length === 0) {
-          this.previousPage();
+          document.getElementById("pageNum").value = this.state.page;
         }
         else {
           this.setState({
-            items: processData(response),
+            items: processData(response)
           });
+          this.state.page = page;
+          document.getElementById("pageNum").value = page;
         }
       }.bind(this));
   }
@@ -73,35 +77,41 @@ class Inventory extends React.Component {
       });
       this.loadData(prevPage);
     }
+    document.getElementById("pageNum").value = this.state.page;
   }
 
   nextPage() {
     var nextPage = this.state.page + 1;
+    var loadNextPage = true;
 
     this.instance.get('/api/inventory/?page='+(this.state.page)+'&per_page=6')
       .then(function (response) {
         if (response.data.length > this.state.items.length) {
-          console.log("More results on this page");
           this.setState({
               page: this.state.page
           });
           this.loadData(this.state.page);
+          document.getElementById("pageNum").value = this.state.page;
+          loadNextPage = false;
         }
       }.bind(this));
 
-    this.instance.get('/api/inventory/?page='+nextPage+'&per_page=6')
-      .then(function (response) {
-        if (response.data.length === 0) {
-          console.log("NO RESULTS LEFT");
-          return;
-        }
-        else {
-          this.setState({
-              page: nextPage
-          });
-          this.loadData(nextPage);
-        }
-      }.bind(this));
+    if (loadNextPage === true) {
+      this.instance.get('/api/inventory/?page='+nextPage+'&per_page=6')
+        .then(function (response) {
+          if (response.data.length === 0) {
+            return;
+          }
+          else {
+            this.setState({
+                page: nextPage,
+            });
+            this.loadData(nextPage);
+            document.getElementById("pageNum").value = nextPage;
+          }
+        }.bind(this)); 
+    }
+
   }
 
   render() {
@@ -113,9 +123,11 @@ class Inventory extends React.Component {
         <nav aria-label="page-buttons">
           <ul className="pagination maintable-body">
             <li className="page-item"><a onClick={e=> this.previousPage()} className="page-link" href="#">&lt;</a></li>
-            <li className="page-item"><a className="page-link" href="#">{this.state.page}</a></li>
             <li className="page-item"><a onClick={e=> this.nextPage()} className="page-link" href="#">&gt;</a></li>
+            <li className="page-item">{this.makePageBox()}</li>
+            <li className="page-item">{this.makePageGoButton()}</li>
           </ul> 
+
         </nav>
 
         <InventorySubTable
@@ -127,6 +139,23 @@ class Inventory extends React.Component {
       </div>
       );
   }
+
+  makePageBox() {
+    return (
+      <input type="text" defaultValue={this.state.page} className="form-control pagenum-textbox" id="pageNum"></input>
+    );
+  }
+
+  makePageGoButton() {
+    return(
+      <button type="button" 
+        className="btn btn-primary"
+        onClick={e=> this.loadData(document.getElementById('pageNum').value)}>
+        GO
+      </button>
+    );
+  }
+
 }
 
 export default Inventory;

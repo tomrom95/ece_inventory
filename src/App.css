@@ -91,15 +91,30 @@
 .request-button {
   margin-right: -60px;
   margin-left: 50px;
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
 }
 
 .delete-button {
   margin-left: -50px;
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
 }
 
 .add-button {
   position: relative;
-  right: -69px;
+  right: -34px;
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.edit-button {
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
 }
 
 .request-quantity {
@@ -139,6 +154,17 @@
   font-size: 14px;
   margin-top: 2px;
   margin-bottom: 2px;
+}
+
+.pagenum-textbox {
+  width: 50px;
+  margin-left: 5px;
+}
+
+button {
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
 }
 
 

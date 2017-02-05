@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import SubtableRow from './SubtableRow.js';
 import ItemWizard from './ItemWizard.js';
+import ItemEditor from './ItemEditor.js';
 
 var meta;
 
@@ -43,6 +44,7 @@ function getPrefill(data) {
 		"Model Number": data["Model"], 
 		"Description": data["Description"], 
 		"Location": data["Location"], 
+		"Vendor Info": "",
 		"Tags": data["Tags"]
 	});
 }
@@ -80,6 +82,21 @@ class InventorySubTable extends Component {
 		);
 	}
 
+	makeEditButton(data, id) {
+		console.log("Edit button data is: ");
+		console.log(data);
+		console.log(id);
+		return (
+		<ItemEditor data={getPrefill(data)}
+          api={this.props.api}
+          callback={this.props.callback}
+          className="request-button"
+          itemId={id}
+          key={"edit-"+ id}
+          ref={"edit-"+id} />
+        );
+	}
+
 	makeColumnKeyElements(keys) {
 		var i;
 		var list = [];
@@ -94,7 +111,9 @@ class InventorySubTable extends Component {
 	          			{{"Name": "", "Quantity": undefined, "Model Number": "", "Description": "", "Location": "", "Vendor Info": "", "Tags": ""}}
 	          			api={this.props.api}
 	          			type={"create"}
-	          			key={"makeitem-button"}/> 
+	          			key={"makeitem-button"}
+	          			itemId={"global-create"}
+	          			/> 
 	          	</th>);
 		}
 
@@ -119,22 +138,6 @@ class InventorySubTable extends Component {
 			list.push(elem);
 		}
 		return list;
-	}
-
-	makeEditButton(data, id) {
-		console.log("Edit button data is: ");
-		console.log(data);
-		console.log(id);
-		return (
-		<ItemWizard data={getPrefill(data)}
-          api={this.props.api}
-          callback={this.props.callback}
-          type={"edit"}
-          className="request-button"
-          itemId={id}
-          key={"edit-"+ id}
-          ref={"edit-"+id} />
-        );
 	}
 }
 

@@ -1,6 +1,6 @@
 // Generation of inventory items for insertManyItems method (in addition to existing JSON items in demo data file).
-var willInsertManyItems = true;
-var itemQuantity = 1000;
+var willInsertManyItems = false;
+var itemQuantity = 100;
 
 var mongoose = require('mongoose');
 let Item = require('../server/model/items');
