@@ -35,7 +35,8 @@ class Inventory extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      items: []
+      items: [],
+      page: 1
     }
   }
 
@@ -45,16 +46,44 @@ class Inventory extends React.Component {
       headers: {'Authorization': localStorage.getItem('token')}
     });
 
-    this.loadData();
+    this.loadData(this.state.page);
   }
 
-  loadData() {
-      this.instance.get('/api/inventory/')
+  loadData(page) {
+      this.instance.get('/api/inventory/?page='+page+'&per_page=5')
       .then(function (response) {
         this.setState({
           items: processData(response),
         });
+        console.log("NEW DATA:");
+        console.log(this.state);
       }.bind(this))
+  }
+
+  previousPage() {
+    var prevPage = this.state.page - 1;
+    if (prevPage > 0) {
+      this.setState({
+        page: prevPage
+      });
+      this.loadData(prevPage);
+    }
+  }
+
+  nextPage() {
+    var nextPage = this.state.page + 1;
+    this.instance.get('/api/inventory/?page='+nextPage+'&per_page=6')
+      .then(function (response) {
+        if (response.data.length === 0) {
+          return;
+        }
+        else {
+          this.setState({
+              page: nextPage
+          });
+          this.loadData(nextPage);
+        }
+      }.bind(this));
   }
 
   render() {
@@ -63,6 +92,13 @@ class Inventory extends React.Component {
     }
     return (
       <div>
+        <nav aria-label="page-buttons">
+          <ul className="pagination maintable-body">
+            <li className="page-item"><a onClick={e=> this.previousPage()} className="page-link" href="#">Previous</a></li>
+            <li className="page-item"><a onClick={e=> this.nextPage()} className="page-link" href="#">Next</a></li>
+          </ul> 
+        </nav>
+
         <InventorySubTable
           data={this.state.items}
           hasButton={true}

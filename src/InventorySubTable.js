@@ -57,6 +57,13 @@ class InventorySubTable extends Component {
 		}
 	}
 
+	componentWillReceiveProps(newProps) {
+		this.setState({
+			columnKeys: getKeys(newProps.data),
+			rows: getValues(newProps.data, getKeys(newProps.data))
+		});
+	}
+
 	render() {
 		console.log(this.state.columnKeys);
 		return (
