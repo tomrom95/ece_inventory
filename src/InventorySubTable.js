@@ -67,7 +67,6 @@ class InventorySubTable extends Component {
 	}
 
 	render() {
-		console.log(this.state.columnKeys);
 		return (
 			<table className="table subtable-body maintable-body">
 			  <thead className="thread">
@@ -83,9 +82,6 @@ class InventorySubTable extends Component {
 	}
 
 	makeEditButton(data, id) {
-		console.log("Edit button data is: ");
-		console.log(data);
-		console.log(id);
 		return (
 		<ItemEditor data={getPrefill(data)}
           api={this.props.api}
@@ -111,9 +107,7 @@ class InventorySubTable extends Component {
 	          			{{"Name": "", "Quantity": undefined, "Model Number": "", "Description": "", "Location": "", "Vendor Info": "", "Tags": ""}}
 	          			api={this.props.api}
 	          			type={"create"}
-	          			key={"makeitem-button"}
-	          			itemId={"global-create"}
-	          			/> 
+	          			key={"makeitem-button"} /> 
 	          	</th>);
 		}
 

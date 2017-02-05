@@ -12,8 +12,6 @@ function isWholeNumber(num) {
 	}
 	else {
 		if (Number(num) !== parseInt(num)) {
-			console.log(Number(num));
-			console.log(parseInt(num));
 			return "Please input a whole number!";
 		}
 		else return true;
@@ -32,6 +30,12 @@ function getDate() {
     return [year, month, day].join('-');
 }
 
+function getString(str) {
+	if (str.length === 0)
+		return "undefined"
+	else return String(str);
+}
+
 class RequestPopup extends Component {
 
 	constructor(props) {
@@ -39,12 +43,9 @@ class RequestPopup extends Component {
 		this.state = {
 			data: this.props.data
 		}
-		console.log(getDate());
 	}
 
 	render() {
-		console.log("Rendering with: ");
-		console.log(this.state.data);
 		var modalBody = this.makeModalBody();
 		return (
 			<td>
@@ -62,7 +63,7 @@ class RequestPopup extends Component {
 				      <div className="modal-header">
 				        <h5 className="modal-title" id="modalLabel">
 				        	<div>{"Item Name: " + this.props.itemName} </div>
-				        	<div> {"Model Number: " + this.props.modelName} </div>
+				        	<div> {"Model Number: " + getString(this.props.modelName)} </div>
 				        </h5>
 				      </div>
 				      	{modalBody}
@@ -78,9 +79,6 @@ class RequestPopup extends Component {
 	}
 
 	makeModalBody() {
-		console.log("Data is: ");
-		console.log(this.state.data);
-
 		return (
 		<div className="modal-body request-subtable">
 			<RequestSubtable

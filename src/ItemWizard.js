@@ -144,9 +144,6 @@ class ItemWizard extends Component {
   			object.tags[i] = object.tags[i].trim();
   		}
 
-		console.log("Object is:");
-		console.log(object);
-
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
   			var context = this;

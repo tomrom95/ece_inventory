@@ -80,28 +80,11 @@ class SubtableRow extends Component {
 	}
 
 	deleteItem(id) {
-		this.props.api.delete('api/inventory/' + id);
-		this.props.callback();
-		console.log("Deleting item number " + id);
+		this.props.api.delete('api/inventory/' + id)
+		.then(function(response) {
+			this.props.callback();
+		}.bind(this));
 	}
-
-	/*
-
-	loadData() {
-		var tableData;
-		var id = this.props.idTag;
-		var popupRef = this.refs[this.props.idTag];
-		this.props.api.get("api/inventory/" + id)
-			.then(function (response) {
-    			tableData = response.data.instances;
-    			popupRef.update(tableData);
-  			});
-	}
-
-	componentDidMount() {
-		this.loadData();
-	}
-	*/
 }
 
 export default SubtableRow

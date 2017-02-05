@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import './App.css';
 import RequestTableRow from './RequestTableRow';
 
-var meta;
-
 function getKeys(data) {
 
-	if (data.length == 0)
+	if (data.length === 0)
 		return;
 
 	var keys = Object.keys(data[0]);
@@ -14,7 +12,6 @@ function getKeys(data) {
 	var ret = [];
 	for (i=0; i<keys.length; i++) {
 		if (keys[i] === "meta") {
-			meta = keys[i];
 			continue;
 		}
 		else ret.push(keys[i]);
@@ -53,8 +50,6 @@ class RequestSubtable extends Component {
 	}
 
 	render() {
-		console.log("Request subtable rendering with:");
-		console.log(this.state.rows);
 		return (
 			<table className="table subtable-body">
 			  <thead className="thread">
