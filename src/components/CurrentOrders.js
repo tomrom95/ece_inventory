@@ -54,7 +54,7 @@ class CurrentOrders extends Component {
   }
 
 	render(){
-    if(!this.state.requests || this.state.requests.length == 0){
+    if(!this.state.requests || this.state.requests.length == 0 || this.props.isAdmin){
       return(<div></div>);
     }
     else{

@@ -155,7 +155,6 @@ class Inventory extends React.Component {
     if (this.state.items.length == 0) {
       return (<div></div>)
     }
-    console.log(this.state.isAdmin);
 
     return (
       <div>
