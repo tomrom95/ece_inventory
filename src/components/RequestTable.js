@@ -194,8 +194,26 @@ class RequestTable extends Component {
   }
 
   deleteRequest(index){
-    console.log("delete");
+    this.props.api.delete('/api/requests/' + this.state.raw_data[index]._id,
+      {
+
+      }
+    )
+    .then(function(response) {
+      if(response.data.error){
+        console.log(response.data.error);
+      }
+      else{
+
+      }
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    }.bind(this));
+
   }
+
+  
 
   render() {
 		return (
