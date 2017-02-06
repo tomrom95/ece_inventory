@@ -11,6 +11,7 @@ function processData(responseData) {
   var items = [];
   for (i=0; i<requests.length; i++) {
     var obj = requests[i];
+    console.log(obj);
     var item = {
       "Item": obj.item.name,
       "Time Stamp": obj.created,

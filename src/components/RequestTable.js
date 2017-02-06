@@ -92,6 +92,7 @@ class RequestTable extends Component {
 					row={i}
 					key={id+"-row"}
 					api={this.props.api}
+          request={true}
           buttons={button_list}/>);
 			list.push(elem);
 		}
@@ -131,7 +132,11 @@ class RequestTable extends Component {
   }
 
   editButton(index){
-
+    return(
+      <button className="btn btn-primary" onClick={e => this.editRequest(index)}>
+        Edit
+      </button>
+    )
   }
 
   approveRequest(index){

@@ -29,6 +29,7 @@ class SubtableRow extends Component {
 			<tr>
 			{this.makeList(this.state.data)}
 				{this.makeButton()}
+				<td> {this.makeEditButton()} </td>
 			</tr>
 		);
 	}
@@ -47,7 +48,7 @@ class SubtableRow extends Component {
 	}
 
 	makeButton() {
-			if(this.props.buttons){
+			if(this.props.buttons & this.props.request){
 				return(<td>{this.props.buttons}</td>);
 			}
 			return (<RequestPopup
