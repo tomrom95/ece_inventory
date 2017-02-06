@@ -160,7 +160,9 @@ class RequestPopup extends Component {
           created: "",
           item: this.props.itemId
         };
+
 				if(this.props.isAdmin ){
+
 					if(document.getElementById("username-textbox-" + this.props.itemId).value){
 						username = document.getElementById("username-textbox-" + this.props.itemId).value;
 						request = {

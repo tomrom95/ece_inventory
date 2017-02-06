@@ -84,13 +84,14 @@ class RequestTable extends Component {
       }
 
 			var elem;
-			var id = this.props.data[i]["_id"] + this.props.data[i]["user_id"] + i;
+      console.log(this.props.data[i])
+			var id = this.props.data[i]["item_id"] ;
 			elem = (<SubtableRow
 					columnKeys={this.props.columnKeys}
 					data={rowData[i]}
 					idTag={id}
 					row={i}
-					key={id+"-row"}
+					key={this.props.data[i]["_id"]+"-row"}
 					api={this.props.api}
           request_buttons={button_list}/>);
 			list.push(elem);
