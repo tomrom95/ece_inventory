@@ -32,6 +32,7 @@ class Inventory extends Component {
   constructor(props){
     super(props);
     this.state = {
+      initialLoad: true,
       items: [],
       page: 1,
       filters: {
@@ -62,10 +63,17 @@ class Inventory extends Component {
 
       this.instance.get(this.getURL(page))
       .then(function (response) {
+        if (this.state.initialLoad) {
+          this.setState({initialLoad: false});
+        }
         if (response.data.length === 0) {
-          document.getElementById("pageNum").value = this.state.page;
-          if (justDeleted === true) {
-            this.previousPage();
+          if (page === 1) {
+            this.setState({items: []})
+          } else {
+            document.getElementById("pageNum").value = this.state.page;
+            if (justDeleted === true) {
+              this.previousPage();
+            }
           }
         }
         else {
@@ -151,8 +159,18 @@ class Inventory extends Component {
   }
 
   render() {
-    if (this.state.items.length === 0) {
-      return (<div></div>)
+    var table = null;
+    if (this.state.initialLoad) {
+      table = (<div></div>);
+    } else if (this.state.items.length === 0) {
+      table = (<div className="center-text">No items found</div>);
+    } else {
+      table = (<InventorySubTable
+        data={this.state.items}
+        hasButton={true}
+        isInventorySubtable={true}
+        api={this.instance}
+        callback={e => this.loadData(this.state.page, e)}/>);
     }
 
     return (
@@ -220,13 +238,7 @@ class Inventory extends Component {
             </div>
           </div>
         </div>
-        <InventorySubTable
-          data={this.state.items}
-          hasButton={true}
-          isInventorySubtable={true}
-          api={this.instance}
-
-          callback={e => this.loadData(this.state.page, e)}/>
+        {table}
       </div>
       );
   }
