@@ -92,7 +92,7 @@ class RequestTable extends Component {
 					row={i}
 					key={id+"-row"}
 					api={this.props.api}
-          buttons={button_list}/>);
+          request_buttons={button_list}/>);
 			list.push(elem);
 		}
 		return list;
@@ -213,7 +213,7 @@ class RequestTable extends Component {
 
   }
 
-  
+
 
   render() {
 		return (

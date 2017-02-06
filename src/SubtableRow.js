@@ -1,6 +1,18 @@
 import React, { Component } from 'react';
 import './App.css';
-import RequestPopup from './RequestPopup.js';
+import ItemWizard from './ItemWizard.js';
+
+function getPrefill(data) {
+	return ({
+		"Name": data[0],
+		"Quantity": data[1],
+		"Model Number": data[2],
+		"Description": data[3],
+		"Location": data[4],
+		"Tags": data[5]
+	});
+}
+
 
 class SubtableRow extends Component {
 
@@ -15,7 +27,8 @@ class SubtableRow extends Component {
 		return (
 			<tr>
 				{this.makeList(this.state.data)}
-				{this.makeButton()}
+				{this.makeButtons()}
+
 			</tr>
 		);
 	}
@@ -25,29 +38,28 @@ class SubtableRow extends Component {
 		var htmlList = [];
 		for (i=0; i<elems.length; i++) {
 			var columnTag = this.props.idTag + "-" + i;
-			htmlList.push(<td className="subtable-row" key={columnTag}> {elems[i]} </td>);
+			var value = elems[i];
+			if (value.length === 0 || value === "undefined")
+				value = "N/A";
+			htmlList.push(<td className="subtable-row" key={columnTag}> {value} </td>);
 		}
 		return htmlList;
 	}
 
-	makeButton() {
-			if(this.props.buttons){
+	makeButtons() {
+			if(this.props.request_buttons){
 				return(<td>{this.props.buttons}</td>);
 			}
-			return (<RequestPopup
-						data={[ {
-									Serial: "",
-									Condition: "",
-									Status: "",
-									Quantity: ""
-								}
-							]}
-						itemName={this.props.data[0]}
-						modelName={this.props.data[1]}
-						itemId={this.props.idTag}
-						api={this.props.api}
-						ref={this.props.idTag}/>);
+			else if(this.props.inventory_buttons){
+				return (this.props.inventory_buttons);
+
+			}
+
 	}
+
+
+
+	/*
 
 	loadData() {
 		var tableData;
@@ -56,7 +68,6 @@ class SubtableRow extends Component {
 		this.props.api.get("api/inventory/" + id)
 			.then(function (response) {
     			tableData = response.data.instances;
-    			//console.log(tableData);
     			popupRef.update(tableData);
   			});
 	}
@@ -64,6 +75,7 @@ class SubtableRow extends Component {
 	componentDidMount() {
 		this.loadData();
 	}
+<<<<<<< HEAD
 
 	componentWillReceiveProps(nextProps){
 		this.setState({
@@ -71,6 +83,8 @@ class SubtableRow extends Component {
 		});
 	}
 
+=======
+	*/
 }
 
 export default SubtableRow
