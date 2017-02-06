@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import SubtableRow from './SubtableRow.js';
 import ItemWizard from './ItemWizard.js';
+import RequestPopup from './RequestPopup.js';
+
 
 var meta;
 
@@ -113,24 +115,63 @@ class InventorySubTable extends Component {
 					row={i}
 					key={id+"-row"}
 					api={this.props.api}
-					buttons={this.makeEditButton(this.props.data[i], id)}
+					inventory_buttons={this.makeInventoryButtons(this.props.data[i], id)}
 					callback={this.props.callback}/>);
 			list.push(elem);
 		}
 		return list;
 	}
 
-	makeEditButton(data, id) {
-		return (
-		<ItemWizard data={getPrefill(data)}
-          api={this.props.api}
-          callback={this.props.callback}
-          type={"edit"}
-          className="request-button"
-          itemId={id}
-          key={"edit-"+ id}
-          ref={"edit-"+id} />
-        );
+	makeInventoryButtons(data, id) {
+		if(this.props.isAdmin){
+			return(
+				<div>
+					<ItemWizard data={getPrefill(data)}
+	          api={this.props.api}
+	          callback={this.props.callback}
+	          type={"edit"}
+	          className="request-button"
+	          itemId={id}
+	          key={"edit-"+ id}
+	          ref={"edit-"+id} />
+					<RequestPopup
+								data={[ {
+											Serial: "",
+											Condition: "",
+											Status: "",
+											Quantity: ""
+										}
+									]}
+								itemName={this.props.data[0]}
+								modelName={this.props.data[1]}
+								itemId={this.props.idTag}
+								api={this.props.api}
+								ref={this.props.idTag}/>
+					</div>
+			);
+		}
+		else{
+
+			return (
+				<div>
+					<RequestPopup
+								data={[ {
+											Serial: "",
+											Condition: "",
+											Status: "",
+											Quantity: ""
+										}
+									]}
+								itemName={this.props.data[0]}
+								modelName={this.props.data[1]}
+								itemId={this.props.idTag}
+								api={this.props.api}
+								ref={this.props.idTag}/>
+					</div>
+
+	        );
+		}
+
 	}
 }
 

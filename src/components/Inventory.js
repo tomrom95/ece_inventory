@@ -136,6 +136,8 @@ class Inventory extends React.Component {
     if (this.state.items.length == 0) {
       return (<div></div>)
     }
+    console.log(this.state.isAdmin);
+
     return (
       <div>
         <nav aria-label="page-buttons">
@@ -196,6 +198,7 @@ class Inventory extends React.Component {
           hasButton={true}
           isInventorySubtable={true}
           api={this.instance}
+          isAdmin={this.props.isAdmin}
           callback={() => this.loadData(this.state.page)}/>
       </div>
       );

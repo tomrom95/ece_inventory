@@ -28,8 +28,7 @@ class SubtableRow extends Component {
 		return (
 			<tr>
 			{this.makeList(this.state.data)}
-				{this.makeButton()}
-				<td> {this.makeEditButton()} </td>
+			{this.makeButtons()}
 			</tr>
 		);
 	}
@@ -47,29 +46,17 @@ class SubtableRow extends Component {
 		return htmlList;
 	}
 
-	makeButton() {
-			if(this.props.buttons & this.props.request){
-				return(<td>{this.props.buttons}</td>);
+	makeButtons() {
+			if(this.props.request_buttons ){
+				return(<td>{this.props.request_buttons}</td>);
 			}
-			return (<RequestPopup
-						data={[ {
-									Serial: "",
-									Condition: "",
-									Status: "",
-									Quantity: ""
-								}
-							]}
-						itemName={this.props.data[0]}
-						modelName={this.props.data[1]}
-						itemId={this.props.idTag}
-						api={this.props.api}
-						ref={this.props.idTag}/>);
+			else if(this.props.inventory_buttons){
+
+				return (<td>{this.props.inventory_buttons}</td>);
+			}
+
 	}
 
-	makeEditButton() {
-		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
-			return this.props.buttons;
-		}
 
 
 	/*
@@ -98,6 +85,6 @@ class SubtableRow extends Component {
 
 =======
 	*/
-}
+
 }
 export default SubtableRow;

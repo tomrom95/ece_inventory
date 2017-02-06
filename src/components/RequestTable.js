@@ -68,16 +68,16 @@ class RequestTable extends Component {
 		for (i=0; i<rowData.length; i++) {
       if(this.state.isAdmin){
         if(rowData[i][4] === 'PENDING'){
-          button_list=[this.denyButton(i), this.approveButton(i)];
+          button_list=[this.denyButton(i), this.approveButton(i), this.commentButton(i)];
         }
         else if (rowData[i][4] === 'APPROVED') {
-          button_list=[this.denyButton(i), this.fulfillButton(i)];
+          button_list=[this.denyButton(i), this.fulfillButton(i), this.commentButton(i)];
         }
         else if (rowData[i][4] === 'DENIED') {
-          button_list=[this.approveButton(i)];
+          button_list=[this.approveButton(i), this.commentButton(i)];
         }
         else if (rowData[i][4] === 'FULFILLED') {
-          button_list=[];
+          button_list=[this.commentButton(i)];
         }
       }
       else{
@@ -92,8 +92,7 @@ class RequestTable extends Component {
 					row={i}
 					key={id+"-row"}
 					api={this.props.api}
-          request={true}
-          buttons={button_list}/>);
+          request_buttons={button_list}/>);
 			list.push(elem);
 		}
 		return list;
@@ -131,9 +130,9 @@ class RequestTable extends Component {
     )
   }
 
-  editButton(index){
+  commentButton(index){
     return(
-      <button className="btn btn-primary" onClick={e => this.editRequest(index)}>
+      <button className="btn btn-primary" onClick={e => this.commentRequest(index)}>
         Edit
       </button>
     )
@@ -222,10 +221,8 @@ class RequestTable extends Component {
 
   }
 
-  editRequest() {
-    if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
-      return this.props.buttons;
-    }
+  commentRequest() {
+
   }
 
 
