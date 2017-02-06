@@ -79,12 +79,12 @@ class RequestSubtable extends Component {
 		for (i=0; i<rowData.length; i++) {
 			var elem;
 			elem = (<RequestTableRow
-					data={rowData[i]} 
+					data={rowData[i]}
 					row={i}
 					key={this.props.itemId+"-"+rowData[i][0]+"-"+i}
 					rowId={this.props.itemId+"-row-"+i}/>);
-					// 0 index is SN. Change to something else. 
-			
+					// 0 index is SN. Change to something else.
+
 			list.push(elem);
 		}
 		return list;

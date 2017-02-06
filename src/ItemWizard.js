@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
- 
+
 function getKeys(data) {
 	return Object.keys(data);
 }
@@ -28,7 +28,7 @@ function isWholeNumber(num) {
 		}
 		else return true;
 	}
-} 
+}
 
 class ItemWizard extends Component {
 

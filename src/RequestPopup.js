@@ -16,7 +16,7 @@ function isWholeNumber(num) {
 		}
 		else return true;
 	}
-} 
+}
 
 function getDate() {
     var d = new Date(),
