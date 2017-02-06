@@ -44,7 +44,7 @@ function getPrefill(data) {
 		"Model Number": data["Model"], 
 		"Description": data["Description"], 
 		"Location": data["Location"], 
-		"Vendor Info": "",
+		"Vendor Info": data["Vendor"],
 		"Tags": data["Tags"]
 	});
 }
