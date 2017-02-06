@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { RouteHandler, Link } from 'react-router';
 import NavBar from './NavBar.js';
 import '../App.css';
 import axios from 'axios';
-import Timer from 'react-timer';
 
 class Home extends Component {
   constructor(props) {
@@ -79,8 +77,7 @@ class Home extends Component {
 
   render() {
 
-
-    if(this.state.user){
+    if(this.state.user != null & localStorage.getItem('token') != null){
       let children = null;
       if (this.props.children) {
         children = React.cloneElement(this.props.children, {

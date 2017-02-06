@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import '../App.css';
-import NavBar from './NavBar.js';
 import axios from 'axios';
 import RequestTable from './RequestTable.js';
 
@@ -12,6 +10,7 @@ function processData(responseData) {
   for (i=0; i<requests.length; i++) {
     var obj = requests[i];
     var item = {
+      "Username": obj.user.username,
       "Item": obj.item.name,
       "Time Stamp": obj.created,
       "Quantity": obj.quantity,
@@ -19,15 +18,15 @@ function processData(responseData) {
       "Status": obj.status,
       "_id": obj._id,
       "user_id": obj.user_id,
+      "item_id": obj.item._id,
     };
     items.push(item);
   }
-  console.log(items);
   return items;
 }
 
 
-class GlobalRequests extends React.Component {
+class GlobalRequests extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -56,13 +55,16 @@ class GlobalRequests extends React.Component {
   }
 
   render() {
-    if(!this.state.requests || this.state.requests.length == 0){
+    if(!this.props.isAdmin){
+      return(<div>You are not allowed to access this page</div>);
+    }
+    else if(!this.state.requests || this.state.requests.length === 0){
       return(<div></div>);
     }
     else{
       return (
         <div className="wide">
-          <RequestTable data={this.state.requests} isAdmin={true} />
+          <RequestTable api={this.axiosInstance} data={this.state.requests} isAdmin={true} />
 
         </div>
       );

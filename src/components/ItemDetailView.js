@@ -3,7 +3,7 @@ import axios from 'axios';
 import GlobalRequests from './GlobalRequests';
 
 function getString(str) {
-  if (str.length === 0 || str === undefined || str === null) {
+  if (str === undefined || str === null) {
     return "N/A";
   }
   else return String(str);
@@ -29,11 +29,14 @@ class ItemDetailView extends React.Component {
   }
 
   loadData() {
+
     this.axiosInstance.get('/inventory/' + this.props.params.itemID)
     .then(function(response) {
+      console.log(response);
       this.setState({item: response.data});
     }.bind(this))
     .catch(function(error) {
+      console.log(error);
       this.setState({error: 'Could not load item'});
     }.bind(this));
   }
@@ -50,9 +53,9 @@ class ItemDetailView extends React.Component {
     }
     return (
       <div>
-        <button type="button" 
-          className="btn btn-sm btn-outline-primary info-button" 
-          data-toggle="modal" 
+        <button type="button"
+          className="btn btn-sm btn-outline-primary info-button"
+          data-toggle="modal"
           data-target={"#infoModal-"+this.props.params.itemID}>
             <span className="fa fa-info"></span>
         </button>
@@ -62,7 +65,7 @@ class ItemDetailView extends React.Component {
               tabIndex="-1"
               role="dialog"
               aria-labelledby="infoLabel"
-              aria-hidden="true"> 
+              aria-hidden="true">
             <div className="modal-dialog detail-view" role="document">
               <div className="modal-content">
                 <div className="modal-body">
@@ -95,7 +98,7 @@ class ItemDetailView extends React.Component {
                   </div>
                 </div>
               </div>
-            </div>  
+            </div>
         </div>
       </div>
     );

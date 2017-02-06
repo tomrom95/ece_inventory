@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import SubtableRow from './SubtableRow.js';
 import ItemWizard from './ItemWizard.js';
+import RequestPopup from './RequestPopup.js';
 import ItemEditor from './ItemEditor.js';
 
 var meta;
@@ -39,11 +40,11 @@ function getValues(data, keys) {
 
 function getPrefill(data) {
 	return ({
-		"Name": data["Name"], 
-		"Quantity": data["Quantity"], 
-		"Model Number": data["Model"], 
-		"Description": data["Description"], 
-		"Location": data["Location"], 
+		"Name": data["Name"],
+		"Quantity": data["Quantity"],
+		"Model Number": data["Model"],
+		"Description": data["Description"],
+		"Location": data["Location"],
 		"Vendor Info": data["Vendor"],
 		"Tags": data["Tags"]
 	});
@@ -51,11 +52,11 @@ function getPrefill(data) {
 
 function getEmptyPrefill() {
 	return ({
-		"Name": "", 
-		"Quantity": "", 
-		"Model Number": "", 
-		"Description": "", 
-		"Location": "", 
+		"Name": "",
+		"Quantity": "",
+		"Model Number": "",
+		"Description": "",
+		"Location": "",
 		"Vendor Info": "",
 		"Tags": ""
 	});
@@ -95,34 +96,25 @@ class InventorySubTable extends Component {
 		);
 	}
 
-	makeEditButton(data, id) {
-		return (
-		<ItemEditor data={getPrefill(data)}
-          api={this.props.api}
-          callback={this.props.callback}
-          className="request-button"
-          itemId={id}
-          key={"edit-"+ id}
-          ref={"edit-"+id} />
-        );
-	}
-
 	makeColumnKeyElements(keys) {
 		var i;
 		var list = [];
 		for (i=0; i<keys.length; i++) {
 			list.push(<th key={keys[i]+"-inventorycol"}> {keys[i]} </th>);
 		}
-		list.push(<th key={"buttonSpace-0"}> </th>);
+
+		list.push(<th key={"buttonSpace-0"}></th>);
+		list.push(<th key={"buttonSpace-1"}></th>)
+
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+			list.push(<th key={"buttonSpace-2"}></th>);
+			list.push(<th key={"buttonSpace-3"}></th>);
 			list.push(
-				<th className="add-button" key={"item-wizard-slot"}>        
 					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
-	          			type={"create"}
 	          			key={"makeitem-button"}
-	          			callback={this.props.callback} /> 
-	          	</th>);
+	          			callback={this.props.callback}/>
+	          	);
 		}
 
 		return list;
@@ -141,12 +133,91 @@ class InventorySubTable extends Component {
 					row={i}
 					key={id+"-row"}
 					api={this.props.api}
-					buttons={this.makeEditButton(this.props.data[i], id)}
+					inventory_buttons={this.makeInventoryButtons(this.props.data[i], id)}
 					callback={this.props.callback}/>);
 			list.push(elem);
 		}
 		return list;
 	}
+
+	makeInventoryButtons(data, id) {
+		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+			var list = [];
+			list.push(
+					<RequestPopup
+						data={[ {
+							Serial: data.Serial,
+							Condition: data.Condition,
+							Status: data.Status,
+							Quantity: data.Quantity
+								}
+							]}
+						itemName={data.Name}
+						modelName={data.Model}
+						itemId={data.meta.id}
+						api={this.props.api}
+						ref={data.meta.id}
+						isAdmin={true}
+						key={"request-popup-button-"+id}/>
+			);
+			list.push(this.makeEditButton(data,id));
+			list.push(this.makeDeleteButton(id));
+			return list;			
+		}
+		else return (
+			<RequestPopup
+				data={[ {
+							Serial: data.Serial,
+							Condition: data.Condition,
+							Status: data.Status,
+							Quantity: data.Quantity
+						}
+					]}
+				itemName={data.Name}
+				modelName={data.Model}
+				itemId={data.meta.id}
+				api={this.props.api}
+				ref={data.meta.id}
+				isAdmin={false}/>
+			);
+	}
+
+	makeDeleteButton(id) {
+		return (
+			<td key={"delete-td-"+id} className="subtable-row">
+				<button key={"delete-button-"+id} 
+					onClick={()=>{this.deleteItem(id)}} 
+					type="button" 
+					className="btn btn-danger delete-button">X
+				</button>
+			</td>
+		);
+	}
+
+	makeEditButton(data, id) {
+		return (
+			<td key={"edit-td-"+id} className="subtable-row">
+				<ItemEditor data={getPrefill(data)}
+		          api={this.props.api}
+		          callback={this.props.callback}
+		          className="request-button"
+		          itemId={id}
+		          key={"editbutton-"+ id}
+		          ref={"edit-"+id} />
+	         </td>
+        );
+	}
+
+
+	deleteItem(id) {
+		this.props.api.delete('api/inventory/' + id)
+		.then(function(response) {
+			this.props.callback();
+		}.bind(this));
+		console.log("Deleting item number " + id);
+	}
+
 }
+
 
 export default InventorySubTable

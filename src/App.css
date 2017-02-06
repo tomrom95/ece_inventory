@@ -103,24 +103,25 @@
   font-family: 'Open Sans';
   font-weight: bold;
   font-size: 13px;
-  margin-left: 50px;
+  margin-left: 80px;
 }
 
 .delete-button {
   font-family: 'Open Sans';
   font-weight: bold;
   font-size: 13px;
-  margin-left: -70px;
+  margin-left: -23px;
 }
 
 .add-button {
   position: relative;
-  right: -35px;
   font-family: 'Open Sans';
   font-weight: bold;
   font-size: 13px;
   margin-top: -10px;
   margin-bottom: -5px;
+  margin-right: -50px;
+  margin-left: -40px;
 }
 
 .edit-button {
@@ -133,7 +134,8 @@
 .info-button {
   margin-top: 3px;
   width:30px;
-  margin-left: -40px;
+  margin-left: -24px;
+  margin-right: -80px;
 }
 
 .request-quantity {

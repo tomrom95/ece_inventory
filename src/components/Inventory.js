@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+
 import '../App.css';
-import NavBar from './NavBar.js';
 import InventorySubTable from '../InventorySubTable.js';
 import axios from 'axios';
 
@@ -29,7 +28,7 @@ function processData(responseData) {
   return items;
 }
 
-class Inventory extends React.Component {
+class Inventory extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -122,7 +121,7 @@ class Inventory extends React.Component {
             this.loadData(nextPage);
             document.getElementById("pageNum").value = nextPage;
           }
-        }.bind(this)); 
+        }.bind(this));
     }
 
   }
@@ -211,7 +210,7 @@ class Inventory extends React.Component {
 
   makePageGoButton() {
     return(
-      <button type="button" 
+      <button type="button"
         className="btn btn-primary"
         onClick={e=> this.loadData(document.getElementById('pageNum').value)}>
         GO
@@ -323,9 +322,5 @@ class Inventory extends React.Component {
     }
 
 }
-
-/*
-
-*/
 
 export default Inventory;

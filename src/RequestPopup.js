@@ -31,8 +31,9 @@ function getDate() {
 }
 
 function getString(str) {
-	if (str.length === 0)
-		return "undefined"
+	if (str === undefined || str === null || str === 'undefined') {
+		return "N/A";
+	}
 	else return String(str);
 }
 
@@ -49,8 +50,8 @@ class RequestPopup extends Component {
 		var modalBody = this.makeModalBody();
 		return (
 			<td>
-				<button type="button" className="btn btn-outline-primary request-button" data-toggle="modal" 
-					data-target={"#requestPopup-"+this.props.itemId}> 
+				<button type="button" className="btn btn-outline-primary request-button" data-toggle="modal"
+					data-target={"#requestPopup-"+this.props.itemId}>
 					<span className="fa fa-shopping-cart"></span>
 				</button>
 				<div className="modal fade"
@@ -79,17 +80,36 @@ class RequestPopup extends Component {
 	}
 
 	makeModalBody() {
-		return (
-		<div className="modal-body request-subtable">
-			<RequestSubtable
-				className="row"
-				data={this.state.data}
-				itemId={this.props.itemId}/>
-			{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
-			{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
-			{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
-		</div>
-		);
+		if(this.props.isAdmin){
+			return (
+			<div className="modal-body request-subtable">
+				<RequestSubtable
+					className="row"
+					data={this.state.data}
+					itemId={this.props.itemId}/>
+				{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
+				{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
+				{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
+				{this.makeTextBox("username-textbox-" + this.props.itemId, "text", "Username", "")}
+
+			</div>
+			);
+		}
+		else{
+			return (
+			<div className="modal-body request-subtable">
+				<RequestSubtable
+					className="row"
+					data={this.state.data}
+					itemId={this.props.itemId}/>
+				{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
+				{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
+				{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
+
+			</div>
+			);
+		}
+
 	}
 
 	makeTextBox(id, type, label, defaultText){
@@ -105,6 +125,8 @@ class RequestPopup extends Component {
 		var qty = document.getElementById("qty-textbox-" + this.props.itemId).value;
 		var reasonVal = document.getElementById("reason-textbox-"+ this.props.itemId).value;
 		var comment = document.getElementById("comment-textbox-" + this.props.itemId).value;
+		var username = "";
+
 
 		var val = isWholeNumber(qty);
 		if (val !== true) {
@@ -137,6 +159,24 @@ class RequestPopup extends Component {
           item: this.props.itemId
         };
 
+				if(this.props.isAdmin ){
+
+					if(document.getElementById("username-textbox-" + this.props.itemId).value){
+						username = document.getElementById("username-textbox-" + this.props.itemId).value;
+						request = {
+							reviewer_comment: "",
+		          requestor_comment: comment,
+		          reason: reasonVal,
+		          quantity: qty,
+		          status: "PENDING",
+		          created: "",
+		          item: this.props.itemId,
+							user: username
+						};
+					}
+
+
+				}
   		this.props.api.post('/api/requests', request)
 	  	.then(function(response) {
 	        if (response.data.error) {

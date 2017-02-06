@@ -43,7 +43,7 @@ module.exports.getAPI = function (req, res) {
   // isNaN - checks whether object is not a number
   if(req.query.page && req.query.per_page && !isNaN(req.query.per_page)){
     let paginateOptions = {
-      // page number (not offset)\
+      // page number (not offset)
       select: {instances:0},
       page: req.query.page,
       limit: Number(req.query.per_page)
