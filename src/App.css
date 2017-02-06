@@ -52,7 +52,13 @@
 .maintable-body {
   background-color: white;
   max-width: 1000px;
+}
+
+.maintable-container {
+  max-height: 550px;
+  width: 1500px;
   margin-left: 20px;
+  overflow-y: scroll;
 }
 
 .page-section {
@@ -221,9 +227,9 @@
 }
 
 .inventory-page {
-  margin-top:30px;
+  margin-top:10px;
   margin-right: 80px;
-  margin-left: 10px;
+  margin-left: 20px;
 }
 
 body {

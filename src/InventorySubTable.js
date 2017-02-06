@@ -80,16 +80,18 @@ class InventorySubTable extends Component {
 
 	render() {
 		return (
-			<table className="table maintable-body">
-			  <thead className="thread">
-			    <tr>
-		    	  {this.makeColumnKeyElements(this.state.columnKeys)}
-			    </tr>
-			  </thead>
-			  <tbody>
-			  	{this.makeRows(this.state.rows)}
-			  </tbody>
-			</table>
+			<div className="maintable-container">
+				<table className="table maintable-body">
+				  <thead className="thread">
+				    <tr>
+			    	  {this.makeColumnKeyElements(this.state.columnKeys)}
+				    </tr>
+				  </thead>
+				  <tbody>
+				  	{this.makeRows(this.state.rows)}
+				  </tbody>
+				</table>
+			</div>
 		);
 	}
 
