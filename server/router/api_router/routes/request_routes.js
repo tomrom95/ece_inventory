@@ -1,6 +1,7 @@
 'use strict';
 var Request = require('../../../model/requests');
 var Item = require('../../../model/items');
+var User = require('../../../model/users');
 var mongoose = require('mongoose');
 var itemFieldsToReturn = 'name model_number location description';
 
@@ -43,6 +44,14 @@ module.exports.postAPI = function(req,res){
   // If admin filled in the user_id param (non-empty),
   // Use the user_id provided by the admin (to create request on behalf of another user)
   // Otherwise, use the id of the current user performing POST
+    // if (req.body.user && req.user.is_admin) {
+    //   // Find the user id from the username, and set it to .user field
+    //   let userNameRegex = {}
+    //   request.user =
+    // } else {
+    //
+    // }
+
     request.user = (req.body.user && req.user.is_admin) ? req.body.user : req.user._id;
   }
   if(!req.body.item_id && !req.body.item) {

@@ -53,10 +53,10 @@ class RequestPopup extends Component {
 					data-target={"#requestPopup-"+this.props.itemId}> 
 					<span className="fa fa-shopping-cart"></span>
 				</button>
-				<div className="modal fade" 
-					id={"requestPopup-"+this.props.itemId}  
-					tabIndex="-1" role="dialog" 
-					aria-labelledby="modalLabel" 
+				<div className="modal fade"
+					id={"requestPopup-"+this.props.itemId}
+					tabIndex="-1" role="dialog"
+					aria-labelledby="modalLabel"
 					aria-hidden="true">
 				  <div className="modal-dialog request-subtable" role="document">
 				    <div className="modal-content">

@@ -198,6 +198,17 @@ describe('Inventory API Test', function () {
         done();
       });
       });
+      it('Should not GETs items with excluded tags using single incomplete excluded tag word', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?excluded_tags=chea')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(12);
+        done();
+      });
+      });
       it('GETs items with multiple excluded tags', (done)=>{
         chai.request(server)
         .get('/api/inventory?excluded_tags=cHeAp,pOwEr')
@@ -211,6 +222,17 @@ describe('Inventory API Test', function () {
               return item.tags.should.not.include("cheap").and.not.include("Power");
             })
           });
+        done();
+      });
+      });
+      it('Should not GETs items with excluded tags using multiple incomplete excluded tag words', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?excluded_tags=chea,pow')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(12);
         done();
       });
       });
@@ -424,7 +446,7 @@ describe('Inventory API Test', function () {
           res.body.location.should.be.eql("HUDSON");
           res.body.vendor_info.should.be.eql("Apple");
           res.body.name.should.be.eql("Coaxial");
-          res.body.quantity.should.be.eql(1000); 
+          res.body.quantity.should.be.eql(1000);
           res.body._id.should.be.eql(item.id);
         done();
         });
