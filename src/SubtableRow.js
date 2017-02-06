@@ -1,6 +1,19 @@
 import React, { Component } from 'react';
 import './App.css';
 import RequestPopup from './RequestPopup.js';
+import ItemWizard from './ItemWizard.js';
+
+function getPrefill(data) {
+	return ({
+		"Name": data[0], 
+		"Quantity": data[1], 
+		"Model Number": data[2], 
+		"Description": data[3], 
+		"Location": data[4], 
+		"Tags": data[5]
+	});
+}
+
 
 class SubtableRow extends Component {
 
@@ -16,6 +29,8 @@ class SubtableRow extends Component {
 			<tr>
 				{this.makeList(this.state.data)}
 				{this.makeButton()}
+				<td> {this.makeEditButton()} </td>
+				<td> {this.makeDeleteButton()} </td>
 			</tr>
 		);
 	}
@@ -25,29 +40,52 @@ class SubtableRow extends Component {
 		var htmlList = [];
 		for (i=0; i<elems.length; i++) {
 			var columnTag = this.props.idTag + "-" + i;
-			htmlList.push(<td className="subtable-row" key={columnTag}> {elems[i]} </td>);
+			var value = elems[i];
+			if (value.length === 0 || value === "undefined") 
+				value = "N/A";
+			htmlList.push(<td className="subtable-row" key={columnTag}> {value} </td>);
 		}
 		return htmlList;
 	}
 
 	makeButton() {
-			if(this.props.buttons){
-				return(<div>{this.props.buttons}</div>);
-			}
-			return (<RequestPopup
-						data={[ {
-									Serial: "",
-									Condition: "",
-									Status: "",
-									Quantity: ""
-								}
-							]}
-						itemName={this.props.data[0]}
-						modelName={this.props.data[1]}
-						itemId={this.props.idTag}
-						api={this.props.api}
-						ref={this.props.idTag}/>);
+			return (
+				<RequestPopup
+					data={[ {
+								Serial: "N/A",
+								Condition: "N/A",
+								Status: "N/A",
+								Quantity: this.props.data[4]
+							}
+						]}
+					itemName={this.props.data[0]}
+					modelName={this.props.data[1]}
+					itemId={this.props.idTag}
+					api={this.props.api}
+					ref={this.props.idTag}/>
+			);
 	}
+
+	makeEditButton() {
+		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+			return this.props.buttons;
+		}
+	}
+	makeDeleteButton(id) {
+		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+			return (
+				<button onClick={()=>{this.deleteItem(this.props.idTag)}} type="button" className="btn btn-danger delete-button">X</button>
+			);
+		}
+	}
+
+	deleteItem(id) {
+		this.props.api.delete('api/inventory/' + id);
+		this.props.callback();
+		console.log("Deleting item number " + id);
+	}
+
+	/*
 
 	loadData() {
 		var tableData;
@@ -56,7 +94,6 @@ class SubtableRow extends Component {
 		this.props.api.get("api/inventory/" + id)
 			.then(function (response) {
     			tableData = response.data.instances;
-    			//console.log(tableData);
     			popupRef.update(tableData);
   			});
 	}
@@ -64,7 +101,7 @@ class SubtableRow extends Component {
 	componentDidMount() {
 		this.loadData();
 	}
-
+	*/
 }
 
 export default SubtableRow
