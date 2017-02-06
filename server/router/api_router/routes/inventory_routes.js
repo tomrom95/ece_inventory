@@ -13,7 +13,8 @@ module.exports.getAPI = function (req, res) {
     });
     var required_tags_regex = []; // case-insensitive
     required_tags.forEach(function(opt){
-      required_tags_regex.push(new RegExp(opt, "i"));
+      // '^-----$' regex matches whole string
+      required_tags_regex.push(new RegExp('^'+opt+'$', "i"));
     });
   }
   if(excluded_tags) {
@@ -22,7 +23,7 @@ module.exports.getAPI = function (req, res) {
     });
     var excluded_tags_regex = []; // case-insensitive
     excluded_tags.forEach(function(opt){
-      excluded_tags_regex.push(new RegExp(opt, "i"));
+      excluded_tags_regex.push(new RegExp('^'+opt+'$', "i"));
     });
   }
   var location = req.query.location;
