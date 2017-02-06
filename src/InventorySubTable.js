@@ -188,7 +188,8 @@ class InventorySubTable extends Component {
 				<button key={"delete-button-"+id} 
 					onClick={()=>{this.deleteItem(id)}} 
 					type="button" 
-					className="btn btn-danger delete-button">X
+					className="btn btn-danger delete-button">
+						<span className="fa fa-remove"></span>
 				</button>
 			</td>
 		);

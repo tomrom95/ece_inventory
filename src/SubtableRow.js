@@ -35,7 +35,7 @@ class SubtableRow extends Component {
 			<tr>
 				{this.makeList(this.state.data)}
 				{this.makeButtons()}
-				<td> <ItemDetailView params={{itemID: this.props.idTag}}/> </td>
+				<td className="subtable-row"> <ItemDetailView params={{itemID: this.props.idTag}}/> </td>
 			</tr>
 		);
 	}
