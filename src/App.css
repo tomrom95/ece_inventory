@@ -128,7 +128,7 @@
   font-family: 'Open Sans';
   font-weight: bold;
   font-size: 13px;
-  margin-left: -40px;
+  margin-left: -38px;
 }
 
 .info-button {
@@ -245,6 +245,19 @@
   margin-top:10px;
   margin-right: 80px;
   margin-left: 20px;
+}
+
+.modal-body.padded {
+  margin-top: 30px;
+}
+
+.confirmation-popup {
+  padding-top: 200px;
+}
+
+.confirmation-dialog {
+  width: 400px;
+  font-weight: normal;
 }
 
 body {

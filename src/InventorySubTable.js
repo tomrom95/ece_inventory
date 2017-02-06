@@ -185,12 +185,15 @@ class InventorySubTable extends Component {
 	makeDeleteButton(id) {
 		return (
 			<td key={"delete-td-"+id} className="subtable-row">
-				<button key={"delete-button-"+id} 
-					onClick={()=>{this.deleteItem(id)}} 
+				<button data-toggle="modal" data-target={"#delete-"+id} key={"delete-button-"+id} 
 					type="button" 
 					className="btn btn-danger delete-button">
 						<span className="fa fa-remove"></span>
 				</button>
+				{this.makeConfirmationPopup(
+					"This will delete the selected item and all of its instances. Are you sure you want to proceed?", 
+					"delete", 
+					id)}
 			</td>
 		);
 	}
@@ -216,6 +219,24 @@ class InventorySubTable extends Component {
 			this.props.callback();
 		}.bind(this));
 		console.log("Deleting item number " + id);
+	}
+
+	makeConfirmationPopup(text, type, id) {
+		return (
+			<div className="modal confirmation-popup" id={type+"-"+id}>
+			  <div className="modal-dialog confirmation-dialog" role="document">
+			    <div className="modal-content">
+			      <div className="modal-body padded">
+			        <p>{text}</p>
+			      </div>
+			      <div className="modal-footer">
+			      	<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+			        <button onClick={e=> this.deleteItem(id)} type="button" data-dismiss="modal" className="btn btn-danger">Confirm</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		);
 	}
 
 }
