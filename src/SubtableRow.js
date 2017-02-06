@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import RequestPopup from './RequestPopup.js';
 import ItemWizard from './ItemWizard.js';
+import ItemDetailView from './components/ItemDetailView.js';
 
 function getPrefill(data) {
 	return ({
@@ -37,6 +38,7 @@ class SubtableRow extends Component {
 				{this.makeButton()}
 				<td> {this.makeEditButton()} </td>
 				<td> {this.makeDeleteButton()} </td>
+				<td> <ItemDetailView params={{itemID: this.props.idTag}} /> </td>
 			</tr>
 		);
 	}

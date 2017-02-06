@@ -62,7 +62,8 @@ class ItemWizard extends Component {
 
 			<div className="modal fade" 
 				id={"createModal"}
-				tabIndex="-1" role="dialog" 
+				tabIndex="-1" 
+				role="dialog" 
 				aria-labelledby="createLabel" 
 				aria-hidden="true">
 			  <div className="modal-dialog" role="document">
