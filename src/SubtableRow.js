@@ -70,32 +70,7 @@ class SubtableRow extends Component {
 
 
 
-	/*
 
-	loadData() {
-		var tableData;
-		var id = this.props.idTag;
-		var popupRef = this.refs[this.props.idTag];
-		this.props.api.get("api/inventory/" + id)
-			.then(function (response) {
-    			tableData = response.data.instances;
-    			popupRef.update(tableData);
-  			});
-	}
-
-	componentDidMount() {
-		this.loadData();
-	}
-<<<<<<< HEAD
-
-	componentWillReceiveProps(nextProps){
-		this.setState({
-			data: nextProps.data
-		});
-	}
-
-=======
-	*/
 
 
 
