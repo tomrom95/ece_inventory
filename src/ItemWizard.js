@@ -54,10 +54,10 @@ class ItemWizard extends Component {
 		return (
 		<div>
 			<button type="button" 
-				className="btn btn-primary add-button" 
+				className="btn btn-outline-primary add-button" 
 				data-toggle="modal" 
 				data-target={"#createModal"}>
-				+
+				<span className="fa fa-plus"></span>
 			</button>
 
 			<div className="modal fade" 

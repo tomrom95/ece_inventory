@@ -50,6 +50,12 @@
 }
 
 .maintable-body {
+  background-color: white;
+  margin-left: 22px;
+  max-width: 1000px;
+}
+
+.page-section {
   margin-left: 22px;
 }
 
@@ -68,10 +74,6 @@
 
 .panel-group {
   margin: 0;
-}
-
-.main-table {
-  max-width: 700px;
 }
 
 .main-container {
@@ -97,7 +99,7 @@
 }
 
 .delete-button {
-  margin-left: -50px;
+  margin-left: -52px;
   font-family: 'Open Sans';
   font-weight: bold;
   font-size: 13px;
@@ -105,7 +107,7 @@
 
 .add-button {
   position: relative;
-  right: -34px;
+  right: -35px;
   font-family: 'Open Sans';
   font-weight: bold;
   font-size: 13px;
@@ -115,6 +117,8 @@
   font-family: 'Open Sans';
   font-weight: bold;
   font-size: 13px;
+  margin-left: 21px;
+  margin-right: 1px;
 }
 
 .request-quantity {
@@ -159,24 +163,20 @@
 .pagenum-textbox {
   width: 50px;
   margin-left: 5px;
-  margin-right: 6px;
+  margin-right: 5px;
 }
 
-button {
-  font-family: 'Open Sans';
+.btn {
   font-weight: bold;
-  font-size: 13px;
-}
-
-
-tr {
-  max-height: 15px!important;
 }
 
 body {
-    background-color: gray;
+    background-color: rgba(0,0,0,0.3);
 }
 
 button {
+    font-family: 'Open Sans';
+    font-weight: bold;
+    font-size: 13px;
     padding: 8px 16px;
 }

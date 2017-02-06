@@ -80,7 +80,11 @@ class SubtableRow extends Component {
 	makeDeleteButton(id) {
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
 			return (
-				<button onClick={()=>{this.deleteItem(this.props.idTag)}} type="button" className="btn btn-danger delete-button">X</button>
+				<button onClick={()=>{this.deleteItem(this.props.idTag)}} 
+					type="button" 
+					className="btn btn-danger delete-button">
+					<span className="fa fa-remove"></span>
+				</button>
 			);
 		}
 	}
@@ -88,7 +92,7 @@ class SubtableRow extends Component {
 	deleteItem(id) {
 		this.props.api.delete('api/inventory/' + id)
 		.then(function(response) {
-			this.props.callback();
+			this.props.callback(true);
 		}.bind(this));
 	}
 }

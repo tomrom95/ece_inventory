@@ -54,10 +54,10 @@ class ItemEditor extends Component {
 		return (
 		<div>
 			<button type="button" 
-				className="btn btn-primary edit-button" 
+				className="btn btn-outline-primary edit-button" 
 				data-toggle="modal" 
 				data-target={"#editModal-"+this.props.itemId}>
-				Edit
+				<span className="fa fa-pencil"></span> 
 			</button>
 
 			<div className="modal fade" 

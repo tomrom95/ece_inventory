@@ -17,6 +17,7 @@ function processData(responseData) {
       "Location": obj.location,
       "Description": obj.description,
       "Quantity": obj.quantity,
+      "Vendor": obj.vendor_info,
       "Tags": obj.tags,
       "meta": {
         "id": obj._id,
@@ -53,17 +54,20 @@ class Inventory extends React.Component {
     this.loadData(this.state.page);
   }
 
-  loadData(page) {
+  loadData(page, justDeleted) {
 
       if (page <= 0) {
         document.getElementById("pageNum").value = this.state.page;
         return;
       }
-
+      
       this.instance.get(this.getURL(page))
       .then(function (response) {
         if (response.data.length === 0) {
           document.getElementById("pageNum").value = this.state.page;
+          if (justDeleted === true) {
+            this.previousPage();
+          }
         }
         else {
           this.setState({
@@ -154,16 +158,24 @@ class Inventory extends React.Component {
     return (
       <div>
         <nav aria-label="page-buttons">
-          <ul className="pagination maintable-body">
-            <li className="page-item"><a onClick={e=> this.previousPage()} className="page-link" href="#">&lt;</a></li>
-            <li className="page-item"><a onClick={e=> this.nextPage()} className="page-link" href="#">&gt;</a></li>
+          <ul className="pagination page-section">
+            <li className="page-item">
+              <a onClick={e=> this.previousPage()} className="page-link" href="#">
+                <span className="fa fa-chevron-left"></span>
+              </a>
+            </li>
+            <li className="page-item">
+              <a onClick={e=> this.nextPage()} className="page-link" href="#">
+                <span className="fa fa-chevron-right"></span>
+              </a>
+            </li>
             <li className="page-item">{this.makePageBox()}</li>
             <li className="page-item">{this.makePageGoButton()}</li>
           </ul> 
 
         </nav>
         <div className="form-fields">
-          <div className="row maintable-body">
+          <div className="row page-section">
             <div className="col-md-4">
               <div className="form-group row">
                 <label htmlFor="name-field" className="col-2 col-form-label">Name</label>
@@ -181,7 +193,7 @@ class Inventory extends React.Component {
         			</div>
             </div>
           </div>
-          <div className="row maintable-body">
+          <div className="row page-section">
             <div className="col-md-4">
               <div className="form-group row">
                 <label htmlFor="required-tags-field" className="col-2 col-form-label">Required Tags</label>
@@ -213,7 +225,7 @@ class Inventory extends React.Component {
           hasButton={true}
           isInventorySubtable={true}
           api={this.instance}
-          callback={() => this.loadData(this.state.page)}/>
+          callback={e => this.loadData(this.state.page, e)}/>
       </div>
       );
   }
@@ -227,7 +239,7 @@ class Inventory extends React.Component {
   makePageGoButton() {
     return(
       <button type="button" 
-        className="btn btn-info"
+        className="btn btn-primary"
         onClick={e=> this.loadData(document.getElementById('pageNum').value)}>
         GO
       </button>

@@ -80,7 +80,7 @@ class InventorySubTable extends Component {
 
 	render() {
 		return (
-			<table className="table subtable-body maintable-body">
+			<table className="table maintable-body">
 			  <thead className="thread">
 			    <tr>
 		    	  {this.makeColumnKeyElements(this.state.columnKeys)}
