@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate');
 
 var RequestSchema = new mongoose.Schema({
   user: {
@@ -31,5 +32,6 @@ var RequestSchema = new mongoose.Schema({
   requestor_comment: String,
   reviewer_comment: String
 })
+RequestSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Request', RequestSchema);

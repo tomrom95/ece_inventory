@@ -3,6 +3,7 @@ var Request = require('../../../model/requests');
 var Item = require('../../../model/items');
 var User = require('../../../model/users');
 var mongoose = require('mongoose');
+// fields within the item to return
 var itemFieldsToReturn = 'name model_number location description';
 
 module.exports.getAPI = function (req, res) {
@@ -23,13 +24,27 @@ module.exports.getAPI = function (req, res) {
   if(status) query.status = status;
   if(requestor_comment) query.requestor_comment = {'$regex': requestor_comment, '$options': 'i'};
   if(reviewer_comment) query.reviewer_comment = {'$regex': reviewer_comment, '$options': 'i'};
-  Request.find(query)
-    .populate('item', itemFieldsToReturn)
-    .populate('user', 'username')
-    .exec(function(err, requests){
-      if(err) return res.send({error:err});
-      res.json(requests);
-  });
+
+  if(req.query.page && req.query.per_page && !isNaN(req.query.per_page)){
+    let paginateOptions = {
+      // page number (not offset)
+      page: req.query.page,
+      limit: Number(req.query.per_page),
+      populate: [{path:'item', select: itemFieldsToReturn}, {path:'user', select:'username'}]
+    }
+    Request.paginate(query, paginateOptions, function(err, obj){
+        if(err) return res.send({error: err});
+        res.json(obj.docs);
+    });
+  } else {
+    Request.find(query)
+      .populate('item', itemFieldsToReturn)
+      .populate('user', 'username')
+      .exec(function(err, requests){
+        if(err) return res.send({error:err});
+        res.json(requests);
+    });
+  };
 };
 
 module.exports.postAPI = function(req,res){

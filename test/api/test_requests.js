@@ -304,6 +304,91 @@ describe('Requests API Test', function () {
         done();
       });
     });
+    it('GETs 2nd page with 3 items per page', (done)=>{
+        chai.request(server)
+        .get('/api/requests?page=2&per_page=2')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(2);
+          res.body[0].should.have.property("reviewer_comment", "Bye");
+          res.body[0].should.have.property("requestor_comment", "Hello");
+          res.body[1].should.have.property("reviewer_comment", "Fine");
+          res.body[1].should.have.property("requestor_comment", "Urgent");
+          res.body.should.satisfy(function(requests){
+            return requests.every(function(request){
+              return request.item.should.have.property("name") && request.user.should.have.property("username");
+            })
+          });
+          done();
+        });
+    });
+    it('GETs 3rd page with 100 items per page - should return empty []', (done)=>{
+        chai.request(server)
+        .get('/api/requests?page=3&per_page=100')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(0);
+          done();
+        });
+    });
+    it('GETs 100th page with 3 items per page - should return empty []', (done)=>{
+        chai.request(server)
+        .get('/api/requests?page=100&per_page=3')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(0);
+          done();
+        });
+    });
+    it('GETs 100th page with 100 items per page - should return empty []', (done)=>{
+        chai.request(server)
+        .get('/api/requests?page=100&per_page=100')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(0);
+          done();
+        });
+    });
+    it('GETs whole array for invalid per_page param', (done)=>{
+        chai.request(server)
+        .get('/api/requests?page=3&per_pge=3')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(5);
+          res.body.should.satisfy(function(requests){
+            return requests.every(function(request){
+              return request.item.should.have.property("name") && request.user.should.have.property("username");
+            })
+          });
+          done();
+        });
+    });
+    it('GETs whole array for invalid page param', (done)=>{
+        chai.request(server)
+        .get('/api/requests?pag=3&per_page=3')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(5);
+          res.body.should.satisfy(function(requests){
+            return requests.every(function(request){
+              return request.item.should.have.property("name") && request.user.should.have.property("username");
+            })
+          });
+          done();
+        });
+    });
   });
 
   describe('GET by ID /requests', () =>{
