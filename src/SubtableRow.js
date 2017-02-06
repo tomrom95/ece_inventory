@@ -37,7 +37,7 @@ class SubtableRow extends Component {
 				{this.makeList(this.state.data)}
 
 
-				<td> {this.makeButtons()} </td>
+				{this.makeButtons()}
 				<td> <ItemDetailView params={{itemID: this.props.idTag}} /> </td>
 			</tr>
 		);
@@ -59,7 +59,7 @@ class SubtableRow extends Component {
 	makeButtons() {
 
 			if(this.props.request_buttons){
-			
+
 				return(<td>{this.props.request_buttons}</td>);
 			}
 			else if(this.props.inventory_buttons){

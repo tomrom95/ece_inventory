@@ -158,8 +158,8 @@ class InventorySubTable extends Component {
 			console.log(data);
 			return (
 
-				<div>
-					<RequestPopup
+
+					<div><RequestPopup
 										data={[ {
 											Serial: data.Serial,
 											Condition: data.Condition,
@@ -175,15 +175,15 @@ class InventorySubTable extends Component {
 										isAdmin={true}/>
 
 					{this.makeDeleteButton(id)}
-					{this.makeEditButton(data,id)}
+					{this.makeEditButton(data,id)}</div>
 
-				</div>
+
 			);
 		}
 		else{
 
 			return (
-				<div>
+
 
 					<RequestPopup
 										data={[ {
@@ -200,7 +200,7 @@ class InventorySubTable extends Component {
 										ref={data.meta.id}
 										isAdmin={false}/>
 
-				</div>
+
 			);
 		}
 
