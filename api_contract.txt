@@ -162,7 +162,7 @@ params:
 	status: String [optional],
 	created: Date [optional],
 	item_id: String [optional],
-	user_id: String [optional] // Only for admin users assigning a user id
+	user: String [optional] // Only for admin users entering another username
 }
 
 return:
