@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+
 import '../App.css';
-import NavBar from './NavBar.js';
 import InventorySubTable from '../InventorySubTable.js';
 import axios from 'axios';
 
@@ -60,7 +59,7 @@ class Inventory extends React.Component {
         document.getElementById("pageNum").value = this.state.page;
         return;
       }
-      
+
       this.instance.get(this.getURL(page))
       .then(function (response) {
         if (response.data.length === 0) {
@@ -119,7 +118,7 @@ class Inventory extends React.Component {
             this.loadData(nextPage);
             document.getElementById("pageNum").value = nextPage;
           }
-        }.bind(this)); 
+        }.bind(this));
     }
 
   }
@@ -152,9 +151,10 @@ class Inventory extends React.Component {
   }
 
   render() {
-    if (this.state.items.length == 0) {
+    if (this.state.items.length === 0) {
       return (<div></div>)
     }
+
     return (
       <div>
         <nav aria-label="page-buttons">
@@ -171,7 +171,7 @@ class Inventory extends React.Component {
             </li>
             <li className="page-item">{this.makePageBox()}</li>
             <li className="page-item">{this.makePageGoButton()}</li>
-          </ul> 
+          </ul>
 
         </nav>
         <div className="form-fields">
@@ -225,6 +225,7 @@ class Inventory extends React.Component {
           hasButton={true}
           isInventorySubtable={true}
           api={this.instance}
+
           callback={e => this.loadData(this.state.page, e)}/>
       </div>
       );
@@ -238,7 +239,7 @@ class Inventory extends React.Component {
 
   makePageGoButton() {
     return(
-      <button type="button" 
+      <button type="button"
         className="btn btn-primary"
         onClick={e=> this.loadData(document.getElementById('pageNum').value)}>
         GO

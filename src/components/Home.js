@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { RouteHandler, Link } from 'react-router';
 import NavBar from './NavBar.js';
 import '../App.css';
 import axios from 'axios';
-import Timer from 'react-timer';
 
 class Home extends Component {
   constructor(props) {

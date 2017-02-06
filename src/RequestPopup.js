@@ -31,9 +31,12 @@ function getDate() {
 }
 
 function getString(str) {
-	if (str.length === 0)
-		return "undefined"
-	else return String(str);
+	if (str )
+		if(str.length > 0){
+			return String(str);
+		}
+
+	else return "undefined"
 }
 
 class RequestPopup extends Component {
@@ -49,8 +52,8 @@ class RequestPopup extends Component {
 		var modalBody = this.makeModalBody();
 		return (
 			<td>
-				<button type="button" className="btn btn-outline-primary request-button" data-toggle="modal" 
-					data-target={"#requestPopup-"+this.props.itemId}> 
+				<button type="button" className="btn btn-outline-primary request-button" data-toggle="modal"
+					data-target={"#requestPopup-"+this.props.itemId}>
 					<span className="fa fa-shopping-cart"></span>
 				</button>
 				<div className="modal fade"

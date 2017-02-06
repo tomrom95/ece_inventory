@@ -1,29 +1,69 @@
 import React, { Component } from 'react';
 import '../App.css';
-import NavBar from './NavBar.js';
-var list = require('react-simple-list');
+import axios from 'axios';
+import RequestTable from './RequestTable.js';
 
-function NumberList(props) {
-  const numbers = props.numbers;
-  const listItems = numbers.map((number) =>
-    <li key={number.toString()}>
-      {number}
-    </li>
-  );
-  return (
-    <ul>{listItems}</ul>
-  );
+
+function processData(responseData) {
+  var requests = responseData;
+  var i;
+  var items = [];
+  for (i=0; i<requests.length; i++) {
+    var obj = requests[i];
+    var item = {
+      "Item": obj.item.name,
+      "Time Stamp": obj.created,
+      "Quantity": obj.quantity,
+      "Reason": obj.reason,
+      "Status": obj.status,
+      "_id": obj._id,
+      "user_id": obj.user_id,
+    };
+    items.push(item);
+  }
+  console.log(items);
+  return items;
 }
-
-const numbers = [1, 2, 3, 4, 5];
-
 class CurrentOrders extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      requests: []
+    };
+  }
+
+  componentWillMount() {
+    this.axiosInstance = axios.create({
+      baseURL: 'https://' + location.hostname + ':3001',
+      headers: {'Authorization': localStorage.getItem('token')}
+    });
+    var api = '/api/requests';
+    if (this.props.itemID && this.props.status) {
+      api += '?item_id=' + this.props.itemID + "&status=" + this.props.status;
+    }
+    this.axiosInstance.get(api)
+    .then(function(response) {
+      console.log(response.data);
+      this.setState({requests: processData(response.data)});
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    }.bind(this));
+
+  }
+
 	render(){
-		return(
-			<div>
-				<NumberList numbers={numbers} />
-			</div>
-		);
+    if(!this.state.requests || this.state.requests.length === 0 || this.props.isAdmin){
+      return(<div></div>);
+    }
+    else{
+      return (
+        <div className="wide">
+          <RequestTable data={this.state.requests} isAdmin={false} />
+
+        </div>
+      );
+    }
 	}
 }
 

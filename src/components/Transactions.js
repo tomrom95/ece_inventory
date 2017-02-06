@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import '../App.css';
-import NavBar from './NavBar.js';
 
 var products = [{
       id: 1,
@@ -12,12 +11,12 @@ var products = [{
       name: "Item name 2",
       price: 100
   }];
-// It's a data format example. 
+// It's a data format example.
 function priceFormatter(cell, row){
   return '<i class="glyphicon glyphicon-usd"></i> ' + cell;
 }
 
-class Inventory extends React.Component {
+class Inventory extends Component {
   render() {
     return (
       <div>
