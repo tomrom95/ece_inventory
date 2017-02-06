@@ -98,7 +98,7 @@ class InventorySubTable extends Component {
 	}
 
 	makeEditButton(data, id) {
-		
+
 		return (
 		<ItemEditor data={getPrefill(data)}
           api={this.props.api}
@@ -158,7 +158,7 @@ class InventorySubTable extends Component {
 			console.log(data);
 			return (
 
-				[
+				<div>
 					<RequestPopup
 										data={[ {
 													Serial: "",
@@ -171,12 +171,12 @@ class InventorySubTable extends Component {
 										modelName={data.Model}
 										itemId={this.props.idTag}
 										api={this.props.api}
-										ref={this.props.idTag}/>,
+										ref={this.props.idTag}/>
 
-					this.makeDeleteButton(id),
-					this.makeEditButton(data,id),]
+					{this.makeDeleteButton(id)}
+					{this.makeEditButton(data,id)}
 
-
+				</div>
 			);
 		}
 		else{
