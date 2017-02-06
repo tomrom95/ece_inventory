@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../App.css';
 import SubtableRow from '../SubtableRow';
-import Request from './Request.js';
 
 var meta;
 
@@ -67,22 +66,23 @@ class RequestTable extends Component {
 
 		for (i=0; i<rowData.length; i++) {
       if(this.state.isAdmin){
-        if(rowData[i][4] === 'PENDING'){
+        if(rowData[i][5] === 'PENDING'){
           button_list=[this.denyButton(i), this.approveButton(i)];
         }
-        else if (rowData[i][4] === 'APPROVED') {
+        else if (rowData[i][5] === 'APPROVED') {
           button_list=[this.denyButton(i), this.fulfillButton(i)];
         }
-        else if (rowData[i][4] === 'DENIED') {
+        else if (rowData[i][5] === 'DENIED') {
           button_list=[this.approveButton(i)];
         }
-        else if (rowData[i][4] === 'FULFILLED') {
+        else if (rowData[i][5] === 'FULFILLED') {
           button_list=[];
         }
       }
       else{
         button_list=[this.deleteButton(i)];
       }
+
 			var elem;
 			var id = this.props.data[i]["_id"] + this.props.data[i]["user_id"] + i;
 			elem = (<SubtableRow
@@ -124,9 +124,7 @@ class RequestTable extends Component {
 
   deleteButton(index){
     return(
-      <button className="btn btn-primary" onClick={e => this.deleteRequest(index)}>
-        Delete
-      </button>
+      <button onClick={()=>{this.deleteRequest(index)}} type="button" className="btn btn-danger delete-button">X</button>
     )
   }
 
