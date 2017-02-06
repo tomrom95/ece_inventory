@@ -24,10 +24,8 @@ function processData(responseData) {
         "hasInstanceObjects": obj.has_instance_objects
       }
     };
-    console.log("id is: " + item["meta"]["id"]);
     items.push(item);
   }
-  console.log(items);
   return items;
 }
 
@@ -36,8 +34,15 @@ class Inventory extends React.Component {
     super(props);
     this.state = {
       items: [],
-      page: 1
+      page: 1,
+      filters: {
+        name: "",
+        model_number: "",
+        excluded_tags: "",
+        required_tags: ""
+      }
     }
+    this.getURL = this.getURL.bind(this);
   }
 
   componentWillMount() {
@@ -50,10 +55,8 @@ class Inventory extends React.Component {
   }
 
   loadData(page) {
-      this.instance.get('/api/inventory/?page='+page+'&per_page=6')
+      this.instance.get(this.getURL(page))
       .then(function (response) {
-        console.log("NEW RESPONSE IS: ");
-        console.log(response);
         if (response.data.length === 0) {
           this.previousPage();
         }
@@ -78,10 +81,9 @@ class Inventory extends React.Component {
   nextPage() {
     var nextPage = this.state.page + 1;
 
-    this.instance.get('/api/inventory/?page='+(this.state.page)+'&per_page=6')
+    this.instance.get(this.getURL(this.state.page))
       .then(function (response) {
         if (response.data.length > this.state.items.length) {
-          console.log("More results on this page");
           this.setState({
               page: this.state.page
           });
@@ -89,10 +91,9 @@ class Inventory extends React.Component {
         }
       }.bind(this));
 
-    this.instance.get('/api/inventory/?page='+nextPage+'&per_page=6')
+    this.instance.get(this.getURL(nextPage))
       .then(function (response) {
         if (response.data.length === 0) {
-          console.log("NO RESULTS LEFT");
           return;
         }
         else {
@@ -102,6 +103,33 @@ class Inventory extends React.Component {
           this.loadData(nextPage);
         }
       }.bind(this));
+  }
+
+  getURL(page) {
+    var url = '/api/inventory/?page='
+      + page
+      +'&per_page=10';
+    var filterNames = ["name", "model_number", "required_tags", "excluded_tags"];
+    filterNames.forEach(function(filterName) {
+      if (this.state.filters[filterName]) {
+        url += "&" + filterName + "=" + this.state.filters[filterName];
+      }
+    }.bind(this));
+    return url;
+  }
+
+  filterItems() {
+    this.setState({
+      page: 1,
+      filters: {
+        name: this.refs.name.value,
+        model_number: this.refs.model.value,
+        required_tags: this.refs.required.value,
+        excluded_tags: this.refs.excluded.value
+      }
+    }, function () {
+      this.loadData(1);
+    });
   }
 
   render() {
@@ -115,9 +143,54 @@ class Inventory extends React.Component {
             <li className="page-item"><a onClick={e=> this.previousPage()} className="page-link" href="#">&lt;</a></li>
             <li className="page-item"><a className="page-link" href="#">{this.state.page}</a></li>
             <li className="page-item"><a onClick={e=> this.nextPage()} className="page-link" href="#">&gt;</a></li>
-          </ul> 
+          </ul>
         </nav>
-
+        <div className="form-fields">
+          <div className="row maintable-body">
+            <div className="col-md-4">
+              <div className="form-group row">
+                <label htmlFor="name-field" className="col-2 col-form-label">Name</label>
+                <div className="col-6">
+                  <input className="form-control" type="text" defaultValue="" ref="name" id="name-field"/>
+                </div>
+        			</div>
+            </div>
+            <div className="col-md-4">
+              <div className="form-group row">
+                <label htmlFor="model-field" className="col-2 col-form-label">Model</label>
+                <div className="col-6">
+                  <input className="form-control" type="text" defaultValue="" ref="model" id="model-field"/>
+                </div>
+        			</div>
+            </div>
+          </div>
+          <div className="row maintable-body">
+            <div className="col-md-4">
+              <div className="form-group row">
+                <label htmlFor="required-tags-field" className="col-2 col-form-label">Required Tags</label>
+                <div className="col-8">
+                  <input className="form-control" type="text" defaultValue="" ref="required" id="required-tags-field"/>
+                </div>
+        			</div>
+            </div>
+            <div className="col-md-4">
+              <div className="form-group row">
+                <label htmlFor="excluded-tags-field" className="col-2 col-form-label">Excluded Tags</label>
+                <div className="col-8">
+                  <input className="form-control" type="text" defaultValue="" ref="excluded" id="excluded-tags-field"/>
+                </div>
+        			</div>
+            </div>
+            <div className="col-md-4">
+              <button
+                className="btn btn-primary"
+                onClick={this.filterItems.bind(this)}
+              >
+                Filter
+              </button>
+            </div>
+          </div>
+        </div>
         <InventorySubTable
           data={this.state.items}
           hasButton={true}

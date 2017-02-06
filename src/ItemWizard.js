@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
- 
+
 function getKeys(data) {
 	return Object.keys(data);
 }
@@ -28,7 +28,7 @@ function isWholeNumber(num) {
 		}
 		else return true;
 	}
-} 
+}
 
 class ItemWizard extends Component {
 
@@ -92,7 +92,7 @@ class ItemWizard extends Component {
 		}
 		if (this.props.type === "edit") {
 			return "Edit Current Item";
-		}	
+		}
 	}
 
 	makeTextBox(id, type, label, defaultText){
@@ -150,7 +150,6 @@ class ItemWizard extends Component {
   			alert("Succssful submission!");
   			object.quantity = Number(object.quantity);
 
-  			console.log(object);
   			var context = this;
   			if (this.props.type === "create") {
 	  			this.props.api.post('/api/inventory', object)
@@ -158,7 +157,6 @@ class ItemWizard extends Component {
 				        if (response.data.error) {
 				          console.log(response.data.error);
 				        } else {
-				        	console.log(context.props);
 				        	context.props.callback();
 				        }
 				      }.bind(this))
@@ -167,7 +165,6 @@ class ItemWizard extends Component {
 				      }.bind(this));
 			}
 			if (this.props.type === "edit") {
-				console.log("Item id is:" + this.props.itemId);
 	  			this.props.api.put('/api/inventory/'+ this.props.itemId, object)
 				  	.then(function(response) {
 				        if (response.data.error) {
