@@ -9,7 +9,6 @@ function processData(responseData) {
   var items = [];
   for (i=0; i<requests.length; i++) {
     var obj = requests[i];
-    console.log(obj);
     var item = {
       "Username": obj.user.username,
       "Item": obj.item.name,
@@ -23,7 +22,6 @@ function processData(responseData) {
     };
     items.push(item);
   }
-  console.log(items);
   return items;
 }
 

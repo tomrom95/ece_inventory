@@ -84,7 +84,6 @@ class RequestTable extends Component {
       }
 
 			var elem;
-      console.log(this.props.data[i])
 			var id = this.props.data[i]["item_id"] ;
 			elem = (<SubtableRow
 					columnKeys={this.props.columnKeys}
@@ -125,7 +124,6 @@ class RequestTable extends Component {
 
   deleteButton(index){
     return(
-
       <button key={"delete"+index} onClick={()=>{this.deleteRequest(index)}} type="button" className="btn btn-danger delete-button">X</button>
     )
   }
@@ -255,8 +253,6 @@ class RequestTable extends Component {
     }.bind(this));
 
   }
-
-
 
 
   render() {

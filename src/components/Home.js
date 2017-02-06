@@ -77,8 +77,7 @@ class Home extends Component {
 
   render() {
 
-
-    if(this.state.user){
+    if(this.state.user != null & localStorage.getItem('token') != null){
       let children = null;
       if (this.props.children) {
         children = React.cloneElement(this.props.children, {
