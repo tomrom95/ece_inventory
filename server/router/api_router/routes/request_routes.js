@@ -65,8 +65,7 @@ module.exports.postAPI = function(req,res){
     processAndPost(request, req, res);
   } else {
     // Find the user id from the username, and set it to .user field
-    let userNameRegex = {'$regex': '^'+req.body.user+'$'};
-    User.findOne({username: userNameRegex}, function(err, user){
+    User.findOne({username: req.body.user}, function(err, user){
       if(err) return res.send({error:err});
       if(!user) return res.send({error:"There is no such user"});
       request.user = user._id;
@@ -131,8 +130,7 @@ module.exports.putAPI = function(req,res){
         // Admin can take in username
          obj = Object.assign(request, req.body);
          if(req.body.user){
-           let userNameRegex = {'$regex': '^'+req.body.user+'$'};
-           User.findOne({username: userNameRegex}, function(err, user){
+           User.findOne({username: req.body.user}, function(err, user){
              if(err) return res.send({error:err});
              if(!user) return res.send({error: "There is no such user"});
              obj.user = user._id;
