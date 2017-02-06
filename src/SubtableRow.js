@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import RequestPopup from './RequestPopup.js';
 import ItemWizard from './ItemWizard.js';
+import ItemDetailView from './components/ItemDetailView.js';
 
 function getPrefill(data) {
 	return ({
@@ -24,11 +24,21 @@ class SubtableRow extends Component {
 		}
 	}
 
+	componentWillReceiveProps(newProps) {
+		this.setState({
+			data: newProps.data
+		});
+	}
+
 	render() {
 		return (
 			<tr>
-			{this.makeList(this.state.data)}
-			{this.makeButtons()}
+
+				{this.makeList(this.state.data)}
+
+
+				<td> {this.makeButtons()} </td>
+				<td> <ItemDetailView params={{itemID: this.props.idTag}} /> </td>
 			</tr>
 		);
 	}
@@ -47,12 +57,13 @@ class SubtableRow extends Component {
 	}
 
 	makeButtons() {
-			if(this.props.request_buttons ){
+
+			if(this.props.request_buttons){
 				return(<td>{this.props.request_buttons}</td>);
 			}
 			else if(this.props.inventory_buttons){
-
 				return (<td>{this.props.inventory_buttons}</td>);
+
 			}
 
 	}
@@ -85,6 +96,8 @@ class SubtableRow extends Component {
 
 =======
 	*/
+
+
 
 }
 export default SubtableRow;

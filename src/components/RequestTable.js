@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../App.css';
 import SubtableRow from '../SubtableRow';
-import Request from './Request.js';
 
 var meta;
 
@@ -67,22 +66,24 @@ class RequestTable extends Component {
 
 		for (i=0; i<rowData.length; i++) {
       if(this.state.isAdmin){
-        if(rowData[i][4] === 'PENDING'){
-          button_list=[this.denyButton(i), this.approveButton(i), this.commentButton(i)];
+
+        if(rowData[i][5] === 'PENDING'){
+          button_list=[this.denyButton(i), this.approveButton(i)];
         }
-        else if (rowData[i][4] === 'APPROVED') {
-          button_list=[this.denyButton(i), this.fulfillButton(i), this.commentButton(i)];
+        else if (rowData[i][5] === 'APPROVED') {
+          button_list=[this.denyButton(i), this.fulfillButton(i)];
         }
-        else if (rowData[i][4] === 'DENIED') {
-          button_list=[this.approveButton(i), this.commentButton(i)];
+        else if (rowData[i][5] === 'DENIED') {
+          button_list=[this.approveButton(i)];
         }
-        else if (rowData[i][4] === 'FULFILLED') {
-          button_list=[this.commentButton(i)];
+        else if (rowData[i][5] === 'FULFILLED') {
+          button_list=[];
         }
       }
       else{
         button_list=[this.deleteButton(i)];
       }
+
 			var elem;
 			var id = this.props.data[i]["_id"] + this.props.data[i]["user_id"] + i;
 			elem = (<SubtableRow
@@ -124,9 +125,8 @@ class RequestTable extends Component {
 
   deleteButton(index){
     return(
-      <button className="btn btn-danger delete-button" onClick={e => this.deleteRequest(index)}>
-        Delete
-      </button>
+
+      <button onClick={()=>{this.deleteRequest(index)}} type="button" className="btn btn-danger delete-button">X</button>
     )
   }
 
@@ -149,7 +149,7 @@ class RequestTable extends Component {
         console.log("error denying request");
       }
       else{
-        this.state.rows[index][4] = 'APPROVED'
+        this.state.rows[index][5] = 'APPROVED'
         this.forceUpdate();
       }
     }.bind(this))
@@ -170,7 +170,7 @@ class RequestTable extends Component {
         console.log("error denying request");
       }
       else{
-        this.state.rows[index][4] = 'DENIED'
+        this.state.rows[index][5] = 'DENIED'
         this.forceUpdate();
       }
     }.bind(this))
@@ -191,7 +191,7 @@ class RequestTable extends Component {
         console.log(response.data.error);
       }
       else{
-        this.state.rows[index][4] = 'FULFILLED'
+        this.state.rows[index][5] = 'FULFILLED'
         this.forceUpdate();
       }
     }.bind(this))
@@ -224,6 +224,7 @@ class RequestTable extends Component {
   commentRequest() {
 
   }
+
 
 
   render() {

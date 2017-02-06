@@ -5,6 +5,9 @@ import ItemWizard from './ItemWizard.js';
 import RequestPopup from './RequestPopup.js';
 
 
+
+import ItemEditor from './ItemEditor.js';
+
 var meta;
 
 function getKeys(data) {
@@ -45,7 +48,20 @@ function getPrefill(data) {
 		"Model Number": data["Model"],
 		"Description": data["Description"],
 		"Location": data["Location"],
+		"Vendor Info": data["Vendor"],
 		"Tags": data["Tags"]
+	});
+}
+
+function getEmptyPrefill() {
+	return ({
+		"Name": "",
+		"Quantity": "",
+		"Model Number": "",
+		"Description": "",
+		"Location": "",
+		"Vendor Info": "",
+		"Tags": ""
 	});
 }
 
@@ -68,7 +84,7 @@ class InventorySubTable extends Component {
 
 	render() {
 		return (
-			<table className="table subtable-body maintable-body">
+			<table className="table maintable-body">
 			  <thead className="thread">
 			    <tr>
 		    	  {this.makeColumnKeyElements(this.state.columnKeys)}
@@ -81,6 +97,18 @@ class InventorySubTable extends Component {
 		);
 	}
 
+	makeEditButton(data, id) {
+		return (
+		<ItemEditor data={getPrefill(data)}
+          api={this.props.api}
+          callback={this.props.callback}
+          className="request-button"
+          itemId={id}
+          key={"edit-"+ id}
+          ref={"edit-"+id} />
+        );
+	}
+
 	makeColumnKeyElements(keys) {
 		var i;
 		var list = [];
@@ -91,11 +119,11 @@ class InventorySubTable extends Component {
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
 			list.push(
 				<th className="add-button" key={"item-wizard-slot"}>
-					<ItemWizard data=
-	          			{{"Name": "", "Quantity": undefined, "Model Number": "", "Description": "", "Location": "", "Vendor Info": "", "Tags": ""}}
+					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
 	          			type={"create"}
-	          			key={"makeitem-button"}/>
+	          			key={"makeitem-button"}
+	          			callback={this.props.callback} />
 	          	</th>);
 		}
 
@@ -123,30 +151,26 @@ class InventorySubTable extends Component {
 	}
 
 	makeInventoryButtons(data, id) {
-		if(this.props.isAdmin){
-			return(
+
+		if (JSON.parse(localStorage.getItem('user')).is_admin === true){
+			return (
 				<div>
-					<ItemWizard data={getPrefill(data)}
-	          api={this.props.api}
-	          callback={this.props.callback}
-	          type={"edit"}
-	          className="request-button"
-	          itemId={id}
-	          key={"edit-"+ id}
-	          ref={"edit-"+id} />
+
 					<RequestPopup
-								data={[ {
-											Serial: "",
-											Condition: "",
-											Status: "",
-											Quantity: ""
-										}
-									]}
-								itemName={this.props.data[0]}
-								modelName={this.props.data[1]}
-								itemId={this.props.idTag}
-								api={this.props.api}
-								ref={this.props.idTag}/>
+										data={[ {
+													Serial: "",
+													Condition: "",
+													Status: "",
+													Quantity: ""
+												}
+											]}
+										itemName={this.props.data[0]}
+										modelName={this.props.data[1]}
+										itemId={this.props.idTag}
+										api={this.props.api}
+										ref={this.props.idTag}/>
+
+					{this.makeDeleteButton(id)}
 					</div>
 			);
 		}
@@ -154,25 +178,42 @@ class InventorySubTable extends Component {
 
 			return (
 				<div>
-					<RequestPopup
-								data={[ {
-											Serial: "",
-											Condition: "",
-											Status: "",
-											Quantity: ""
-										}
-									]}
-								itemName={this.props.data[0]}
-								modelName={this.props.data[1]}
-								itemId={this.props.idTag}
-								api={this.props.api}
-								ref={this.props.idTag}/>
-					</div>
 
-	        );
+					<RequestPopup
+										data={[ {
+													Serial: "",
+													Condition: "",
+													Status: "",
+													Quantity: ""
+												}
+											]}
+										itemName={this.props.data[0]}
+										modelName={this.props.data[1]}
+										itemId={this.props.idTag}
+										api={this.props.api}
+										ref={this.props.idTag}/>
+
+				</div>
+			);
 		}
 
+
+
 	}
+	makeDeleteButton(id) {
+		return (
+			<button onClick={()=>{this.deleteItem(id)}} type="button" className="btn btn-danger delete-button">X</button>
+		);
+	}
+
+
+	deleteItem(id) {
+		this.props.api.delete('api/inventory/' + id);
+		this.props.callback();
+		console.log("Deleting item number " + id);
+	}
+
 }
+
 
 export default InventorySubTable

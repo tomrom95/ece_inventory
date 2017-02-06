@@ -13,6 +13,7 @@ function processData(responseData) {
     var obj = requests[i];
     console.log(obj);
     var item = {
+      "Username": obj.user.username,
       "Item": obj.item.name,
       "Time Stamp": obj.created,
       "Quantity": obj.quantity,
