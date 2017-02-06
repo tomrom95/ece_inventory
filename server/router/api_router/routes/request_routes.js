@@ -52,26 +52,54 @@ module.exports.postAPI = function(req,res){
   if(!req.user._id) {
     return res.send({error: "User ID null"})
   } else {
-    // Throw error if standard user is posting with a user id not equal to its own
-    if(!req.user.is_admin && req.user._id != req.body._id){
-      return res.send({error:"You are not authorized to modify another user's request"});
-    }
-  // If admin filled in the user_id param (non-empty),
-  // Use the user_id provided by the admin (to create request on behalf of another user)
-  // Otherwise, use the id of the current user performing POST
 
-  if(!(req.body.user && req.user.is_admin)){
-    request.user = req.user._id;
-    processAndPost(request, req, res);
-  } else {
-    // Find the user id from the username, and set it to .user field
-    User.findOne({username: req.body.user}, function(err, user){
-      if(err) return res.send({error:err});
-      if(!user) return res.send({error:"There is no such user"});
-      request.user = user._id;
+    if(req.user.is_admin){
+      // if user is admin, find user id if the user field is entered
+      if(req.body.user){
+        // Find the user id from the username, and set it to .user field
+        User.findOne({username: req.body.user}, function(err, user){
+          if(err) return res.send({error:err});
+          if(!user) return res.send({error:"There is no such user"});
+          request.user = user._id;
+          processAndPost(request, req, res);
+        });
+      } else {
+        request.user = req.user._id;
+        processAndPost(request, req, res);
+      }
+    } else {
+      // Standard user here
+
+      if(req.body.user && req.user.username != req.body.user){
+        return res.send({error:"You are not authorized to modify another user's request"});
+      }
+      request.user = req.user._id;
       processAndPost(request, req, res);
-    });
-  }
+    }
+
+
+
+  //
+  //   // Throw error if standard user is posting with a user id not equal to its own
+  //   if(!req.user.is_admin && req.user._id != req.body._id){
+  //     return res.send({error:"You are not authorized to modify another user's request"});
+  //   }
+  // // If admin filled in the user_id param (non-empty),
+  // // Use the user_id provided by the admin (to create request on behalf of another user)
+  // // Otherwise, use the id of the current user performing POST
+  //
+  // if(!(req.body.user && req.user.is_admin)){
+  //   request.user = req.user._id;
+  //   processAndPost(request, req, res);
+  // } else {
+  //   // Find the user id from the username, and set it to .user field
+  //   User.findOne({username: req.body.user}, function(err, user){
+  //     if(err) return res.send({error:err});
+  //     if(!user) return res.send({error:"There is no such user"});
+  //     request.user = user._id;
+  //     processAndPost(request, req, res);
+  //   });
+  // }
 }
 };
 
