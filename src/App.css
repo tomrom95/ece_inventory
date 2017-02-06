@@ -51,12 +51,12 @@
 
 .maintable-body {
   background-color: white;
-  margin-left: 22px;
   max-width: 1000px;
+  margin-left: 20px;
 }
 
 .page-section {
-  margin-left: 22px;
+  margin-left: -10px;
 }
 
 .subtable-row {
@@ -180,7 +180,6 @@
 }
 
 .detail-view {
-  width: 300px;
   min-height: 325px;
 }
 
@@ -192,6 +191,39 @@
 
 .btn {
   font-weight: bold;
+}
+
+.modal-backdrop {
+  opacity: 0.2!important;
+}
+
+.detail-view {
+  margin-top: 200px;
+}
+
+.rowcount-dropdown {
+  height: 175px;
+  overflow-y: scroll;
+}
+
+.card {
+  width: 300px;
+}
+
+.card-block {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.filterbox {
+  margin-left: 20px;
+  margin-right: 0;
+}
+
+.inventory-page {
+  margin-top:30px;
+  margin-right: 80px;
+  margin-left: 10px;
 }
 
 body {

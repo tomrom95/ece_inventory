@@ -5,7 +5,6 @@ import Home from './components/Home';
 
 class App extends Component {
   render() {
-    console.log("test App");
     return (
       <Router history = {browserHistory}>{routes}</Router>
     );
