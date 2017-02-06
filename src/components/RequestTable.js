@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../App.css';
 import SubtableRow from '../SubtableRow';
-
+import Popup from 'react-popup';
 
 function getKeys(data) {
 
@@ -84,13 +84,13 @@ class RequestTable extends Component {
       }
 
 			var elem;
-			var id = this.props.data[i]["_id"] + this.props.data[i]["user_id"] + i;
+			var id = this.props.data[i]["item_id"] ;
 			elem = (<SubtableRow
 					columnKeys={this.props.columnKeys}
 					data={rowData[i]}
 					idTag={id}
 					row={i}
-					key={id+"-row"}
+					key={this.props.data[i]["_id"]+"-row"}
 					api={this.props.api}
           request_buttons={button_list}/>);
 			list.push(elem);
@@ -124,16 +124,16 @@ class RequestTable extends Component {
 
   deleteButton(index){
     return(
-
       <button key={"delete"+index} onClick={()=>{this.deleteRequest(index)}} type="button" className="btn btn-danger delete-button">X</button>
     )
   }
 
   commentButton(index){
     return(
-      <button key={"comment"+index} className="btn btn-primary" onClick={e => this.commentRequest(index, "hi")}>
+      <button key={"comment"+index} className="btn btn-primary" onClick={e => this.commentPopup(index)}>
         Comment
       </button>
+
     )
   }
 
@@ -220,6 +220,19 @@ class RequestTable extends Component {
 
   }
 
+  commentPopup(index){
+    Popup.prompt('Leave comment', 'What\'s your name?', {
+      placeholder: 'This request...',
+      type: 'text'
+    }, {
+      text: 'Save',
+      className: 'success',
+      action: function (Box) {
+        this.commentRequest(index, Box.value);
+
+      }
+    });
+  }
   commentRequest(index, comment) {
     this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
       {
@@ -240,7 +253,6 @@ class RequestTable extends Component {
     }.bind(this));
 
   }
-
 
 
   render() {

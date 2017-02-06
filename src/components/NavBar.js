@@ -53,23 +53,23 @@ class NavBar extends Component {
           <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
-          <a className="navbar-brand" href="#">ECE Inventory</a>
+          <a className="navbar-brand" href="#">ECE INVENTORY</a>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <Link to="/" className="nav-link">Home</Link>
+                <Link to="/" className="nav-link">HOME</Link>
               </li>
               <li className="nav-item">
-                <Link to="/UserProfile" className="nav-link">Profile</Link>
+                <Link to="/UserProfile" className="nav-link">PROFILE</Link>
               </li>
               <li className="nav-item">
-                <Link to="/Inventory" className="nav-link">Inventory</Link>
+                <Link to="/Inventory" className="nav-link">INVENTORY</Link>
               </li>
               <li className="nav-item">
-                <Link to="/CurrentOrders" className="nav-link">Current Orders</Link>
+                <Link to="/CurrentOrders" className="nav-link">CURRENT ORDERS</Link>
               </li>
               <li className="nav-item">
-                <Link to="/PastOrders" className="nav-link">Past Orders</Link>
+                <Link to="/PastOrders" className="nav-link">PAST ORDERS</Link>
               </li>
               <li className="nav-item btn-nav">
                 <button className="btn btn-outline-primary" onClick={this.props.onClick}>
