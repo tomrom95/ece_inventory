@@ -11,7 +11,9 @@ function processData(responseData) {
   var items = [];
   for (i=0; i<requests.length; i++) {
     var obj = requests[i];
+    console.log(obj);
     var item = {
+      "Username": obj.user.username,
       "Item": obj.item.name,
       "Time Stamp": obj.created,
       "Quantity": obj.quantity,
@@ -19,6 +21,7 @@ function processData(responseData) {
       "Status": obj.status,
       "_id": obj._id,
       "user_id": obj.user_id,
+      "item_id": obj.item._id,
     };
     items.push(item);
   }
@@ -62,7 +65,7 @@ class GlobalRequests extends React.Component {
     else{
       return (
         <div className="wide">
-          <RequestTable data={this.state.requests} isAdmin={true} />
+          <RequestTable api={this.axiosInstance} data={this.state.requests} isAdmin={true} />
 
         </div>
       );

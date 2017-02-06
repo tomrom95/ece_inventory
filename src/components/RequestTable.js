@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../App.css';
 import SubtableRow from '../SubtableRow';
-import Request from './Request.js';
 
 var meta;
 
@@ -14,7 +13,7 @@ function getKeys(data) {
 	var i;
 	var ret = [];
 	for (i=0; i<keys.length; i++) {
-    if (keys[i] === "_id" || keys[i] == "user_id") {
+    if (keys[i] == "_id" || keys[i] === "user_id" || keys[i] === "item_id") {
 			continue;
 		}
 		else ret.push(keys[i]);
@@ -42,6 +41,7 @@ class RequestTable extends Component {
 		this.state = {
 			columnKeys: getKeys(this.props.data),
 			rows: getValues(this.props.data, getKeys(this.props.data)),
+      raw_data: this.props.data,
       isAdmin: this.props.isAdmin
 		}
     this.denyButton = this.denyButton.bind(this);
@@ -62,7 +62,28 @@ class RequestTable extends Component {
 	makeRows(rowData) {
 		var i;
 		var list = [];
+    var button_list = [];
+
 		for (i=0; i<rowData.length; i++) {
+      if(this.state.isAdmin){
+
+        if(rowData[i][5] === 'PENDING'){
+          button_list=[this.denyButton(i), this.approveButton(i)];
+        }
+        else if (rowData[i][5] === 'APPROVED') {
+          button_list=[this.denyButton(i), this.fulfillButton(i)];
+        }
+        else if (rowData[i][5] === 'DENIED') {
+          button_list=[this.approveButton(i)];
+        }
+        else if (rowData[i][5] === 'FULFILLED') {
+          button_list=[];
+        }
+      }
+      else{
+        button_list=[this.deleteButton(i)];
+      }
+
 			var elem;
 			var id = this.props.data[i]["_id"] + this.props.data[i]["user_id"] + i;
 			elem = (<SubtableRow
@@ -72,7 +93,7 @@ class RequestTable extends Component {
 					row={i}
 					key={id+"-row"}
 					api={this.props.api}
-          buttons={this.denyButton(i)}/>)
+          request_buttons={button_list}/>);
 			list.push(elem);
 		}
 		return list;
@@ -80,19 +101,131 @@ class RequestTable extends Component {
 
   denyButton(index){
     return(
-      <button className="btn btn-primary" onClick={e => this.denyRequest(index)}>
+      <button key={"deny"+index} className="btn btn-primary" onClick={e => this.denyRequest(index)}>
         Deny
       </button>
     );
   }
 
+  approveButton(index){
+    return(
+      <button key={"approve"+index} className="btn btn-primary" onClick={e => this.approveRequest(index)}>
+        Approve
+      </button>
+    );
+  }
+
+  fulfillButton(index){
+    return(
+      <button key={"fulfill"+index} className="btn btn-primary" onClick={e => this.fulfillRequest(index)}>
+        Fulfill
+      </button>
+    );
+  }
+
+  deleteButton(index){
+    return(
+
+      <button onClick={()=>{this.deleteRequest(index)}} type="button" className="btn btn-danger delete-button">X</button>
+    )
+  }
+
+  commentButton(index){
+    return(
+      <button className="btn btn-primary" onClick={e => this.commentRequest(index)}>
+        Edit
+      </button>
+    )
+  }
+
+  approveRequest(index){
+    this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
+      {
+        status: 'APPROVED',
+      }
+    )
+    .then(function(response) {
+      if(response.data.error){
+        console.log("error denying request");
+      }
+      else{
+        this.state.rows[index][5] = 'APPROVED'
+        this.forceUpdate();
+      }
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    }.bind(this));
+
+  }
 
   denyRequest(index){
-    console.log(this.state.rows);
+    this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
+      {
+        status: 'DENIED',
+      }
+    )
+    .then(function(response) {
+      if(response.data.error){
+        console.log("error denying request");
+      }
+      else{
+        this.state.rows[index][5] = 'DENIED'
+        this.forceUpdate();
+      }
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    }.bind(this));
 
-    this.state.rows[index][4] = 'Eat a dick'
-    this.forceUpdate();
   }
+
+  fulfillRequest(index){
+    this.props.api.patch('/api/requests/' + this.state.raw_data[index]._id,
+      {
+        action: "DISBURSE",
+      }
+    )
+    .then(function(response) {
+      if(response.data.error){
+        console.log(response.data.error);
+      }
+      else{
+        this.state.rows[index][5] = 'FULFILLED'
+        this.forceUpdate();
+      }
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    }.bind(this));
+
+  }
+
+  deleteRequest(index){
+    this.props.api.delete('/api/requests/' + this.state.raw_data[index]._id,
+      {
+
+      }
+    )
+    .then(function(response) {
+      if(response.data.error){
+        console.log(response.data.error);
+      }
+      else{
+
+      }
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    }.bind(this));
+
+  }
+
+  commentRequest() {
+
+  }
+
+
 
   render() {
 		return (
