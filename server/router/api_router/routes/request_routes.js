@@ -73,7 +73,6 @@ function processAndPost(request, req, res){
   request.status = req.body.status;
   request.requestor_comment = req.body.requestor_comment;
   request.reviewer_comment = req.body.reviewer_comment;
-  console.log("request");
   request.save(function(err){
     if(err) return res.send({error:err});
     res.json(request);
