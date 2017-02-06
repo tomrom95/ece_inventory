@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { Route, Router, browserHistory } from 'react-router';
 import routes from './config/routes';
 import Home from './components/Home';

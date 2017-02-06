@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import RequestPopup from './RequestPopup.js';
 import ItemWizard from './ItemWizard.js';
+import ItemDetailView from './components/ItemDetailView.js';
 
 function getPrefill(data) {
 	return ({
@@ -24,6 +25,12 @@ class SubtableRow extends Component {
 		}
 	}
 
+	componentWillReceiveProps(newProps) {
+		this.setState({
+			data: newProps.data
+		});
+	}
+
 	render() {
 		return (
 			<tr>
@@ -31,6 +38,7 @@ class SubtableRow extends Component {
 				{this.makeButton()}
 				<td> {this.makeEditButton()} </td>
 				<td> {this.makeDeleteButton()} </td>
+				<td> <ItemDetailView params={{itemID: this.props.idTag}} /> </td>
 			</tr>
 		);
 	}
@@ -74,34 +82,21 @@ class SubtableRow extends Component {
 	makeDeleteButton(id) {
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
 			return (
-				<button onClick={()=>{this.deleteItem(this.props.idTag)}} type="button" className="btn btn-danger delete-button">X</button>
+				<button onClick={()=>{this.deleteItem(this.props.idTag)}} 
+					type="button" 
+					className="btn btn-danger delete-button">
+					<span className="fa fa-remove"></span>
+				</button>
 			);
 		}
 	}
 
 	deleteItem(id) {
-		this.props.api.delete('api/inventory/' + id);
-		this.props.callback();
-		console.log("Deleting item number " + id);
+		this.props.api.delete('api/inventory/' + id)
+		.then(function(response) {
+			this.props.callback(true);
+		}.bind(this));
 	}
-
-	/*
-
-	loadData() {
-		var tableData;
-		var id = this.props.idTag;
-		var popupRef = this.refs[this.props.idTag];
-		this.props.api.get("api/inventory/" + id)
-			.then(function (response) {
-    			tableData = response.data.instances;
-    			popupRef.update(tableData);
-  			});
-	}
-
-	componentDidMount() {
-		this.loadData();
-	}
-	*/
 }
 
 export default SubtableRow

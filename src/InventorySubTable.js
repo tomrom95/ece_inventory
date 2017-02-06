@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import SubtableRow from './SubtableRow.js';
 import ItemWizard from './ItemWizard.js';
+import ItemEditor from './ItemEditor.js';
 
 var meta;
 
@@ -38,12 +39,25 @@ function getValues(data, keys) {
 
 function getPrefill(data) {
 	return ({
-		"Name": data["Name"],
-		"Quantity": data["Quantity"],
-		"Model Number": data["Model"],
-		"Description": data["Description"],
-		"Location": data["Location"],
+		"Name": data["Name"], 
+		"Quantity": data["Quantity"], 
+		"Model Number": data["Model"], 
+		"Description": data["Description"], 
+		"Location": data["Location"], 
+		"Vendor Info": data["Vendor"],
 		"Tags": data["Tags"]
+	});
+}
+
+function getEmptyPrefill() {
+	return ({
+		"Name": "", 
+		"Quantity": "", 
+		"Model Number": "", 
+		"Description": "", 
+		"Location": "", 
+		"Vendor Info": "",
+		"Tags": ""
 	});
 }
 
@@ -66,7 +80,7 @@ class InventorySubTable extends Component {
 
 	render() {
 		return (
-			<table className="table subtable-body maintable-body">
+			<table className="table maintable-body">
 			  <thead className="thread">
 			    <tr>
 		    	  {this.makeColumnKeyElements(this.state.columnKeys)}
@@ -79,6 +93,18 @@ class InventorySubTable extends Component {
 		);
 	}
 
+	makeEditButton(data, id) {
+		return (
+		<ItemEditor data={getPrefill(data)}
+          api={this.props.api}
+          callback={this.props.callback}
+          className="request-button"
+          itemId={id}
+          key={"edit-"+ id}
+          ref={"edit-"+id} />
+        );
+	}
+
 	makeColumnKeyElements(keys) {
 		var i;
 		var list = [];
@@ -88,12 +114,12 @@ class InventorySubTable extends Component {
 		list.push(<th key={"buttonSpace-0"}> </th>);
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
 			list.push(
-				<th className="add-button" key={"item-wizard-slot"}>
-					<ItemWizard data=
-	          			{{"Name": "", "Quantity": undefined, "Model Number": "", "Description": "", "Location": "", "Vendor Info": "", "Tags": ""}}
+				<th className="add-button" key={"item-wizard-slot"}>        
+					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
 	          			type={"create"}
-	          			key={"makeitem-button"}/>
+	          			key={"makeitem-button"}
+	          			callback={this.props.callback} /> 
 	          	</th>);
 		}
 
@@ -118,19 +144,6 @@ class InventorySubTable extends Component {
 			list.push(elem);
 		}
 		return list;
-	}
-
-	makeEditButton(data, id) {
-		return (
-		<ItemWizard data={getPrefill(data)}
-          api={this.props.api}
-          callback={this.props.callback}
-          type={"edit"}
-          className="request-button"
-          itemId={id}
-          key={"edit-"+ id}
-          ref={"edit-"+id} />
-        );
 	}
 }
 
