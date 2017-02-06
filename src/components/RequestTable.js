@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../App.css';
 import SubtableRow from '../SubtableRow';
-
+import Popup from 'react-popup';
 
 function getKeys(data) {
 
@@ -131,9 +131,10 @@ class RequestTable extends Component {
 
   commentButton(index){
     return(
-      <button key={"comment"+index} className="btn btn-primary" onClick={e => this.commentRequest(index, "hi")}>
+      <button key={"comment"+index} className="btn btn-primary" onClick={e => this.commentPopup(index)}>
         Comment
       </button>
+
     )
   }
 
@@ -220,6 +221,19 @@ class RequestTable extends Component {
 
   }
 
+  commentPopup(index){
+    Popup.prompt('Leave comment', 'What\'s your name?', {
+      placeholder: 'This request...',
+      type: 'text'
+    }, {
+      text: 'Save',
+      className: 'success',
+      action: function (Box) {
+        this.commentRequest(index, Box.value);
+
+      }
+    });
+  }
   commentRequest(index, comment) {
     this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
       {
@@ -240,6 +254,7 @@ class RequestTable extends Component {
     }.bind(this));
 
   }
+
 
 
 

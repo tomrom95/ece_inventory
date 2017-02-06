@@ -28,7 +28,7 @@ function processData(responseData) {
   return items;
 }
 
-class Inventory extends React.Component {
+class Inventory extends Component {
   constructor(props){
     super(props);
     this.state = {

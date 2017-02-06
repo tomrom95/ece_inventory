@@ -161,17 +161,18 @@ class InventorySubTable extends Component {
 				<div>
 					<RequestPopup
 										data={[ {
-													Serial: "",
-													Condition: "",
-													Status: "",
-													Quantity: ""
+											Serial: data.Serial,
+											Condition: data.Condition,
+											Status: data.Status,
+											Quantity: data.Quantity
 												}
 											]}
 										itemName={data.Name}
 										modelName={data.Model}
-										itemId={this.props.idTag}
+										itemId={data.meta.id}
 										api={this.props.api}
-										ref={this.props.idTag}/>
+										ref={data.meta.id}
+										isAdmin={true}/>
 
 					{this.makeDeleteButton(id)}
 					{this.makeEditButton(data,id)}
@@ -186,17 +187,18 @@ class InventorySubTable extends Component {
 
 					<RequestPopup
 										data={[ {
-													Serial: "",
-													Condition: "",
-													Status: "",
-													Quantity: ""
+													Serial: data.Serial,
+													Condition: data.Condition,
+													Status: data.Status,
+													Quantity: data.Quantity
 												}
 											]}
-										itemName={this.props.data[0]}
-										modelName={this.props.data[1]}
-										itemId={this.props.idTag}
+										itemName={data.Name}
+										modelName={data.Model}
+										itemId={data.meta.id}
 										api={this.props.api}
-										ref={this.props.idTag}/>
+										ref={data.meta.id}
+										isAdmin={false}/>
 
 				</div>
 			);

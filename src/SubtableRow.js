@@ -59,6 +59,7 @@ class SubtableRow extends Component {
 	makeButtons() {
 
 			if(this.props.request_buttons){
+			
 				return(<td>{this.props.request_buttons}</td>);
 			}
 			else if(this.props.inventory_buttons){
