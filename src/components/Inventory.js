@@ -3,7 +3,6 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import '../App.css';
 import NavBar from './NavBar.js';
 import InventorySubTable from '../InventorySubTable.js';
-import ItemWizard from '../ItemWizard.js';
 import axios from 'axios';
 
 function processData(responseData) {
@@ -61,9 +60,9 @@ class Inventory extends React.Component {
         }
         else {
           this.setState({
-            items: processData(response)
+            items: processData(response),
+            state: page
           });
-          this.state.page = page;
           document.getElementById("pageNum").value = page;
         }
       }.bind(this));

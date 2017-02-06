@@ -146,7 +146,6 @@ class ItemWizard extends Component {
 
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
-  			var context = this;
 
   			this.props.api.post('/api/inventory/', object)
 			  	.then(function(response) {
@@ -154,13 +153,11 @@ class ItemWizard extends Component {
 			          console.log(response.data.error);
 			        } else {
 			        	this.props.callback();
-			        	alert("Successful submission!");
 			        }
 			      }.bind(this))
 			      .catch(function(error) {
 			        console.log(error);
 			      }.bind(this));
-	
 		}
   	}
 

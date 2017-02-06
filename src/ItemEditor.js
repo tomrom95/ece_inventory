@@ -148,21 +148,18 @@ class ItemEditor extends Component {
 
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
-  			var context = this;
 
   			this.props.api.put('/api/inventory/'+ this.props.itemId, object)
 			  	.then(function(response) {
 			        if (response.data.error) {
-			          console.log(response.data.error);
+			          	console.log(response.data.error);
 			        } else {
 			        	this.props.callback();
-			        	alert("Successful submission!");
 			        }
 			      }.bind(this))
 			      .catch(function(error) {
 			        console.log(error);
-			      }.bind(this));
-	
+			      }.bind(this));	
 		}
   	}
 

@@ -24,6 +24,12 @@ class SubtableRow extends Component {
 		}
 	}
 
+	componentWillReceiveProps(newProps) {
+		this.setState({
+			data: newProps.data
+		});
+	}
+
 	render() {
 		return (
 			<tr>

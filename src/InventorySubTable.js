@@ -49,6 +49,18 @@ function getPrefill(data) {
 	});
 }
 
+function getEmptyPrefill() {
+	return ({
+		"Name": "", 
+		"Quantity": "", 
+		"Model Number": "", 
+		"Description": "", 
+		"Location": "", 
+		"Vendor Info": "",
+		"Tags": ""
+	});
+}
+
 class InventorySubTable extends Component {
 
 	constructor(props) {
@@ -103,11 +115,11 @@ class InventorySubTable extends Component {
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
 			list.push(
 				<th className="add-button" key={"item-wizard-slot"}>        
-					<ItemWizard data=
-	          			{{"Name": "", "Quantity": undefined, "Model Number": "", "Description": "", "Location": "", "Vendor Info": "", "Tags": ""}}
+					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
 	          			type={"create"}
-	          			key={"makeitem-button"} /> 
+	          			key={"makeitem-button"}
+	          			callback={this.props.callback} /> 
 	          	</th>);
 		}
 
