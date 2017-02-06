@@ -136,6 +136,7 @@ class InventorySubTable extends Component {
 		for (i=0; i<rowData.length; i++) {
 			var elem;
 			var id = this.props.data[i]["meta"]["id"];
+			var button_list=[];
 			elem = (<SubtableRow
 					columnKeys={this.props.columnKeys}
 					data={rowData[i]}
@@ -154,8 +155,8 @@ class InventorySubTable extends Component {
 
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true){
 			return (
-				<div>
 
+				[
 					<RequestPopup
 										data={[ {
 													Serial: "",
@@ -168,10 +169,12 @@ class InventorySubTable extends Component {
 										modelName={this.props.data[1]}
 										itemId={this.props.idTag}
 										api={this.props.api}
-										ref={this.props.idTag}/>
+										ref={this.props.idTag}/>,
 
-					{this.makeDeleteButton(id)}
-					</div>
+					this.makeDeleteButton(id),
+					this.makeEditButton(data,id),]
+
+
 			);
 		}
 		else{
