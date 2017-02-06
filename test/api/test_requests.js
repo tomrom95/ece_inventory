@@ -268,21 +268,7 @@ describe('Requests API Test', function () {
         done();
       });
     });
-    it('GETs requests by status (case-insensitive)', (done) => {
-      chai.request(server)
-      .get('/api/requests?status=PenDiNG')
-      .set('Authorization', token)
-      .end((err, res) => {
-        res.should.have.status(200);
-        res.body.should.be.a('array');
-        res.body.length.should.be.eql(2);
-        res.body.should.all.have.property("status", "PENDING");
-        res.body.should.all.have.property("reason", "happiness");
-        res.body.should.all.have.property("quantity", 2000);
-        done();
-      });
-    });
-    it('GETs requests by invalid status (case-insensitive)', (done) => {
+      it('GETs requests by invalid status (case-insensitive)', (done) => {
       chai.request(server)
       .get('/api/requests?status=LOL')
       .set('Authorization', token)
@@ -506,25 +492,28 @@ describe('Requests API Test', function () {
         });
       });
     });
-    it('Should POST as admin with specified user id', (done) => {
-      Item.findOne({"name": "2k resistor"}, function(err, item2){
-        var request = new Request({
-          "status": "PENDING",
-          "quantity": 2000,
-        });
-        request.user = "5896510c820ada1a8d7b5875";
-        request.item = item2._id;
-        chai.request(server)
-        .post('/api/requests/')
-        .set('Authorization', token)
-        .send(request)
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          res.body.should.have.property("status", "PENDING");
-          res.body.should.have.property("quantity", 2000);
-          res.body.should.have.property("user","5896510c820ada1a8d7b5875");
-          done();
+    it('Should POST as admin with specified user name', (done) => {
+        helpers.createNewUser('standardUser', 'standard', false , function(err, user) {
+        if(err) return res.send({error:err});
+        Item.findOne({"name": "2k resistor"}, function(err, item2){
+          var request = {
+            "status": "PENDING",
+            "quantity": 2000,
+            "user": "standardUser"
+          };
+          request.item = item2._id;
+          chai.request(server)
+          .post('/api/requests/')
+          .set('Authorization', token)
+          .send(request)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property("status", "PENDING");
+            res.body.should.have.property("quantity", 2000);
+            res.body.should.have.property("user", user._id.toString());
+            done();
+          });
         });
       });
     });

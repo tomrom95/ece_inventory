@@ -20,7 +20,7 @@ module.exports.getAPI = function (req, res) {
   if(reason) query.reason = {'$regex': reason, '$options':'i'};
   if(req.query.created) query.created = new Date(req.query.created);
   if(quantity) query.quantity = quantity;
-  if(status) query.status = {'$regex': status, '$options': 'i'};
+  if(status) query.status = status;
   if(requestor_comment) query.requestor_comment = {'$regex': requestor_comment, '$options': 'i'};
   if(reviewer_comment) query.reviewer_comment = {'$regex': reviewer_comment, '$options': 'i'};
   Request.find(query)
@@ -44,16 +44,23 @@ module.exports.postAPI = function(req,res){
   // If admin filled in the user_id param (non-empty),
   // Use the user_id provided by the admin (to create request on behalf of another user)
   // Otherwise, use the id of the current user performing POST
-    // if (req.body.user && req.user.is_admin) {
-    //   // Find the user id from the username, and set it to .user field
-    //   let userNameRegex = {}
-    //   request.user =
-    // } else {
-    //
-    // }
 
-    request.user = (req.body.user && req.user.is_admin) ? req.body.user : req.user._id;
+  if(!(req.body.user && req.user.is_admin)){
+    request.user = req.user._id;
+    processAndPost(request, req, res);
+  } else {
+    // Find the user id from the username, and set it to .user field
+    let userNameRegex = {'$regex': '^'+req.body.user+'$'};
+    User.findOne({username: userNameRegex}, function(err, user){
+      if(err) return res.send({error:err});
+      request.user = user._id;
+      processAndPost(request, req, res);
+    });
   }
+}
+};
+
+function processAndPost(request, req, res){
   if(!req.body.item_id && !req.body.item) {
     return res.send({error: "Item ID null"});
   } else {
@@ -61,17 +68,18 @@ module.exports.postAPI = function(req,res){
     else if(req.body.item_id) request.item = mongoose.Types.ObjectId(req.body.item_id);
   }
   request.reason = req.body.reason;
-
   if(req.body.created) request.created = new Date(req.body.created);
   request.quantity = req.body.quantity;
   request.status = req.body.status;
   request.requestor_comment = req.body.requestor_comment;
   request.reviewer_comment = req.body.reviewer_comment;
+  console.log("request");
   request.save(function(err){
     if(err) return res.send({error:err});
     res.json(request);
-  })
+  });
 };
+
 
 module.exports.getAPIbyID = function(req, res){
   Request.findById(req.params.request_id)
