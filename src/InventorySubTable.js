@@ -191,7 +191,7 @@ class InventorySubTable extends Component {
 						<span className="fa fa-remove"></span>
 				</button>
 				{this.makeConfirmationPopup(
-					"This will delete the selected item and all of its instances. Are you sure you want to proceed?", 
+					"This will delete the selected item and all of its instances. Proceed?", 
 					"delete", 
 					id)}
 			</td>
