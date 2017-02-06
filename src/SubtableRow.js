@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import ItemWizard from './ItemWizard.js';
+import ItemDetailView from './components/ItemDetailView.js';
 
 function getPrefill(data) {
 	return ({
@@ -23,12 +24,20 @@ class SubtableRow extends Component {
 		}
 	}
 
+	componentWillReceiveProps(newProps) {
+		this.setState({
+			data: newProps.data
+		});
+	}
+
 	render() {
 		return (
 			<tr>
 				{this.makeList(this.state.data)}
-				{this.makeButtons()}
 
+
+				<td> {this.makeButtons()} </td>
+				<td> <ItemDetailView params={{itemID: this.props.idTag}} /> </td>
 			</tr>
 		);
 	}
@@ -85,6 +94,29 @@ class SubtableRow extends Component {
 
 =======
 	*/
+	makeEditButton() {
+		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+			return this.props.buttons;
+		}
+	}
+	makeDeleteButton(id) {
+		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+			return (
+				<button onClick={()=>{this.deleteItem(this.props.idTag)}}
+					type="button"
+					className="btn btn-danger delete-button">
+					<span className="fa fa-remove"></span>
+				</button>
+			);
+		}
+	}
+
+	deleteItem(id) {
+		this.props.api.delete('api/inventory/' + id)
+		.then(function(response) {
+			this.props.callback(true);
+		}.bind(this));
+	}
 }
 
 export default SubtableRow

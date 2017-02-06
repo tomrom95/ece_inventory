@@ -139,7 +139,7 @@ class RequestTable extends Component {
         console.log("error denying request");
       }
       else{
-        this.state.rows[index][4] = 'APPROVED'
+        this.state.rows[index][5] = 'APPROVED'
         this.forceUpdate();
       }
     }.bind(this))
@@ -160,7 +160,7 @@ class RequestTable extends Component {
         console.log("error denying request");
       }
       else{
-        this.state.rows[index][4] = 'DENIED'
+        this.state.rows[index][5] = 'DENIED'
         this.forceUpdate();
       }
     }.bind(this))
@@ -181,7 +181,7 @@ class RequestTable extends Component {
         console.log(response.data.error);
       }
       else{
-        this.state.rows[index][4] = 'FULFILLED'
+        this.state.rows[index][5] = 'FULFILLED'
         this.forceUpdate();
       }
     }.bind(this))

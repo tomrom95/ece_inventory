@@ -50,6 +50,12 @@
 }
 
 .maintable-body {
+  background-color: white;
+  margin-left: 22px;
+  max-width: 1000px;
+}
+
+.page-section {
   margin-left: 22px;
 }
 
@@ -70,10 +76,6 @@
   margin: 0;
 }
 
-.main-table {
-  max-width: 700px;
-}
-
 .main-container {
   padding-top: 80px;
 }
@@ -89,17 +91,40 @@
 }
 
 .request-button {
-  margin-right: -60px;
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
   margin-left: 50px;
 }
 
 .delete-button {
-  margin-left: -50px;
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
+  margin-left: -70px;
 }
 
 .add-button {
   position: relative;
-  right: -69px;
+  right: -35px;
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
+  margin-top: -10px;
+  margin-bottom: -5px;
+}
+
+.edit-button {
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
+  margin-left: -40px;
+}
+
+.info-button {
+  margin-top: 3px;
+  width:30px;
+  margin-left: -40px;
 }
 
 .request-quantity {
@@ -109,6 +134,13 @@
 
 .request-subtable {
   width: 380px;
+}
+
+.info-icon {
+  position: absolute;
+  right: 0;
+  margin: 28px;
+  margin-top: 0;
 }
 
 @keyframes App-logo-spin {
@@ -141,15 +173,34 @@
   margin-bottom: 2px;
 }
 
+.pagenum-textbox {
+  width: 50px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
 
-tr {
-  max-height: 15px!important;
+.detail-view {
+  width: 300px;
+  min-height: 325px;
+}
+
+.detail-view-title {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.btn {
+  font-weight: bold;
 }
 
 body {
-    background-color: gray;
+    background-color: rgba(0,0,0,0.3);
 }
 
 button {
+    font-family: 'Open Sans';
+    font-weight: bold;
+    font-size: 13px;
     padding: 8px 16px;
 }
