@@ -100,7 +100,9 @@ module.exports.putAPI = function(req,res){
     else{
       var obj;
       if(!req.user.is_admin){
-          if(req.user._id != request.user || req.user._id != req.body._id){
+        // if the current user's id is not equal to the user id in the request, or if the current user's id is not equal
+        // to the user id in the PUT body
+          if(req.user._id != request.user || req.user._id != req.body.user){
             // Standard user cannot modify the user_id
             return res.send({error: "You are not authorized to modify another user's request"});
           } else {
