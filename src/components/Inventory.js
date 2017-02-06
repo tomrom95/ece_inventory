@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+
 import '../App.css';
-import NavBar from './NavBar.js';
 import InventorySubTable from '../InventorySubTable.js';
 import axios from 'axios';
 
@@ -152,7 +151,7 @@ class Inventory extends React.Component {
   }
 
   render() {
-    if (this.state.items.length == 0) {
+    if (this.state.items.length === 0) {
       return (<div></div>)
     }
 

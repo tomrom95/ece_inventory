@@ -7,7 +7,7 @@ import UserProfile from '../components/UserProfile.js';
 import GlobalRequests from '../components/GlobalRequests.js';
 import CreateUser from '../components/CreateUser.js';
 import Transactions from '../components/Transactions.js';
-import { Route, IndexRoute} from 'react-router';
+import { Route} from 'react-router';
 import ItemDetailView from '../components/ItemDetailView.js';
 
 export default (

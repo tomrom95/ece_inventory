@@ -2,18 +2,17 @@ import React, { Component } from 'react';
 import '../App.css';
 import SubtableRow from '../SubtableRow';
 
-var meta;
 
 function getKeys(data) {
 
-	if (data.length == 0)
+	if (data.length === 0)
 		return;
 
 	var keys = Object.keys(data[0]);
 	var i;
 	var ret = [];
 	for (i=0; i<keys.length; i++) {
-    if (keys[i] == "_id" || keys[i] === "user_id" || keys[i] === "item_id") {
+    if (keys[i] === "_id" || keys[i] === "user_id" || keys[i] === "item_id") {
 			continue;
 		}
 		else ret.push(keys[i]);
@@ -68,16 +67,16 @@ class RequestTable extends Component {
       if(this.state.isAdmin){
 
         if(rowData[i][5] === 'PENDING'){
-          button_list=[this.denyButton(i), this.approveButton(i)];
+          button_list=[this.denyButton(i), this.approveButton(i), this.commentButton(i)];
         }
         else if (rowData[i][5] === 'APPROVED') {
-          button_list=[this.denyButton(i), this.fulfillButton(i)];
+          button_list=[this.denyButton(i), this.fulfillButton(i),this.commentButton(i)];
         }
         else if (rowData[i][5] === 'DENIED') {
-          button_list=[this.approveButton(i)];
+          button_list=[this.approveButton(i),this.commentButton(i)];
         }
         else if (rowData[i][5] === 'FULFILLED') {
-          button_list=[];
+          button_list=[this.commentButton(i)];
         }
       }
       else{
@@ -126,14 +125,14 @@ class RequestTable extends Component {
   deleteButton(index){
     return(
 
-      <button onClick={()=>{this.deleteRequest(index)}} type="button" className="btn btn-danger delete-button">X</button>
+      <button key={"delete"+index} onClick={()=>{this.deleteRequest(index)}} type="button" className="btn btn-danger delete-button">X</button>
     )
   }
 
   commentButton(index){
     return(
-      <button className="btn btn-primary" onClick={e => this.commentRequest(index)}>
-        Edit
+      <button key={"comment"+index} className="btn btn-primary" onClick={e => this.commentRequest(index, "hi")}>
+        Comment
       </button>
     )
   }
@@ -221,7 +220,24 @@ class RequestTable extends Component {
 
   }
 
-  commentRequest() {
+  commentRequest(index, comment) {
+    this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
+      {
+        reviewer_comment: comment,
+      }
+    )
+    .then(function(response) {
+      if(response.data.error){
+        console.log("error denying request");
+      }
+      else{
+
+        this.forceUpdate();
+      }
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    }.bind(this));
 
   }
 

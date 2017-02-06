@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import '../App.css';
-import NavBar from './NavBar.js';
 import axios from 'axios';
 import RequestTable from './RequestTable.js';
 
@@ -30,7 +28,7 @@ function processData(responseData) {
 }
 
 
-class GlobalRequests extends React.Component {
+class GlobalRequests extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -59,7 +57,10 @@ class GlobalRequests extends React.Component {
   }
 
   render() {
-    if(!this.state.requests || this.state.requests.length == 0 || !this.props.isAdmin){
+    if(!this.props.isAdmin){
+      return(<div>You are not allowed to access this page</div>);
+    }
+    else if(!this.state.requests || this.state.requests.length === 0){
       return(<div></div>);
     }
     else{

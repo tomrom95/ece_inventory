@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import '../App.css';
-import NavBar from './NavBar.js';
 import axios from 'axios';
 import RequestTable from './RequestTable.js';
 
@@ -54,7 +53,7 @@ class CurrentOrders extends Component {
   }
 
 	render(){
-    if(!this.state.requests || this.state.requests.length == 0 || this.props.isAdmin){
+    if(!this.state.requests || this.state.requests.length === 0 || this.props.isAdmin){
       return(<div></div>);
     }
     else{

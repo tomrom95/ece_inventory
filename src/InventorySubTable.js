@@ -98,6 +98,7 @@ class InventorySubTable extends Component {
 	}
 
 	makeEditButton(data, id) {
+		
 		return (
 		<ItemEditor data={getPrefill(data)}
           api={this.props.api}
@@ -154,6 +155,7 @@ class InventorySubTable extends Component {
 	makeInventoryButtons(data, id) {
 
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true){
+			console.log(data);
 			return (
 
 				[
@@ -165,8 +167,8 @@ class InventorySubTable extends Component {
 													Quantity: ""
 												}
 											]}
-										itemName={this.props.data[0]}
-										modelName={this.props.data[1]}
+										itemName={data.Name}
+										modelName={data.Model}
 										itemId={this.props.idTag}
 										api={this.props.api}
 										ref={this.props.idTag}/>,
