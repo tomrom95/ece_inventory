@@ -1,6 +1,19 @@
 import React, { Component } from 'react';
 import './App.css';
 import RequestPopup from './RequestPopup.js';
+import ItemWizard from './ItemWizard.js';
+
+function getPrefill(data) {
+	return ({
+		"Name": data[0],
+		"Quantity": data[1],
+		"Model Number": data[2],
+		"Description": data[3],
+		"Location": data[4],
+		"Tags": data[5]
+	});
+}
+
 
 class SubtableRow extends Component {
 
@@ -14,7 +27,7 @@ class SubtableRow extends Component {
 	render() {
 		return (
 			<tr>
-				{this.makeList(this.state.data)}
+			{this.makeList(this.state.data)}
 				{this.makeButton()}
 			</tr>
 		);
@@ -25,7 +38,10 @@ class SubtableRow extends Component {
 		var htmlList = [];
 		for (i=0; i<elems.length; i++) {
 			var columnTag = this.props.idTag + "-" + i;
-			htmlList.push(<td className="subtable-row" key={columnTag}> {elems[i]} </td>);
+			var value = elems[i];
+			if (value.length === 0 || value === "undefined")
+				value = "N/A";
+			htmlList.push(<td className="subtable-row" key={columnTag}> {value} </td>);
 		}
 		return htmlList;
 	}
@@ -49,6 +65,14 @@ class SubtableRow extends Component {
 						ref={this.props.idTag}/>);
 	}
 
+	makeEditButton() {
+		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+			return this.props.buttons;
+		}
+
+
+	/*
+
 	loadData() {
 		var tableData;
 		var id = this.props.idTag;
@@ -56,7 +80,6 @@ class SubtableRow extends Component {
 		this.props.api.get("api/inventory/" + id)
 			.then(function (response) {
     			tableData = response.data.instances;
-    			//console.log(tableData);
     			popupRef.update(tableData);
   			});
 	}
@@ -64,6 +87,7 @@ class SubtableRow extends Component {
 	componentDidMount() {
 		this.loadData();
 	}
+<<<<<<< HEAD
 
 	componentWillReceiveProps(nextProps){
 		this.setState({
@@ -71,6 +95,8 @@ class SubtableRow extends Component {
 		});
 	}
 
+=======
+	*/
 }
-
-export default SubtableRow
+}
+export default SubtableRow;

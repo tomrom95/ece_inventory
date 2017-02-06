@@ -2,6 +2,36 @@ import React, { Component } from 'react';
 import './App.css';
 import RequestSubtable from './RequestSubtable.js';
 
+function validNumber(num) {
+	return !isNaN(num);
+}
+
+function isWholeNumber(num) {
+	if (!validNumber(num)) {
+		return "Not a valid number!";
+	}
+	else {
+		if (Number(num) !== parseInt(num)) {
+			console.log(Number(num));
+			console.log(parseInt(num));
+			return "Please input a whole number!";
+		}
+		else return true;
+	}
+}
+
+function getDate() {
+    var d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
 class RequestPopup extends Component {
 
 	constructor(props) {
@@ -12,69 +42,127 @@ class RequestPopup extends Component {
 	}
 
 	render() {
-		console.log("Rendering with: ");
-		console.log(this.state.data);
 		var modalBody = this.makeModalBody();
 		return (
 			<td>
-				<button type="button" className="btn btn-primary request-button" data-toggle="modal" 
-					data-target={"#requestPopup-"+this.props.itemId}> 
-					Request 
+				<button type="button" className="btn btn-primary request-button" data-toggle="modal"
+					data-target={"#requestPopup-"+this.props.itemId}>
+					Request
 				</button>
-				<div className="modal fade" 
-					id={"requestPopup-"+this.props.itemId}  
-					tabIndex="-1" role="dialog" 
-					aria-labelledby="modalLabel" 
+				<div className="modal fade"
+					id={"requestPopup-"+this.props.itemId}
+					tabIndex="-1" role="dialog"
+					aria-labelledby="modalLabel"
 					aria-hidden="true">
-				  <div className="modal-dialog" role="document">
+				  <div className="modal-dialog request-subtable" role="document">
 				    <div className="modal-content">
 				      <div className="modal-header">
 				        <h5 className="modal-title" id="modalLabel">
-				        	{this.props.itemName + ": " + this.props.modelName}
+				        	<div>{"Item Name: " + this.props.itemName} </div>
+				        	<div> {"Model Number: " + this.props.modelName} </div>
 				        </h5>
 				      </div>
 				      	{modalBody}
 				      <div className="modal-footer">
 				        <button type="button" className="btn btn-primary" data-dismiss="modal">Cancel</button>
-				        <button type="button" className="btn btn-primary">Request</button>
+				        <button type="button" onClick={e=>{this.sendRequest(); this.clearView()}} className="btn btn-primary" data-dismiss="modal">Request</button>
 				      </div>
 				    </div>
 				  </div>
 				</div>
-			
 			</td>
 		);
 	}
 
 	makeModalBody() {
-		console.log("Data is: ");
-		console.log(this.state.data);
 
 		return (
-		<div className="modal-body row">
+		<div className="modal-body request-subtable">
 			<RequestSubtable
-				className="col-xs-12"
+				className="row"
 				data={this.state.data}
 				itemId={this.props.itemId}/>
+			{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
+			{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
+			{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
 		</div>
 		);
 	}
 
-	update(newData) {
-		console.log("UPDATING! " + this.props.itemId);
-		this.setState({
-			data: [{
-				Serial: "YES",
-				Condition: "YES",
-				Status: "YES",
-				Quantity: "YES"
-			}]
-		});
-		//this.render();
+	makeTextBox(id, type, label, defaultText){
+		return (
+			<div className="form-group row request-quantity" key={id}>
+			  <label htmlFor={id}>{label}</label>
+			  <input type={type} className="form-control" defaultValue={defaultText} id={id}></input>
+			</div>
+		);
 	}
 
-	// left to do: from InventorySubtable, you need to extract the quantities that were selected per row (from RequestTableRow)
-	// using refs, you can call a method that gets all the item id's and then posts a request.
+	sendRequest() {
+		var qty = document.getElementById("qty-textbox-" + this.props.itemId).value;
+		var reasonVal = document.getElementById("reason-textbox-"+ this.props.itemId).value;
+		var comment = document.getElementById("comment-textbox-" + this.props.itemId).value;
+
+		var val = isWholeNumber(qty);
+		if (val !== true) {
+			alert(val);
+			return;
+		}
+
+		if (Number(qty) === 0) {
+			alert("Request quantity cannot be zero.");
+			return;
+		}
+
+		if (Number(qty) > this.props.data[0].Quantity) {
+			alert("Request quantity cannot exceed availability");
+			return;
+		}
+
+		if (reasonVal.length === 0) {
+			alert("Reason is a required field");
+			return;
+		}
+
+		var request = {
+          reviewer_comment: "",
+          requestor_comment: comment,
+          reason: reasonVal,
+          quantity: qty,
+          status: "PENDING",
+          created: "",
+          item: this.props.itemId
+        };
+
+  		this.props.api.post('/api/requests', request)
+	  	.then(function(response) {
+	        if (response.data.error) {
+	          console.log(response.data.error);
+	        } else {
+	        	console.log(request);
+	        }
+	      }.bind(this))
+	      .catch(function(error) {
+	        console.log(error);
+	      }.bind(this));
+
+	}
+
+	clearView() {
+		document.getElementById("qty-textbox-" + this.props.itemId).value = "";
+		document.getElementById("reason-textbox-" + this.props.itemId).value = "";
+		document.getElementById("comment-textbox-" + this.props.itemId).value = "";
+	}
+
+	update(newData) {
+		// Method for later use when we have instances on front-end/
+
+		// make sure you format newData to include keys... or change the way it's passed in.
+		/*this.setState({
+			data: newData
+		});
+		*/
+	}
 }
 
 export default RequestPopup;

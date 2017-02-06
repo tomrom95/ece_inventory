@@ -53,8 +53,6 @@ class RequestSubtable extends Component {
 	}
 
 	render() {
-		console.log("Request subtable rendering with:");
-		console.log(this.state.rows);
 		return (
 			<table className="table subtable-body">
 			  <thead className="thread">
@@ -84,12 +82,12 @@ class RequestSubtable extends Component {
 		for (i=0; i<rowData.length; i++) {
 			var elem;
 			elem = (<RequestTableRow
-					data={rowData[i]} 
+					data={rowData[i]}
 					row={i}
 					key={this.props.itemId+"-"+rowData[i][0]+"-"+i}
 					rowId={this.props.itemId+"-row-"+i}/>);
-					// 0 index is SN. Change to something else. 
-			
+					// 0 index is SN. Change to something else.
+
 			list.push(elem);
 		}
 		return list;

@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  font-family: 'Open Sans';
 }
 
 .App-logo {
@@ -44,17 +44,21 @@
   color: white!important;
 }
 
-.subtable-body{
-  margin: 0;
-  margin-top:0.5px;
-  margin-bottom: 0;
-  border-style: solid;
-  border-color: black;
+.subtable-body {
   background-color: white;
+  max-width: 1000px;
+}
+
+.maintable-body {
+  margin-left: 22px;
 }
 
 .subtable-row {
   max-width:50px;
+  text-align: left;
+  color: gray;
+  font-size: 13px;
+  font-weight: bold;
 }
 
 .panel-font {
@@ -79,6 +83,34 @@
   font-weight:bold;
 }
 
+.modal-body {
+  text-align: left;
+  margin: 0;
+}
+
+.request-button {
+  margin-right: -60px;
+  margin-left: 50px;
+}
+
+.delete-button {
+  margin-left: -50px;
+}
+
+.add-button {
+  position: relative;
+  right: -69px;
+}
+
+.request-quantity {
+  width: 200px;
+  margin-left: 10px;
+}
+
+.request-subtable {
+  width: 380px;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -91,6 +123,27 @@
 .center-text {
   width: 100%;
   text-align: center;
+}
+
+.signout-button {
+  position: absolute;
+  right: 6%;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.nav-link {
+  font-size: 14px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+
+tr {
+  max-height: 15px!important;
 }
 
 body {

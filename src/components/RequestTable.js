@@ -124,10 +124,14 @@ class RequestTable extends Component {
 
   deleteButton(index){
     return(
-      <button className="btn btn-primary" onClick={e => this.deleteRequest(index)}>
+      <button className="btn btn-danger delete-button" onClick={e => this.deleteRequest(index)}>
         Delete
       </button>
     )
+  }
+
+  editButton(index){
+
   }
 
   approveRequest(index){
@@ -213,7 +217,12 @@ class RequestTable extends Component {
 
   }
 
-  
+  editRequest() {
+    if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+      return this.props.buttons;
+    }
+  }
+
 
   render() {
 		return (
