@@ -263,9 +263,7 @@ class Inventory extends React.Component {
   }
 
   setRowCount(numRows) {
-    console.log("Called!");
     this.state.rowsPerPage = numRows;
-    console.log("NUMROWS: " + numRows);
     this.loadData(1);
   }
 
