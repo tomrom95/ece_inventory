@@ -268,21 +268,7 @@ describe('Requests API Test', function () {
         done();
       });
     });
-    it('GETs requests by status (case-insensitive)', (done) => {
-      chai.request(server)
-      .get('/api/requests?status=PenDiNG')
-      .set('Authorization', token)
-      .end((err, res) => {
-        res.should.have.status(200);
-        res.body.should.be.a('array');
-        res.body.length.should.be.eql(2);
-        res.body.should.all.have.property("status", "PENDING");
-        res.body.should.all.have.property("reason", "happiness");
-        res.body.should.all.have.property("quantity", 2000);
-        done();
-      });
-    });
-    it('GETs requests by invalid status (case-insensitive)', (done) => {
+      it('GETs requests by invalid status (case-insensitive)', (done) => {
       chai.request(server)
       .get('/api/requests?status=LOL')
       .set('Authorization', token)
@@ -317,6 +303,91 @@ describe('Requests API Test', function () {
         res.body.length.should.be.eql(0);
         done();
       });
+    });
+    it('GETs 2nd page with 3 items per page', (done)=>{
+        chai.request(server)
+        .get('/api/requests?page=2&per_page=2')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(2);
+          res.body[0].should.have.property("reviewer_comment", "Bye");
+          res.body[0].should.have.property("requestor_comment", "Hello");
+          res.body[1].should.have.property("reviewer_comment", "Fine");
+          res.body[1].should.have.property("requestor_comment", "Urgent");
+          res.body.should.satisfy(function(requests){
+            return requests.every(function(request){
+              return request.item.should.have.property("name") && request.user.should.have.property("username");
+            })
+          });
+          done();
+        });
+    });
+    it('GETs 3rd page with 100 items per page - should return empty []', (done)=>{
+        chai.request(server)
+        .get('/api/requests?page=3&per_page=100')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(0);
+          done();
+        });
+    });
+    it('GETs 100th page with 3 items per page - should return empty []', (done)=>{
+        chai.request(server)
+        .get('/api/requests?page=100&per_page=3')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(0);
+          done();
+        });
+    });
+    it('GETs 100th page with 100 items per page - should return empty []', (done)=>{
+        chai.request(server)
+        .get('/api/requests?page=100&per_page=100')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(0);
+          done();
+        });
+    });
+    it('GETs whole array for invalid per_page param', (done)=>{
+        chai.request(server)
+        .get('/api/requests?page=3&per_pge=3')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(5);
+          res.body.should.satisfy(function(requests){
+            return requests.every(function(request){
+              return request.item.should.have.property("name") && request.user.should.have.property("username");
+            })
+          });
+          done();
+        });
+    });
+    it('GETs whole array for invalid page param', (done)=>{
+        chai.request(server)
+        .get('/api/requests?pag=3&per_page=3')
+        .set('Authorization', token)
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(5);
+          res.body.should.satisfy(function(requests){
+            return requests.every(function(request){
+              return request.item.should.have.property("name") && request.user.should.have.property("username");
+            })
+          });
+          done();
+        });
     });
   });
 
@@ -506,25 +577,51 @@ describe('Requests API Test', function () {
         });
       });
     });
-    it('Should POST as admin with specified user id', (done) => {
-      Item.findOne({"name": "2k resistor"}, function(err, item2){
-        var request = new Request({
-          "status": "PENDING",
-          "quantity": 2000,
+    it('Should POST as admin with specified user name', (done) => {
+        helpers.createNewUser('standardUser', 'standard', false , function(err, user) {
+        if(err) return res.send({error:err});
+        Item.findOne({"name": "2k resistor"}, function(err, item2){
+          var request = {
+            "status": "PENDING",
+            "quantity": 2000,
+            "user": "standardUser"
+          };
+          request.item = item2._id;
+          chai.request(server)
+          .post('/api/requests/')
+          .set('Authorization', token)
+          .send(request)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property("status", "PENDING");
+            res.body.should.have.property("quantity", 2000);
+            res.body.should.have.property("user", user._id.toString());
+            done();
+          });
         });
-        request.user = "5896510c820ada1a8d7b5875";
-        request.item = item2._id;
-        chai.request(server)
-        .post('/api/requests/')
-        .set('Authorization', token)
-        .send(request)
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          res.body.should.have.property("status", "PENDING");
-          res.body.should.have.property("quantity", 2000);
-          res.body.should.have.property("user","5896510c820ada1a8d7b5875");
-          done();
+      });
+    });
+    it('Should not POST with non-existing user name', (done) => {
+        helpers.createNewUser('standardUser', 'standard', false , function(err, user) {
+        if(err) return res.send({error:err});
+        Item.findOne({"name": "2k resistor"}, function(err, item2){
+          var request = {
+            "status": "PENDING",
+            "quantity": 2000,
+            "user": "asdfs"
+          };
+          request.item = item2._id;
+          chai.request(server)
+          .post('/api/requests/')
+          .set('Authorization', token)
+          .send(request)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property("error", "There is no such user");
+            done();
+          });
         });
       });
     });
@@ -532,11 +629,11 @@ describe('Requests API Test', function () {
       helpers.createNewUser('standard_user', 'test', false , function(error, user) {
         var standard_token = helpers.createAuthToken(user);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
-          var request = new Request({
+          var request = {
             "status": "PENDING",
             "quantity": 2000,
-          });
-          request.user = "1896510c820ada1a8d7b5875";
+          };
+          request.user = "admin";
           request.item = item2._id;
           chai.request(server)
           .post('/api/requests/')
@@ -585,7 +682,7 @@ describe('Requests API Test', function () {
         });
       });
     });
-    it('PUTS request - admin user can specify user id', (done) => {
+    it('PUTS request - admin user can specify user name', (done) => {
       var request = new Request({
         "reviewer_comment": "NONADMIN",
         "requestor_comment": "NONADMIN",
@@ -595,7 +692,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user = "1896510c820ada1a8d7b5875";
+      request.user = "1996510c820ada1a8d7b5875";
       request.save((err, request) => {
         chai.request(server)
         .put('/api/requests/'+request._id)
@@ -603,7 +700,8 @@ describe('Requests API Test', function () {
         .send({
           'reason': 'NONE',
           'status': 'FULFILLED',
-          'quantity': 3000
+          'quantity': 3000,
+          'user': 'test_user'
         })
         .end((err, res) => {
           res.should.have.status(200);
@@ -611,13 +709,42 @@ describe('Requests API Test', function () {
           res.body.reason.should.be.eql('NONE');
           res.body.status.should.be.eql('FULFILLED');
           res.body.quantity.should.be.eql(3000);
-          res.body.user.should.be.eql("1896510c820ada1a8d7b5875");
+          res.body.user.should.be.eql(user_id.toString());
           res.body._id.should.be.eql(request._id.toString());
           done();
         });
       });
     });
-    it('Should not PUT request for standard user specifying another user id in PUT body', (done) => {
+    it('Should not PUT request - admin user specifies invalid user name', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "PENDING",
+        "quantity": 2000,
+        "created": "2019-01-29"
+      });
+      request.item = item_id;
+      request.user = "1996510c820ada1a8d7b5875";
+      request.save((err, request) => {
+        chai.request(server)
+        .put('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'reason': 'NONE',
+          'status': 'FULFILLED',
+          'quantity': 3000,
+          'user': 'asdfasdf'
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.be.eql("There is no such user");
+          done();
+        });
+      });
+    });
+    it('Should not PUT request for standard user specifying another username in PUT body', (done) => {
         helpers.createNewUser('standard_user', 'test', false , function(error, user) {
         var standard_token = helpers.createAuthToken(user);
         var request = new Request({
@@ -629,7 +756,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29"
         });
         request.item = item_id;
-        request.user = user._id;
+        request.user = '1896510c820ada1a8d7b5875';
         request.save((err, request) => {
           chai.request(server)
           .put('/api/requests/'+request._id)
@@ -638,7 +765,7 @@ describe('Requests API Test', function () {
             'reason': 'NONE',
             'status': 'FULFILLED',
             'quantity': 3000,
-            'user': "1896510c820ada1a8d7b5875"
+            'user': "test_user"
           })
           .end((err, res) => {
             res.should.have.status(200);
@@ -649,7 +776,7 @@ describe('Requests API Test', function () {
         });
       });
   });
-  it('Should not PUT request for standard user with another user id in request', (done) => {
+  it('Should not PUT request for standard user with another username in request', (done) => {
       helpers.createNewUser('standard_user', 'test', false , function(error, user) {
       var standard_token = helpers.createAuthToken(user);
       var request = new Request({
