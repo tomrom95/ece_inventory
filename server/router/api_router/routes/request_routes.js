@@ -53,6 +53,7 @@ module.exports.postAPI = function(req,res){
     let userNameRegex = {'$regex': '^'+req.body.user+'$'};
     User.findOne({username: userNameRegex}, function(err, user){
       if(err) return res.send({error:err});
+      if(!user) return res.send({error:"There is no such user"});
       request.user = user._id;
       processAndPost(request, req, res);
     });
@@ -100,27 +101,42 @@ module.exports.putAPI = function(req,res){
     else{
       var obj;
       if(!req.user.is_admin){
-        // if the current user's id is not equal to the user id in the request, or if the current user's id is not equal
-        // to the user id in the PUT body
-          if(req.user._id != request.user || req.user._id != req.body.user){
+        // if the current user's id is not equal to the user id in the request, or if the current username is not equal
+        // to the username in the PUT body
+          if(req.user._id != request.user || req.user.username != req.body.user){
             // Standard user cannot modify the user_id
             return res.send({error: "You are not authorized to modify another user's request"});
           } else {
               // Standard user must keep its id in its own request.
               obj = Object.assign(request, req.body);
               obj.user = req.user._id;
+              saveObject(obj, res);
           }
       } else {
-        // Admin cantake in user_id field
+        // Admin can take in username
          obj = Object.assign(request, req.body);
+         if(req.body.user){
+           let userNameRegex = {'$regex': '^'+req.body.user+'$'};
+           User.findOne({username: userNameRegex}, function(err, user){
+             if(err) return res.send({error:err});
+             if(!user) return res.send({error: "There is no such user"});
+             obj.user = user._id;
+             saveObject(obj, res);
+           });
+         } else {
+           saveObject(obj, res);
+         }
       }
-      obj.save((err,request)=>{
-        if(err) return res.send({error:err});
-        res.json(request);
-      })
     }
   });
 };
+
+function saveObject(obj, res){
+  obj.save((err,request)=>{
+    if(err) return res.send({error:err});
+    res.json(request);
+  });
+}
 
 module.exports.deleteAPI = function(req,res){
   // Non-admin users can only delete their own requests.

@@ -517,15 +517,38 @@ describe('Requests API Test', function () {
         });
       });
     });
+    it('Should not POST with non-existing user name', (done) => {
+        helpers.createNewUser('standardUser', 'standard', false , function(err, user) {
+        if(err) return res.send({error:err});
+        Item.findOne({"name": "2k resistor"}, function(err, item2){
+          var request = {
+            "status": "PENDING",
+            "quantity": 2000,
+            "user": "asdfs"
+          };
+          request.item = item2._id;
+          chai.request(server)
+          .post('/api/requests/')
+          .set('Authorization', token)
+          .send(request)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property("error", "There is no such user");
+            done();
+          });
+        });
+      });
+    });
     it('Should not POST as standard user with specified different user id in body', (done) => {
       helpers.createNewUser('standard_user', 'test', false , function(error, user) {
         var standard_token = helpers.createAuthToken(user);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
-          var request = new Request({
+          var request = {
             "status": "PENDING",
             "quantity": 2000,
-          });
-          request.user = "1896510c820ada1a8d7b5875";
+          };
+          request.user = "admin";
           request.item = item2._id;
           chai.request(server)
           .post('/api/requests/')
@@ -574,7 +597,7 @@ describe('Requests API Test', function () {
         });
       });
     });
-    it('PUTS request - admin user can specify user id', (done) => {
+    it('PUTS request - admin user can specify user name', (done) => {
       var request = new Request({
         "reviewer_comment": "NONADMIN",
         "requestor_comment": "NONADMIN",
@@ -584,7 +607,7 @@ describe('Requests API Test', function () {
         "created": "2019-01-29"
       });
       request.item = item_id;
-      request.user = "1896510c820ada1a8d7b5875";
+      request.user = "1996510c820ada1a8d7b5875";
       request.save((err, request) => {
         chai.request(server)
         .put('/api/requests/'+request._id)
@@ -592,7 +615,8 @@ describe('Requests API Test', function () {
         .send({
           'reason': 'NONE',
           'status': 'FULFILLED',
-          'quantity': 3000
+          'quantity': 3000,
+          'user': 'test_user'
         })
         .end((err, res) => {
           res.should.have.status(200);
@@ -600,13 +624,42 @@ describe('Requests API Test', function () {
           res.body.reason.should.be.eql('NONE');
           res.body.status.should.be.eql('FULFILLED');
           res.body.quantity.should.be.eql(3000);
-          res.body.user.should.be.eql("1896510c820ada1a8d7b5875");
+          res.body.user.should.be.eql(user_id.toString());
           res.body._id.should.be.eql(request._id.toString());
           done();
         });
       });
     });
-    it('Should not PUT request for standard user specifying another user id in PUT body', (done) => {
+    it('Should not PUT request - admin user specifies invalid user name', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "PENDING",
+        "quantity": 2000,
+        "created": "2019-01-29"
+      });
+      request.item = item_id;
+      request.user = "1996510c820ada1a8d7b5875";
+      request.save((err, request) => {
+        chai.request(server)
+        .put('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'reason': 'NONE',
+          'status': 'FULFILLED',
+          'quantity': 3000,
+          'user': 'asdfasdf'
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.be.eql("There is no such user");
+          done();
+        });
+      });
+    });
+    it('Should not PUT request for standard user specifying another username in PUT body', (done) => {
         helpers.createNewUser('standard_user', 'test', false , function(error, user) {
         var standard_token = helpers.createAuthToken(user);
         var request = new Request({
@@ -618,7 +671,7 @@ describe('Requests API Test', function () {
           "created": "2019-01-29"
         });
         request.item = item_id;
-        request.user = user._id;
+        request.user = '1896510c820ada1a8d7b5875';
         request.save((err, request) => {
           chai.request(server)
           .put('/api/requests/'+request._id)
@@ -627,7 +680,7 @@ describe('Requests API Test', function () {
             'reason': 'NONE',
             'status': 'FULFILLED',
             'quantity': 3000,
-            'user': "1896510c820ada1a8d7b5875"
+            'user': "test_user"
           })
           .end((err, res) => {
             res.should.have.status(200);
@@ -638,7 +691,7 @@ describe('Requests API Test', function () {
         });
       });
   });
-  it('Should not PUT request for standard user with another user id in request', (done) => {
+  it('Should not PUT request for standard user with another username in request', (done) => {
       helpers.createNewUser('standard_user', 'test', false , function(error, user) {
       var standard_token = helpers.createAuthToken(user);
       var request = new Request({
