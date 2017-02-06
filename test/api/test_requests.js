@@ -577,6 +577,57 @@ describe('Requests API Test', function () {
         });
       });
     });
+    it('Should POST as standard user', (done) => {
+        helpers.createNewUser('standardUser', 'standard', false , function(err, user) {
+        var standard_token = helpers.createAuthToken(user);
+        if(err) return res.send({error:err});
+        Item.findOne({"name": "2k resistor"}, function(err, item2){
+          var request = {
+            "status": "PENDING",
+            "quantity": 2000,
+          };
+          request.item = item2._id;
+          chai.request(server)
+          .post('/api/requests/')
+          .set('Authorization', standard_token)
+          .send(request)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property("status", "PENDING");
+            res.body.should.have.property("quantity", 2000);
+            res.body.should.have.property("user", user._id.toString());
+            done();
+          });
+        });
+      });
+    });
+    it('Should POST as standard user with own username', (done) => {
+        helpers.createNewUser('standardUser', 'standard', false , function(err, user) {
+        var standard_token = helpers.createAuthToken(user);
+        if(err) return res.send({error:err});
+        Item.findOne({"name": "2k resistor"}, function(err, item2){
+          var request = {
+            "status": "PENDING",
+            "quantity": 2000,
+            "user": "standardUser"
+          };
+          request.item = item2._id;
+          chai.request(server)
+          .post('/api/requests/')
+          .set('Authorization', standard_token)
+          .send(request)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property("status", "PENDING");
+            res.body.should.have.property("quantity", 2000);
+            res.body.should.have.property("user", user._id.toString());
+            done();
+          });
+        });
+      });
+    });
     it('Should POST as admin with specified user name', (done) => {
         helpers.createNewUser('standardUser', 'standard', false , function(err, user) {
         if(err) return res.send({error:err});
@@ -632,8 +683,8 @@ describe('Requests API Test', function () {
           var request = {
             "status": "PENDING",
             "quantity": 2000,
+            "user": "standard"
           };
-          request.user = "admin";
           request.item = item2._id;
           chai.request(server)
           .post('/api/requests/')
