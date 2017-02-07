@@ -50,7 +50,22 @@
 }
 
 .maintable-body {
-  margin-left: 22px;
+  background-color: white;
+  max-width: 1000px;
+  border-left: solid;
+  border-width: 4px;
+  border-color: rgba(0,150,255,1);
+}
+
+.maintable-container {
+  max-height: 550px;
+  width: 1500px;
+  margin-left: 20px;
+  overflow-y: scroll;
+}
+
+.page-section {
+  margin-left: -10px;
 }
 
 .subtable-row {
@@ -70,10 +85,6 @@
   margin: 0;
 }
 
-.main-table {
-  max-width: 700px;
-}
-
 .main-container {
   padding-top: 80px;
 }
@@ -89,17 +100,42 @@
 }
 
 .request-button {
-  margin-right: -60px;
-  margin-left: 50px;
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
+  margin-left: 80px;
 }
 
 .delete-button {
-  margin-left: -50px;
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
+  margin-left: -23px;
 }
 
 .add-button {
   position: relative;
-  right: -69px;
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
+  margin-top: -10px;
+  margin-bottom: -5px;
+  margin-right: -50px;
+  margin-left: -40px;
+}
+
+.edit-button {
+  font-family: 'Open Sans';
+  font-weight: bold;
+  font-size: 13px;
+  margin-left: -38px;
+}
+
+.info-button {
+  margin-top: 3px;
+  width:30px;
+  margin-left: -24px;
+  margin-right: -80px;
 }
 
 .request-quantity {
@@ -109,6 +145,13 @@
 
 .request-subtable {
   width: 380px;
+}
+
+.info-icon {
+  position: absolute;
+  right: 0;
+  margin: 28px;
+  margin-top: 0;
 }
 
 @keyframes App-logo-spin {
@@ -141,15 +184,89 @@
   margin-bottom: 2px;
 }
 
+.navbar {
+  border-left: solid;
+  border-width: 4px;
+  border-color: rgba(0,150,255,1);
+}
 
-tr {
-  max-height: 15px!important;
+.pagenum-textbox {
+  width: 50px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.detail-view {
+  min-height: 325px;
+}
+
+.detail-view-title {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+
+.btn {
+  font-weight: bold;
+}
+
+.modal-backdrop {
+  opacity: 0.2!important;
+}
+
+.detail-view {
+  margin-top: 200px;
+}
+
+.rowcount-dropdown {
+  height: 175px;
+  overflow-y: scroll;
+}
+
+.card {
+  width: 300px;
+}
+
+.card-block {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.filterbox {
+  margin-left: 20px;
+  margin-right: 0;
+  border: none;
+  border-left: solid;
+  border-width: 4px;
+  border-color: rgba(0,150,255,1);
+}
+
+.inventory-page {
+  margin-top:10px;
+  margin-right: 80px;
+  margin-left: 20px;
+}
+
+.modal-body.padded {
+  margin-top: 30px;
+}
+
+.confirmation-popup {
+  padding-top: 200px;
+}
+
+.confirmation-dialog {
+  width: 400px;
+  font-weight: normal;
 }
 
 body {
-    background-color: gray;
+    background-color: rgba(0,0,0,0.3);
 }
 
 button {
+    font-family: 'Open Sans';
+    font-weight: bold;
+    font-size: 13px;
     padding: 8px 16px;
 }

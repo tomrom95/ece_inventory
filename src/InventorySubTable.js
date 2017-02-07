@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import SubtableRow from './SubtableRow.js';
 import ItemWizard from './ItemWizard.js';
+import RequestPopup from './RequestPopup.js';
+import ItemEditor from './ItemEditor.js';
 
 var meta;
 
@@ -43,7 +45,20 @@ function getPrefill(data) {
 		"Model Number": data["Model"],
 		"Description": data["Description"],
 		"Location": data["Location"],
+		"Vendor Info": data["Vendor"],
 		"Tags": data["Tags"]
+	});
+}
+
+function getEmptyPrefill() {
+	return ({
+		"Name": "",
+		"Quantity": "",
+		"Model Number": "",
+		"Description": "",
+		"Location": "",
+		"Vendor Info": "",
+		"Tags": ""
 	});
 }
 
@@ -66,16 +81,18 @@ class InventorySubTable extends Component {
 
 	render() {
 		return (
-			<table className="table subtable-body maintable-body">
-			  <thead className="thread">
-			    <tr>
-		    	  {this.makeColumnKeyElements(this.state.columnKeys)}
-			    </tr>
-			  </thead>
-			  <tbody>
-			  	{this.makeRows(this.state.rows)}
-			  </tbody>
-			</table>
+			<div className="maintable-container">
+				<table className="table maintable-body">
+				  <thead className="thread">
+				    <tr>
+			    	  {this.makeColumnKeyElements(this.state.columnKeys)}
+				    </tr>
+				  </thead>
+				  <tbody>
+				  	{this.makeRows(this.state.rows)}
+				  </tbody>
+				</table>
+			</div>
 		);
 	}
 
@@ -85,16 +102,19 @@ class InventorySubTable extends Component {
 		for (i=0; i<keys.length; i++) {
 			list.push(<th key={keys[i]+"-inventorycol"}> {keys[i]} </th>);
 		}
-		list.push(<th key={"buttonSpace-0"}> </th>);
+
+		list.push(<th key={"buttonSpace-0"}></th>);
+		list.push(<th key={"buttonSpace-1"}></th>)
+
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+			list.push(<th key={"buttonSpace-2"}></th>);
+			list.push(<th key={"buttonSpace-3"}></th>);
 			list.push(
-				<th className="add-button" key={"item-wizard-slot"}>
-					<ItemWizard data=
-	          			{{"Name": "", "Quantity": undefined, "Model Number": "", "Description": "", "Location": "", "Vendor Info": "", "Tags": ""}}
+					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
-	          			type={"create"}
-	          			key={"makeitem-button"}/>
-	          	</th>);
+	          			key={"makeitem-button"}
+	          			callback={this.props.callback}/>
+	          	);
 		}
 
 		return list;
@@ -113,25 +133,113 @@ class InventorySubTable extends Component {
 					row={i}
 					key={id+"-row"}
 					api={this.props.api}
-					buttons={this.makeEditButton(this.props.data[i], id)}
+					inventory_buttons={this.makeInventoryButtons(this.props.data[i], id)}
 					callback={this.props.callback}/>);
 			list.push(elem);
 		}
 		return list;
 	}
 
+	makeInventoryButtons(data, id) {
+		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+			var list = [];
+			list.push(
+					<RequestPopup
+						data={[ {
+							Serial: data.Serial,
+							Condition: data.Condition,
+							Status: data.Status,
+							Quantity: data.Quantity
+								}
+							]}
+						itemName={data.Name}
+						modelName={data.Model}
+						itemId={data.meta.id}
+						api={this.props.api}
+						ref={data.meta.id}
+						isAdmin={true}
+						key={"request-popup-button-"+id}/>
+			);
+			list.push(this.makeEditButton(data,id));
+			list.push(this.makeDeleteButton(id));
+			return list;			
+		}
+		else return (
+			<RequestPopup
+				data={[ {
+							Serial: data.Serial,
+							Condition: data.Condition,
+							Status: data.Status,
+							Quantity: data.Quantity
+						}
+					]}
+				itemName={data.Name}
+				modelName={data.Model}
+				itemId={data.meta.id}
+				api={this.props.api}
+				ref={data.meta.id}
+				isAdmin={false}/>
+			);
+	}
+
+	makeDeleteButton(id) {
+		return (
+			<td key={"delete-td-"+id} className="subtable-row">
+				<button data-toggle="modal" data-target={"#delete-"+id} key={"delete-button-"+id} 
+					type="button" 
+					className="btn btn-danger delete-button">
+						<span className="fa fa-remove"></span>
+				</button>
+				{this.makeConfirmationPopup(
+					"This will delete the selected item and all of its instances. Proceed?", 
+					"delete", 
+					id)}
+			</td>
+		);
+	}
+
 	makeEditButton(data, id) {
 		return (
-		<ItemWizard data={getPrefill(data)}
-          api={this.props.api}
-          callback={this.props.callback}
-          type={"edit"}
-          className="request-button"
-          itemId={id}
-          key={"edit-"+ id}
-          ref={"edit-"+id} />
+			<td key={"edit-td-"+id} className="subtable-row">
+				<ItemEditor data={getPrefill(data)}
+		          api={this.props.api}
+		          callback={this.props.callback}
+		          className="request-button"
+		          itemId={id}
+		          key={"editbutton-"+ id}
+		          ref={"edit-"+id} />
+	         </td>
         );
 	}
+
+
+	deleteItem(id) {
+		this.props.api.delete('api/inventory/' + id)
+		.then(function(response) {
+			this.props.callback();
+		}.bind(this));
+		console.log("Deleting item number " + id);
+	}
+
+	makeConfirmationPopup(text, type, id) {
+		return (
+			<div className="modal confirmation-popup" id={type+"-"+id}>
+			  <div className="modal-dialog confirmation-dialog" role="document">
+			    <div className="modal-content">
+			      <div className="modal-body padded">
+			        <p>{text}</p>
+			      </div>
+			      <div className="modal-footer">
+			      	<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+			        <button onClick={e=> this.deleteItem(id)} type="button" data-dismiss="modal" className="btn btn-danger">Confirm</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		);
+	}
+
 }
+
 
 export default InventorySubTable

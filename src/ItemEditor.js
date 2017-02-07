@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-
+ 
 function getKeys(data) {
 	return Object.keys(data);
 }
@@ -28,9 +28,9 @@ function isWholeNumber(num) {
 		}
 		else return true;
 	}
-}
+} 
 
-class ItemWizard extends Component {
+class ItemEditor extends Component {
 
 	constructor(props) {
 		super(props);
@@ -52,47 +52,45 @@ class ItemWizard extends Component {
 
 	render() {
 		return (
-		<th>
+		<div>
 			<button type="button" 
-				className="btn btn-outline-primary add-button" 
+				className="btn btn-outline-primary edit-button" 
 				data-toggle="modal" 
-				data-target={"#createModal"}>
-				<span className="fa fa-plus"></span>
+				data-target={"#editModal-"+this.props.itemId}>
+				<span className="fa fa-pencil"></span> 
 			</button>
 
 			<div className="modal fade" 
-				id={"createModal"}
-				tabIndex="-1" 
-				role="dialog" 
-				aria-labelledby="createLabel" 
+				id={"editModal-"+this.props.itemId}
+				tabIndex="-1" role="dialog" 
+				aria-labelledby="editLabel" 
 				aria-hidden="true">
 			  <div className="modal-dialog" role="document">
 			    <div className="modal-content">
 			      <div className="modal-header">
-			        <h5 className="modal-title" id="createLabel">Create New Item</h5>
+			        <h5 className="modal-title" id="editLabel">Edit Current Item</h5>
 			      </div>
 			      <div className="modal-body">
 			        {this.makeForm()}
 			      </div>
 			      <div className="modal-footer">
-			        <button type="button" onClick={e=>this.clearForm()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-			        <button onClick={e => {this.onSubmission(); this.clearForm()}} type="button" data-dismiss="modal" className="btn btn-primary">Submit</button>
+			        <button type="button" onClick={e=>this.makeForm()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			        <button onClick={e => this.onSubmission()} type="button" data-dismiss="modal" className="btn btn-primary">Submit</button>
 			      </div>
 			    </div>
 			  </div>
 			</div>
-		</th>
+		</div>
 		);
 	}
 
 
 	makeTextBox(row, type, label, defaultText){
-		var id = "createform-row-"+row;
+		var id = "textform-"+this.props.itemId+"-row-"+row;
 		this.state.formIds.push(id);
-
 		return (
-			<div className="form-group" key={"createform-div-row-"+row}>
-			  <label htmlFor={"createform-row-"+row}>{label}</label>
+			<div className="form-group" key={"textform-div-row"+row+'-row-'+this.props.itemId}>
+			  <label htmlFor={"textform-"+this.props.itemId+"-row-"+row}>{label}</label>
 			  <input type={type} 
 			  	className="form-control" 
 			  	defaultValue={defaultText} 
@@ -145,30 +143,26 @@ class ItemWizard extends Component {
   			object.tags[i] = object.tags[i].trim();
   		}
 
+		console.log("Object is:");
+		console.log(object);
+
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
 
-  			this.props.api.post('/api/inventory/', object)
+  			this.props.api.put('/api/inventory/'+ this.props.itemId, object)
 			  	.then(function(response) {
 			        if (response.data.error) {
-			          console.log(response.data.error);
+			          	console.log(response.data.error);
 			        } else {
 			        	this.props.callback();
 			        }
 			      }.bind(this))
 			      .catch(function(error) {
 			        console.log(error);
-			      }.bind(this));
+			      }.bind(this));	
 		}
-  	}
-
-  	clearForm() {
-  		var i;
-  		for (i=0; i<this.state.formIds.length; i++) {
-  			document.getElementById(this.state.formIds[i]).value = "";
-  		}
   	}
 
 }
 
-export default ItemWizard
+export default ItemEditor

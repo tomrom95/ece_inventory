@@ -1,7 +1,9 @@
 'use strict';
 var Request = require('../../../model/requests');
 var Item = require('../../../model/items');
+var User = require('../../../model/users');
 var mongoose = require('mongoose');
+// fields within the item to return
 var itemFieldsToReturn = 'name model_number location description';
 
 module.exports.getAPI = function (req, res) {
@@ -19,16 +21,30 @@ module.exports.getAPI = function (req, res) {
   if(reason) query.reason = {'$regex': reason, '$options':'i'};
   if(req.query.created) query.created = new Date(req.query.created);
   if(quantity) query.quantity = quantity;
-  if(status) query.status = {'$regex': status, '$options': 'i'};
+  if(status) query.status = status;
   if(requestor_comment) query.requestor_comment = {'$regex': requestor_comment, '$options': 'i'};
   if(reviewer_comment) query.reviewer_comment = {'$regex': reviewer_comment, '$options': 'i'};
-  Request.find(query)
-    .populate('item', itemFieldsToReturn)
-    .populate('user', 'username')
-    .exec(function(err, requests){
-      if(err) return res.send({error:err});
-      res.json(requests);
-  });
+
+  if(req.query.page && req.query.per_page && !isNaN(req.query.per_page)){
+    let paginateOptions = {
+      // page number (not offset)
+      page: req.query.page,
+      limit: Number(req.query.per_page),
+      populate: [{path:'item', select: itemFieldsToReturn}, {path:'user', select:'username'}]
+    }
+    Request.paginate(query, paginateOptions, function(err, obj){
+        if(err) return res.send({error: err});
+        res.json(obj.docs);
+    });
+  } else {
+    Request.find(query)
+      .populate('item', itemFieldsToReturn)
+      .populate('user', 'username')
+      .exec(function(err, requests){
+        if(err) return res.send({error:err});
+        res.json(requests);
+    });
+  };
 };
 
 module.exports.postAPI = function(req,res){
@@ -36,15 +52,37 @@ module.exports.postAPI = function(req,res){
   if(!req.user._id) {
     return res.send({error: "User ID null"})
   } else {
-    // Throw error if standard user is posting with a user id not equal to its own
-    if(!req.user.is_admin && req.user._id != req.body._id){
-      return res.send({error:"You are not authorized to modify another user's request"});
+
+    if(req.user.is_admin){
+      // if user is admin, find user id if the user field is entered
+      if(req.body.user){
+        // Find the user id from the username, and set it to .user field
+        User.findOne({username: req.body.user}, function(err, user){
+          if(err) return res.send({error:err});
+          if(!user) return res.send({error:"There is no such user"});
+          request.user = user._id;
+          processAndPost(request, req, res);
+        });
+      } else {
+        // Post the user's requst as the admin user
+        request.user = req.user._id;
+        processAndPost(request, req, res);
+      }
+    } else {
+      // Standard user here
+      if(req.body.user && req.user.username != req.body.user){
+        // If the user field is filled and the username of the user doesn't match what's given in the field
+        return res.send({error:"You are not authorized to modify another user's request"});
+      }
+      // Post the user's request as the standard user
+      request.user = req.user._id;
+      processAndPost(request, req, res);
     }
-  // If admin filled in the user_id param (non-empty),
-  // Use the user_id provided by the admin (to create request on behalf of another user)
-  // Otherwise, use the id of the current user performing POST
-    request.user = (req.body.user && req.user.is_admin) ? req.body.user : req.user._id;
-  }
+
+}
+};
+
+function processAndPost(request, req, res){
   if(!req.body.item_id && !req.body.item) {
     return res.send({error: "Item ID null"});
   } else {
@@ -52,7 +90,6 @@ module.exports.postAPI = function(req,res){
     else if(req.body.item_id) request.item = mongoose.Types.ObjectId(req.body.item_id);
   }
   request.reason = req.body.reason;
-
   if(req.body.created) request.created = new Date(req.body.created);
   request.quantity = req.body.quantity;
   request.status = req.body.status;
@@ -61,8 +98,9 @@ module.exports.postAPI = function(req,res){
   request.save(function(err){
     if(err) return res.send({error:err});
     res.json(request);
-  })
+  });
 };
+
 
 module.exports.getAPIbyID = function(req, res){
   Request.findById(req.params.request_id)
@@ -84,25 +122,41 @@ module.exports.putAPI = function(req,res){
     else{
       var obj;
       if(!req.user.is_admin){
-          if(req.user._id != request.user || req.user._id != req.body._id){
+        // if the current user's id is not equal to the user id in the request, or if the current username is not equal
+        // to the username in the PUT body
+          if(req.user._id != request.user || req.user.username != req.body.user){
             // Standard user cannot modify the user_id
             return res.send({error: "You are not authorized to modify another user's request"});
           } else {
               // Standard user must keep its id in its own request.
               obj = Object.assign(request, req.body);
               obj.user = req.user._id;
+              saveObject(obj, res);
           }
       } else {
-        // Admin cantake in user_id field
+        // Admin can take in username
          obj = Object.assign(request, req.body);
+         if(req.body.user){
+           User.findOne({username: req.body.user}, function(err, user){
+             if(err) return res.send({error:err});
+             if(!user) return res.send({error: "There is no such user"});
+             obj.user = user._id;
+             saveObject(obj, res);
+           });
+         } else {
+           saveObject(obj, res);
+         }
       }
-      obj.save((err,request)=>{
-        if(err) return res.send({error:err});
-        res.json(request);
-      })
     }
   });
 };
+
+function saveObject(obj, res){
+  obj.save((err,request)=>{
+    if(err) return res.send({error:err});
+    res.json(request);
+  });
+}
 
 module.exports.deleteAPI = function(req,res){
   // Non-admin users can only delete their own requests.

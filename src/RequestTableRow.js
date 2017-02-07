@@ -11,8 +11,6 @@ class RequestTableRow extends Component {
 	}
 
 	render() {
-		console.log("Reporting from RequestTableRow: ");
-		console.log(this.state.data);
 		return (
 			<tr>
 				{this.makeList(this.state.data)}
