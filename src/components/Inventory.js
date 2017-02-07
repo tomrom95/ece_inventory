@@ -209,15 +209,9 @@ class Inventory extends Component {
           </div>
 
           <div className="row">
-            <InventorySubTable
-                data={this.state.items}
-                hasButton={true}
-                isInventorySubtable={true}
-                api={this.instance}
-                callback={e => this.loadData(this.state.page, e)}/>
+            {table}
           </div>
         </div>
-        {table}
       </div>
       );
   }
