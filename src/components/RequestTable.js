@@ -130,12 +130,6 @@ class RequestTable extends Component {
     )
   }
 
-  dummyButton(index){
-    return(
-      <button key={"dummy"+index} className="btn btn-primary" onClick={e => this.commentRequest(index)}>
-        dummy
-      </button>    )
-  }
   commentButton(index){
     return(
       <LeaveCommentPopup key={"comment"+index} request={this.state.raw_data[index]._id} api={this.props.api}/>
@@ -254,7 +248,6 @@ class RequestTable extends Component {
 
 
   render() {
-		console.log(this.state.rows.length);
 		return (
 			<table className="table subtable-body">
 			  <thead className="thread">
