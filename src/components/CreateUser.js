@@ -1,8 +1,6 @@
 import React from 'react';
 import axios from 'axios';
 
-const DUPLICATE_ERROR = 11000;
-
 class CreateUser extends React.Component {
   constructor(props) {
     super(props);
@@ -40,11 +38,7 @@ class CreateUser extends React.Component {
       .then(function(response) {
         if (response.data.error) {
           console.log(response.data.error);
-          if (response.data.error.code === DUPLICATE_ERROR) {
-            this.setState({success: null, error: 'A user with this username already exists'});
-          } else {
-            this.setState({success: null, error: 'Could not complete request to add user'});
-          }
+          this.setState({success: null, error: 'Could not complete request to add user'});
         } else {
           this.setState({error: null, success: 'Added user successfully'});
           this.clearFields();

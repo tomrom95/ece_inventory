@@ -3,7 +3,6 @@
 node_modules
 cert.pem
 key.pem
-npm-debug.log*
 # testing
 coverage
 
