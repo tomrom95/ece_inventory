@@ -87,7 +87,6 @@ class RequestTable extends Component {
 
 			var elem;
 			var id = this.props.data[i]["item_id"] ;
-      console.log(this.props.data);
 			elem = (<SubtableRow
 					columnKeys={this.props.columnKeys}
 					data={rowData[i]}

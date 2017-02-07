@@ -54,7 +54,7 @@ class GlobalRequests extends Component {
   }
 
   render() {
-    if(!this.props.isAdmin){
+    if(JSON.parse(localStorage.getItem('user')).is_admin === false){
       return(<div>You are not allowed to access this page</div>);
     }
     else if(!this.state.requests || this.state.requests.length === 0){

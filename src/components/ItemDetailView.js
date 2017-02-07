@@ -18,6 +18,7 @@ class ItemDetailView extends React.Component {
       error: null,
       requests: []
     }
+    this.addPadding = this.addPadding.bind(this);
   }
 
   componentDidMount() {
@@ -32,7 +33,6 @@ class ItemDetailView extends React.Component {
 
     this.axiosInstance.get('/inventory/' + this.props.params.itemID)
     .then(function(response) {
-      console.log(response);
       this.setState({item: response.data});
     }.bind(this))
     .catch(function(error) {
@@ -93,9 +93,7 @@ class ItemDetailView extends React.Component {
                       </div>
                     </div>
                   </div>
-                  <div className="row pad-sides">
-                    <GlobalRequests itemID={this.props.params.itemID} status="PENDING"/>
-                  </div>
+                  {this.addPadding()}
                 </div>
               </div>
             </div>
@@ -103,8 +101,21 @@ class ItemDetailView extends React.Component {
       </div>
     );
   }
-}
 
+
+  addPadding(){
+    if(JSON.parse(localStorage.getItem('user')).is_admin === true){
+      return(
+        <div className="row pad-sides">
+          <GlobalRequests itemID={this.props.params.itemID} status="PENDING"/>
+        </div>
+      );
+    }
+    else{
+      return(<div></div>);
+    }
+  }
+}
 
 
 export default ItemDetailView;
