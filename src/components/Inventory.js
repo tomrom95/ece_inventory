@@ -32,6 +32,7 @@ class Inventory extends Component {
   constructor(props){
     super(props);
     this.state = {
+      initialLoad: true,
       items: [],
       page: 1,
       rowsPerPage: 5,
@@ -60,19 +61,26 @@ class Inventory extends Component {
         document.getElementById("pageNum").value = this.state.page;
         return;
       }
-      
+
       this.instance.get(this.getURL(page, this.state.rowsPerPage))
       .then(function (response) {
+        if (this.state.initialLoad) {
+          this.setState({initialLoad: false});
+        }
         if (response.data.length === 0) {
-          document.getElementById("pageNum").value = this.state.page;
-          if (justDeleted === true) {
-            this.previousPage();
+          if (page === 1) {
+            this.setState({items: []})
+          } else {
+            document.getElementById("pageNum").value = this.state.page;
+            if (justDeleted === true) {
+              this.previousPage();
+            }
           }
         }
         else {
           this.setState({
             items: processData(response),
-            state: page
+            page: page
           });
           document.getElementById("pageNum").value = page;
           console.log("Changed page size");
@@ -155,10 +163,20 @@ class Inventory extends Component {
   }
 
   render() {
-    if (this.state.items.length == 0) {
-      return (<div></div>)
+    var table = null;
+    if (this.state.initialLoad) {
+      table = (<div></div>);
+    } else if (this.state.items.length === 0) {
+      table = (<div className="center-text">No items found</div>);
+    } else {
+      table = (<InventorySubTable
+        data={this.state.items}
+        hasButton={true}
+        isInventorySubtable={true}
+        api={this.instance}
+        callback={e => this.loadData(this.state.page, e)}/>);
     }
-    return (      
+    return (
       <div className="row inventory-page">
         <div className="col-md-3">
             {this.makeFilterBox()}
@@ -181,7 +199,7 @@ class Inventory extends Component {
                     </li>
                     <li className="page-item">{this.makePageBox()}</li>
                     <li className="page-item">{this.makePageGoButton()}</li>
-                  </ul> 
+                  </ul>
                 </nav>
               </div>
 
@@ -191,15 +209,11 @@ class Inventory extends Component {
           </div>
 
           <div className="row">
-            <InventorySubTable
-                data={this.state.items}
-                hasButton={true}
-                isInventorySubtable={true}
-                api={this.instance}
-                callback={e => this.loadData(this.state.page, e)}/>
+            {table}
           </div>
         </div>
-      </div>);
+      </div>
+      );
   }
 
   makePageBox() {
@@ -255,7 +269,7 @@ class Inventory extends Component {
           </a>
           <a onClick={()=>this.setRowCount(50)} className="dropdown-item" href="#">
             {50}
-          </a>                                
+          </a>
         </div>
       </div>
       );
