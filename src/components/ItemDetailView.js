@@ -107,15 +107,15 @@ class ItemDetailView extends React.Component {
   addPadding(){
     if(JSON.parse(localStorage.getItem('user')).is_admin === true){
       return(
-        <div className="row">
-          <GlobalRequests itemID={this.props.params.itemID} status="PENDING"/>
+        <div className="row request-subtable">
+          <GlobalRequests itemID={this.props.params.itemID} rowsPerPage={2} status="PENDING"/>
         </div>
       );
     }
     else{
       return(
-        <div className="row">
-          <CurrentOrders itemID={this.props.params.itemID} status="PENDING"/>
+        <div className="row request-subtable">
+          <CurrentOrders itemID={this.props.params.itemID} rowsPerPage={2} status="PENDING"/>
         </div>);
     }
   }

@@ -33,12 +33,21 @@ class GlobalRequests extends Component {
       initialLoad: true,
       requests: [],
       page: 1,
-      rowsPerPage: 5
+      rowsPerPage: 5,
     };
 
     if (props.rowsPerPage) {
       this.state.rowsPerPage = props.rowsPerPage;
     }
+
+    if (props.itemID) {
+      this.state.itemId = props.itemID;
+    }
+
+    if (props.status) {
+      this.state.status = props.status;
+    }
+
   }
 
   componentWillMount() {
@@ -46,7 +55,7 @@ class GlobalRequests extends Component {
       baseURL: 'https://' + location.hostname + ':3001',
       headers: {'Authorization': localStorage.getItem('token')}
     });
-
+    /*
     var api = '/api/requests';
 
     if (this.props.itemID && this.props.status) {
@@ -62,6 +71,9 @@ class GlobalRequests extends Component {
     .catch(function(error) {
       console.log(error);
     }.bind(this));
+  */
+
+    this.loadData(this.state.page, false);
 
   }
 
@@ -69,8 +81,15 @@ class GlobalRequests extends Component {
     var url = '/api/requests/?page='
       + page
       +'&per_page='+rowsPerPage;
-      console.log("URL");
-      console.log(url);
+
+      if (this.state.itemId) {
+        url+='&item_id=' + this.state.itemId;
+      }
+      if (this.state.status) {
+        url+='&status=' + this.state.status;
+      }
+    console.log("URL IS:");
+    console.log(url);
     return url;
   }
 
@@ -177,14 +196,14 @@ class GlobalRequests extends Component {
       return(<div>You are not allowed to access this page.</div>);
     }
     else if(!this.state.requests || this.state.requests.length === 0){
-      return(<div>No requests to show.</div>);
+      return(<div className="center-text">No requests to show.</div>);
     }
     else{
       console.log("Data is:");
       console.log(this.state.requests);
       return (
         <div className="wide">
-          <nav aria-label="page-buttons">
+          <nav className="request-page-section" aria-label="page-buttons">
             <ul className="pagination">
               <li className="page-item">
                 <a onClick={e=> this.previousPage()} className="page-link" href="#">

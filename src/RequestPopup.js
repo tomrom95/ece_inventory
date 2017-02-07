@@ -59,7 +59,7 @@ class RequestPopup extends Component {
 					tabIndex="-1" role="dialog"
 					aria-labelledby="modalLabel"
 					aria-hidden="true">
-				  <div className="modal-dialog request-subtable" role="document">
+				  <div className="modal-dialog" role="document">
 				    <div className="modal-content">
 				      <div className="modal-header">
 				        <h5 className="modal-title" id="modalLabel">
@@ -82,7 +82,7 @@ class RequestPopup extends Component {
 	makeModalBody() {
 		if(this.props.isAdmin){
 			return (
-			<div className="modal-body request-subtable">
+			<div className="modal-body">
 				<RequestSubtable
 					className="row"
 					data={this.state.data}

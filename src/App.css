@@ -51,6 +51,7 @@
 
 .requesttable {
   margin-left: 30px;
+  min-width: 680px;
 }
 
 .maintable-body {
@@ -62,7 +63,7 @@
 }
 
 .maintable-container {
-  max-height: 550px;
+  max-height: 480px;
   width: 1500px;
   margin-left: 20px;
   overflow-y: scroll;
@@ -72,8 +73,12 @@
   margin-left: -10px;
 }
 
+.request-page-section {
+  margin-left: 30px;
+}
+
 .subtable-row {
-  max-width:50px;
+  max-width:50px!important;
   text-align: left;
   color: gray;
   font-size: 13px;
@@ -100,7 +105,6 @@
 
 .modal-body {
   text-align: left;
-  margin: 0;
 }
 
 .info-modal {
@@ -110,29 +114,28 @@
 .request-button {
   font-weight: bold;
   font-size: 13px;
-  margin-left: 50px;
   height: 40px;
   width: 45px;
+  margin-left: 23px;
 }
 
 .delete-button {
   font-family: 'Open Sans';
   font-weight: bold;
-  margin-left: 52px;
   height: 40px;
   width: 45px;
+  margin-left: 8px;
 }
 
 .edit-button {
   font-weight: bold;
-  margin-left: 51px;
   height: 40px;
   width: 45px;
+  margin-left: 16px;
 }
 
 .info-button {
-  margin-top: 0;
-  margin-left: 53px;
+  margin-top: 1px;
 }
 
 .add-button {
@@ -149,7 +152,8 @@
 }
 
 .request-subtable {
-  width: 380px;
+  width: 400px;
+  margin-left: -40px;
 }
 
 .info-icon {
@@ -249,8 +253,7 @@
 
 .inventory-page {
   margin-top:10px;
-  margin-right: 80px;
-  margin-left: 20px;
+  margin-right: 20px;
 }
 
 .modal-body.padded {
