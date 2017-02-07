@@ -52,7 +52,7 @@ class ItemWizard extends Component {
 
 	render() {
 		return (
-		<div>
+		<th>
 			<button type="button" 
 				className="btn btn-outline-primary add-button" 
 				data-toggle="modal" 
@@ -81,7 +81,7 @@ class ItemWizard extends Component {
 			    </div>
 			  </div>
 			</div>
-		</div>
+		</th>
 		);
 	}
 

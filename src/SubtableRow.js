@@ -33,12 +33,9 @@ class SubtableRow extends Component {
 	render() {
 		return (
 			<tr>
-
 				{this.makeList(this.state.data)}
-
-
-				<td> {this.makeButtons()} </td>
-				<td> <ItemDetailView params={{itemID: this.props.idTag}} /> </td>
+				{this.makeButtons()}
+				<td className="subtable-row"> <ItemDetailView params={{itemID: this.props.idTag}}/> </td>
 			</tr>
 		);
 	}
@@ -57,23 +54,15 @@ class SubtableRow extends Component {
 	}
 
 	makeButtons() {
-
 			if(this.props.request_buttons){
-			
-				return(<td>{this.props.request_buttons}</td>);
+				return this.props.request_buttons;
 			}
+
 			else if(this.props.inventory_buttons){
-				return (<td>{this.props.inventory_buttons}</td>);
+				return this.props.inventory_buttons;
 
 			}
-
 	}
-
-
-
-
-
-
-
 }
+
 export default SubtableRow;

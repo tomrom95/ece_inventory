@@ -31,12 +31,10 @@ function getDate() {
 }
 
 function getString(str) {
-	if (str )
-		if(str.length > 0){
-			return String(str);
-		}
-
-	else return "undefined"
+	if (str === undefined || str === null || str === 'undefined') {
+		return "N/A";
+	}
+	else return String(str);
 }
 
 class RequestPopup extends Component {

@@ -68,7 +68,7 @@ class ItemDetailView extends React.Component {
               aria-hidden="true">
             <div className="modal-dialog detail-view" role="document">
               <div className="modal-content">
-                <div className="modal-body detail-view">
+                <div className="modal-body">
 
                   <div className="row">
                     <div className="col-xs-4 detail-view-title"><h4>{this.state.item.name}</h4></div>
@@ -94,7 +94,7 @@ class ItemDetailView extends React.Component {
                     </div>
                   </div>
                   <div className="row pad-sides">
-                    <GlobalRequests itemID={this.props.params.itemID} status="PENDING"/>
+
                   </div>
                 </div>
               </div>
@@ -104,5 +104,7 @@ class ItemDetailView extends React.Component {
     );
   }
 }
+
+// <GlobalRequests itemID={this.props.params.itemID} status="PENDING"/>
 
 export default ItemDetailView;

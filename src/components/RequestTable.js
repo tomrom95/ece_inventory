@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../App.css';
 import SubtableRow from '../SubtableRow';
-import Popup from 'react-popup';
 
 function getKeys(data) {
 
@@ -220,6 +219,7 @@ class RequestTable extends Component {
 
   }
 
+/*
   commentPopup(index){
     Popup.prompt('Leave comment', 'What\'s your name?', {
       placeholder: 'This request...',
@@ -233,6 +233,9 @@ class RequestTable extends Component {
       }
     });
   }
+
+*/
+
   commentRequest(index, comment) {
     this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
       {
