@@ -36,6 +36,10 @@ class Inventory extends Component {
       page: 1,
       rowsPerPage: 5,
       errorHidden: true,
+      error: {
+        title: "",
+        message: ""
+      },
       filters: {
         name: "",
         model_number: "",
@@ -67,7 +71,11 @@ class Inventory extends Component {
         if (response.data.length === 0) {
           console.log("Empty result!");
           this.setState({
-            errorHidden: false
+            errorHidden: false,
+            error: {
+              title: "",
+              message: "No results to show."
+            }
           });
           document.getElementById("pageNum").value = this.state.page;
           if (justDeleted === true) {
@@ -107,7 +115,6 @@ class Inventory extends Component {
           this.setState({
             items: processData(response)
           })
-          //this.loadData(this.state.page); ///////////////////////////////////////
           document.getElementById("pageNum").value = this.state.page;
           loadNextPage = false;
         }
@@ -117,6 +124,13 @@ class Inventory extends Component {
       this.instance.get(this.getURL(nextPage, this.state.rowsPerPage))
         .then(function (response) {
           if (response.data.length === 0) {
+            this.setState({
+              errorHidden: false,
+              error: {
+                title: "",
+                message: "No results to show."
+              }
+            });
             return;
           }
           else {
@@ -171,7 +185,7 @@ class Inventory extends Component {
 
         <div className="col-md-9">
           <div className="row page-section">
-              <div className="col-md-4">
+              <div className="col-md-3">
                 <nav aria-label="page-buttons">
                   <ul className="pagination">
                     <li className="page-item">
@@ -190,16 +204,17 @@ class Inventory extends Component {
                 </nav>
               </div>
 
-              <div className="col-md-4">
+              <div className="col-md-3">
                 {this.makePerPageController()}
               </div>
 
-              <div className="col-md-4" id="error-region">
+              <div className="col-md-6" id="error-region">
                 <ErrorMessage
                   key={"errormessage"} 
-                  title={"Notice:"} 
-                  message={"Query did not return any results."} 
-                  hidden={this.state.errorHidden}/>
+                  title={this.state.error.title} 
+                  message={this.state.error.message} 
+                  hidden={this.state.errorHidden}
+                  hideFunction={()=> this.state.errorHidden=true}/>
               </div>
 
           </div>
