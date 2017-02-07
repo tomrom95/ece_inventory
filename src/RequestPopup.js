@@ -180,7 +180,7 @@ class RequestPopup extends Component {
   		this.props.api.post('/api/requests', request)
 	  	.then(function(response) {
 	        if (response.data.error) {
-	          console.log(response.data.error);
+	        	alert(response.data.error);
 	        } else {
 	        	console.log(request);
 	        }
