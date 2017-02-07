@@ -183,7 +183,8 @@ class InventorySubTable extends Component {
 				itemId={data.meta.id}
 				api={this.props.api}
 				ref={data.meta.id}
-				isAdmin={false}/>);
+				isAdmin={false}
+				key={"request-popup-button-"+id}/>);
 				list.push(<td className="subtable-row" key = {"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
 				return list;
 			}
