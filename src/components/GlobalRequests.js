@@ -221,7 +221,7 @@ class GlobalRequests extends Component {
             </ul>
           </nav>
 
-          <RequestTable api={this.axiosInstance} data={this.state.requests} isAdmin={true} />
+          <RequestTable api={this.axiosInstance} data={this.state.requests} global={true} />
 
         </div>
       );
