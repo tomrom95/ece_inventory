@@ -59,7 +59,7 @@ class CurrentOrders extends Component {
     else{
       return (
         <div className="wide">
-          <RequestTable data={this.state.requests} isAdmin={false} />
+          <RequestTable data={this.state.requests} isAdmin={false} api={this.axiosInstance}/>
 
         </div>
       );

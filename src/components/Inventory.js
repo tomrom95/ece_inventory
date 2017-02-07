@@ -154,7 +154,6 @@ class Inventory extends Component {
         url += "&" + filterName + "=" + this.state.filters[filterName];
       }
     }.bind(this));
-    //console.log(url);
     return url;
   }
 
