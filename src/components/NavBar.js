@@ -29,6 +29,9 @@ class NavBar extends Component {
                 <Link to="/GlobalRequests" className="nav-link">USER REQUESTS</Link>
               </li>
               <li className="nav-item">
+                <Link to="/CurrentOrders" className="nav-link">YOUR REQUESTS</Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/CreateUser" className="nav-link">CREATE USER</Link>
               </li>
               <li className="nav-item">

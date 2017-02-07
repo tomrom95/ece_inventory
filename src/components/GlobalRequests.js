@@ -63,7 +63,7 @@ class GlobalRequests extends Component {
     else{
       return (
         <div className="wide">
-          <RequestTable api={this.axiosInstance} data={this.state.requests} isAdmin={true} />
+          <RequestTable api={this.axiosInstance} data={this.state.requests} global={true} />
 
         </div>
       );
