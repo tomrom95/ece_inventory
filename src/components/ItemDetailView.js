@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import GlobalRequests from './GlobalRequests';
+import CurrentOrders from './CurrentOrders.js';
 
 function getString(str) {
   if (str === undefined || str === null) {
@@ -112,7 +113,10 @@ class ItemDetailView extends React.Component {
       );
     }
     else{
-      return(<div></div>);
+      return(
+        <div className="row pad-sides">
+          <CurrentOrders itemID={this.props.params.itemID} status="PENDING"/>
+        </div>);
     }
   }
 }
