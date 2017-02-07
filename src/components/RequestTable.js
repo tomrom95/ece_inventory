@@ -206,17 +206,20 @@ class RequestTable extends Component {
   }
 
   deleteRequest(index){
-    this.props.api.delete('/api/requests/' + this.state.raw_data[index]._id,
-      {
-
-      }
-    )
+    this.props.api.delete('/api/requests/' + this.state.raw_data[index]._id)
     .then(function(response) {
       if(response.data.error){
         console.log(response.data.error);
       }
       else{
-
+				var rows = this.state.rows;
+				rows.splice(index,1);
+				var raw_data = this.state.raw_data;
+				raw_data.splice(index,1);
+				this.setState({
+					rows: rows,
+					raw_data: raw_data
+				});
       }
     }.bind(this))
     .catch(function(error) {
@@ -251,6 +254,7 @@ class RequestTable extends Component {
 
 
   render() {
+		console.log(this.state.rows.length);
 		return (
 			<table className="table subtable-body">
 			  <thead className="thread">
