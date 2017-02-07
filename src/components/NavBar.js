@@ -8,8 +8,6 @@ class NavBar extends Component {
   }
   render() {
     if(this.props.isAdmin){
-      console.log("test NavBar");
-
       return (
         <nav className="navbar fixed-top navbar-toggleable-md navbar-light bg-faded">
           <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

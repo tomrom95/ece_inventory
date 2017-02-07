@@ -89,7 +89,6 @@ class Inventory extends Component {
           });
           document.getElementById("pageNum").value = page;
           console.log("Changed page size");
-          console.log(response.data);
         }
       }.bind(this));
   }

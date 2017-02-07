@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import '../App.css';
 import SubtableRow from '../SubtableRow';
+import Modal from 'react-modal';
+import LeaveCommentPopup from './LeaveCommentPopup.js';
+
 
 function getKeys(data) {
 
@@ -127,12 +130,15 @@ class RequestTable extends Component {
     )
   }
 
+  dummyButton(index){
+    return(
+      <button key={"dummy"+index} className="btn btn-primary" onClick={e => this.commentRequest(index)}>
+        dummy
+      </button>    )
+  }
   commentButton(index){
     return(
-      <button key={"comment"+index} className="btn btn-primary" onClick={e => this.commentPopup(index)}>
-        Comment
-      </button>
-
+      <LeaveCommentPopup key={"comment"+index} request={this.state.raw_data[index]._id} api={this.props.api}/>
     )
   }
 
@@ -218,28 +224,12 @@ class RequestTable extends Component {
     }.bind(this));
 
   }
+  commentRequest(index) {
 
-/*
-  commentPopup(index){
-    Popup.prompt('Leave comment', 'What\'s your name?', {
-      placeholder: 'This request...',
-      type: 'text'
-    }, {
-      text: 'Save',
-      className: 'success',
-      action: function (Box) {
-        this.commentRequest(index, Box.value);
 
-      }
-    });
-  }
-
-*/
-
-  commentRequest(index, comment) {
     this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
       {
-        reviewer_comment: comment,
+        reviewer_comment: "for real",
       }
     )
     .then(function(response) {
@@ -248,7 +238,6 @@ class RequestTable extends Component {
       }
       else{
 
-        this.forceUpdate();
       }
     }.bind(this))
     .catch(function(error) {
@@ -256,6 +245,9 @@ class RequestTable extends Component {
     }.bind(this));
 
   }
+
+
+
 
 
   render() {

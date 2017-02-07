@@ -141,6 +141,7 @@ class InventorySubTable extends Component {
 	}
 
 	makeInventoryButtons(data, id) {
+
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
 			var list = [];
 			list.push(
@@ -162,8 +163,9 @@ class InventorySubTable extends Component {
 			);
 			list.push(this.makeEditButton(data,id));
 			list.push(this.makeDeleteButton(id));
-			return list;			
+			return list;
 		}
+
 		else return (
 			<RequestPopup
 				data={[ {
@@ -185,14 +187,14 @@ class InventorySubTable extends Component {
 	makeDeleteButton(id) {
 		return (
 			<td key={"delete-td-"+id} className="subtable-row">
-				<button data-toggle="modal" data-target={"#delete-"+id} key={"delete-button-"+id} 
-					type="button" 
+				<button data-toggle="modal" data-target={"#delete-"+id} key={"delete-button-"+id}
+					type="button"
 					className="btn btn-danger delete-button">
 						<span className="fa fa-remove"></span>
 				</button>
 				{this.makeConfirmationPopup(
-					"This will delete the selected item and all of its instances. Proceed?", 
-					"delete", 
+					"This will delete the selected item and all of its instances. Proceed?",
+					"delete",
 					id)}
 			</td>
 		);
