@@ -100,42 +100,40 @@
 }
 
 .request-button {
-  font-family: 'Open Sans';
   font-weight: bold;
   font-size: 13px;
-  margin-left: 80px;
+  margin-left: 50px;
+  height: 40px;
+  width: 45px;
 }
 
 .delete-button {
   font-family: 'Open Sans';
   font-weight: bold;
-  font-size: 13px;
-  margin-left: -23px;
+  margin-left: 52px;
+  height: 40px;
+  width: 45px;
+}
+
+.edit-button {
+  font-weight: bold;
+  margin-left: 51px;
+  height: 40px;
+  width: 45px;
+}
+
+.info-button {
+  margin-top: 6px;
+  margin-left: 53px;
+  width:30px;
 }
 
 .add-button {
   position: relative;
-  font-family: 'Open Sans';
   font-weight: bold;
   font-size: 13px;
   margin-top: -10px;
   margin-bottom: -5px;
-  margin-right: -50px;
-  margin-left: -40px;
-}
-
-.edit-button {
-  font-family: 'Open Sans';
-  font-weight: bold;
-  font-size: 13px;
-  margin-left: -39px;
-}
-
-.info-button {
-  margin-top: 3px;
-  width:30px;
-  margin-left: -24px;
-  margin-right: -80px;
 }
 
 .request-quantity {

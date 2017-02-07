@@ -128,7 +128,7 @@ class Inventory extends Component {
               errorHidden: false,
               error: {
                 title: "",
-                message: "No results to show."
+                message: "No results left to show."
               }
             });
             return;

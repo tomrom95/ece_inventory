@@ -49,7 +49,7 @@ class RequestPopup extends Component {
 	render() {
 		var modalBody = this.makeModalBody();
 		return (
-			<td>
+			<td className="subtable-row">
 				<button type="button" className="btn btn-outline-primary request-button" data-toggle="modal"
 					data-target={"#requestPopup-"+this.props.itemId}>
 					<span className="fa fa-shopping-cart"></span>
