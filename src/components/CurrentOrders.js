@@ -83,7 +83,8 @@ class CurrentOrders extends Component {
       console.log("success");
       return (
         <div className="wide">
-          <RequestTable data={this.state.requests} global={false} />
+          <RequestTable data={this.state.requests} global={false} api={this.axiosInstance}/>
+
 
         </div>
       );
