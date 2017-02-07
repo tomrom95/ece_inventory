@@ -17,7 +17,7 @@ function processData(responseData) {
       "Reason": obj.reason,
       "Status": obj.status,
       "_id": obj._id,
-      "user_id": obj.user_id,
+      "user_id": obj.user._id,
       "item_id": obj.item._id,
     };
     items.push(item);
@@ -45,7 +45,6 @@ class GlobalRequests extends Component {
     }
     this.axiosInstance.get(api)
     .then(function(response) {
-      console.log(response.data);
       this.setState({requests: processData(response.data)});
     }.bind(this))
     .catch(function(error) {
@@ -55,7 +54,7 @@ class GlobalRequests extends Component {
   }
 
   render() {
-    if(!this.props.isAdmin){
+    if(JSON.parse(localStorage.getItem('user')).is_admin === false){
       return(<div>You are not allowed to access this page</div>);
     }
     else if(!this.state.requests || this.state.requests.length === 0){

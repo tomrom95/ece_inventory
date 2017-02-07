@@ -11,17 +11,18 @@ function processData(responseData) {
   for (i=0; i<requests.length; i++) {
     var obj = requests[i];
     var item = {
+      "Username": obj.user.username,
       "Item": obj.item.name,
       "Time Stamp": obj.created,
       "Quantity": obj.quantity,
       "Reason": obj.reason,
       "Status": obj.status,
       "_id": obj._id,
-      "user_id": obj.user_id,
+      "user_id": obj.user._id,
+      "item_id": obj.item._id,
     };
     items.push(item);
   }
-  console.log(items);
   return items;
 }
 class CurrentOrders extends Component {
@@ -43,7 +44,6 @@ class CurrentOrders extends Component {
     }
     this.axiosInstance.get(api)
     .then(function(response) {
-      console.log(response.data);
       this.setState({requests: processData(response.data)});
     }.bind(this))
     .catch(function(error) {

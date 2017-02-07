@@ -4,6 +4,7 @@ import SubtableRow from './SubtableRow.js';
 import ItemWizard from './ItemWizard.js';
 import RequestPopup from './RequestPopup.js';
 import ItemEditor from './ItemEditor.js';
+import ItemDetailView from './components/ItemDetailView.js';
 
 var meta;
 
@@ -162,9 +163,13 @@ class InventorySubTable extends Component {
 			);
 			list.push(this.makeEditButton(data,id));
 			list.push(this.makeDeleteButton(id));
-			return list;			
+			list.push(<td className="subtable-row" key = {"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
+			return list;
 		}
-		else return (
+
+		else  {
+			var list = [];
+			list.push(
 			<RequestPopup
 				data={[ {
 							Serial: data.Serial,
@@ -178,21 +183,23 @@ class InventorySubTable extends Component {
 				itemId={data.meta.id}
 				api={this.props.api}
 				ref={data.meta.id}
-				isAdmin={false}/>
-			);
+				isAdmin={false}/>);
+				list.push(<td className="subtable-row" key = {"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
+				return list;
+			}
 	}
 
 	makeDeleteButton(id) {
 		return (
 			<td key={"delete-td-"+id} className="subtable-row">
-				<button data-toggle="modal" data-target={"#delete-"+id} key={"delete-button-"+id} 
-					type="button" 
+				<button data-toggle="modal" data-target={"#delete-"+id} key={"delete-button-"+id}
+					type="button"
 					className="btn btn-danger delete-button">
 						<span className="fa fa-remove"></span>
 				</button>
 				{this.makeConfirmationPopup(
-					"This will delete the selected item and all of its instances. Proceed?", 
-					"delete", 
+					"This will delete the selected item and all of its instances. Proceed?",
+					"delete",
 					id)}
 			</td>
 		);

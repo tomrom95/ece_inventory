@@ -182,7 +182,7 @@ class RequestPopup extends Component {
 	        if (response.data.error) {
 	        	alert(response.data.error);
 	        } else {
-	        	console.log(request);
+
 	        }
 	      }.bind(this))
 	      .catch(function(error) {

@@ -12,9 +12,7 @@ var products = [{
       price: 100
   }];
 // It's a data format example.
-function priceFormatter(cell, row){
-  return '<i class="glyphicon glyphicon-usd"></i> ' + cell;
-}
+
 
 class Inventory extends Component {
   render() {
