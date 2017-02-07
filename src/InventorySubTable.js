@@ -4,6 +4,7 @@ import SubtableRow from './SubtableRow.js';
 import ItemWizard from './ItemWizard.js';
 import RequestPopup from './RequestPopup.js';
 import ItemEditor from './ItemEditor.js';
+import ItemDetailView from './components/ItemDetailView.js';
 
 var meta;
 
@@ -141,7 +142,6 @@ class InventorySubTable extends Component {
 	}
 
 	makeInventoryButtons(data, id) {
-
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
 			var list = [];
 			list.push(
@@ -163,10 +163,13 @@ class InventorySubTable extends Component {
 			);
 			list.push(this.makeEditButton(data,id));
 			list.push(this.makeDeleteButton(id));
+			list.push(<td className="subtable-row" key = {"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
 			return list;
 		}
 
-		else return (
+		else  {
+			var list = [];
+			list.push(
 			<RequestPopup
 				data={[ {
 							Serial: data.Serial,
@@ -180,8 +183,10 @@ class InventorySubTable extends Component {
 				itemId={data.meta.id}
 				api={this.props.api}
 				ref={data.meta.id}
-				isAdmin={false}/>
-			);
+				isAdmin={false}/>);
+				list.push(<td className="subtable-row" key = {"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
+				return list;
+			}
 	}
 
 	makeDeleteButton(id) {

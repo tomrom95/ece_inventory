@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import ItemWizard from './ItemWizard.js';
-import ItemDetailView from './components/ItemDetailView.js';
 
 function getPrefill(data) {
 	return ({
@@ -36,7 +35,7 @@ class SubtableRow extends Component {
 				{this.makeList(this.state.data)}
 
 				{this.makeButtons()}
-				<td className="subtable-row"> <ItemDetailView params={{itemID: this.props.idTag}}/> </td>
+
 			</tr>
 		);
 	}
