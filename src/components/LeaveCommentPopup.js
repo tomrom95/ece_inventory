@@ -49,7 +49,7 @@ class LeaveCommentPopup extends Component {
   render() {
     return (
       <div>
-        <button onClick={this.openModal}>Leave Comment</button>
+        <button className="btn btn-primary btn-sm" onClick={this.openModal}>Leave Comment</button>
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}

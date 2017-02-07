@@ -102,7 +102,7 @@ class RequestTable extends Component {
 
   denyButton(index){
     return(
-      <button key={"deny"+index} className="btn btn-primary" onClick={e => this.denyRequest(index)}>
+      <button key={"deny"+index} className="btn btn-primary btn-sm" onClick={e => this.denyRequest(index)}>
         Deny
       </button>
     );
@@ -110,7 +110,7 @@ class RequestTable extends Component {
 
   approveButton(index){
     return(
-      <button key={"approve"+index} className="btn btn-primary" onClick={e => this.approveRequest(index)}>
+      <button key={"approve"+index} className="btn btn-success btn-sm" onClick={e => this.approveRequest(index)}>
         Approve
       </button>
     );
@@ -118,7 +118,7 @@ class RequestTable extends Component {
 
   fulfillButton(index){
     return(
-      <button key={"fulfill"+index} className="btn btn-primary" onClick={e => this.fulfillRequest(index)}>
+      <button key={"fulfill"+index} className="btn btn-primary btn-sm" onClick={e => this.fulfillRequest(index)}>
         Fulfill
       </button>
     );
@@ -132,7 +132,7 @@ class RequestTable extends Component {
 
   dummyButton(index){
     return(
-      <button key={"dummy"+index} className="btn btn-primary" onClick={e => this.commentRequest(index)}>
+      <button key={"dummy"+index} className="btn btn-primary btn-sm" onClick={e => this.commentRequest(index)}>
         dummy
       </button>    )
   }

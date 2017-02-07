@@ -68,7 +68,7 @@ class ItemDetailView extends React.Component {
               aria-labelledby="infoLabel"
               aria-hidden="true">
             <div className="modal-dialog detail-view" role="document">
-              <div className="modal-content">
+              <div className="modal-content info-modal">
                 <div className="modal-body">
 
                   <div className="row">
@@ -107,14 +107,14 @@ class ItemDetailView extends React.Component {
   addPadding(){
     if(JSON.parse(localStorage.getItem('user')).is_admin === true){
       return(
-        <div className="row pad-sides">
+        <div className="row">
           <GlobalRequests itemID={this.props.params.itemID} status="PENDING"/>
         </div>
       );
     }
     else{
       return(
-        <div className="row pad-sides">
+        <div className="row">
           <CurrentOrders itemID={this.props.params.itemID} status="PENDING"/>
         </div>);
     }

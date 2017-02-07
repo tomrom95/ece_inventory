@@ -99,6 +99,10 @@
   margin: 0;
 }
 
+.info-modal {
+  width: 700px;
+}
+
 .request-button {
   font-weight: bold;
   font-size: 13px;
@@ -196,6 +200,7 @@
 
 .detail-view {
   min-height: 325px;
+  width: 1000px;
 }
 
 .detail-view-title {
