@@ -17,7 +17,7 @@ function processData(responseData) {
       "Reason": obj.reason,
       "Status": obj.status,
       "_id": obj._id,
-      "user_id": obj.user_id,
+      "user_id": obj.user._id,
       "item_id": obj.item._id,
     };
     items.push(item);
