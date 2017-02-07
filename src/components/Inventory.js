@@ -79,7 +79,7 @@ class Inventory extends Component {
         else {
           this.setState({
             items: processData(response),
-            state: page
+            page: page
           });
           document.getElementById("pageNum").value = page;
         }
