@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-
 import '../App.css';
 import InventorySubTable from '../InventorySubTable.js';
 import axios from 'axios';
+import ErrorMessage from './ErrorMessage.js';
 
 function processData(responseData) {
   var inventoryItems = responseData.data;
@@ -35,6 +35,7 @@ class Inventory extends Component {
       items: [],
       page: 1,
       rowsPerPage: 5,
+      errorHidden: true,
       filters: {
         name: "",
         model_number: "",
@@ -64,6 +65,10 @@ class Inventory extends Component {
       this.instance.get(this.getURL(page, this.state.rowsPerPage))
       .then(function (response) {
         if (response.data.length === 0) {
+          console.log("Empty result!");
+          this.setState({
+            errorHidden: false
+          });
           document.getElementById("pageNum").value = this.state.page;
           if (justDeleted === true) {
             this.previousPage();
@@ -100,9 +105,9 @@ class Inventory extends Component {
       .then(function (response) {
         if (response.data.length > this.state.items.length) {
           this.setState({
-              page: this.state.page
-          });
-          this.loadData(this.state.page);
+            items: processData(response)
+          })
+          //this.loadData(this.state.page); ///////////////////////////////////////
           document.getElementById("pageNum").value = this.state.page;
           loadNextPage = false;
         }
@@ -136,7 +141,7 @@ class Inventory extends Component {
         url += "&" + filterName + "=" + this.state.filters[filterName];
       }
     }.bind(this));
-    console.log(url);
+    //console.log(url);
     return url;
   }
 
@@ -166,7 +171,7 @@ class Inventory extends Component {
 
         <div className="col-md-9">
           <div className="row page-section">
-              <div className="col-md-3">
+              <div className="col-md-4">
                 <nav aria-label="page-buttons">
                   <ul className="pagination">
                     <li className="page-item">
@@ -185,9 +190,18 @@ class Inventory extends Component {
                 </nav>
               </div>
 
-              <div className="col-md-9">
+              <div className="col-md-4">
                 {this.makePerPageController()}
               </div>
+
+              <div className="col-md-4" id="error-region">
+                <ErrorMessage
+                  key={"errormessage"} 
+                  title={"Notice:"} 
+                  message={"Query did not return any results."} 
+                  hidden={this.state.errorHidden}/>
+              </div>
+
           </div>
 
           <div className="row">
