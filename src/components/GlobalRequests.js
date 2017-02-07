@@ -16,6 +16,7 @@ function processData(responseData) {
       "Quantity": obj.quantity,
       "Reason": obj.reason,
       "Status": obj.status,
+      "Response": obj.reviewer_comment,
       "_id": obj._id,
       "user_id": obj.user._id,
       "item_id": obj.item._id,

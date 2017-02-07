@@ -15,8 +15,8 @@ const customStyles = {
 
 
 class LeaveCommentPopup extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       modalIsOpen: false,
@@ -27,6 +27,7 @@ class LeaveCommentPopup extends Component {
     this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.commentRequest = this.commentRequest.bind(this);
   }
 
   openModal() {

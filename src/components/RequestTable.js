@@ -43,7 +43,7 @@ class RequestTable extends Component {
 			columnKeys: getKeys(this.props.data),
 			rows: getValues(this.props.data, getKeys(this.props.data)),
       raw_data: this.props.data,
-      isAdmin: this.props.isAdmin
+      global: this.props.global
 		}
     this.denyButton = this.denyButton.bind(this);
 	}
@@ -66,14 +66,13 @@ class RequestTable extends Component {
 		return list;
 	}
 
-
 	makeRows(rowData) {
 		var i;
 		var list = [];
     var button_list = [];
 
 		for (i=0; i<rowData.length; i++) {
-      if(this.state.isAdmin){
+      if(this.state.global ){
 
         if(rowData[i][5] === 'PENDING'){
           button_list=[this.denyButton(i), this.approveButton(i), this.commentButton(i)];
@@ -137,12 +136,6 @@ class RequestTable extends Component {
     )
   }
 
-  dummyButton(index){
-    return(
-      <button key={"dummy"+index} className="btn btn-primary btn-sm" onClick={e => this.commentRequest(index)}>
-        dummy
-      </button>    )
-  }
   commentButton(index){
     return(
       <LeaveCommentPopup key={"comment"+index} request={this.state.raw_data[index]._id} api={this.props.api}/>
@@ -257,7 +250,6 @@ class RequestTable extends Component {
   }
 
   render() {
-		console.log(this.state.rows.length);
 		return (
 			<table className="table subtable-body requesttable">
 			  <thead className="thread">
