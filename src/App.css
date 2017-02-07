@@ -52,6 +52,9 @@
 .requesttable {
   margin-left: 30px;
   min-width: 680px;
+  border-left: solid;
+  border-width: 4px;
+  border-color: rgba(0,150,255,1);
 }
 
 .maintable-body {
@@ -161,6 +164,19 @@
   right: 0;
   margin: 28px;
   margin-top: 0;
+}
+
+.user-info {
+  height: 300px;
+  max-width: 200px;
+  margin-left: 20px;
+}
+
+.login-form {
+  margin: 50px;
+  margin-left: 90px;
+  width: 300px;
+  font-family: 'Open Sans';
 }
 
 @keyframes App-logo-spin {
