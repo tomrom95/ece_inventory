@@ -48,7 +48,13 @@ class RequestTable extends Component {
     this.denyButton = this.denyButton.bind(this);
 	}
 
-
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      columnKeys: getKeys(newProps.data),
+      rows: getValues(newProps.data, getKeys(newProps.data)),
+      raw_data: newProps.data
+    });
+  }
 
 	makeColumnKeyElements(keys) {
 		var i;
@@ -102,7 +108,7 @@ class RequestTable extends Component {
 
   denyButton(index){
     return(
-      <button key={"deny"+index} className="btn btn-primary" onClick={e => this.denyRequest(index)}>
+      <button key={"deny"+index} className="btn btn-primary btn-sm" onClick={e => this.denyRequest(index)}>
         Deny
       </button>
     );
@@ -110,7 +116,7 @@ class RequestTable extends Component {
 
   approveButton(index){
     return(
-      <button key={"approve"+index} className="btn btn-primary" onClick={e => this.approveRequest(index)}>
+      <button key={"approve"+index} className="btn btn-success btn-sm" onClick={e => this.approveRequest(index)}>
         Approve
       </button>
     );
@@ -118,7 +124,7 @@ class RequestTable extends Component {
 
   fulfillButton(index){
     return(
-      <button key={"fulfill"+index} className="btn btn-primary" onClick={e => this.fulfillRequest(index)}>
+      <button key={"fulfill"+index} className="btn btn-primary btn-sm" onClick={e => this.fulfillRequest(index)}>
         Fulfill
       </button>
     );
@@ -144,7 +150,7 @@ class RequestTable extends Component {
     )
     .then(function(response) {
       if(response.data.error){
-        console.log("error denying request");
+        alert(console.data.error);
       }
       else{
         this.state.rows[index][5] = 'APPROVED'
@@ -186,7 +192,7 @@ class RequestTable extends Component {
     )
     .then(function(response) {
       if(response.data.error){
-        console.log(response.data.error);
+        alert(response.data.error);
       }
       else{
         this.state.rows[index][5] = 'FULFILLED'
@@ -203,7 +209,7 @@ class RequestTable extends Component {
     this.props.api.delete('/api/requests/' + this.state.raw_data[index]._id)
     .then(function(response) {
       if(response.data.error){
-        console.log(response.data.error);
+        alert(response.data.error);
       }
       else{
 				var rows = this.state.rows;
@@ -231,7 +237,7 @@ class RequestTable extends Component {
     )
     .then(function(response) {
       if(response.data.error){
-        console.log("error denying request");
+        alert(console.data.error);
       }
       else{
 
@@ -243,13 +249,9 @@ class RequestTable extends Component {
 
   }
 
-
-
-
-
   render() {
 		return (
-			<table className="table subtable-body">
+			<table className="table subtable-body requesttable">
 			  <thead className="thread">
 			    <tr>
 		    	  {this.makeColumnKeyElements(this.state.columnKeys)}

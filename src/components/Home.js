@@ -97,8 +97,8 @@ class Home extends Component {
         </div>
 
       );
-    } else {
-      return (
+    } else
+      /*return (
         <div>
           <h4>Please sign in to your account</h4>
           <form>
@@ -115,9 +115,38 @@ class Home extends Component {
            Log In
           </button>
         </div>
-    );
+        );
+        */
+
+        return(
+          <div className="login-form container">
+            <h3 className="row">Please Log In</h3>
+            <form className="row">
+              <div className="form-group">
+                <label htmlFor="username-field">Username</label>
+                <input type="text" 
+                    value={this.state.name} 
+                    className="form-control" 
+                    id="username-field" 
+                    placeholder="Username"
+                    onChange={this.handleNameChange}/>
+              </div>
+              <div className="form-group">
+                <label htmlFor="password-field">Password</label>
+                <input type="password" 
+                  value={this.state.passwrd} 
+                  className="form-control" 
+                  id="password-field" 
+                  placeholder="Password"
+                  onChange={this.handlePasswrdChange}/>
+              </div>
+            </form>
+            <button className="btn btn-primary" onClick={this.login}>
+                Log In
+            </button>
+          </div>
+          );
   }
-}
 }
 
 export default Home;

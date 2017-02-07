@@ -109,7 +109,6 @@ class InventorySubTable extends Component {
 
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
 			list.push(<th key={"buttonSpace-2"}></th>);
-			list.push(<th key={"buttonSpace-3"}></th>);
 			list.push(
 					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
@@ -184,7 +183,7 @@ class InventorySubTable extends Component {
 				api={this.props.api}
 				ref={data.meta.id}
 				isAdmin={false}
-				key={"request-popup-button-"+id}/>);
+				key={"request-popup-id-"+ id}/>);
 				list.push(<td className="subtable-row" key = {"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
 				return list;
 			}

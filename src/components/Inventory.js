@@ -127,7 +127,7 @@ class Inventory extends Component {
               errorHidden: false,
               error: {
                 title: "",
-                message: "No results to show."
+                message: "No results left to show."
               }
             });
             return;
@@ -154,7 +154,6 @@ class Inventory extends Component {
         url += "&" + filterName + "=" + this.state.filters[filterName];
       }
     }.bind(this));
-    //console.log(url);
     return url;
   }
 

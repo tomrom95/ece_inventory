@@ -55,7 +55,7 @@ class ItemDetailView extends React.Component {
     return (
       <div>
         <button type="button"
-          className="btn btn-sm btn-outline-primary info-button"
+          className="btn btn-outline-primary info-button"
           data-toggle="modal"
           data-target={"#infoModal-"+this.props.params.itemID}>
             <span className="fa fa-info"></span>
@@ -68,7 +68,7 @@ class ItemDetailView extends React.Component {
               aria-labelledby="infoLabel"
               aria-hidden="true">
             <div className="modal-dialog detail-view" role="document">
-              <div className="modal-content">
+              <div className="modal-content info-modal">
                 <div className="modal-body">
 
                   <div className="row">
@@ -107,15 +107,15 @@ class ItemDetailView extends React.Component {
   addPadding(){
     if(JSON.parse(localStorage.getItem('user')).is_admin === true){
       return(
-        <div className="row pad-sides">
-          <GlobalRequests itemID={this.props.params.itemID} status="PENDING"/>
+        <div className="row request-subtable">
+          <GlobalRequests itemID={this.props.params.itemID} rowsPerPage={2} status="PENDING"/>
         </div>
       );
     }
     else{
       return(
-        <div className="row pad-sides">
-          <CurrentOrders itemID={this.props.params.itemID} status="PENDING"/>
+        <div className="row request-subtable">
+          <CurrentOrders itemID={this.props.params.itemID} rowsPerPage={2} status="PENDING"/>
         </div>);
     }
   }
