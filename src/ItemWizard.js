@@ -151,7 +151,7 @@ class ItemWizard extends Component {
   			this.props.api.post('/api/inventory/', object)
 			  	.then(function(response) {
 			        if (response.data.error) {
-			          console.log(response.data.error);
+		        		alert(response.data.error);
 			        } else {
 			        	this.props.callback();
 			        }

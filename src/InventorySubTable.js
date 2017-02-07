@@ -218,7 +218,7 @@ class InventorySubTable extends Component {
 	deleteItem(id) {
 		this.props.api.delete('api/inventory/' + id)
 		.then(function(response) {
-			this.props.callback();
+			this.props.callback(true);
 		}.bind(this));
 		console.log("Deleting item number " + id);
 	}

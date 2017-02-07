@@ -69,7 +69,7 @@ class NavBar extends Component {
               <li className="nav-item">
                 <Link to="/PastOrders" className="nav-link">PAST ORDERS</Link>
               </li>
-              <li className="nav-item btn-nav">
+              <li className="nav-item btn-nav signout-button">
                 <button className="btn btn-outline-primary" onClick={this.props.onClick}>
                   Sign Out
                 </button>
