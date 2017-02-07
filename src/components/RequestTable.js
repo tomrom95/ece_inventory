@@ -157,7 +157,7 @@ class RequestTable extends Component {
     )
     .then(function(response) {
       if(response.data.error){
-        console.log("error denying request");
+        alert(console.data.error);
       }
       else{
         this.state.rows[index][5] = 'APPROVED'
@@ -199,7 +199,7 @@ class RequestTable extends Component {
     )
     .then(function(response) {
       if(response.data.error){
-        console.log(response.data.error);
+        alert(response.data.error);
       }
       else{
         this.state.rows[index][5] = 'FULFILLED'
@@ -216,7 +216,7 @@ class RequestTable extends Component {
     this.props.api.delete('/api/requests/' + this.state.raw_data[index]._id)
     .then(function(response) {
       if(response.data.error){
-        console.log(response.data.error);
+        alert(response.data.error);
       }
       else{
 				var rows = this.state.rows;
@@ -244,7 +244,7 @@ class RequestTable extends Component {
     )
     .then(function(response) {
       if(response.data.error){
-        console.log("error denying request");
+        alert(console.data.error);
       }
       else{
 

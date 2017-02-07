@@ -31,7 +31,7 @@ function getDate() {
 }
 
 function getString(str) {
-	if (str === undefined || str === null || str === 'undefined') {
+	if (str === undefined || str === null || str === 'undefined' || str.length===0) {
 		return "N/A";
 	}
 	else return String(str);
