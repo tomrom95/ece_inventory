@@ -43,7 +43,7 @@ class RequestTable extends Component {
 			columnKeys: getKeys(this.props.data),
 			rows: getValues(this.props.data, getKeys(this.props.data)),
       raw_data: this.props.data,
-      isAdmin: this.props.isAdmin
+      global: this.props.global
 		}
     this.denyButton = this.denyButton.bind(this);
 	}
@@ -66,7 +66,7 @@ class RequestTable extends Component {
     var button_list = [];
 
 		for (i=0; i<rowData.length; i++) {
-      if(this.state.isAdmin){
+      if(this.state.global ){
 
         if(rowData[i][5] === 'PENDING'){
           button_list=[this.denyButton(i), this.approveButton(i), this.commentButton(i)];
