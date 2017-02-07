@@ -4,6 +4,7 @@ import SubtableRow from '../SubtableRow';
 import Modal from 'react-modal';
 import LeaveCommentPopup from './LeaveCommentPopup.js';
 
+
 function getKeys(data) {
 
 	if (data.length === 0)
@@ -86,6 +87,7 @@ class RequestTable extends Component {
 
 			var elem;
 			var id = this.props.data[i]["item_id"] ;
+      console.log(this.props.data);
 			elem = (<SubtableRow
 					columnKeys={this.props.columnKeys}
 					data={rowData[i]}
@@ -224,6 +226,8 @@ class RequestTable extends Component {
 
   }
   commentRequest(index) {
+
+
     this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
       {
         reviewer_comment: "for real",
@@ -235,7 +239,6 @@ class RequestTable extends Component {
       }
       else{
 
-        console.log(response);
       }
     }.bind(this))
     .catch(function(error) {
@@ -249,8 +252,6 @@ class RequestTable extends Component {
 
 
   render() {
-    console.log(this.props.data);
-
 		return (
 			<table className="table subtable-body">
 			  <thead className="thread">

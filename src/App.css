@@ -51,12 +51,21 @@
 
 .maintable-body {
   background-color: white;
-  margin-left: 22px;
   max-width: 1000px;
+  border-left: solid;
+  border-width: 4px;
+  border-color: rgba(0,150,255,1);
+}
+
+.maintable-container {
+  max-height: 550px;
+  width: 1500px;
+  margin-left: 20px;
+  overflow-y: scroll;
 }
 
 .page-section {
-  margin-left: 22px;
+  margin-left: -10px;
 }
 
 .subtable-row {
@@ -94,37 +103,39 @@
   font-family: 'Open Sans';
   font-weight: bold;
   font-size: 13px;
-  margin-left: 50px;
+  margin-left: 80px;
 }
 
 .delete-button {
   font-family: 'Open Sans';
   font-weight: bold;
   font-size: 13px;
-  margin-left: -70px;
+  margin-left: -23px;
 }
 
 .add-button {
   position: relative;
-  right: -35px;
   font-family: 'Open Sans';
   font-weight: bold;
   font-size: 13px;
   margin-top: -10px;
   margin-bottom: -5px;
+  margin-right: -50px;
+  margin-left: -40px;
 }
 
 .edit-button {
   font-family: 'Open Sans';
   font-weight: bold;
   font-size: 13px;
-  margin-left: -40px;
+  margin-left: -38px;
 }
 
 .info-button {
   margin-top: 3px;
   width:30px;
-  margin-left: -40px;
+  margin-left: -24px;
+  margin-right: -80px;
 }
 
 .request-quantity {
@@ -173,6 +184,12 @@
   margin-bottom: 2px;
 }
 
+.navbar {
+  border-left: solid;
+  border-width: 4px;
+  border-color: rgba(0,150,255,1);
+}
+
 .pagenum-textbox {
   width: 50px;
   margin-left: 5px;
@@ -180,7 +197,6 @@
 }
 
 .detail-view {
-  width: 300px;
   min-height: 325px;
 }
 
@@ -192,6 +208,56 @@
 
 .btn {
   font-weight: bold;
+}
+
+.modal-backdrop {
+  opacity: 0.2!important;
+}
+
+.detail-view {
+  margin-top: 200px;
+}
+
+.rowcount-dropdown {
+  height: 175px;
+  overflow-y: scroll;
+}
+
+.card {
+  width: 300px;
+}
+
+.card-block {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.filterbox {
+  margin-left: 20px;
+  margin-right: 0;
+  border: none;
+  border-left: solid;
+  border-width: 4px;
+  border-color: rgba(0,150,255,1);
+}
+
+.inventory-page {
+  margin-top:10px;
+  margin-right: 80px;
+  margin-left: 20px;
+}
+
+.modal-body.padded {
+  margin-top: 30px;
+}
+
+.confirmation-popup {
+  padding-top: 200px;
+}
+
+.confirmation-dialog {
+  width: 400px;
+  font-weight: normal;
 }
 
 body {

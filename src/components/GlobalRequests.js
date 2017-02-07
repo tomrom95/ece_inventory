@@ -45,7 +45,6 @@ class GlobalRequests extends Component {
     }
     this.axiosInstance.get(api)
     .then(function(response) {
-      console.log(response.data);
       this.setState({requests: processData(response.data)});
     }.bind(this))
     .catch(function(error) {
