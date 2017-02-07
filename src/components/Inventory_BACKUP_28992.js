@@ -73,6 +73,19 @@ class Inventory extends Component {
           this.setState({initialLoad: false});
         }
         if (response.data.length === 0) {
+<<<<<<< HEAD
+          console.log("Empty result!");
+          this.setState({
+            errorHidden: false,
+            error: {
+              title: "",
+              message: "No results to show."
+            }
+          });
+          document.getElementById("pageNum").value = this.state.page;
+          if (justDeleted === true) {
+            this.previousPage();
+=======
           if (page === 1) {
             this.setState({items: []})
           } else {
@@ -80,6 +93,7 @@ class Inventory extends Component {
             if (justDeleted === true) {
               this.previousPage();
             }
+>>>>>>> 2aac701700fd0c906b8c5b7b9649f3933f1b0f31
           }
         }
         else {
@@ -178,7 +192,7 @@ class Inventory extends Component {
     if (this.state.initialLoad) {
       table = (<div></div>);
     } else if (this.state.items.length === 0) {
-      table = (<div className="center-text">No items found.</div>);
+      table = (<div className="center-text">No items found</div>);
     } else {
       table = (<InventorySubTable
         data={this.state.items}

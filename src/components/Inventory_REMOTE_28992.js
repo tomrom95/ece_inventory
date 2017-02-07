@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+
 import '../App.css';
 import InventorySubTable from '../InventorySubTable.js';
 import axios from 'axios';
-import ErrorMessage from './ErrorMessage.js';
 
 function processData(responseData) {
   var inventoryItems = responseData.data;
@@ -36,11 +36,6 @@ class Inventory extends Component {
       items: [],
       page: 1,
       rowsPerPage: 5,
-      errorHidden: true,
-      error: {
-        title: "",
-        message: ""
-      },
       filters: {
         name: "",
         model_number: "",
@@ -113,8 +108,9 @@ class Inventory extends Component {
       .then(function (response) {
         if (response.data.length > this.state.items.length) {
           this.setState({
-            items: processData(response)
-          })
+              page: this.state.page
+          });
+          this.loadData(this.state.page);
           document.getElementById("pageNum").value = this.state.page;
           loadNextPage = false;
         }
@@ -124,13 +120,6 @@ class Inventory extends Component {
       this.instance.get(this.getURL(nextPage, this.state.rowsPerPage))
         .then(function (response) {
           if (response.data.length === 0) {
-            this.setState({
-              errorHidden: false,
-              error: {
-                title: "",
-                message: "No results to show."
-              }
-            });
             return;
           }
           else {
@@ -155,7 +144,7 @@ class Inventory extends Component {
         url += "&" + filterName + "=" + this.state.filters[filterName];
       }
     }.bind(this));
-    //console.log(url);
+    console.log(url);
     return url;
   }
 
@@ -178,7 +167,7 @@ class Inventory extends Component {
     if (this.state.initialLoad) {
       table = (<div></div>);
     } else if (this.state.items.length === 0) {
-      table = (<div className="center-text">No items found.</div>);
+      table = (<div className="center-text">No items found</div>);
     } else {
       table = (<InventorySubTable
         data={this.state.items}
@@ -214,19 +203,9 @@ class Inventory extends Component {
                 </nav>
               </div>
 
-              <div className="col-md-3">
+              <div className="col-md-9">
                 {this.makePerPageController()}
               </div>
-
-              <div className="col-md-6" id="error-region">
-                <ErrorMessage
-                  key={"errormessage"} 
-                  title={this.state.error.title} 
-                  message={this.state.error.message} 
-                  hidden={this.state.errorHidden}
-                  hideFunction={()=> this.state.errorHidden=true}/>
-              </div>
-
           </div>
 
           <div className="row">
