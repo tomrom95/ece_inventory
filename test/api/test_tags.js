@@ -46,7 +46,7 @@ describe('Tag API Test', function () {
   beforeEach((done) => { //Before each test we empty the database
       Item.remove({}, (err) => {
         User.remove({}, (err) => {
-          helpers.createNewUser('test_user', 'test', true, function(error, user) {
+          helpers.createNewUser('test_user', 'test', 'ADMIN', function(error, user) {
             token = helpers.createAuthToken(user);
             Item.insertMany(itemData).then(function(obj){
               done();
