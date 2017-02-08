@@ -16,7 +16,7 @@ module.exports.getAPI = function (req, res) {
 
   var query = {};
   // An admin can GET all requests, but users can only get their requests
-  if(!req.user.is_admin) query.user = mongoose.Types.ObjectId(req.user._id);
+  if(req.user.role === 'STANDARD') query.user = mongoose.Types.ObjectId(req.user._id);
   if(req.query.item_id) query.item = mongoose.Types.ObjectId(req.query.item_id);
   if(reason) query.reason = {'$regex': reason, '$options':'i'};
   if(req.query.created) query.created = new Date(req.query.created);
@@ -53,7 +53,7 @@ module.exports.postAPI = function(req,res){
     return res.send({error: "User ID null"})
   } else {
 
-    if(req.user.is_admin){
+    if(req.user.role === 'ADMIN' || req.user.role === 'MANAGER'){
       // if user is admin, find user id if the user field is entered
       if(req.body.user){
         // Find the user id from the username, and set it to .user field
@@ -121,7 +121,7 @@ module.exports.putAPI = function(req,res){
     if(!request) return res.send({error: 'Request does not exist'});
     else{
       var obj;
-      if(!req.user.is_admin){
+      if(req.user.role === 'STANDARD'){
         // if the current user's id is not equal to the user id in the request, or if the current username is not equal
         // to the username in the PUT body
           if(req.user._id != request.user || req.user.username != req.body.user){
@@ -165,7 +165,7 @@ module.exports.deleteAPI = function(req,res){
     if(!request) return res.send({error: 'Request does not exist'});
     else{
       // If id of current user matches the one in the request, or user is an admin
-      if(req.user._id.toString() == request.user.toString() || req.user.is_admin){
+      if(req.user._id.toString() == request.user.toString() || req.user.role === 'ADMIN' || req.user.role == 'MANAGER'){
         request.remove(function(err){
           if(err) return res.send({error:err});
           res.json({message: 'Delete successful'});

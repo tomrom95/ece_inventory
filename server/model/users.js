@@ -15,7 +15,7 @@ var UserSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ['MANAGER', 'ADMIN', 'STANDARD'],
-    default: 'PENDING'
+    default: 'STANDARD'
   }
 });
 

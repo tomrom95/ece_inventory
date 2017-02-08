@@ -20,7 +20,7 @@ describe('Logs API Test', function () {
     Item.remove({}, (err) => {
       Log.remove({}, (err) => {
         User.remove({}, (err) => {
-          helpers.createNewUser('test_user', 'test', true, function(error, user) {
+          helpers.createNewUser('test_user', 'test', 'ADMIN', function(error, user) {
             adminUser = user;
             token = helpers.createAuthToken(user);
             done();
