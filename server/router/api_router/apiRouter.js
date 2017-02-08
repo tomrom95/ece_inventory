@@ -19,8 +19,8 @@ router.route('/inventory/tags')
 
 router.route('/inventory/:item_id')
       .get(inventory_routes.getAPIbyID)
-      .put(restrictToAdmins, inventory_routes.putAPI)
-      .delete(restrictToAdmins, inventory_routes.deleteAPI);
+      .put(restrictToManagers, inventory_routes.putAPI)
+      .delete(restrictToManagers, inventory_routes.deleteAPI);
 
 router.route('/inventory/:item_id/instances')
       .get(instance_routes.getAPI)
