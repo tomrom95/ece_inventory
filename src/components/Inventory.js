@@ -3,6 +3,7 @@ import '../App.css';
 import InventorySubTable from '../InventorySubTable.js';
 import axios from 'axios';
 import ErrorMessage from './ErrorMessage.js';
+import FilterBox from './FilterBox.js';
 
 function processData(responseData) {
   var inventoryItems = responseData.data;
@@ -157,14 +158,16 @@ class Inventory extends Component {
     return url;
   }
 
-  filterItems() {
+  filterItems(name, modelNumber, requiredTags, excludedTags) {
+    console.log("filtering!");
+    console.log(requiredTags);
     this.setState({
       page: 1,
       filters: {
-        name: this.refs.name.value,
-        model_number: this.refs.model.value,
-        required_tags: this.refs.required.value,
-        excluded_tags: this.refs.excluded.value
+        name: name,
+        model_number: modelNumber,
+        required_tags: requiredTags,
+        excluded_tags: excludedTags
       }
     }, function () {
       this.loadData(1);
@@ -188,7 +191,10 @@ class Inventory extends Component {
     return (
       <div className="row inventory-page">
         <div className="col-md-3">
-            {this.makeFilterBox()}
+            <FilterBox
+              api={this.instance}
+              filterItems={this.filterItems.bind(this)}
+            />
         </div>
 
         <div className="col-md-9">
@@ -218,9 +224,9 @@ class Inventory extends Component {
 
               <div className="col-md-6" id="error-region">
                 <ErrorMessage
-                  key={"errormessage"} 
-                  title={this.state.error.title} 
-                  message={this.state.error.message} 
+                  key={"errormessage"}
+                  title={this.state.error.title}
+                  message={this.state.error.message}
                   hidden={this.state.errorHidden}
                   hideFunction={()=> this.state.errorHidden=true}/>
               </div>
@@ -298,61 +304,6 @@ class Inventory extends Component {
     this.state.rowsPerPage = numRows;
     this.loadData(1);
   }
-
-  makeFilterBox() {
-    return(
-          <div id="accordion" role="tablist" aria-multiselectable="true">
-            <div className="card filterbox">
-              <div className="card-header" role="tab" id="headingOne">
-                <h5 className="mb-0">
-                  <div data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <span className="fa fa-search"></span>
-                  </div>
-                </h5>
-              </div>
-
-              <div id="collapseOne" className="collapse show" role="tabpanel" aria-labelledby="headingOne">
-
-                <div className="card-block">
-                  <div className="form-fields">
-
-                        <div className="form-group row">
-                          <label htmlFor="name-field">Name</label>
-                          <input className="form-control" type="text" defaultValue="" ref="name" id="name-field"/>
-                        </div>
-
-
-                        <div className="form-group row">
-                          <label htmlFor="model-field">Model</label>
-                          <input className="form-control" type="text" defaultValue="" ref="model" id="model-field"/>
-                        </div>
-
-                        <div className="form-group row">
-                          <label htmlFor="required-tags-field">Required Tags</label>
-                          <input className="form-control" type="text" defaultValue="" ref="required" id="required-tags-field"/>
-                        </div>
-
-                        <div className="form-group row">
-                          <label htmlFor="excluded-tags-field">Excluded Tags</label>
-                          <input className="form-control" type="text" defaultValue="" ref="excluded" id="excluded-tags-field"/>
-                        </div>
-
-                        <div className="row">
-                          <button
-                            className="btn btn-primary"
-                            onClick={this.filterItems.bind(this)}>
-                              Filter
-                          </button>
-                      </div>
-
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-        );
-    }
 
 }
 
