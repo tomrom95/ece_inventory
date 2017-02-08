@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Typeahead} from 'react-bootstrap-typeahead';
+import Select from 'react-select';
 
 class FilterBox extends Component {
   constructor(props){
@@ -19,7 +19,10 @@ class FilterBox extends Component {
         }
         console.log("FILTER BOX");
         console.log(response.data);
-        this.setState({allTags: response.data});
+        var data = response.data.map(function(tag) {
+          return {label: tag, value: tag}
+        });
+        this.setState({allTags: data});
       }.bind(this))
       .catch(function(error) {
         console.log(error);
@@ -32,12 +35,12 @@ class FilterBox extends Component {
     this.props.filterItems(name, modelNumber, this.state.requiredTags, this.state.excludedTags);
   }
 
-  handleRequiredChange(selected) {
-    this.setState({requiredTags: selected});
+  handleRequiredChange(value) {
+    this.setState({requiredTags: value});
   }
 
-  handleExcludedChange(selected) {
-    this.setState({excludedTags: selected});
+  handleExcludedChange(value) {
+    this.setState({excludedTags: value});
   }
 
   render() {
@@ -70,25 +73,25 @@ class FilterBox extends Component {
 
                         <div className="form-group row">
                           <label htmlFor="model-field">Require Tags</label>
-                            <Typeahead
-                              clearButton
-                              labelKey="tag"
-                              multiple
+                            <Select
+                              multi
+                              simpleValue
+                              value={this.state.requiredTags}
+                              placeholder="Choose tag(s)"
                               options={this.state.allTags}
                               onChange={this.handleRequiredChange.bind(this)}
-                              placeholder="Choose tags"
                             />
                         </div>
 
                         <div className="form-group row">
                           <label htmlFor="model-field">Exclude Tags</label>
-                            <Typeahead
-                              clearButton
-                              labelKey="name"
-                              multiple
+                            <Select
+                              multi
+                              simpleValue
+                              value={this.state.excludedTags}
+                              placeholder="Choose tag(s)"
                               options={this.state.allTags}
                               onChange={this.handleExcludedChange.bind(this)}
-                              placeholder="Choose tags"
                             />
                         </div>
 
