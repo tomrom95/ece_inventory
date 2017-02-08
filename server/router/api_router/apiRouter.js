@@ -4,6 +4,7 @@ var request_routes = require('./routes/request_routes');
 var user_routes = require('./routes/user_routes');
 var log_routes = require('./routes/log_routes');
 var restrictToAdmins = require('../../auth/auth_helpers').restrictToAdmins;
+var tag_routes = require('./routes/tag_routes');
 
 var express = require('express');
 var router = express.Router();
@@ -11,6 +12,9 @@ var router = express.Router();
 router.route('/inventory')
       .get(inventory_routes.getAPI)
       .post(restrictToAdmins, inventory_routes.postAPI);
+
+router.route('/inventory/tags')
+      .get(tag_routes.getAPI);
 
 router.route('/inventory/:item_id')
       .get(inventory_routes.getAPIbyID)
