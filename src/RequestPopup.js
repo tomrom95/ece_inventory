@@ -31,7 +31,7 @@ function getDate() {
 }
 
 function getString(str) {
-	if (str === undefined || str === null || str === 'undefined') {
+	if (str === undefined || str === null || str === 'undefined' || str.length===0) {
 		return "N/A";
 	}
 	else return String(str);
@@ -49,7 +49,7 @@ class RequestPopup extends Component {
 	render() {
 		var modalBody = this.makeModalBody();
 		return (
-			<td>
+			<td className="subtable-row">
 				<button type="button" className="btn btn-outline-primary request-button" data-toggle="modal"
 					data-target={"#requestPopup-"+this.props.itemId}>
 					<span className="fa fa-shopping-cart"></span>
@@ -59,7 +59,7 @@ class RequestPopup extends Component {
 					tabIndex="-1" role="dialog"
 					aria-labelledby="modalLabel"
 					aria-hidden="true">
-				  <div className="modal-dialog request-subtable" role="document">
+				  <div className="modal-dialog" role="document">
 				    <div className="modal-content">
 				      <div className="modal-header">
 				        <h5 className="modal-title" id="modalLabel">
@@ -82,7 +82,7 @@ class RequestPopup extends Component {
 	makeModalBody() {
 		if(this.props.isAdmin){
 			return (
-			<div className="modal-body request-subtable">
+			<div className="modal-body">
 				<RequestSubtable
 					className="row"
 					data={this.state.data}
@@ -180,9 +180,9 @@ class RequestPopup extends Component {
   		this.props.api.post('/api/requests', request)
 	  	.then(function(response) {
 	        if (response.data.error) {
-	          console.log(response.data.error);
+	        	alert(response.data.error);
 	        } else {
-	        	console.log(request);
+
 	        }
 	      }.bind(this))
 	      .catch(function(error) {

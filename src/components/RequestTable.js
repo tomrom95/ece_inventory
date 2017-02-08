@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import '../App.css';
 import SubtableRow from '../SubtableRow';
+import Modal from 'react-modal';
+import LeaveCommentPopup from './LeaveCommentPopup.js';
+
 
 function getKeys(data) {
 
@@ -40,12 +43,18 @@ class RequestTable extends Component {
 			columnKeys: getKeys(this.props.data),
 			rows: getValues(this.props.data, getKeys(this.props.data)),
       raw_data: this.props.data,
-      isAdmin: this.props.isAdmin
+      global: this.props.global
 		}
     this.denyButton = this.denyButton.bind(this);
 	}
 
-
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      columnKeys: getKeys(newProps.data),
+      rows: getValues(newProps.data, getKeys(newProps.data)),
+      raw_data: newProps.data
+    });
+  }
 
 	makeColumnKeyElements(keys) {
 		var i;
@@ -63,7 +72,7 @@ class RequestTable extends Component {
     var button_list = [];
 
 		for (i=0; i<rowData.length; i++) {
-      if(this.state.isAdmin){
+      if(this.state.global ){
 
         if(rowData[i][5] === 'PENDING'){
           button_list=[this.denyButton(i), this.approveButton(i), this.commentButton(i)];
@@ -99,7 +108,7 @@ class RequestTable extends Component {
 
   denyButton(index){
     return(
-      <button key={"deny"+index} className="btn btn-primary" onClick={e => this.denyRequest(index)}>
+      <button key={"deny"+index} className="btn btn-primary btn-sm" onClick={e => this.denyRequest(index)}>
         Deny
       </button>
     );
@@ -107,7 +116,7 @@ class RequestTable extends Component {
 
   approveButton(index){
     return(
-      <button key={"approve"+index} className="btn btn-primary" onClick={e => this.approveRequest(index)}>
+      <button key={"approve"+index} className="btn btn-success btn-sm" onClick={e => this.approveRequest(index)}>
         Approve
       </button>
     );
@@ -115,7 +124,7 @@ class RequestTable extends Component {
 
   fulfillButton(index){
     return(
-      <button key={"fulfill"+index} className="btn btn-primary" onClick={e => this.fulfillRequest(index)}>
+      <button key={"fulfill"+index} className="btn btn-primary btn-sm" onClick={e => this.fulfillRequest(index)}>
         Fulfill
       </button>
     );
@@ -129,10 +138,7 @@ class RequestTable extends Component {
 
   commentButton(index){
     return(
-      <button key={"comment"+index} className="btn btn-primary" onClick={e => this.commentPopup(index)}>
-        Comment
-      </button>
-
+      <LeaveCommentPopup key={"comment"+index} request={this.state.raw_data[index]._id} api={this.props.api}/>
     )
   }
 
@@ -144,7 +150,7 @@ class RequestTable extends Component {
     )
     .then(function(response) {
       if(response.data.error){
-        console.log("error denying request");
+        alert(console.data.error);
       }
       else{
         this.state.rows[index][5] = 'APPROVED'
@@ -186,7 +192,7 @@ class RequestTable extends Component {
     )
     .then(function(response) {
       if(response.data.error){
-        console.log(response.data.error);
+        alert(response.data.error);
       }
       else{
         this.state.rows[index][5] = 'FULFILLED'
@@ -200,17 +206,20 @@ class RequestTable extends Component {
   }
 
   deleteRequest(index){
-    this.props.api.delete('/api/requests/' + this.state.raw_data[index]._id,
-      {
-
-      }
-    )
+    this.props.api.delete('/api/requests/' + this.state.raw_data[index]._id)
     .then(function(response) {
       if(response.data.error){
-        console.log(response.data.error);
+        alert(response.data.error);
       }
       else{
-
+				var rows = this.state.rows;
+				rows.splice(index,1);
+				var raw_data = this.state.raw_data;
+				raw_data.splice(index,1);
+				this.setState({
+					rows: rows,
+					raw_data: raw_data
+				});
       }
     }.bind(this))
     .catch(function(error) {
@@ -218,37 +227,20 @@ class RequestTable extends Component {
     }.bind(this));
 
   }
+  commentRequest(index) {
 
-/*
-  commentPopup(index){
-    Popup.prompt('Leave comment', 'What\'s your name?', {
-      placeholder: 'This request...',
-      type: 'text'
-    }, {
-      text: 'Save',
-      className: 'success',
-      action: function (Box) {
-        this.commentRequest(index, Box.value);
 
-      }
-    });
-  }
-
-*/
-
-  commentRequest(index, comment) {
     this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
       {
-        reviewer_comment: comment,
+        reviewer_comment: "for real",
       }
     )
     .then(function(response) {
       if(response.data.error){
-        console.log("error denying request");
+        alert(console.data.error);
       }
       else{
 
-        this.forceUpdate();
       }
     }.bind(this))
     .catch(function(error) {
@@ -256,11 +248,10 @@ class RequestTable extends Component {
     }.bind(this));
 
   }
-
 
   render() {
 		return (
-			<table className="table subtable-body">
+			<table className="table subtable-body requesttable">
 			  <thead className="thread">
 			    <tr>
 		    	  {this.makeColumnKeyElements(this.state.columnKeys)}

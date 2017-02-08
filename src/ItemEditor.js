@@ -152,7 +152,7 @@ class ItemEditor extends Component {
   			this.props.api.put('/api/inventory/'+ this.props.itemId, object)
 			  	.then(function(response) {
 			        if (response.data.error) {
-			          	console.log(response.data.error);
+			        	alert(response.data.error);
 			        } else {
 			        	this.props.callback();
 			        }

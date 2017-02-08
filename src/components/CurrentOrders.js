@@ -8,20 +8,44 @@ function processData(responseData) {
   var requests = responseData;
   var i;
   var items = [];
+  var item;
   for (i=0; i<requests.length; i++) {
     var obj = requests[i];
-    var item = {
-      "Item": obj.item.name,
-      "Time Stamp": obj.created,
-      "Quantity": obj.quantity,
-      "Reason": obj.reason,
-      "Status": obj.status,
-      "_id": obj._id,
-      "user_id": obj.user_id,
-    };
-    items.push(item);
+    if(JSON.parse(localStorage.getItem('user')).is_admin){
+      if(obj.user.username === JSON.parse(localStorage.getItem('user')).username){
+
+        item = {
+          "Username": obj.user.username,
+          "Item": obj.item.name,
+          "Time Stamp": obj.created,
+          "Quantity": obj.quantity,
+          "Reason": obj.reason,
+          "Status": obj.status,
+          "Response": obj.reviewer_comment,
+          "_id": obj._id,
+          "user_id": obj.user._id,
+          "item_id": obj.item._id,
+        };
+        items.push(item);
+      }
+    }
+    else{
+      item = {
+        "Username": obj.user.username,
+        "Item": obj.item.name,
+        "Time Stamp": obj.created,
+        "Quantity": obj.quantity,
+        "Reason": obj.reason,
+        "Status": obj.status,
+        "Response": obj.reviewer_comment,
+        "_id": obj._id,
+        "user_id": obj.user._id,
+        "item_id": obj.item._id,
+      };
+      items.push(item);
+    }
+
   }
-  console.log(items);
   return items;
 }
 class CurrentOrders extends Component {
@@ -43,8 +67,9 @@ class CurrentOrders extends Component {
     }
     this.axiosInstance.get(api)
     .then(function(response) {
-      console.log(response.data);
       this.setState({requests: processData(response.data)});
+      console.log(this.state.requests);
+
     }.bind(this))
     .catch(function(error) {
       console.log(error);
@@ -53,13 +78,15 @@ class CurrentOrders extends Component {
   }
 
 	render(){
-    if(!this.state.requests || this.state.requests.length === 0 || this.props.isAdmin){
+    if(!this.state.requests || this.state.requests.length === 0 ){
       return(<div></div>);
     }
     else{
+      console.log("success");
       return (
         <div className="wide">
-          <RequestTable data={this.state.requests} isAdmin={false} />
+          <RequestTable data={this.state.requests} global={false} api={this.axiosInstance}/>
+
 
         </div>
       );

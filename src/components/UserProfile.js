@@ -4,21 +4,26 @@ import '../App.css';
 class UserProfile extends Component {
 
   render() {
-    console.log(this.props.username);
     var status = '';
     if(this.props.isAdmin){
-      status = 'is admin';
+      status = 'Administrator';
     }
     else{
-      status = 'is not admin';
+      status = 'Non-Administrator';
     }
-    return (
-      <div className="App-Header">
-        <p className="App-Header">Username: {this.props.username}</p>
-        <p className="App-Header">Admin Status: {status}</p>
+
+    return(
+      <div className="card user-info center-text">
+        <h4 className="card-header">{this.props.username}</h4>
+        <div className="card-block">
+          <h5 className="card-title row">Privilege Level:</h5>
+          <p className="card-title row"> {status} </p>
+        </div>
       </div>
     );
   }
+
+
 }
 
 export default UserProfile;
