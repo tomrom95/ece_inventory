@@ -325,6 +325,6 @@ return {
 	user: {
 		username: String,
 		password_hash: String,
-		is_admin: Boolean
+		role: String ('ADMIN', 'MANAGER', 'STANDARD')
 	}
 }
