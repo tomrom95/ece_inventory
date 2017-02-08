@@ -79,4 +79,49 @@ describe('Tag API Test', function () {
         done();
       });
   });
+
+  it('GETs less tags after delete', (done) => {
+    Item.findOne({name: 'c'}, function (error, result) {
+      chai.request(server)
+        .delete('/api/inventory/' + result._id)
+        .set('Authorization', token)
+        .end((err, res) => {
+          chai.request(server)
+            .get('/api/inventory/tags')
+            .set('Authorization', token)
+            .end((err, res) => {
+              res.should.have.status(200);
+              res.body.should.be.a('array');
+              res.body.length.should.be.eql(4);
+              res.body.should.not.include('other');
+              done();
+            });
+        });
+    });
+  });
+
+  it('GETs more tags after post', (done) => {
+    var item = {
+      "quantity": 1000,
+      "name": "d",
+      "tags": ["different_tag"],
+      "has_instance_objects": false
+    };
+    chai.request(server)
+      .post('/api/inventory/')
+      .set('Authorization', token)
+      .send(item)
+      .end((err, res) => {
+        chai.request(server)
+          .get('/api/inventory/tags')
+          .set('Authorization', token)
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body.length.should.be.eql(8);
+            res.body.should.include('different_tag');
+            done();
+          });
+      });
+  });
 });
