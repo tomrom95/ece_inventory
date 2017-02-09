@@ -15,7 +15,7 @@ describe('/login Test', function () {
 
   beforeEach((done) => {
     User.remove({}, (err) => {
-      helpers.createNewUser('test_user', 'test', 'ADMIN', function(error, user) {
+      helpers.createNewUser('test_user', 'test', 'STANDARD', function(error, user) {
         done();
       });
     });
