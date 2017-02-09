@@ -62,7 +62,6 @@ class Inventory extends Component {
   }
 
   loadData(page, justDeleted) {
-      console.log("Loading data!");
       if (page <= 0) {
         document.getElementById("pageNum").value = this.state.page;
         return;
@@ -89,7 +88,6 @@ class Inventory extends Component {
             page: page
           });
           document.getElementById("pageNum").value = page;
-          console.log("Changed page size");
         }
       }.bind(this));
   }
@@ -159,8 +157,6 @@ class Inventory extends Component {
   }
 
   filterItems(name, modelNumber, requiredTags, excludedTags) {
-    console.log("filtering!");
-    console.log(requiredTags);
     this.setState({
       page: 1,
       filters: {
