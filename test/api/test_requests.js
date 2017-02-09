@@ -580,7 +580,6 @@ describe('Requests API Test', function () {
     it('Should POST as standard user', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
         var standard_token = helpers.createAuthToken(user);
-        if(err) return res.send({error:err});
         Item.findOne({"name": "2k resistor"}, function(err, item2){
           var request = {
             "status": "PENDING",
@@ -605,7 +604,6 @@ describe('Requests API Test', function () {
     it('Should POST as standard user with own username', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
         var standard_token = helpers.createAuthToken(user);
-        if(err) return res.send({error:err});
         Item.findOne({"name": "2k resistor"}, function(err, item2){
           var request = {
             "status": "PENDING",
@@ -630,7 +628,6 @@ describe('Requests API Test', function () {
     });
     it('Should POST as admin with specified user name', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
-        if(err) return res.send({error:err});
         Item.findOne({"name": "2k resistor"}, function(err, item2){
           var request = {
             "status": "PENDING",
@@ -655,7 +652,6 @@ describe('Requests API Test', function () {
     });
     it('Should not POST with non-existing user name', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
-        if(err) return res.send({error:err});
         Item.findOne({"name": "2k resistor"}, function(err, item2){
           var request = {
             "status": "PENDING",
