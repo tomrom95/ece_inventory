@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose');
 var InstanceSchema = require('./instances.js').schema
+var CustomFieldSchema = require('./customFields.js').schema;
 var mongoosePaginate = require('mongoose-paginate');
 
 var ItemSchema = new mongoose.Schema({
@@ -25,7 +26,8 @@ var ItemSchema = new mongoose.Schema({
     required: true,
     default: false
   },
-  instances: [InstanceSchema]
+  instances: [InstanceSchema],
+  custom_fields: [mongoose.Schema.Types.ObjectId]
 })
 ItemSchema.plugin(mongoosePaginate);
 

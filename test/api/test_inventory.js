@@ -268,7 +268,7 @@ describe('Inventory API Test', function () {
       });
       it('GETs items with name, multiple required and excluded tags', (done)=>{
         chai.request(server)
-        .get('/api/inventory?name=100k&required_tags=electrIc, compOnent&excluded_tags=magneTic, Power')
+        .get('/api/inventory?name=100k&required_tags=electrIc,compOnent&excluded_tags=magneTic, Power')
         .set('Authorization', token)
         .end((err, res) => {
           res.should.have.status(200);
