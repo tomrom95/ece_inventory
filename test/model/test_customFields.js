@@ -2,7 +2,6 @@ process.env.NODE_ENV = 'test';
 
 var mongoose = require('mongoose');
 var CustomField = require('../../server/model/customFields.js');
-var assert = require('chai').assert
 let chai = require('chai');
 let should = chai.should();
 
