@@ -9,7 +9,7 @@ var CustomFieldSchema = new mongoose.Schema({
   value: {
     // Value does not need to be entered to create a custom field?
     type: String
-  }
+  },
   type: {
     type: String,
     enum: ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT'],
