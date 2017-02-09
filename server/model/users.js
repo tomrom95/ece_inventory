@@ -5,11 +5,13 @@ var mongoose = require('mongoose');
 var UserSchema = new mongoose.Schema({
   username: {
     type: String,
-    unique: true
+    unique: true,
+    spares: true
   },
   netid: {
     type: String,
-    unique: true
+    unique: true,
+    sparse: true
   },
   first_name: String,
   last_name: String,
