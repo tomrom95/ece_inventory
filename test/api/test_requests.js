@@ -423,6 +423,7 @@ describe('Requests API Test', function () {
     });
     it('GET no Request by invalid request ID successful', (done) => {
       Item.findOne({"name": "2k resistor"}, function(err, item2){
+        should.not.exist(err);
         var request = new Request({
           "reviewer_comment": "NONADMIN",
           "requestor_comment": "NONADMIN",
@@ -579,8 +580,9 @@ describe('Requests API Test', function () {
     });
     it('Should POST as standard user', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
+
         var standard_token = helpers.createAuthToken(user);
-        if(err) return res.send({error:err});
+        should.not.exist(err);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
           var request = {
             "status": "PENDING",
@@ -605,7 +607,7 @@ describe('Requests API Test', function () {
     it('Should POST as standard user with own username', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
         var standard_token = helpers.createAuthToken(user);
-        if(err) return res.send({error:err});
+        should.not.exist(err);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
           var request = {
             "status": "PENDING",
@@ -630,7 +632,6 @@ describe('Requests API Test', function () {
     });
     it('Should POST as admin with specified user name', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
-        if(err) return res.send({error:err});
         Item.findOne({"name": "2k resistor"}, function(err, item2){
           var request = {
             "status": "PENDING",
@@ -655,7 +656,7 @@ describe('Requests API Test', function () {
     });
     it('Should not POST with non-existing user name', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
-        if(err) return res.send({error:err});
+        should.not.exist(err);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
           var request = {
             "status": "PENDING",
