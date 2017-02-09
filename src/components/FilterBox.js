@@ -1,21 +1,9 @@
 import React, { Component } from 'react';
-<<<<<<< 04e497dd2c8a97ba79359d8f48a525318b6df622
 import TagSelector from './TagSelector';
-=======
-import {Typeahead} from 'react-bootstrap-typeahead';
->>>>>>> tag_frontend
 
 class FilterBox extends Component {
   constructor(props){
     super(props);
-<<<<<<< 04e497dd2c8a97ba79359d8f48a525318b6df622
-=======
-    this.state = {
-      allTags: [],
-      excludedTags: [],
-      requiredTags: []
-    }
->>>>>>> tag_frontend
   }
 
   componentWillMount() {
@@ -26,14 +14,10 @@ class FilterBox extends Component {
         }
         console.log("FILTER BOX");
         console.log(response.data);
-<<<<<<< 04e497dd2c8a97ba79359d8f48a525318b6df622
         var data = response.data.map(function(tag) {
           return {label: tag, value: tag}
         });
         this.setState({allTags: data});
-=======
-        this.setState({allTags: response.data});
->>>>>>> tag_frontend
       }.bind(this))
       .catch(function(error) {
         console.log(error);
