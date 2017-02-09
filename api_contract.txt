@@ -152,7 +152,7 @@ returns:
   "success"
 }
 
-/api/inventory/:item_id/customFields
+/api/customFields
 GET:
 params:
 {
@@ -185,7 +185,7 @@ return:
 	isPrivate: Boolean
 }
 
-/api/inventory/:item_id/customFields/:customFields_id
+/api/customFields/:customFields_id
 GET:
 return: {
 	_id: String,
