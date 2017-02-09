@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
+import TagSelector from './TagSelector';
 
 class FilterBox extends Component {
   constructor(props){
     super(props);
-    this.state = {
-      allTags: [],
-      excludedTags: [],
-      requiredTags: []
-    }
   }
 
   componentWillMount() {
@@ -32,7 +27,9 @@ class FilterBox extends Component {
   filterButton() {
     var name = this.refs.name.value;
     var modelNumber = this.refs.model.value;
-    this.props.filterItems(name, modelNumber, this.state.requiredTags, this.state.excludedTags);
+    var required = this.refs.required.getSelectedTags();
+    var excluded = this.refs.excluded.getSelectedTags();
+    this.props.filterItems(name, modelNumber, required, excluded);
   }
 
   handleRequiredChange(value) {
@@ -73,25 +70,19 @@ class FilterBox extends Component {
 
                         <div className="form-group row">
                           <label htmlFor="model-field">Require Tags</label>
-                            <Select
-                              multi
-                              simpleValue
-                              value={this.state.requiredTags}
-                              placeholder="Choose tag(s)"
-                              options={this.state.allTags}
-                              onChange={this.handleRequiredChange.bind(this)}
+                            <TagSelector
+                              api={this.props.api}
+                              disallowCustom={true}
+                              ref="required"
                             />
                         </div>
 
                         <div className="form-group row">
                           <label htmlFor="model-field">Exclude Tags</label>
-                            <Select
-                              multi
-                              simpleValue
-                              value={this.state.excludedTags}
-                              placeholder="Choose tag(s)"
-                              options={this.state.allTags}
-                              onChange={this.handleExcludedChange.bind(this)}
+                            <TagSelector
+                              api={this.props.api}
+                              disallowCustom={true}
+                              ref="excluded"
                             />
                         </div>
 
