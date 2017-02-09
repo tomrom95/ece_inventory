@@ -150,6 +150,50 @@ returns:
   "success"
 }
 
+/api/inventory/:item_id/customFields
+GET:
+params:
+{
+	name: String,
+	type: String,
+	isPrivate: Boolean
+}
+return:
+[
+	{
+		name: String,
+		type: String,
+		isPrivate: Boolean
+	}
+]
+
+POST:
+body:
+{
+
+}
+return:
+{
+
+}
+
+/api/inventory/:item_id/customFields/:customFields_id
+GET:
+return: {
+
+}
+
+PUT:
+body:{
+
+}
+return: {
+
+}
+
+DELETE: {
+
+}
 
 /api/requests
 GET
