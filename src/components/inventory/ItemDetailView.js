@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import GlobalRequests from './GlobalRequests';
-import CurrentOrders from './CurrentOrders.js';
+import GlobalRequests from '../requests/GlobalRequests';
+import CurrentOrders from '../requests/CurrentOrders.js';
 
 function getString(str) {
   if (str === undefined || str === null) {

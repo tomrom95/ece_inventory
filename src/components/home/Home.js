@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import NavBar from './NavBar.js';
-import '../App.css';
+import NavBar from '../global/NavBar.js';
+import '../../App.css';
 import axios from 'axios';
 
 class Home extends Component {

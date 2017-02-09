@@ -1,14 +1,15 @@
 import React from 'react';
-import Inventory from '../components/Inventory.js';
-import Home from '../components/Home.js';
-import CurrentOrders from '../components/CurrentOrders.js';
-import PastOrders from '../components/PastOrders.js';
-import UserProfile from '../components/UserProfile.js';
-import GlobalRequests from '../components/GlobalRequests.js';
-import CreateUser from '../components/CreateUser.js';
-import Transactions from '../components/Transactions.js';
+import Inventory from '../components/inventory/Inventory.js';
+import Home from '../components/home/Home.js';
+import CurrentOrders from '../components/requests/CurrentOrders.js';
+import PastOrders from '../components/requests/PastOrders.js';
+import UserProfile from '../components/user/UserProfile.js';
+import GlobalRequests from '../components/requests/GlobalRequests.js';
+import CreateUser from '../components/user/CreateUser.js';
+import Transactions from '../components/transactions/Transactions.js';
+import ItemDetailView from '../components/inventory/ItemDetailView.js';
 import { Route} from 'react-router';
-import ItemDetailView from '../components/ItemDetailView.js';
+
 
 export default (
   <Route path="/" component={Home}>

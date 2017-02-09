@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import '../App.css';
-import InventorySubTable from '../InventorySubTable.js';
+import '../../App.css';
+import InventorySubTable from './InventorySubTable.js';
+import ErrorMessage from '../global/ErrorMessage.js';
 import axios from 'axios';
-import ErrorMessage from './ErrorMessage.js';
+
 
 function processData(responseData) {
   var inventoryItems = responseData.data;

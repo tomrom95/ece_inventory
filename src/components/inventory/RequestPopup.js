@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import './App.css';
-import RequestSubtable from './RequestSubtable.js';
+import '../../App.css';
+import RequestSubtable from '../requests/RequestSubtable.js';
 
 function validNumber(num) {
 	return !isNaN(num);

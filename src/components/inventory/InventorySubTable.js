@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import './App.css';
+import '../../App.css';
 import SubtableRow from './SubtableRow.js';
 import ItemWizard from './ItemWizard.js';
 import RequestPopup from './RequestPopup.js';
 import ItemEditor from './ItemEditor.js';
-import ItemDetailView from './components/ItemDetailView.js';
+import ItemDetailView from './ItemDetailView.js';
 
 var meta;
 
