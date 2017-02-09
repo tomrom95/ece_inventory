@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { RouteHandler, Link } from 'react-router';
-import SubtableRow from '../inventory/SubtableRow.js';
+import SubtableRow from '../inventory/TableRow.js';
 import Request from './Request.js';
 import '../../App.css';
 

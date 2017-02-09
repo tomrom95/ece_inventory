@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import SubtableRow from './SubtableRow.js';
+import SubtableRow from './TableRow.js';
 import ItemWizard from './ItemWizard.js';
 import RequestPopup from './RequestPopup.js';
 import ItemEditor from './ItemEditor.js';

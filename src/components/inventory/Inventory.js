@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import InventorySubTable from './InventorySubTable.js';
+import InventorySubTable from './InventoryTable.js';
 import ErrorMessage from '../global/ErrorMessage.js';
 import axios from 'axios';
 

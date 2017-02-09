@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import SubtableRow from '../inventory/SubtableRow';
+import SubtableRow from '../inventory/TableRow';
 import Modal from 'react-modal';
 import LeaveCommentPopup from './LeaveCommentPopup.js';
 
