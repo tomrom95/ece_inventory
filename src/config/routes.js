@@ -77,7 +77,6 @@ function checkForOAuth(nextState, replace) {
       if (result.error) {
         console.log(result.error)
       } else {
-        console.log("SETTING TOKEN!!");
         localStorage.setItem('user', JSON.stringify(result.data.user));
         localStorage.setItem('token', result.data.token);
       }
@@ -93,13 +92,13 @@ function checkForOAuth(nextState, replace) {
 
 export default (
   <Route path="/" component={Home}>
-    <Route path="UserProfile" component={UserProfileWrapper}></Route>
-    <Route path="Inventory" component={InventoryWrapper}></Route>
-    <Route path="CurrentOrders" component={CurrentOrdersWrapper}></Route>
-    <Route path="GlobalRequests" component={GlobalRequestsWrapper}></Route>
-    <Route path="CreateUser" component={CreateUserWrapper}></Route>
-    <Route path="Transactions" component={TransactionsWrapper}></Route>
-    <Route path="PastOrders" component={PastOrdersWrapper}></Route>
-    <Route path="Detail/:itemID" component={ItemDetailViewWrapper} />
+    <Route path="UserProfile" component={UserProfile}></Route>
+    <Route path="Inventory" component={Inventory}></Route>
+    <Route path="CurrentOrders" component={CurrentOrders}></Route>
+    <Route path="GlobalRequests" component={GlobalRequests}></Route>
+    <Route path="CreateUser" component={CreateUser}></Route>
+    <Route path="Transactions" component={Transactions}></Route>
+    <Route path="PastOrders" component={PastOrders}></Route>
+    <Route path="Detail/:itemID" component={ItemDetailView} />
   </Route>
 );
