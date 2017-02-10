@@ -10,7 +10,7 @@ function lookUpNetIDUser(oauthToken, next) {
     'https://api.colab.duke.edu/identity/v1/',
     {
       headers: {
-        'x-api-key': 'ece-inventory',
+        'x-api-key': 'ece-inventory-colab-sbx-125',
         'Authorization': 'Bearer ' + oauthToken
       }
     }
