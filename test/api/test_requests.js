@@ -580,9 +580,8 @@ describe('Requests API Test', function () {
     });
     it('Should POST as standard user', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
-
-        var standard_token = helpers.createAuthToken(user);
         should.not.exist(err);
+        var standard_token = helpers.createAuthToken(user);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
           var request = {
             "status": "PENDING",
@@ -606,8 +605,8 @@ describe('Requests API Test', function () {
     });
     it('Should POST as standard user with own username', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
-        var standard_token = helpers.createAuthToken(user);
         should.not.exist(err);
+        var standard_token = helpers.createAuthToken(user);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
           var request = {
             "status": "PENDING",
@@ -632,6 +631,7 @@ describe('Requests API Test', function () {
     });
     it('Should POST as admin with specified user name', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
+        should.not.exist(err);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
           var request = {
             "status": "PENDING",
@@ -679,6 +679,7 @@ describe('Requests API Test', function () {
     });
     it('Should not POST as standard user with specified different user id in body', (done) => {
       helpers.createNewUser('standard_user', 'test', 'STANDARD' , function(error, user) {
+        should.not.exist(error);
         var standard_token = helpers.createAuthToken(user);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
           var request = {
@@ -798,6 +799,7 @@ describe('Requests API Test', function () {
     });
     it('Should not PUT request for standard user specifying another username in PUT body', (done) => {
         helpers.createNewUser('standard_user', 'test', 'STANDARD' , function(error, user) {
+          should.not.exist(error);
         var standard_token = helpers.createAuthToken(user);
         var request = new Request({
           "reviewer_comment": "NONADMIN",
@@ -830,6 +832,7 @@ describe('Requests API Test', function () {
   });
   it('Should not PUT request for standard user with another username in request', (done) => {
       helpers.createNewUser('standard_user', 'test', 'STANDARD' , function(error, user) {
+      should.not.exist(error);
       var standard_token = helpers.createAuthToken(user);
       var request = new Request({
         "reviewer_comment": "NONADMIN",
@@ -970,6 +973,7 @@ describe('Requests API Test', function () {
     });
     it('DELETE own request by non-admin user', (done) =>{
       helpers.createNewUser('standard', 'standard', 'STANDARD' , function(error, user) {
+        should.not.exist(error);
         token = helpers.createAuthToken(user);
         user_id = user._id;
         var request = new Request({
@@ -1017,6 +1021,7 @@ describe('Requests API Test', function () {
       admin_request.user = user_id;
       admin_request.save(function(err, admin_request){
         helpers.createNewUser('standard', 'standard', 'STANDARD' , function(error, user) {
+          should.not.exist(error);
           var standard_token = helpers.createAuthToken(user);
           standard_user_id = user._id;
           var standard_request = new Request({
@@ -1045,6 +1050,7 @@ describe('Requests API Test', function () {
     });
     it('DELETE another request by admin user', (done) =>{
       helpers.createNewUser('standard', 'standard', 'STANDARD' , function(error, user) {
+        should.not.exist(error);
         standard_token = helpers.createAuthToken(user);
         standard_user_id = user._id;
         var standard_request = new Request({
