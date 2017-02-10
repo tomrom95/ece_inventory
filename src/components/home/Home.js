@@ -160,6 +160,8 @@ class Home extends Component {
             <h3 className="row">Log In with your NetID</h3>
             <a href={this.createNetIDLoginLink()} className="btn btn-primary" role="button">NetID Login</a>
           </div>
+          <h3 className="row">Log In with your NetID</h3>
+            <a href={this.createNetIDLoginLink().bind(this)} class="btn btn-primary" role="button">NetID Login</a>
           );
   }
 }
