@@ -65,15 +65,41 @@ class ItemDetailViewWrapper extends Component {
 }
 
 
+import querystring from 'querystring';
+import axios from 'axios';
+
+function checkForOAuth(nextState, replace) {
+  console.log("Next State!")
+  if (nextState.location.hash) {
+    console.log("Has hash!")
+    var token = querystring.parse(nextState.location.hash).access_token;
+    axios.post('https://' + location.hostname + ':3001/auth/login', {
+      token: token
+    }).then(function(result) {
+      if (result.error) {
+        console.log(result.error)
+      } else {
+        console.log(result.data);
+        localStorage.setItem('user', JSON.stringify(result.data.user));
+        localStorage.setItem('token', result.data.token);
+      }
+      location.hash = '';
+    }).catch(function(error) {
+      console.log(error);
+      location.hash = '';
+    });
+  }
+}
+
 export default (
   <Route path="/" component={Home}>
-    <Route path="UserProfile" component={UserProfileWrapper}></Route>
-    <Route path="Inventory" component={InventoryWrapper}></Route>
-    <Route path="CurrentOrders" component={CurrentOrdersWrapper}></Route>
-    <Route path="GlobalRequests" component={GlobalRequestsWrapper}></Route>
-    <Route path="CreateUser" component={CreateUserWrapper}></Route>
-    <Route path="Transactions" component={TransactionsWrapper}></Route>
-    <Route path="PastOrders" component={PastOrdersWrapper}></Route>
-    <Route path="Detail/:itemID" component={ItemDetailViewWrapper} />
+    <Route path="UserProfile" component={UserProfile}></Route>
+    <Route path="Inventory" component={Inventory}></Route>
+    <Route path="CurrentOrders" component={CurrentOrders}></Route>
+    <Route path="GlobalRequests" component={GlobalRequests}></Route>
+    <Route path="CreateUser" component={CreateUser}></Route>
+    <Route path="Transactions" component={Transactions}></Route>
+    <Route path="PastOrders" component={PastOrders}></Route>
+    <Route path="Detail/:itemID" component={ItemDetailView} />
   </Route>
 );
