@@ -29,7 +29,8 @@ var ItemSchema = new mongoose.Schema({
   instances: [InstanceSchema],
   custom_fields:[{
     field_id: mongoose.Schema.Types.ObjectId,
-    value:    mongoose.Schema.Types.Mixed
+    value:    mongoose.Schema.Types.Mixed,
+    ref: 'CustomField'
   }]
 })
 ItemSchema.plugin(mongoosePaginate);
