@@ -97,7 +97,7 @@ class RequestPopup extends Component {
 		}
 		else{
 			return (
-			<div className="modal-body request-subtable">
+			<div className="modal-body">
 				<RequestSubtable
 					className="row"
 					data={this.state.data}

@@ -20,6 +20,10 @@
   font-size: large;
 }
 
+.Select {
+  width: 100%;
+}
+
 .wide {
   width:100%;
 }
@@ -66,7 +70,6 @@
 }
 
 .maintable-container {
-  max-height: 480px;
   width: 1500px;
   margin-left: 20px;
   overflow-y: scroll;
@@ -172,9 +175,9 @@
   margin-left: 20px;
   border: none;
   border-left: solid;
-  border-color: rgba(0,150,255,1); 
+  border-color: rgba(0,150,255,1);
   border-width: 4px;
-  
+
 }
 
 .login-form {
@@ -266,6 +269,7 @@
 .filterbox {
   margin-left: 20px;
   margin-right: 0;
+  margin-bottom: 30px;
   border: none;
   border-left: solid;
   border-width: 4px;
