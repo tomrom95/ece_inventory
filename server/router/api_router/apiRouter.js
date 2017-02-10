@@ -4,6 +4,7 @@ var request_routes = require('./routes/request_routes');
 var user_routes = require('./routes/user_routes');
 var log_routes = require('./routes/log_routes');
 var restrictToAdmins = require('../../auth/auth_helpers').restrictToAdmins;
+var restrictToManagers = require('../../auth/auth_helpers').restrictToManagers;
 var tag_routes = require('./routes/tag_routes');
 
 var express = require('express');
@@ -11,7 +12,7 @@ var router = express.Router();
 
 router.route('/inventory')
       .get(inventory_routes.getAPI)
-      .post(restrictToAdmins, inventory_routes.postAPI);
+      .post(restrictToManagers, inventory_routes.postAPI);
 
 router.route('/inventory/tags')
       .get(tag_routes.getAPI);
@@ -23,12 +24,12 @@ router.route('/inventory/:item_id')
 
 router.route('/inventory/:item_id/instances')
       .get(instance_routes.getAPI)
-      .post(restrictToAdmins, instance_routes.postAPI);
+      .post(restrictToManagers, instance_routes.postAPI);
 
 router.route('/inventory/:item_id/:instance_id')
       .get(instance_routes.getAPIbyID)
-      .put(restrictToAdmins, instance_routes.putAPI)
-      .delete(restrictToAdmins, instance_routes.deleteAPI);
+      .put(restrictToManagers, instance_routes.putAPI)
+      .delete(restrictToManagers, instance_routes.deleteAPI);
 
 router.route('/requests')
       .get(request_routes.getAPI)
@@ -38,13 +39,13 @@ router.route('/requests/:request_id')
       .get(request_routes.getAPIbyID)
       .put(request_routes.putAPI)
       .delete(request_routes.deleteAPI)
-      .patch(restrictToAdmins, request_routes.patchAPI);
+      .patch(restrictToManagers, request_routes.patchAPI);
 
 router.route('/user')
       .get(user_routes.getAPI)
       .post(restrictToAdmins, user_routes.register);
 
 router.route('/logs')
-      .get(restrictToAdmins, log_routes.getAPI);
+      .get(restrictToManagers, log_routes.getAPI);
 
 module.exports = router;

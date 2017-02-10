@@ -21,7 +21,7 @@ describe('Instance API Test', function() {
   beforeEach((done) => { //Before each test we empty the database
     Item.remove({}, (err) => {
       User.remove({}, (err) => {
-        auth_helpers.createNewUser('test_user', 'test', true, function(error, user) {
+        auth_helpers.createNewUser('test_user', 'test', 'ADMIN', function(error, user) {
           token = auth_helpers.createAuthToken(user);
           fakeJSONData.instances = instances_helpers.createMockInstances();
           fakeJSONData.has_instance_objects=true;

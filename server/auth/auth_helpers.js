@@ -31,7 +31,7 @@ var compare = function(givenPassword, savedHash, next) {
   });
 }
 
-var createNewUser = function(username, password, adminStatus, next) {
+var createNewUser = function(username, password, role, next) {
   createPasswordHash(password, function(error, hash) {
     if (error != null) {
       next(error, null);
@@ -40,7 +40,7 @@ var createNewUser = function(username, password, adminStatus, next) {
     var newUser = new User({
       username: username,
       password_hash: hash,
-      is_admin: adminStatus,
+      role: role,
     });
     newUser.save(function (error, user) {
       if (error != null) {
@@ -56,16 +56,23 @@ var createAuthToken = function(user) {
   return 'JWT ' + jwt.sign(user, secrets.hashSecret, {expiresIn: TOKEN_EXPIRY});
 }
 
-var restrictToAdmins = function(req, res, next) {
-  if (!req.user.is_admin) {
+var restrictToRoles = function(roles, req, res, next) {
+  if (!roles.includes(req.user.role)) {
     res.status(403).send({error: 'Unauthorized'});
   } else {
     next();
   }
 }
 
+module.exports.restrictToManagers = function(req, res, next) {
+  restrictToRoles(['ADMIN', 'MANAGER'], req, res, next);
+}
+
+module.exports.restrictToAdmins = function(req, res, next) {
+  restrictToRoles(['ADMIN'], req, res, next);
+}
+
 module.exports.createPasswordHash = createPasswordHash;
 module.exports.compare = compare;
 module.exports.createNewUser = createNewUser;
 module.exports.createAuthToken = createAuthToken;
-module.exports.restrictToAdmins = restrictToAdmins;
