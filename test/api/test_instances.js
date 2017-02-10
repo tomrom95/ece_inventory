@@ -20,8 +20,11 @@ describe('Instance API Test', function() {
   var item_id;
   beforeEach((done) => { //Before each test we empty the database
     Item.remove({}, (err) => {
+      should.not.exist(err);
       User.remove({}, (err) => {
+        should.not.exist(err);
         auth_helpers.createNewUser('test_user', 'test', 'ADMIN', function(error, user) {
+          should.not.exist(error);
           token = auth_helpers.createAuthToken(user);
           fakeJSONData.instances = instances_helpers.createMockInstances();
           fakeJSONData.has_instance_objects=true;
@@ -40,6 +43,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(3);
@@ -54,6 +58,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?serial_number=123')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(1);
@@ -68,6 +73,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?serial_number=')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(3);
@@ -82,6 +88,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?condition=NEEDS_REPAIR')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(1);
@@ -96,6 +103,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?condition=')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(3);
@@ -110,6 +118,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?status=LOST')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(1);
@@ -124,6 +133,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?status=')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(3);
@@ -138,6 +148,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?status=AVAILABLE&condition=NEEDS_REPAIR')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(1);
@@ -152,6 +163,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?status=LOST&condition=NEEDS_REPAIR')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(0);
@@ -163,6 +175,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+'11111111'+'/instances?status=LOST&condition=NEEDS_REPAIR')
       .set('Authorization', token)
       .end((err, res) => {
+        should.exist(err);
         res.should.have.status(500);
         res.body.should.be.a('object');
         done();
@@ -173,6 +186,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+'900000000000000000000000'+'/instances?status=LOST&condition=NEEDS_REPAIR')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(0);
@@ -184,6 +198,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?serial_asdnsdfumber=LgfdOST&condisdtion=dfs')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(3);
