@@ -6,7 +6,6 @@ var helpers = require('../../../auth/auth_helpers');
 var User = require('../../../model/users');
 
 function lookUpNetIDUser(oauthToken, next) {
-  console.log(oauthToken);
   axios.get(
     'https://api.colab.duke.edu/identity/v1/',
     {
@@ -22,11 +21,15 @@ function lookUpNetIDUser(oauthToken, next) {
   });
 }
 
+/*
+Look up user on duke api to get netid and log user in
+*/
 function loginWithOAuth(oauthToken, res) {
   lookUpNetIDUser(oauthToken, function(error, userInfo) {
     if (error) return res.send({error: error});
     User.findOne({netid: userInfo.netid}, function(err, user) {
       if (err) return res.send({error: error});
+      // If user already exists, log him in
       if (user) return res.json({
         token: helpers.createAuthToken(user),
         user: {
@@ -44,6 +47,7 @@ function loginWithOAuth(oauthToken, res) {
         last_name: userInfo.lastName,
         is_local: false,
       });
+      // otherwise, create new user
       user.save(function(error, user) {
         if (error) return res.send({error: error});
         return res.json({
