@@ -27,7 +27,7 @@ var ItemSchema = new mongoose.Schema({
   },
   instances: [InstanceSchema],
   custom_fields:[{
-    field_id: {
+    field: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'CustomField'
     },
