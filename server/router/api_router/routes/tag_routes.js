@@ -6,6 +6,6 @@ module.exports.getAPI = function(req, res){
     if (error) {
       return res.send({error: error});
     }
-    res.json(results);
+    res.json(results.filter(tag => tag));
   });
 }

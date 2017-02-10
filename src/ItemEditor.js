@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
- 
+import TagSelector from './components/TagSelector';
+
 function getKeys(data) {
 	return Object.keys(data);
 }
@@ -28,7 +29,7 @@ function isWholeNumber(num) {
 		}
 		else return true;
 	}
-} 
+}
 
 class ItemEditor extends Component {
 
@@ -45,25 +46,29 @@ class ItemEditor extends Component {
 		var vals = getValues(this.state.data, keys);
 		var list = []; var i;
 		for (i=0; i<keys.length; i++) {
-			list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
+			if (keys[i] === 'Tags') {
+				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
+			} else {
+				list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
+			}
 		}
 		return list;
 	}
 
 	render() {
-		return (
+    return (
 		<div>
-			<button type="button" 
-				className="btn btn-outline-primary edit-button" 
-				data-toggle="modal" 
+			<button type="button"
+				className="btn btn-outline-primary edit-button"
+				data-toggle="modal"
 				data-target={"#editModal-"+this.props.itemId}>
-				<span className="fa fa-pencil"></span> 
+				<span className="fa fa-pencil"></span>
 			</button>
 
-			<div className="modal fade" 
+			<div className="modal fade"
 				id={"editModal-"+this.props.itemId}
-				tabIndex="-1" role="dialog" 
-				aria-labelledby="editLabel" 
+				tabIndex="-1" role="dialog"
+				aria-labelledby="editLabel"
 				aria-hidden="true">
 			  <div className="modal-dialog" role="document">
 			    <div className="modal-content">
@@ -85,18 +90,31 @@ class ItemEditor extends Component {
 	}
 
 
-	makeTextBox(row, type, label, defaultText){
-		var id = "textform-"+this.props.itemId+"-row-"+row;
+	makeTextBox(row, type, label, defaultValue){
+		var id = "createform-row-"+row;
 		this.state.formIds.push(id);
+		var input;
+		if(type === "multiselect") {
+			input = <TagSelector
+				disallowCustom={false}
+				api={this.props.api}
+				id={id}
+				ref={label}
+        defaultTags={defaultValue}
+			/>
+	} else {
+		input = <input type={type}
+			className="form-control"
+			defaultValue={defaultValue}
+			ref={label}
+			key={id}>
+			</input>
+	}
+
 		return (
-			<div className="form-group" key={"textform-div-row"+row+'-row-'+this.props.itemId}>
-			  <label htmlFor={"textform-"+this.props.itemId+"-row-"+row}>{label}</label>
-			  <input type={type} 
-			  	className="form-control" 
-			  	defaultValue={defaultText} 
-			  	id={id}
-			  	key={id}>
-		  	  </input>
+			<div className="form-group" key={"createform-div-row-"+row}>
+			  <label htmlFor={"createform-row-"+row}>{label}</label>
+			  {input}
 			</div>
 		);
 	}
@@ -127,29 +145,22 @@ class ItemEditor extends Component {
 	}
 
 	onSubmission() {
+		var tags = this.refs.Tags.getSelectedTags();
 		var object = {
-			name: document.getElementById(this.state.formIds[0]).value,
-	  		quantity: document.getElementById(this.state.formIds[1]).value,
-	 		model_number: document.getElementById(this.state.formIds[2]).value,
-	  		description: document.getElementById(this.state.formIds[3]).value,
-	  		location: document.getElementById(this.state.formIds[4]).value,
-	  		vendor_info: document.getElementById(this.state.formIds[5]).value,
-	  		tags: (document.getElementById(this.state.formIds[6]).value).split(","),
+			name: this.refs.Name.value,
+	  		quantity: this.refs.Quantity.value,
+	 		model_number: this.refs["Model Number"].value,
+	  		description: this.refs.Description.value,
+	  		location: this.refs.Location.value,
+	  		vendor_info: this.refs["Vendor Info"].value,
+	  		tags: tags ? tags.split(',') : [],
 	  		has_instance_objects: false
   		}
-
-  		var i;
-  		for (i=0; i<object.length; i++) {
-  			object.tags[i] = object.tags[i].trim();
-  		}
-
-		console.log("Object is:");
-		console.log(object);
 
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
 
-  			this.props.api.put('/api/inventory/'+ this.props.itemId, object)
+        this.props.api.put('/api/inventory/'+ this.props.itemId, object)
 			  	.then(function(response) {
 			        if (response.data.error) {
 			        	alert(response.data.error);
@@ -159,9 +170,9 @@ class ItemEditor extends Component {
 			      }.bind(this))
 			      .catch(function(error) {
 			        console.log(error);
-			      }.bind(this));	
+			      }.bind(this));
 		}
-  	}
+  }
 
 }
 

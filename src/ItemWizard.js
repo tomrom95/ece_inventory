@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import TagSelector from './components/TagSelector';
 
 function getKeys(data) {
 	return Object.keys(data);
@@ -45,7 +46,11 @@ class ItemWizard extends Component {
 		var vals = getValues(this.state.data, keys);
 		var list = []; var i;
 		for (i=0; i<keys.length; i++) {
-			list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
+			if (keys[i] === 'Tags') {
+				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
+			} else {
+				list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
+			}
 		}
 		return list;
 	}
@@ -53,18 +58,18 @@ class ItemWizard extends Component {
 	render() {
 		return (
 		<th>
-			<button type="button" 
-				className="btn btn-outline-primary add-button" 
-				data-toggle="modal" 
+			<button type="button"
+				className="btn btn-outline-primary add-button"
+				data-toggle="modal"
 				data-target={"#createModal"}>
 				<span className="fa fa-plus"></span>
 			</button>
 
-			<div className="modal fade" 
+			<div className="modal fade"
 				id={"createModal"}
-				tabIndex="-1" 
-				role="dialog" 
-				aria-labelledby="createLabel" 
+				tabIndex="-1"
+				role="dialog"
+				aria-labelledby="createLabel"
 				aria-hidden="true">
 			  <div className="modal-dialog" role="document">
 			    <div className="modal-content">
@@ -75,8 +80,8 @@ class ItemWizard extends Component {
 			        {this.makeForm()}
 			      </div>
 			      <div className="modal-footer">
-			        <button type="button" onClick={e=>this.clearForm()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-			        <button onClick={e => {this.onSubmission(); this.clearForm()}} type="button" data-dismiss="modal" className="btn btn-primary">Submit</button>
+			        <button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			        <button onClick={e => {this.onSubmission(); this.clearForm();}} type="button" data-dismiss="modal" className="btn btn-primary">Submit</button>
 			      </div>
 			    </div>
 			  </div>
@@ -86,19 +91,30 @@ class ItemWizard extends Component {
 	}
 
 
-	makeTextBox(row, type, label, defaultText){
+	makeTextBox(row, type, label, defaultValue){
 		var id = "createform-row-"+row;
 		this.state.formIds.push(id);
+		var input;
+		if(type === "multiselect") {
+			input = <TagSelector
+				disallowCustom={false}
+				api={this.props.api}
+				id={id}
+				ref={label}
+			/>
+	} else {
+		input = <input type={type}
+			className="form-control"
+			defaultValue={defaultValue}
+			ref={label}
+			key={id}>
+			</input>
+	}
 
 		return (
 			<div className="form-group" key={"createform-div-row-"+row}>
 			  <label htmlFor={"createform-row-"+row}>{label}</label>
-			  <input type={type} 
-			  	className="form-control" 
-			  	defaultValue={defaultText} 
-			  	id={id}
-			  	key={id}>
-		  	  </input>
+			  {input}
 			</div>
 		);
 	}
@@ -129,20 +145,16 @@ class ItemWizard extends Component {
 	}
 
 	onSubmission() {
+		var tags = this.refs.Tags.getSelectedTags();
 		var object = {
-			name: document.getElementById(this.state.formIds[0]).value,
-	  		quantity: document.getElementById(this.state.formIds[1]).value,
-	 		model_number: document.getElementById(this.state.formIds[2]).value,
-	  		description: document.getElementById(this.state.formIds[3]).value,
-	  		location: document.getElementById(this.state.formIds[4]).value,
-	  		vendor_info: document.getElementById(this.state.formIds[5]).value,
-	  		tags: (document.getElementById(this.state.formIds[6]).value).split(","),
+			name: this.refs.Name.value,
+	  		quantity: this.refs.Quantity.value,
+	 		model_number: this.refs["Model Number"].value,
+	  		description: this.refs.Description.value,
+	  		location: this.refs.Location.value,
+	  		vendor_info: this.refs["Vendor Info"].value,
+	  		tags: tags ? tags.split(',') : [],
 	  		has_instance_objects: false
-  		}
-
-  		var i;
-  		for (i=0; i<object.length; i++) {
-  			object.tags[i] = object.tags[i].trim();
   		}
 
   		if (this.validItem(object) === true) {
@@ -160,13 +172,18 @@ class ItemWizard extends Component {
 			        console.log(error);
 			      }.bind(this));
 		}
-  	}
+  }
 
   	clearForm() {
-  		var i;
-  		for (i=0; i<this.state.formIds.length; i++) {
-  			document.getElementById(this.state.formIds[i]).value = "";
-  		}
+			console.log("CLEARING");
+  		var keys = getKeys(this.state.data);
+			keys.forEach(function(key) {
+				if (key === "Tags") {
+					this.refs[key].clearTags();
+				} else {
+					this.refs[key].value = "";
+				}
+			}.bind(this));
   	}
 
 }
