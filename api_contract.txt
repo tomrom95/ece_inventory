@@ -295,7 +295,7 @@ GET
 return {
 	_id: String,
 	username: String,
-	is_admin: String
+	role: String ('ADMIN', 'MANAGER', 'STANDARD')
 }
 
 POST
@@ -308,7 +308,7 @@ return {
 	user: {
 		_id: String,
 		username: String,
-		is_admin: Boolean
+		role: String ('ADMIN', 'MANAGER', 'STANDARD')
 	}
 }
 
