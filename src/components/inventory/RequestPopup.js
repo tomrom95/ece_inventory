@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import './App.css';
-import RequestSubtable from './RequestSubtable.js';
+import '../../App.css';
+import RequestSubtable from '../requests/RequestSubtable.js';
 
 function validNumber(num) {
 	return !isNaN(num);
@@ -97,7 +97,7 @@ class RequestPopup extends Component {
 		}
 		else{
 			return (
-			<div className="modal-body request-subtable">
+			<div className="modal-body">
 				<RequestSubtable
 					className="row"
 					data={this.state.data}

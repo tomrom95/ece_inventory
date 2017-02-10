@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import NavBar from './NavBar.js';
-import '../App.css';
+import NavBar from '../global/NavBar.js';
+import '../../App.css';
 import axios from 'axios';
 
 class Home extends Component {
@@ -98,25 +98,6 @@ class Home extends Component {
 
       );
     } else
-      /*return (
-        <div>
-          <h4>Please sign in to your account</h4>
-          <form>
-            <label>
-              Username:
-              <input type="text" value={this.state.name} onChange={this.handleNameChange} />
-            </label>
-            <label>
-              Password:
-              <input type="password" value={this.state.passwrd} onChange={this.handlePasswrdChange} />
-            </label>
-          </form>
-          <button className="btn btn-primary" onClick={this.login}>
-           Log In
-          </button>
-        </div>
-        );
-        */
 
         return(
           <div className="login-form container">

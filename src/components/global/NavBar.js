@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { RouteHandler, Link } from 'react-router';
-import '../App.css';
+import '../../App.css';
 
 class NavBar extends Component {
   constructor(props){

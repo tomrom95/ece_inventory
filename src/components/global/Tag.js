@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import '../App.css';
-import NavBar from './NavBar.js';
+import '../../App.css';
 
 var products = [{
       id: 1,

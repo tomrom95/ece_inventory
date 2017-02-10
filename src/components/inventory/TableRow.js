@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import '../../App.css';
 import ItemWizard from './ItemWizard.js';
 
 function getPrefill(data) {

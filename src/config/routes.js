@@ -1,24 +1,79 @@
-import React from 'react';
-import Inventory from '../components/Inventory.js';
-import Home from '../components/Home.js';
-import CurrentOrders from '../components/CurrentOrders.js';
-import PastOrders from '../components/PastOrders.js';
-import UserProfile from '../components/UserProfile.js';
-import GlobalRequests from '../components/GlobalRequests.js';
-import CreateUser from '../components/CreateUser.js';
-import Transactions from '../components/Transactions.js';
+import React, {Component} from 'react';
+import Inventory from '../components/inventory/Inventory.js';
+import Home from '../components/home/Home.js';
+import CurrentOrders from '../components/requests/CurrentOrders.js';
+import PastOrders from '../components/requests/PastOrders.js';
+import UserProfile from '../components/user/UserProfile.js';
+import GlobalRequests from '../components/requests/GlobalRequests.js';
+import CreateUser from '../components/user/CreateUser.js';
+import Transactions from '../components/transactions/Transactions.js';
+import ItemDetailView from '../components/inventory/ItemDetailView.js';
 import { Route} from 'react-router';
-import ItemDetailView from '../components/ItemDetailView.js';
+
+class InventoryWrapper extends Component {
+    render() {
+        return <Inventory api={"something"}/>;
+    }
+}
+
+class HomeWrapper extends Component {
+    render() {
+        return <Home api={"something"}/>;
+    }
+}
+
+class CurrentOrdersWrapper extends Component {
+    render() {
+        return <CurrentOrders api={"something"}/>;
+    }
+}
+
+class PastOrdersWrapper extends Component {
+    render() {
+        return <PastOrders api={"something"}/>;
+    }
+}
+
+class UserProfileWrapper extends Component {
+    render() {
+        return <UserProfile api={"something"}/>;
+    }
+}
+
+class GlobalRequestsWrapper extends Component {
+    render() {
+        return <GlobalRequests api={"something"}/>;
+    }
+}
+
+class CreateUserWrapper extends Component {
+    render() {
+        return <CreateUser api={"something"}/>;
+    }
+}
+
+class TransactionsWrapper extends Component {
+    render() {
+        return <Transactions api={"something"}/>;
+    }
+}
+
+class ItemDetailViewWrapper extends Component {
+    render() {
+        return <ItemDetailView api={"something"}/>;
+    }
+}
+
 
 export default (
   <Route path="/" component={Home}>
-    <Route path="UserProfile" component={UserProfile}></Route>
-    <Route path="Inventory" component={Inventory}></Route>
-    <Route path="CurrentOrders" component={CurrentOrders}></Route>
-    <Route path="GlobalRequests" component={GlobalRequests}></Route>
-    <Route path="CreateUser" component={CreateUser}></Route>
-    <Route path="Transactions" component={Transactions}></Route>
-    <Route path="PastOrders" component={PastOrders}></Route>
-    <Route path="Detail/:itemID" component={ItemDetailView} />
+    <Route path="UserProfile" component={UserProfileWrapper}></Route>
+    <Route path="Inventory" component={InventoryWrapper}></Route>
+    <Route path="CurrentOrders" component={CurrentOrdersWrapper}></Route>
+    <Route path="GlobalRequests" component={GlobalRequestsWrapper}></Route>
+    <Route path="CreateUser" component={CreateUserWrapper}></Route>
+    <Route path="Transactions" component={TransactionsWrapper}></Route>
+    <Route path="PastOrders" component={PastOrdersWrapper}></Route>
+    <Route path="Detail/:itemID" component={ItemDetailViewWrapper} />
   </Route>
 );

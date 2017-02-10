@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import './App.css';
-import TagSelector from './components/TagSelector';
+import '../../App.css';
+import TagSelector from '../global/TagSelector.js';
 
 function getKeys(data) {
 	return Object.keys(data);
