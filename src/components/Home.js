@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import NavBar from './NavBar.js';
 import '../App.css';
 import axios from 'axios';
-import querystring form 'querystring';
+import querystring from 'querystring';
 
 class Home extends Component {
   constructor(props) {
@@ -78,7 +78,7 @@ class Home extends Component {
 
   getClientID() {
     var host = location.hostname;
-    return host.split('.')[0];
+    return 'ece-inventory-' + host.split('.')[0];
   }
 
   createNetIDLoginLink() {
@@ -86,9 +86,9 @@ class Home extends Component {
       + querystring.stringify({
         response_type: "token",
         redirect_uri: location.origin,
-        client_id=this.getClientID(),
-        scope="basic identity:netid:read",
-        state="458458"
+        client_id: this.getClientID(),
+        scope: "basic identity:netid:read",
+        state: "458458"
       });
   }
 
@@ -161,9 +161,9 @@ class Home extends Component {
             <button className="btn btn-primary" onClick={this.login}>
                 Local Log In
             </button>
+            <h3 className="row">Log In with your NetID</h3>
+            <a href={this.createNetIDLoginLink()} className="btn btn-primary" role="button">NetID Login</a>
           </div>
-          <h3 className="row">Log In with your NetID</h3>
-            <a href={this.createNetIDLoginLink().bind(this)} class="btn btn-primary" role="button">NetID Login</a>
           );
   }
 }
