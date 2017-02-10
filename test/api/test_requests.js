@@ -20,14 +20,19 @@ describe('Requests API Test', function () {
   var user_id;
   beforeEach((done) => { //Before each test we empty the database
     Item.remove({}, (err) => {
+      should.not.exist(err);
       Request.remove({}, (err)=>{
+        should.not.exist(err);
         User.remove({}, (err) => {
-          helpers.createNewUser('test_user', 'test', 'ADMIN', function(error, user) {
+          should.not.exist(err);
+          helpers.createNewUser('test_user', 'test', 'ADMIN', function(err, user) {
+            should.not.exist(err);
             token = helpers.createAuthToken(user);
             user_id = user._id;
             Item.insertMany(fakeItemData).then(function(obj){
               // Get the id from one item
               Item.findOne({'name':'1k resistor'}, function(err,items){
+                should.not.exist(err);
                 item_id = items._id;
                 // Add the user id manually, and the item associated
                 fakeRequestData.forEach(function(obj){
@@ -51,6 +56,7 @@ describe('Requests API Test', function () {
       .get('/api/requests')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(5);
@@ -63,7 +69,8 @@ describe('Requests API Test', function () {
       });
     });
     it('Non-admin user gets only their requests', (done) => {
-      helpers.createNewUser('standard', 'test', 'STANDARD', function(error, user) {
+      helpers.createNewUser('standard', 'test', 'STANDARD', function(err, user) {
+        should.not.exist(err);
         standard_token = helpers.createAuthToken(user);
         var request = new Request({
           "reviewer_comment": "NONADMIN",
@@ -76,6 +83,7 @@ describe('Requests API Test', function () {
         request.item = item_id;
         request.user = user._id;
         request.save(function(err){
+          should.not.exist(err);
           chai.request(server)
           .get('/api/requests')
           .set('Authorization', standard_token)
@@ -96,6 +104,7 @@ describe('Requests API Test', function () {
     });
     it('GETs requests by item id', (done) => {
       Item.findOne({"name": "2k resistor"}, function(err, item2){
+        should.not.exist(err);
         var request = new Request({
           "reviewer_comment": "NONADMIN",
           "requestor_comment": "NONADMIN",
@@ -107,6 +116,7 @@ describe('Requests API Test', function () {
         request.item = item2._id;
         request.user = user_id;
         request.save(function(err){
+          should.not.exist(err);
           chai.request(server)
           .get('/api/requests?item_id='+item_id)
           .set('Authorization', token)
@@ -127,6 +137,7 @@ describe('Requests API Test', function () {
     it('GETs requests by item id, for new item', (done) => {
       var item2_id;
       Item.findOne({"name": "2k resistor"}, function(err, item2){
+        should.not.exist(err);
         var request = new Request({
           "reviewer_comment": "NONADMIN",
           "requestor_comment": "NONADMIN",
@@ -138,6 +149,7 @@ describe('Requests API Test', function () {
         request.item = item2._id;
         request.user = user_id;
         request.save(function(err){
+          should.not.exist(err);
           chai.request(server)
           .get('/api/requests?item_id='+item2._id)
           .set('Authorization', token)
@@ -161,6 +173,7 @@ describe('Requests API Test', function () {
       .get('/api/requests?item_id=988902309bfbc2d1b0d3419d')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(0);
@@ -173,6 +186,7 @@ describe('Requests API Test', function () {
       .get('/api/requests?reviewer_comment=bYe')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(3);
@@ -187,6 +201,7 @@ describe('Requests API Test', function () {
       .get('/api/requests?reviewer_comment=dliukahdilufsdblkjf')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(0);
@@ -198,6 +213,7 @@ describe('Requests API Test', function () {
       .get('/api/requests?requestor_comment=UrgEnT')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(1);
@@ -213,6 +229,7 @@ describe('Requests API Test', function () {
       .get('/api/requests?requestor_comment=wi3u4rhfkwes')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(0);
@@ -224,6 +241,7 @@ describe('Requests API Test', function () {
       .get('/api/requests?reason=gReEd')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(2);
@@ -239,6 +257,7 @@ describe('Requests API Test', function () {
       .get('/api/requests?reason=wi3u4rhfkwes')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(0);
@@ -250,6 +269,7 @@ describe('Requests API Test', function () {
       .get('/api/requests?quantity=2000')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(5);
@@ -262,6 +282,7 @@ describe('Requests API Test', function () {
       .get('/api/requests?quantity=123098')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(0);
@@ -273,6 +294,7 @@ describe('Requests API Test', function () {
       .get('/api/requests?status=LOL')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(0);
@@ -284,6 +306,7 @@ describe('Requests API Test', function () {
     //   .get('/api/requests?created=2029-01-29')
     //   .set('Authorization', token)
     //   .end((err, res) => {
+    //    should.not.exist(err);
     //     res.should.have.status(200);
     //     res.body.should.be.a('array');
     //     res.body.length.should.be.eql(2);
@@ -298,6 +321,7 @@ describe('Requests API Test', function () {
       .get('/api/requests?created=9999-01-29')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(0);
@@ -309,6 +333,7 @@ describe('Requests API Test', function () {
         .get('/api/requests?page=2&per_page=2')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(2);
@@ -329,6 +354,7 @@ describe('Requests API Test', function () {
         .get('/api/requests?page=3&per_page=100')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(0);
@@ -340,6 +366,7 @@ describe('Requests API Test', function () {
         .get('/api/requests?page=100&per_page=3')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(0);
@@ -351,6 +378,7 @@ describe('Requests API Test', function () {
         .get('/api/requests?page=100&per_page=100')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(0);
@@ -362,6 +390,7 @@ describe('Requests API Test', function () {
         .get('/api/requests?page=3&per_pge=3')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(5);
@@ -378,6 +407,7 @@ describe('Requests API Test', function () {
         .get('/api/requests?pag=3&per_page=3')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(5);
@@ -394,6 +424,7 @@ describe('Requests API Test', function () {
   describe('GET by ID /requests', () =>{
     it('GET request by request ID successful', (done) => {
       Item.findOne({"name": "2k resistor"}, function(err, item2){
+        should.not.exist(err);
         var request = new Request({
           "reviewer_comment": "NONADMIN",
           "requestor_comment": "NONADMIN",
@@ -405,10 +436,12 @@ describe('Requests API Test', function () {
         request.item = item2._id;
         request.user = user_id;
         request.save(function(err){
+          should.not.exist(err);
           chai.request(server)
           .get('/api/requests/' + request._id)
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property("reviewer_comment", "NONADMIN");
@@ -435,10 +468,12 @@ describe('Requests API Test', function () {
         request.item = item2._id;
         request.user = user_id;
         request.save(function(err){
+          should.not.exist(err);
           chai.request(server)
           .get('/api/requests/' + '988f8c2448c10662691386ab')
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property("error", "Request does not exist");
@@ -451,6 +486,7 @@ describe('Requests API Test', function () {
   describe('POST /requests', () =>{
     it('Should not POST without item id', (done) => {
       Item.findOne({"name": "2k resistor"}, function(err, item2){
+        should.not.exist(err);
         var request = new Request({
           "reviewer_comment": "NONADMIN",
           "requestor_comment": "NONADMIN",
@@ -464,6 +500,7 @@ describe('Requests API Test', function () {
         .set('Authorization', token)
         .send(request)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.should.have.property("error", "Item ID null");
@@ -473,6 +510,7 @@ describe('Requests API Test', function () {
     });
     // it('Should POST without Date, defaulting to Today', (done) => {
     //   Item.findOne({"name": "2k resistor"}, function(err, item2){
+    //      should.not.exist(err);
     //     var request = new Request({
     //       "reviewer_comment": "NONADMIN",
     //       "requestor_comment": "NONADMIN",
@@ -482,11 +520,13 @@ describe('Requests API Test', function () {
     //     });
     //     request.item = item2._id;
     //     request.save(function(err){
+    //  should.not.exist(err);
     //       chai.request(server)
     //       .post('/api/requests/')
     //       .set('Authorization', token)
     //       .send(request)
     //       .end((err, res) => {
+    //        should.not.exist(err);
     //         // This test case may fail if ran straddling a minute because of how the times are compared.
     //         // Run again.
     //         res.should.have.status(200);
@@ -506,6 +546,7 @@ describe('Requests API Test', function () {
     // });
     it('Should not POST without quantity', (done) => {
       Item.findOne({"name": "2k resistor"}, function(err, item2){
+        should.not.exist(err);
         var request = new Request({
           "reviewer_comment": "NONADMIN",
           "requestor_comment": "NONADMIN",
@@ -519,6 +560,7 @@ describe('Requests API Test', function () {
         .set('Authorization', token)
         .send(request)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.should.have.property("error");
@@ -532,6 +574,7 @@ describe('Requests API Test', function () {
     });
     it('Should not POST with wrong status enum', (done) => {
       Item.findOne({"name": "2k resistor"}, function(err, item2){
+        should.not.exist(err);
         var request = new Request({
           "reviewer_comment": "NONADMIN",
           "requestor_comment": "NONADMIN",
@@ -546,6 +589,7 @@ describe('Requests API Test', function () {
         .set('Authorization', token)
         .send(request)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.should.have.property("error");
@@ -559,6 +603,7 @@ describe('Requests API Test', function () {
     });
     it('Should POST with minimal fields', (done) => {
       Item.findOne({"name": "2k resistor"}, function(err, item2){
+        should.not.exist(err);
         var request = new Request({
           "status": "PENDING",
           "quantity": 2000,
@@ -569,6 +614,7 @@ describe('Requests API Test', function () {
         .set('Authorization', token)
         .send(request)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.should.have.property("status", "PENDING");
@@ -583,6 +629,7 @@ describe('Requests API Test', function () {
         should.not.exist(err);
         var standard_token = helpers.createAuthToken(user);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
+          should.not.exist(err);
           var request = {
             "status": "PENDING",
             "quantity": 2000,
@@ -593,6 +640,7 @@ describe('Requests API Test', function () {
           .set('Authorization', standard_token)
           .send(request)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property("status", "PENDING");
@@ -608,6 +656,7 @@ describe('Requests API Test', function () {
         should.not.exist(err);
         var standard_token = helpers.createAuthToken(user);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
+          should.not.exist(err);
           var request = {
             "status": "PENDING",
             "quantity": 2000,
@@ -619,6 +668,7 @@ describe('Requests API Test', function () {
           .set('Authorization', standard_token)
           .send(request)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property("status", "PENDING");
@@ -633,6 +683,7 @@ describe('Requests API Test', function () {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
         should.not.exist(err);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
+          should.not.exist(err);
           var request = {
             "status": "PENDING",
             "quantity": 2000,
@@ -644,6 +695,7 @@ describe('Requests API Test', function () {
           .set('Authorization', token)
           .send(request)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property("status", "PENDING");
@@ -658,6 +710,7 @@ describe('Requests API Test', function () {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
         should.not.exist(err);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
+          should.not.exist(err);
           var request = {
             "status": "PENDING",
             "quantity": 2000,
@@ -669,6 +722,7 @@ describe('Requests API Test', function () {
           .set('Authorization', token)
           .send(request)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property("error", "There is no such user");
@@ -678,10 +732,11 @@ describe('Requests API Test', function () {
       });
     });
     it('Should not POST as standard user with specified different user id in body', (done) => {
-      helpers.createNewUser('standard_user', 'test', 'STANDARD' , function(error, user) {
-        should.not.exist(error);
+      helpers.createNewUser('standard_user', 'test', 'STANDARD' , function(err, user) {
+        should.not.exist(err);
         var standard_token = helpers.createAuthToken(user);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
+          should.not.exist(err);
           var request = {
             "status": "PENDING",
             "quantity": 2000,
@@ -693,6 +748,7 @@ describe('Requests API Test', function () {
           .set('Authorization', standard_token)
           .send(request)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.error.should.be.eql("You are not authorized to modify another user's request");
@@ -715,6 +771,7 @@ describe('Requests API Test', function () {
       request.item = item_id;
       request.user = user_id;
       request.save((err, request) => {
+        should.not.exist(err);
         chai.request(server)
         .put('/api/requests/'+request._id)
         .set('Authorization', token)
@@ -724,6 +781,7 @@ describe('Requests API Test', function () {
           'quantity': 3000
         })
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.reason.should.be.eql('NONE');
@@ -747,6 +805,7 @@ describe('Requests API Test', function () {
       request.item = item_id;
       request.user = "1996510c820ada1a8d7b5875";
       request.save((err, request) => {
+        should.not.exist(err);
         chai.request(server)
         .put('/api/requests/'+request._id)
         .set('Authorization', token)
@@ -757,6 +816,7 @@ describe('Requests API Test', function () {
           'user': 'test_user'
         })
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.reason.should.be.eql('NONE');
@@ -780,6 +840,7 @@ describe('Requests API Test', function () {
       request.item = item_id;
       request.user = "1996510c820ada1a8d7b5875";
       request.save((err, request) => {
+        should.not.exist(err);
         chai.request(server)
         .put('/api/requests/'+request._id)
         .set('Authorization', token)
@@ -790,6 +851,7 @@ describe('Requests API Test', function () {
           'user': 'asdfasdf'
         })
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.error.should.be.eql("There is no such user");
@@ -798,8 +860,8 @@ describe('Requests API Test', function () {
       });
     });
     it('Should not PUT request for standard user specifying another username in PUT body', (done) => {
-        helpers.createNewUser('standard_user', 'test', 'STANDARD' , function(error, user) {
-          should.not.exist(error);
+        helpers.createNewUser('standard_user', 'test', 'STANDARD' , function(err, user) {
+          should.not.exist(err);
         var standard_token = helpers.createAuthToken(user);
         var request = new Request({
           "reviewer_comment": "NONADMIN",
@@ -812,6 +874,7 @@ describe('Requests API Test', function () {
         request.item = item_id;
         request.user = '1896510c820ada1a8d7b5875';
         request.save((err, request) => {
+          should.not.exist(err);
           chai.request(server)
           .put('/api/requests/'+request._id)
           .set('Authorization', standard_token)
@@ -822,6 +885,7 @@ describe('Requests API Test', function () {
             'user': "test_user"
           })
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.error.should.be.eql("You are not authorized to modify another user's request");
@@ -831,8 +895,8 @@ describe('Requests API Test', function () {
       });
   });
   it('Should not PUT request for standard user with another username in request', (done) => {
-      helpers.createNewUser('standard_user', 'test', 'STANDARD' , function(error, user) {
-      should.not.exist(error);
+      helpers.createNewUser('standard_user', 'test', 'STANDARD' , function(err, user) {
+      should.not.exist(err);
       var standard_token = helpers.createAuthToken(user);
       var request = new Request({
         "reviewer_comment": "NONADMIN",
@@ -845,6 +909,7 @@ describe('Requests API Test', function () {
       request.item = item_id;
       request.user = "1896510c820ada1a8d7b5875";
       request.save((err, request) => {
+        should.not.exist(err);
         chai.request(server)
         .put('/api/requests/'+request._id)
         .set('Authorization', standard_token)
@@ -854,6 +919,7 @@ describe('Requests API Test', function () {
           'quantity': 3000
         })
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.error.should.be.eql("You are not authorized to modify another user's request");
@@ -876,10 +942,12 @@ describe('Requests API Test', function () {
       request.item = item_id;
       request.user = user_id;
       request.save((err, request)=>{
+        should.not.exist(err);
         chai.request(server)
         .delete('/api/requests/'+request._id)
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.should.have.property('message').eql('Delete successful');
@@ -899,14 +967,17 @@ describe('Requests API Test', function () {
       request.item = item_id;
       request.user = user_id;
       request.save((err, request)=>{
+        should.not.exist(err);
         chai.request(server)
         .delete('/api/requests/'+request._id)
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           chai.request(server)
           .delete('/api/requests/'+request._id)
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property('error').eql('Request does not exist');
@@ -927,14 +998,17 @@ describe('Requests API Test', function () {
       request.item = item_id;
       request.user = user_id;
       request.save((err, request)=>{
+        should.not.exist(err);
         chai.request(server)
         .delete('/api/requests/'+request._id)
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           chai.request(server)
           .get('/api/requests/'+request._id)
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property('error').eql('Request does not exist');
@@ -955,14 +1029,17 @@ describe('Requests API Test', function () {
       request.item = item_id;
       request.user = user_id;
       request.save((err, request)=>{
+        should.not.exist(err);
         chai.request(server)
         .delete('/api/requests/'+request._id)
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           chai.request(server)
           .put('/api/requests/'+request._id)
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property('error').eql('Request does not exist');
@@ -972,8 +1049,8 @@ describe('Requests API Test', function () {
       });
     });
     it('DELETE own request by non-admin user', (done) =>{
-      helpers.createNewUser('standard', 'standard', 'STANDARD' , function(error, user) {
-        should.not.exist(error);
+      helpers.createNewUser('standard', 'standard', 'STANDARD' , function(err, user) {
+        should.not.exist(err);
         token = helpers.createAuthToken(user);
         user_id = user._id;
         var request = new Request({
@@ -987,10 +1064,12 @@ describe('Requests API Test', function () {
         request.item = item_id;
         request.user = user_id;
         request.save((err, request)=>{
+          should.not.exist(err);
           chai.request(server)
           .delete('/api/requests/'+request._id)
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property('message').eql('Delete successful');
@@ -999,6 +1078,7 @@ describe('Requests API Test', function () {
             .get('/api/requests/'+request._id)
             .set('Authorization', token)
             .end((err, res) => {
+              should.not.exist(err);
               res.should.have.status(200);
               res.body.should.be.a('object');
               res.body.should.have.property('error').eql('Request does not exist');
@@ -1020,8 +1100,9 @@ describe('Requests API Test', function () {
       admin_request.item = item_id;
       admin_request.user = user_id;
       admin_request.save(function(err, admin_request){
-        helpers.createNewUser('standard', 'standard', 'STANDARD' , function(error, user) {
-          should.not.exist(error);
+        should.not.exist(err);
+        helpers.createNewUser('standard', 'standard', 'STANDARD' , function(err, user) {
+          should.not.exist(err);
           var standard_token = helpers.createAuthToken(user);
           standard_user_id = user._id;
           var standard_request = new Request({
@@ -1035,10 +1116,12 @@ describe('Requests API Test', function () {
           standard_request.item = item_id;
           standard_request.user = standard_user_id;
           standard_request.save(function(err, request){
+            should.not.exist(err);
             chai.request(server)
             .delete('/api/requests/'+admin_request._id)
             .set('Authorization', standard_token)
             .end((err, res) => {
+              should.not.exist(err);
               res.should.have.status(200);
               res.body.should.be.a('object');
               res.body.should.have.property('error').eql('You are not authorized to remove this request');
@@ -1049,8 +1132,8 @@ describe('Requests API Test', function () {
       });
     });
     it('DELETE another request by admin user', (done) =>{
-      helpers.createNewUser('standard', 'standard', 'STANDARD' , function(error, user) {
-        should.not.exist(error);
+      helpers.createNewUser('standard', 'standard', 'STANDARD' , function(err, user) {
+        should.not.exist(err);
         standard_token = helpers.createAuthToken(user);
         standard_user_id = user._id;
         var standard_request = new Request({
@@ -1064,10 +1147,12 @@ describe('Requests API Test', function () {
         standard_request.item = item_id;
         standard_request.user = standard_user_id;
         standard_request.save((err, request)=>{
+          should.not.exist(err);
           chai.request(server)
           .delete('/api/requests/'+request._id)
           .set('Authorization', token) // admin token
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property('message').eql('Delete successful');
@@ -1076,6 +1161,7 @@ describe('Requests API Test', function () {
             .get('/api/requests/'+request._id)
             .set('Authorization', token)
             .end((err, res) => {
+              should.not.exist(err);
               res.should.have.status(200);
               res.body.should.be.a('object');
               res.body.should.have.property('error').eql('Request does not exist');
@@ -1100,6 +1186,7 @@ describe('Requests API Test', function () {
       request.item = item_id;
       request.user = user_id;
       request.save((err, request) => {
+        should.not.exist(err);
         chai.request(server)
         .patch('/api/requests/'+request._id)
         .set('Authorization', token)
@@ -1107,12 +1194,15 @@ describe('Requests API Test', function () {
           'action': 'DISBURSE'
         })
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.request.status.should.be.eql('FULFILLED');
           res.body.item.quantity.should.be.eql(600);
           Item.findById(item_id, function(err, item) {
+            should.not.exist(err);
             item.quantity.should.be.eql(600);
             Request.findById(request._id, function(err, request) {
+              should.not.exist(err);
               request.status.should.be.eql('FULFILLED');
               done();
             });
@@ -1133,6 +1223,7 @@ describe('Requests API Test', function () {
       request.item = item_id;
       request.user = user_id;
       request.save((err, request) => {
+        should.not.exist(err);
         chai.request(server)
         .patch('/api/requests/'+request._id)
         .set('Authorization', token)
@@ -1140,9 +1231,11 @@ describe('Requests API Test', function () {
           'action': 'DISBURSE'
         })
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.error.should.be.eql('Insufficient quantity');
           Request.findById(request._id, function(err, request) {
+            should.not.exist(err);
             request.status.should.be.eql('APPROVED');
             done();
           });
