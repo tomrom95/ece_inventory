@@ -4,10 +4,10 @@ params:
 {
 	required_tags: String (CSV) [optional],
 	excluded_tags: String (CSV) [optional],
-  name: String [optional],
-  model_number: String [optional],
-  location: String [optional],
-	custom_fields: String (CSV) [optional], // Custom field names
+	name: String [optional],
+	model_number: String [optional],
+	location: String [optional],
+	custom_fields: String (CSV) [optional], // Custom field names or custom field names with value
 	page: String [optional], // needs per_page if included
 	per_page: String [optional] // needs age if included
 }
