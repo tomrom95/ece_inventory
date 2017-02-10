@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import NavBar from './NavBar.js';
 import '../App.css';
 import axios from 'axios';
+import querystring form 'querystring';
 
 class Home extends Component {
   constructor(props) {
@@ -75,6 +76,22 @@ class Home extends Component {
     });
   }
 
+  getClientID() {
+    var host = location.hostname;
+    return host.split('.')[0];
+  }
+
+  createNetIDLoginLink() {
+    return "https://oauth.oit.duke.edu/oauth/authorize.php?"
+      + querystring.stringify({
+        response_type: "token",
+        redirect_uri: location.origin,
+        client_id=this.getClientID(),
+        scope="basic identity:netid:read",
+        state="458458"
+      });
+  }
+
   render() {
 
     if(this.state.user != null & localStorage.getItem('token') != null){
@@ -120,31 +137,33 @@ class Home extends Component {
 
         return(
           <div className="login-form container">
-            <h3 className="row">Please Log In</h3>
+            <h3 className="row">Log In Locally</h3>
             <form className="row">
               <div className="form-group">
                 <label htmlFor="username-field">Username</label>
-                <input type="text" 
-                    value={this.state.name} 
-                    className="form-control" 
-                    id="username-field" 
+                <input type="text"
+                    value={this.state.name}
+                    className="form-control"
+                    id="username-field"
                     placeholder="Username"
                     onChange={this.handleNameChange}/>
               </div>
               <div className="form-group">
                 <label htmlFor="password-field">Password</label>
-                <input type="password" 
-                  value={this.state.passwrd} 
-                  className="form-control" 
-                  id="password-field" 
+                <input type="password"
+                  value={this.state.passwrd}
+                  className="form-control"
+                  id="password-field"
                   placeholder="Password"
                   onChange={this.handlePasswrdChange}/>
               </div>
             </form>
             <button className="btn btn-primary" onClick={this.login}>
-                Log In
+                Local Log In
             </button>
           </div>
+          <h3 className="row">Log In with your NetID</h3>
+            <a href={this.createNetIDLoginLink().bind(this)} class="btn btn-primary" role="button">NetID Login</a>
           );
   }
 }
