@@ -25,6 +25,7 @@ module.exports.login = function(req, res) {
             user: {
               _id: user._id,
               username: user.username,
+              role: user.role,
               is_admin: user.is_admin
             }
           });

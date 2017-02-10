@@ -15,7 +15,7 @@ describe('/login Test', function () {
 
   beforeEach((done) => {
     User.remove({}, (err) => {
-      helpers.createNewUser('test_user', 'test', false, function(error, user) {
+      helpers.createNewUser('test_user', 'test', 'STANDARD', function(error, user) {
         done();
       });
     });
@@ -59,9 +59,9 @@ describe('/register Test', function () {
   var normalToken;
   beforeEach((done) => {
     User.remove({}, (err) => {
-      helpers.createNewUser('admin_user', 'test', true, function(error, user) {
+      helpers.createNewUser('admin_user', 'test', 'ADMIN', function(error, user) {
         adminToken = helpers.createAuthToken(user);
-        helpers.createNewUser('not_admin', 'test', false, function(error, otherUser) {
+        helpers.createNewUser('not_admin', 'test', 'STANDARD', function(error, otherUser) {
           normalToken = helpers.createAuthToken(otherUser);
           done();
         });
@@ -79,6 +79,7 @@ describe('/register Test', function () {
           password: 'test'
         })
         .end((err, res) => {
+          console.log(err);
           res.should.have.status(200);
           res.body.user.username.should.be.eql('test_user');
           should.not.exist(res.body.error);
@@ -109,7 +110,7 @@ describe('/register Test', function () {
         .end((err, res) => {
           res.should.have.status(200);
           res.body.username.should.be.eql('admin_user');
-          res.body.is_admin.should.be.eql(true);
+          res.body.role.should.be.eql('ADMIN');
           done();
         });
     });
