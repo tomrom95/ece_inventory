@@ -6,6 +6,7 @@ import querystring from 'querystring';
 
 class Home extends Component {
   constructor(props) {
+    console.log("CONSTRUCTING!!!");
     super(props);
     if(localStorage.getItem('user')){
       var user_stored = JSON.parse(localStorage.getItem('user'));
@@ -29,6 +30,10 @@ class Home extends Component {
     this.handlePasswrdChange = this.handlePasswrdChange.bind(this);
     this.login = this.login.bind(this);
     this.signOut = this.signOut.bind(this);
+  }
+
+  componentWillMount() {
+    console.log("MOUNTING!!!");
   }
 
   handleNameChange(event) {
@@ -92,8 +97,17 @@ class Home extends Component {
       });
   }
 
-  render() {
+  componentWillUpdate() {
+    if(localStorage.getItem('token') && !this.state.token){
+      this.setState({
+        user: JSON.parse(localStorage.getItem('user')),
+        token: localStorage.getItem('token'),
+      });
+    }
+  }
 
+  render() {
+    console.log("RENDERING!!!");
     if(this.state.user != null & localStorage.getItem('token') != null){
       let children = null;
       if (this.props.children) {
