@@ -6,7 +6,7 @@ var UserSchema = new mongoose.Schema({
   username: {
     type: String,
     unique: true,
-    spares: true
+    sparse: true
   },
   netid: {
     type: String,
