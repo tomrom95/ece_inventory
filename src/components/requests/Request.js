@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { RouteHandler, Link } from 'react-router';
-import SubtableRow from '../SubtableRow.js';
-import '../App.css';
+import SubtableRow from '../inventory/SubtableRow.js';
+import '../../App.css';
 
 class Request extends Component {
   constructor(props){
