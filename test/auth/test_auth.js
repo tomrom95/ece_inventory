@@ -15,7 +15,9 @@ describe('/login Test', function () {
 
   beforeEach((done) => {
     User.remove({}, (err) => {
-      helpers.createNewUser('test_user', 'test', 'STANDARD', function(error, user) {
+      should.not.exist(err);
+      helpers.createNewUser('test_user', 'test', 'STANDARD', function(err, user) {
+        should.not.exist(err);
         done();
       });
     });
@@ -30,6 +32,7 @@ describe('/login Test', function () {
           password: 'test'
         })
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.token.should.be.a('string');
           res.body.user.username.should.be.eql('test_user');
@@ -45,6 +48,7 @@ describe('/login Test', function () {
           password: 'test'
         })
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.error.should.be.eql("User does not exist");
           done();
@@ -59,9 +63,12 @@ describe('/register Test', function () {
   var normalToken;
   beforeEach((done) => {
     User.remove({}, (err) => {
-      helpers.createNewUser('admin_user', 'test', 'ADMIN', function(error, user) {
+      should.not.exist(err);
+      helpers.createNewUser('admin_user', 'test', 'ADMIN', function(err, user) {
+        should.not.exist(err);
         adminToken = helpers.createAuthToken(user);
-        helpers.createNewUser('not_admin', 'test', 'STANDARD', function(error, otherUser) {
+        helpers.createNewUser('not_admin', 'test', 'STANDARD', function(err, otherUser) {
+          should.not.exist(err);
           normalToken = helpers.createAuthToken(otherUser);
           done();
         });
@@ -79,7 +86,7 @@ describe('/register Test', function () {
           password: 'test'
         })
         .end((err, res) => {
-          console.log(err);
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.user.username.should.be.eql('test_user');
           should.not.exist(res.body.error);
@@ -96,6 +103,7 @@ describe('/register Test', function () {
           password: 'test'
         })
         .end((err, res) => {
+          should.exist(err);
           res.should.have.status(403);
           done();
         });
@@ -108,6 +116,7 @@ describe('/register Test', function () {
         .get('/api/user')
         .set('Authorization', adminToken)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.username.should.be.eql('admin_user');
           res.body.role.should.be.eql('ADMIN');
