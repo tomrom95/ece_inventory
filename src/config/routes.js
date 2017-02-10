@@ -127,7 +127,6 @@ function checkForOAuth(nextState, replace) {
       if (result.error) {
         console.log(result.error)
       } else {
-        console.log("SETTING TOKEN!!");
         localStorage.setItem('user', JSON.stringify(result.data.user));
         localStorage.setItem('token', result.data.token);
       }
