@@ -9,6 +9,8 @@ import CreateUser from '../components/user/CreateUser.js';
 import Transactions from '../components/transactions/Transactions.js';
 import ItemDetailView from '../components/inventory/ItemDetailView.js';
 import { Route} from 'react-router';
+import querystring from 'querystring';
+import axios from 'axios';
 
 class InventoryWrapper extends Component {
     render() {
@@ -24,7 +26,7 @@ class HomeWrapper extends Component {
 
 class CurrentOrdersWrapper extends Component {
     render() {
-        return <CurrentOrders 
+        return <CurrentOrders
         showFilterBox={false}
         hasOtherParams={false}
         api={"something"}/>;
@@ -39,8 +41,8 @@ class PastOrdersWrapper extends Component {
 
 class GlobalRequestsWrapper extends Component {
     render() {
-        return <GlobalRequests 
-        showFilterBox={false} 
+        return <GlobalRequests
+        showFilterBox={false}
         hasOtherParams={false}
         api={"something"}/>;
     }
@@ -64,9 +66,31 @@ class ItemDetailViewWrapper extends Component {
     }
 }
 
+function checkForOAuth(nextState, replace) {
+  console.log("Next State!")
+  if (nextState.location.hash) {
+    console.log("Has hash!")
+    var token = querystring.parse(nextState.location.hash).access_token;
+    axios.post('https://' + location.hostname + ':3001/auth/login', {
+      token: token
+    }).then(function(result) {
+      if (result.error) {
+        console.log(result.error)
+      } else {
+        console.log(result.data);
+        localStorage.setItem('user', JSON.stringify(result.data.user));
+        localStorage.setItem('token', result.data.token);
+      }
+      location.hash = '';
+    }).catch(function(error) {
+      console.log(error);
+      location.hash = '';
+    });
+  }
+}
 
 export default (
-  <Route path="/" component={Home}>
+  <Route path="/" component={Home} onEnter={checkForOAuth}>
     <Route path="UserProfile" component={UserProfile}></Route>
     <Route path="Inventory" component={InventoryWrapper}></Route>
     <Route path="CurrentOrders" component={CurrentOrdersWrapper}></Route>
