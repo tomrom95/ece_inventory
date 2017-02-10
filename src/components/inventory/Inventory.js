@@ -75,7 +75,8 @@ class Inventory extends Component {
         }
         if (response.data.length === 0) {
           if (page === 1) {
-            this.setState({items: []})
+            this.setState({items: []});
+            this.renderError('', "No results to show!");
           } else {
             document.getElementById("pageNum").value = this.state.page;
             if (justDeleted === true) {
@@ -95,54 +96,11 @@ class Inventory extends Component {
   }
 
   previousPage() {
-    var prevPage = this.state.page - 1;
-    if (prevPage > 0) {
-      this.setState({
-        page: prevPage
-      });
-      this.loadData(prevPage);
-    }
-    document.getElementById("pageNum").value = this.state.page;
+    this.loadData(this.state.page - 1);
   }
 
   nextPage() {
-    var nextPage = this.state.page + 1;
-    var loadNextPage = true;
-
-    this.instance.get(this.getURL(this.state.page, this.state.rowsPerPage))
-      .then(function (response) {
-        if (response.data.length > this.state.items.length) {
-          this.setState({
-            items: processData(response)
-          })
-          document.getElementById("pageNum").value = this.state.page;
-          loadNextPage = false;
-        }
-      }.bind(this));
-
-    if (loadNextPage === true) {
-      this.instance.get(this.getURL(nextPage, this.state.rowsPerPage))
-        .then(function (response) {
-          if (response.data.length === 0) {
-            this.setState({
-              errorHidden: false,
-              error: {
-                title: "",
-                message: "No results left to show."
-              }
-            });
-            return;
-          }
-          else {
-            this.setState({
-                page: nextPage,
-            });
-            this.loadData(nextPage);
-            document.getElementById("pageNum").value = nextPage;
-          }
-        }.bind(this));
-    }
-
+    this.loadData(this.state.page + 1);
   }
 
   getURL(page, rowsPerPage) {
@@ -250,6 +208,16 @@ class Inventory extends Component {
         GO
       </button>
     );
+  }
+
+  renderError(title, message) {
+      this.setState({
+        errorHidden: false,
+        error: {
+          title: title,
+          message: message
+        }
+      });   
   }
 
   // making a list of these <a> tags was giving me trouble, so I made them by hand.
