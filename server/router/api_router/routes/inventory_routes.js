@@ -50,6 +50,7 @@ module.exports.getAPI = function (req, res) {
     }
     Item.paginate(query, paginateOptions, function(err, obj){
         if(err) return res.send({error: err});
+        console.log(obj); 
         res.json(obj.docs);
       });
   } else {
