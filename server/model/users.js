@@ -5,11 +5,13 @@ var mongoose = require('mongoose');
 var UserSchema = new mongoose.Schema({
   username: {
     type: String,
-    unique: true
+    unique: true,
+    sparse: true
   },
   netid: {
     type: String,
-    unique: true
+    unique: true,
+    sparse: true
   },
   first_name: String,
   last_name: String,
@@ -23,7 +25,7 @@ var UserSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ['MANAGER', 'ADMIN', 'STANDARD'],
-    default: 'PENDING'
+    default: 'STANDARD'
   }
 });
 

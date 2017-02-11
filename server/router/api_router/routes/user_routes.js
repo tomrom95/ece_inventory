@@ -17,6 +17,7 @@ module.exports.register = function(req, res) {
       res.json({user: {
         _id: user._id,
         username: user.username,
+        is_admin: user.is_admin,
         role: user.role
       }});
     }
@@ -28,6 +29,7 @@ module.exports.getAPI = function(req, res) {
   res.json({
     _id: user._id,
     username: user.username,
+    is_admin: user.is_admin,
     role: user.role
   });
 }
