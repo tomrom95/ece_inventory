@@ -11,7 +11,7 @@ class PaginationContainer extends Component {
 	/*
 		Props contain:
 			- component that will be rendered
-			- extra props that aren't common among all components that are renderd by this class
+			- extraProps that aren't common among all components that are renderd by this class
 			- data processing method to feed the component.
 			- URL to query for items
 	*/
@@ -101,7 +101,7 @@ class PaginationContainer extends Component {
 		    url += "&" + filterName + "=" + this.state.filters[filterName];
 		  }
 		}.bind(this));
-
+		//console.log("URL is: " + url);
 		return url;
 	}
 
@@ -205,7 +205,9 @@ class PaginationContainer extends Component {
 	      table = (<TableComp
 	        data={this.state.items}
 	        api={this.instance}
-	        callback={e => this.loadData(this.state.page, e)}/>);
+	        callback={e => this.loadData(this.state.page, e)}
+	        {...this.props.extraProps} 
+	        />);
 	    }
 	    return (
 	      <div className="row inventory-page">

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import InventorySubTable from './InventoryTable.js';
+import InventoryTable from './InventoryTable.js';
 import PaginationContainer from '../global/PaginationContainer.js'
 import axios from 'axios';
 
@@ -32,7 +32,7 @@ class Inventory extends Component {
 
   render() {
     var url = "api/inventory/";
-    var table = InventorySubTable;
+    var table = InventoryTable;
 
     return (<PaginationContainer 
             url={url}
