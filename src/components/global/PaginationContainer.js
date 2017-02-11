@@ -17,12 +17,13 @@ class PaginationContainer extends Component {
 	*/
 	
 	constructor(props) {
+		//console.log(props.id);
 		super(props);
 		this.state = {
 			items: [],
 			initialLoad: true,
 			page: 1,
-			rowsPerPage: 10,
+			rowsPerPage: 5,
 			errorHidden: true,
 			error: {
 				title: "",
@@ -33,8 +34,25 @@ class PaginationContainer extends Component {
 		        model_number: "",
 		        excluded_tags: "",
 		        required_tags: ""
-      		}
+      		},
+      		url: props.url,
+      		processData: props.processData,
+      		renderComponent: props.renderComponent,
+      		showFilterBox: props.showFilterBox,
+      		id: props.id,
+      		hasOtherParams: props.hasOtherParams
 		};
+	}
+
+	componentWillReceiveNewProps(newProps) {
+		this.setState({
+			url: newProps.url,
+			processData: newProps.processData,
+			renderComponent: newProps.renderComponent,
+			showFilterBox: newProps.showFilterBox,
+			id: newProps.id,
+			hasOtherParams: newProps.hasOtherParams
+		});
 	}
 
 	componentWillMount() {
@@ -47,7 +65,7 @@ class PaginationContainer extends Component {
 
 	loadData(page, justDeleted) {
 	  if (page <= 0) {
-	    document.getElementById("pageNum").value = this.state.page;
+	    document.getElementById("pageNum-"+this.state.id).value = this.state.page;
 	    return;
 	  }
 
@@ -62,7 +80,7 @@ class PaginationContainer extends Component {
 	        this.setState({items: []});
 	        this.renderError('', "No results to show!");
 	      } else {
-	        document.getElementById("pageNum").value = this.state.page;
+	        document.getElementById("pageNum-"+this.state.id).value = this.state.page;
 	        if (justDeleted === true) {
 	        	this.previousPage();
 	        }
@@ -74,11 +92,11 @@ class PaginationContainer extends Component {
 	    // response not empty:
 	    else {		  
 	      this.setState({
-	        items: this.props.processData(response),
+	        items: this.state.processData(response),
 	        page: page
 	      });
 		  
-	      document.getElementById("pageNum").value = page;
+	      document.getElementById("pageNum-"+this.state.id).value = page;
 	    }
 	  }.bind(this));
 	}
@@ -92,8 +110,9 @@ class PaginationContainer extends Component {
 	}
 
 	getURL(page, rowsPerPage) {
-		var url = this.props.url
-		  + '?page=' + page
+		var pageQuery = this.state.hasOtherParams ? '&page=' : '?page=';
+		var url = this.state.url
+		  + pageQuery + page
 		  +'&per_page='+rowsPerPage;
 		
 		filterNames.forEach(function(filterName) {
@@ -101,7 +120,7 @@ class PaginationContainer extends Component {
 		    url += "&" + filterName + "=" + this.state.filters[filterName];
 		  }
 		}.bind(this));
-		//console.log("URL is: " + url);
+		console.log("URL is: " + url);
 		return url;
 	}
 
@@ -126,7 +145,7 @@ class PaginationContainer extends Component {
 
 	makePageBox() {
     	return (
-      	<input type="text" defaultValue={this.state.page} className="form-control pagenum-textbox" id="pageNum"></input>
+      	<input type="text" defaultValue={this.state.page} className="form-control pagenum-textbox" id={"pageNum-"+this.state.id}></input>
     	);
   	}
 
@@ -134,11 +153,10 @@ class PaginationContainer extends Component {
 		return(
 		  <button type="button"
 		    className="btn btn-primary"
-		    onClick={e=> this.loadData(document.getElementById('pageNum').value, false)}>
+		    onClick={e=> this.loadData(document.getElementById('pageNum-'+this.state.id).value, false)}>
 		    GO
 		  </button>
 		);
-		//
 	}
 
 	renderError(title, message) {
@@ -195,7 +213,13 @@ class PaginationContainer extends Component {
 
 	render() {
 	    var table = null;
-		var TableComp = this.props.renderComponent;
+		var TableComp = this.state.renderComponent;
+
+		var filterBox = this.state.showFilterBox ? 
+						(<FilterBox
+	              		api={this.instance}
+	              		filterItems={this.filterItems.bind(this)}/>)
+	              		: null;
 
 	    if (this.state.initialLoad) {
 	      table = (<div></div>);
@@ -206,16 +230,12 @@ class PaginationContainer extends Component {
 	        data={this.state.items}
 	        api={this.instance}
 	        callback={e => this.loadData(this.state.page, e)}
-	        {...this.props.extraProps} 
-	        />);
+	        {...this.props.extraProps} />);
 	    }
 	    return (
 	      <div className="row inventory-page">
 	        <div className="col-md-3">
-	            <FilterBox
-	              api={this.instance}
-	              filterItems={this.filterItems.bind(this)}
-	            />
+	        	{filterBox}
 	        </div>
 
 	        <div className="col-md-9">

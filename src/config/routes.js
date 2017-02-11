@@ -24,7 +24,10 @@ class HomeWrapper extends Component {
 
 class CurrentOrdersWrapper extends Component {
     render() {
-        return <CurrentOrders api={"something"}/>;
+        return <CurrentOrders 
+        showFilterBox={true}
+        hasOtherParams={false}
+        api={"something"}/>;
     }
 }
 
@@ -42,7 +45,10 @@ class UserProfileWrapper extends Component {
 
 class GlobalRequestsWrapper extends Component {
     render() {
-        return <GlobalRequests api={"something"}/>;
+        return <GlobalRequests 
+        showFilterBox={true} 
+        hasOtherParams={false}
+        api={"something"}/>;
     }
 }
 

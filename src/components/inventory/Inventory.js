@@ -37,7 +37,10 @@ class Inventory extends Component {
     return (<PaginationContainer 
             url={url}
             processData={data => this.processData(data)}
-            renderComponent={table} />);
+            renderComponent={table}
+            showFilterBox={true}
+            hasOtherParams={false}
+            id={'inventory-page'} />);
 
   }
 }

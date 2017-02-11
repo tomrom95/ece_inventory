@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import axios from 'axios';
 import RequestTable from './RequestTable.js';
 import PaginationContainer from '../global/PaginationContainer';
 
@@ -56,12 +55,10 @@ class GlobalRequests extends Component {
     var url = '/api/requests/';
     var table = RequestTable;
 
-    if (this.state.itemId) {
-        url+='&item_id=' + this.state.itemId;
-    }
-
-    if (this.state.status) {
-        url+='&status=' + this.state.status;
+    if (this.state.itemId && this.state.status) {
+      console.log("Here are the props");
+      console.log(this.state.itemId);
+      url += '?item_id=' + this.state.itemId + "&status=" + this.state.status;
     }
 
     if(JSON.parse(localStorage.getItem('user')).is_admin === false){
@@ -74,6 +71,9 @@ class GlobalRequests extends Component {
           url={url}
           processData={data=>this.processData(data)}
           renderComponent={table}
+          showFilterBox={this.props.showFilterBox}
+          id={'globalrequests-page'}
+          hasOtherParams={this.props.hasOtherParams}
           extraProps={
             {global: true}
           } />
