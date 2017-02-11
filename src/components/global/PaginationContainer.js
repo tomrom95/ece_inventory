@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import '../../App.css';
 
-var filterNames = ["name", "model_number", "required_tags", "excluded_tags"];
+//var filterNames = ["name", "model_number", "required_tags", "excluded_tags"];
 
 class PaginationContainer extends Component {
-
-	// will also be passed the component it will render as one of the props,
-	// as well as some way to call a method in it.
 
 	/*
 		Props will contain:
@@ -20,7 +17,7 @@ class PaginationContainer extends Component {
 			initialLoad: true,
 			page: 1,
 			rowsPerPage: 5,
-			errorHidde: true,
+			errorHidden: true,
 			error: {
 				title: "",
 				message: ""
@@ -83,14 +80,17 @@ class PaginationContainer extends Component {
 		var url = this.props.url
 		  + page
 		  +'&per_page='+rowsPerPage;
+		/*
 		filterNames.forEach(function(filterName) {
 		  if (this.state.filters[filterName]) {
 		    url += "&" + filterName + "=" + this.state.filters[filterName];
 		  }
 		}.bind(this));
+		*/
 		return url;
 	}
 
+	/*
 	filterItems() {
 		this.setState({
 		  page: 1,
@@ -104,7 +104,8 @@ class PaginationContainer extends Component {
 		  this.loadData(1);
 		});
 	}
-
+	*/
+	
 	renderError(title, message) {
 	    this.setState({
 	      errorHidden: false,
