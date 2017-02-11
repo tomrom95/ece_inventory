@@ -221,7 +221,7 @@ params:
 	quantity: Number [optional],
 	status: String [optional],
 	created: Date [optional],
-	item_id: String [optional],
+	item_id: [String] [optional], // query with array of item names
 	user: String [optional] // Only for admin users entering another username
 }
 
@@ -233,10 +233,12 @@ return:
 			_id: String,
 			username: String
 		},
-    item: {
+    item: [
+		{
 			id: String,
 			name: String
 		}
+		]
     reason: String,
     created: String,
     status: String,
@@ -249,7 +251,7 @@ return:
 POST
 body:
 {
-  item_id: String,
+  item_id: [String],
   reason: String [optional],
   created: String [optional],
   status: String,
@@ -262,7 +264,7 @@ return:
 {
   _id: String,
   user_id: String,
-  item: String,
+  item: [String],
   reason: String,
   time_stamp: String,
   status: String,
@@ -276,7 +278,7 @@ return:
 {
   _id: String,
   user_id: String,
-  item: String,
+  item: [String],
   reason: String,
   created: String,
   status: String,
@@ -287,7 +289,7 @@ return:
 PUT
 body:
 {
-  item_id: String [optional],
+  item_id: [String] [optional],
   reason: String [optional],
   created: String [optional],
   status: String [optional],
@@ -299,7 +301,7 @@ return:
 {
   _id: String,
   user_id: String,
-  item: String,
+  item: [String],
   reason: String,
   created: String,
   status: String,
@@ -320,9 +322,11 @@ params: {
 	action: "DISBURSE" // for now this is the only action
 }
 return {
-	item: {
-		// same item body as before
-	},
+	item: [
+		{
+			// same item body as before
+		}
+	],
 	request: {
 		// same request body as before
 	}
@@ -340,10 +344,12 @@ return:
 			_id: String,
 			username: String
 		},
-		item: {
-			_id: String,
-			name: String,
-		},
+		item: [
+			{
+				_id: String,
+				name: String,
+			}
+		],
   	type: String,
     quantity: Integer,
     time_stamp: String,
