@@ -12,19 +12,21 @@ params:
 	per_page: String [optional] // needs age if included
 }
 returns:
-[
-  {
+[{
     _id: String [unique],
     name: String [unique],
     quantity: Integer,
     model_number: String,
     description: String,
     location: String,
-    tags: String array,
+    tags: [String],
     has_instance_objects: Boolean,
-		custom_fields: [CustomField objects]
-  }
-]
+    custom_fields: [
+    {
+        _id: String,
+	value: String // Mixed Type in MongoDB
+    }]
+}]
 POST
 params:
 {
@@ -33,7 +35,13 @@ params:
   model_number: String,
   description: String,
   location: String,
-  tags: String array
+  tags: [String],
+  custom_fields: [
+    {
+        _id: String,
+	value: String // Mixed Type in MongoDB
+    }
+  ]
 }
 return:
 {
@@ -43,8 +51,14 @@ return:
   model_number: String,
   description: String,
   location: String,
-  tags: String array,
+  tags: [String],
   has_instance_objects: Boolean,
+  custom_fields: [
+    {
+        _id: String,
+	value: String // Mixed Type in MongoDB
+    }
+  ]
 }
 
 /api/inventory/:item_id
@@ -59,6 +73,12 @@ return:
   location: String,
   tags: String array,
   has_instance_objects: Boolean,
+  custom_fields:[
+    {
+        _id: String,
+	value: String // Mixed Type in MongoDB
+    }
+   ]
 }
 
 PUT
@@ -69,7 +89,13 @@ body:
   model_number: String [optional],
   description: String [optional],
   location: String [optional],
-  tags: String array [optional]
+  tags: String array [optional],
+  custom_fields:[
+    {
+        _id: String,
+	value: String // Mixed Type in MongoDB
+    }
+   ] [optional]
 }
 return:
 {
@@ -81,6 +107,12 @@ return:
   location: String,
   tags: String array,
   has_instance_objects: Boolean,
+  custom_fields:[
+    {
+        _id: String,
+	value: String // Mixed Type in MongoDB
+    }
+   ]
 }
 
 DELETE
@@ -152,6 +184,13 @@ returns:
   "success"
 }
 
+/api/inventory/paginationInfo
+GET:
+return:
+{
+   total: Integer // total number of pages
+}
+
 /api/customFields
 GET:
 params:
@@ -218,56 +257,66 @@ params:
 	reviewer_comment: String [optional],
 	requestor_comment: String [optional],
 	reason: String [optional],
-	quantity: Number [optional],
 	status: String [optional],
 	created: Date [optional],
-	item_id: String [optional],
+	item: [String] [optional], // query with array of item names
 	user: String [optional] // Only for admin users entering another username
 }
 
 return:
 [
   {
-		_id: String,
+    _id: String,
     user: {
-			_id: String,
-			username: String
-		},
-    item: {
-			id: String,
-			name: String
+		_id: String,
+		username: String
+	},
+    item: [
+		{
+		id: String,
+		name: String,
+		quantity: Integer
 		}
+	],
     reason: String,
     created: String,
     status: String,
-    quantity: Integer,
     requestor_comment: String,
-		reviewer_comment: String
+    reviewer_comment: String
   }
 ]
 
 POST
 body:
 {
-  item_id: String,
+  item: [
+   {
+     id: String,
+     quantity: Integer
+   }
+  ],
   reason: String [optional],
   created: String [optional],
   status: String,
-  quantity: Integer,
-	requestor_comment: String [optional],
-	reviewer_comment: String [optional]
+  requestor_comment: String [optional],
+  reviewer_comment: String [optional]
 }
 
 return:
 {
   _id: String,
   user_id: String,
-  item: String,
+  item: [
+  {
+	id: String,
+	name: String,
+	quantity: Integer
+  }
+  ],
   reason: String,
   time_stamp: String,
   status: String,
-  quantity: Integer,
-  comment: String,
+  comment: String
 }
 
 /api/requests/<id>
@@ -276,35 +325,49 @@ return:
 {
   _id: String,
   user_id: String,
-  item: String,
+  item: [
+  {
+	id: String,
+	name: String,
+	quantity: Integer
+  }
+  ],
   reason: String,
   created: String,
   status: String,
-  quantity: Integer,
-  comment: String,
+  comment: String
 }
 
 PUT
 body:
 {
-  item_id: String [optional],
+  item: [
+  {
+	name: String,
+	quantity: Integer
+  }
+  ],
   reason: String [optional],
   created: String [optional],
   status: String [optional],
-  quantity: Integer [optional],
-  comment: String [optional],
+  comment: String [optional]
 }
 
 return:
 {
   _id: String,
   user_id: String,
-  item: String,
+  item: [
+	  {
+		id: String,
+		name: String,
+		quantity: Integer
+	  }
+  ],
   reason: String,
   created: String,
   status: String,
-  quantity: Integer,
-  comment: String,
+  comment: String
 }
 
 DELETE
@@ -320,9 +383,11 @@ params: {
 	action: "DISBURSE" // for now this is the only action
 }
 return {
-	item: {
-		// same item body as before
-	},
+	item: [
+		{
+			// same item body as before
+		}
+	],
 	request: {
 		// same request body as before
 	}
@@ -340,10 +405,12 @@ return:
 			_id: String,
 			username: String
 		},
-		item: {
-			_id: String,
-			name: String,
-		},
+		item: [
+			{
+				_id: String,
+				name: String,
+			}
+		],
   	type: String,
     quantity: Integer,
     time_stamp: String,
