@@ -113,7 +113,8 @@ class ItemDetailView extends React.Component {
           rowsPerPage={2} 
           status="PENDING"
           showFilterBox={false}
-          hasOtherParams={true}/>
+          hasOtherParams={true}
+          id={"detail-view-"+this.props.params.itemID}/>
         </div>
       );
     }
@@ -125,7 +126,8 @@ class ItemDetailView extends React.Component {
           rowsPerPage={2} 
           status="PENDING"
           showFilterBox={false}
-          hasOtherParams={true}/>
+          hasOtherParams={true}
+          id={"detail-view-"+this.props.params.itemID}/>
         </div>);
     }
   }

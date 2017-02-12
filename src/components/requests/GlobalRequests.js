@@ -62,7 +62,7 @@ class GlobalRequests extends Component {
     }
 
     if(JSON.parse(localStorage.getItem('user')).is_admin === false){
-      return(<div>You are not allowed to access this page.</div>);
+      return(<div className="text-center">You are not allowed to access this page.</div>);
     }
 
     else{
@@ -72,7 +72,7 @@ class GlobalRequests extends Component {
           processData={data=>this.processData(data)}
           renderComponent={table}
           showFilterBox={this.props.showFilterBox}
-          id={'globalrequests-page'}
+          id={"global-request-"+this.props.id}
           hasOtherParams={this.props.hasOtherParams}
           extraProps={
             {global: true}

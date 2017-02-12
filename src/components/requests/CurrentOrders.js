@@ -3,7 +3,6 @@ import '../../App.css';
 import RequestTable from './RequestTable.js';
 import PaginationContainer from '../global/PaginationContainer.js';
 
-
 class CurrentOrders extends Component {
   constructor(props){
     super(props);
@@ -72,7 +71,7 @@ class CurrentOrders extends Component {
           processData={data=>this.processData(data)}
           renderComponent={table}
           showFilterBox={this.props.showFilterBox}
-          id={"userrequests-page"}
+          id={"user-requests-"+this.props.id}
           hasOtherParams={this.props.hasOtherParams}
           extraProps={
             {global: false}
