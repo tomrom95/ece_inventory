@@ -56,8 +56,6 @@ class GlobalRequests extends Component {
     var table = RequestTable;
 
     if (this.state.itemId && this.state.status) {
-      console.log("Here are the props");
-      console.log(this.state.itemId);
       url += '?item_id=' + this.state.itemId + "&status=" + this.state.status;
     }
 

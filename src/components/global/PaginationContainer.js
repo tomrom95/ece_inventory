@@ -17,7 +17,6 @@ class PaginationContainer extends Component {
 	*/
 	
 	constructor(props) {
-		//console.log(props.id);
 		super(props);
 		this.state = {
 			items: [],
@@ -119,7 +118,6 @@ class PaginationContainer extends Component {
 		    url += "&" + filterName + "=" + this.state.filters[filterName];
 		  }
 		}.bind(this));
-		console.log("URL is: " + url);
 		return url;
 	}
 

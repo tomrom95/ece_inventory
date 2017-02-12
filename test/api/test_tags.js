@@ -45,8 +45,11 @@ describe('Tag API Test', function () {
   var token;
   beforeEach((done) => { //Before each test we empty the database
       Item.remove({}, (err) => {
+        should.not.exist(err);
         User.remove({}, (err) => {
-          helpers.createNewUser('test_user', 'test', true, function(error, user) {
+          should.not.exist(err);
+          helpers.createNewUser('test_user', 'test', 'ADMIN', function(err, user) {
+            should.not.exist(err);
             token = helpers.createAuthToken(user);
             Item.insertMany(itemData).then(function(obj){
               done();
@@ -61,6 +64,7 @@ describe('Tag API Test', function () {
       .get('/api/inventory/tags')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(7);
@@ -81,15 +85,18 @@ describe('Tag API Test', function () {
   });
 
   it('GETs less tags after delete', (done) => {
-    Item.findOne({name: 'c'}, function (error, result) {
+    Item.findOne({name: 'c'}, function (err, result) {
+      should.not.exist(err);
       chai.request(server)
         .delete('/api/inventory/' + result._id)
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           chai.request(server)
             .get('/api/inventory/tags')
             .set('Authorization', token)
             .end((err, res) => {
+              should.not.exist(err);
               res.should.have.status(200);
               res.body.should.be.a('array');
               res.body.length.should.be.eql(4);
@@ -112,10 +119,12 @@ describe('Tag API Test', function () {
       .set('Authorization', token)
       .send(item)
       .end((err, res) => {
+        should.not.exist(err);
         chai.request(server)
           .get('/api/inventory/tags')
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(8);
