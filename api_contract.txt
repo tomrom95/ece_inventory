@@ -22,7 +22,14 @@ returns:
     location: String,
     tags: String array,
     has_instance_objects: Boolean,
-		custom_fields: [CustomField objects]
+    custom_fields: [
+    {
+        _id: String,
+	name: String,
+	type: String,
+	isPrivate: Boolean
+    }
+    ]
   }
 ]
 POST
