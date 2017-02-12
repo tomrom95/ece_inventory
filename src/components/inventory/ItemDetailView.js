@@ -108,7 +108,11 @@ class ItemDetailView extends React.Component {
     if(JSON.parse(localStorage.getItem('user')).is_admin === true){
       return(
         <div className="row request-subtable">
+          <h4 className="row request-detail-title">
+            Requests for this Item
+          </h4>
           <GlobalRequests 
+          className="row"
           itemID={this.props.params.itemID} 
           rowsPerPage={2} 
           status="PENDING"
@@ -121,6 +125,9 @@ class ItemDetailView extends React.Component {
     else{
       return(
         <div className="row request-subtable">
+          <h4 className="row request-detail-title">
+            Requests for this Item
+          </h4>
           <CurrentOrders 
           itemID={this.props.params.itemID} 
           rowsPerPage={2} 

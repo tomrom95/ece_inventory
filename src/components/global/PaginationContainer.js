@@ -78,7 +78,6 @@ class PaginationContainer extends Component {
 	    if (response.data.length === 0) {
 	      if (page === 1) {
 	        this.setState({items: []});
-	        this.renderError('', "No results to show!");
 	      } else {
 	        document.getElementById("pageNum-"+this.state.id).value = this.state.page;
 	        if (justDeleted === true) {
@@ -211,6 +210,47 @@ class PaginationContainer extends Component {
 	      );
 	}
 
+	makePageControlBar() {
+		var pageControlBar =  this.state.items.length === 0 ? null : 
+			(<div className="row">
+				<div className="col-md-4">
+	                <nav aria-label="page-buttons">
+	                  <ul className="pagination">
+	                    <li className="page-item">
+	                      <a onClick={e=> this.previousPage()} className="page-link" href="#">
+	                        <span className="fa fa-chevron-left"></span>
+	                      </a>
+	                    </li>
+	                    <li className="page-item">
+	                      <a onClick={e=> this.nextPage()} className="page-link" href="#">
+	                        <span className="fa fa-chevron-right"></span>
+	                      </a>
+	                    </li>
+	                    <li className="page-item">{this.makePageBox()}</li>
+	                    <li className="page-item">{this.makePageGoButton()}</li>
+	                  </ul>
+	                </nav>
+	            </div>
+
+	            <div className="col-md-3">
+	                {this.makePerPageController()}
+	            </div>
+
+	            <div className="col-md-5 error-box" id="error-region">
+	                <ErrorMessage
+	                  key={"errormessage"}
+	                  title={this.state.error.title}
+	                  message={this.state.error.message}
+	                  hidden={this.state.errorHidden}
+	                  hideFunction={()=> this.state.errorHidden=true}/>
+	            </div>
+            </div>);
+
+		return (
+          	  pageControlBar
+	    );
+	}
+
 	render() {
 	    var table = null;
 		var TableComp = this.state.renderComponent;
@@ -234,53 +274,34 @@ class PaginationContainer extends Component {
 	        callback={e => this.loadData(this.state.page, e)}
 	        {...this.props.extraProps} />);
 	    }
-	    return (
-	      <div className="row inventory-page">
-	      
-	       	{filterBox}
-	 
-	        <div className="col-md-9">
-	          <div className="row page-section">
-	              <div className="col-md-3">
-	                <nav aria-label="page-buttons">
-	                  <ul className="pagination">
-	                    <li className="page-item">
-	                      <a onClick={e=> this.previousPage()} className="page-link" href="#">
-	                        <span className="fa fa-chevron-left"></span>
-	                      </a>
-	                    </li>
-	                    <li className="page-item">
-	                      <a onClick={e=> this.nextPage()} className="page-link" href="#">
-	                        <span className="fa fa-chevron-right"></span>
-	                      </a>
-	                    </li>
-	                    <li className="page-item">{this.makePageBox()}</li>
-	                    <li className="page-item">{this.makePageGoButton()}</li>
-	                  </ul>
-	                </nav>
-	              </div>
 
-	              <div className="col-md-3">
-	                {this.makePerPageController()}
-	              </div>
+	    if (filterBox !== null) {
+		    return (
+		      <div className="row inventory-page">
+		      
+		       	{filterBox}
+		 
+		        <div className="col-md-9">
 
-	              <div className="col-md-6" id="error-region">
-	                <ErrorMessage
-	                  key={"errormessage"}
-	                  title={this.state.error.title}
-	                  message={this.state.error.message}
-	                  hidden={this.state.errorHidden}
-	                  hideFunction={()=> this.state.errorHidden=true}/>
-	              </div>
+		          {this.makePageControlBar()}
 
-	          </div>
+		          <div className="row">
+		            {table}
+		          </div>
+		        </div>
+		      </div>
+		    );
+		}
+		else return (
+	        <div className="col-xs-12">
+
+	          {this.makePageControlBar()}
 
 	          <div className="row">
 	            {table}
 	          </div>
 	        </div>
-	      </div>
-	      );
+		);
 	}
 }
 
