@@ -37,12 +37,6 @@ class PastOrdersWrapper extends Component {
     }
 }
 
-class UserProfileWrapper extends Component {
-    render() {
-        return <UserProfile api={"something"}/>;
-    }
-}
-
 class GlobalRequestsWrapper extends Component {
     render() {
         return <GlobalRequests 
@@ -73,7 +67,7 @@ class ItemDetailViewWrapper extends Component {
 
 export default (
   <Route path="/" component={Home}>
-    <Route path="UserProfile" component={UserProfileWrapper}></Route>
+    <Route path="UserProfile" component={UserProfile}></Route>
     <Route path="Inventory" component={InventoryWrapper}></Route>
     <Route path="CurrentOrders" component={CurrentOrdersWrapper}></Route>
     <Route path="GlobalRequests" component={GlobalRequestsWrapper}></Route>
