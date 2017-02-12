@@ -4,7 +4,7 @@ import GlobalRequests from '../requests/GlobalRequests';
 import CurrentOrders from '../requests/CurrentOrders.js';
 
 function getString(str) {
-  if (str === undefined || str === null) {
+  if (str === undefined || str === null || str.length === 0) {
     return "N/A";
   }
   else return String(str);
@@ -31,7 +31,6 @@ class ItemDetailView extends React.Component {
   }
 
   loadData() {
-
     this.axiosInstance.get('/inventory/' + this.props.params.itemID)
     .then(function(response) {
       this.setState({item: response.data});
@@ -40,10 +39,6 @@ class ItemDetailView extends React.Component {
       console.log(error);
       this.setState({error: 'Could not load item'});
     }.bind(this));
-  }
-
-  componentWillReceiveProps(newProps) {
-    //this.loadData();
   }
 
   render() {

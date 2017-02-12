@@ -174,13 +174,6 @@ class InventoryTable extends Component {
 			var list = [];
 			list.push(
 			<RequestPopup
-				data={[ {
-							Serial: data.Serial,
-							Condition: data.Condition,
-							Status: data.Status,
-							Quantity: data.Quantity
-						}
-					]}
 				itemName={data.Name}
 				modelName={data.Model}
 				itemId={data.meta.id}

@@ -114,7 +114,6 @@
 }
 
 .info-modal {
-  width: 700px;
 }
 
 .request-button {
@@ -158,7 +157,7 @@
 }
 
 .request-subtable {
-  width: 400px;
+  max-width: 400px;
 }
 
 .info-icon {
@@ -229,8 +228,8 @@
 }
 
 .detail-view {
+  min-width:700px;
   min-height: 325px;
-  width: 1000px;
 }
 
 .detail-view-title {

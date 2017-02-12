@@ -39,13 +39,6 @@ function getString(str) {
 
 class RequestPopup extends Component {
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			data: this.props.data
-		}
-	}
-
 	render() {
 		var modalBody = this.makeModalBody();
 		return (
@@ -128,11 +121,6 @@ class RequestPopup extends Component {
 
 		if (Number(qty) === 0) {
 			alert("Request quantity cannot be zero.");
-			return;
-		}
-
-		if (Number(qty) > this.props.data[0].Quantity) {
-			alert("Request quantity cannot exceed availability");
 			return;
 		}
 
