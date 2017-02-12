@@ -6,7 +6,7 @@ class TagSelector extends Component {
     super(props);
     this.state = {
       allTags: [],
-      selectedTags: this.props.defaultTags
+      selectedTags: this.props.defaultTags ? this.props.defaultTags.toString() : null
     }
   }
 
