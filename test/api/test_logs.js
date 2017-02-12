@@ -18,9 +18,13 @@ describe('Logs API Test', function () {
   var adminUser;
   beforeEach((done) => { //Before each test we empty the database
     Item.remove({}, (err) => {
+      should.not.exist(err);
       Log.remove({}, (err) => {
+        should.not.exist(err);
         User.remove({}, (err) => {
-          helpers.createNewUser('test_user', 'test', 'ADMIN', function(error, user) {
+          should.not.exist(err);
+          helpers.createNewUser('test_user', 'test', 'ADMIN', function(err, user) {
+            should.not.exist(err);
             adminUser = user;
             token = helpers.createAuthToken(user);
             done();
@@ -39,6 +43,7 @@ describe('Logs API Test', function () {
         "has_instance_objects": true,
       });
       item.save((err, item) =>{
+        should.not.exist(err);
         chai.request(server)
         .put('/api/inventory/'+item.id)
         .set('Authorization', token)
@@ -48,7 +53,9 @@ describe('Logs API Test', function () {
           quantity: 3000
         })
         .end((err, res) => {
+          should.not.exist(err);
           Log.findOne({item: item._id}, function(err, log) {
+            should.not.exist(err);
             log.quantity.should.be.eql(2000);
             log.type.should.be.eql('ACQUISITION');
             log.created_by.should.be.eql(adminUser._id);
@@ -68,6 +75,7 @@ describe('Logs API Test', function () {
         "has_instance_objects": true,
       });
       item.save((err, item) => {
+        should.not.exist(err);
         let logs = [
           new Log({
             created_by: adminUser._id,
@@ -87,6 +95,7 @@ describe('Logs API Test', function () {
           .get('/api/logs/')
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(2);

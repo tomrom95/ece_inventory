@@ -20,8 +20,11 @@ describe('Instance API Test', function() {
   var item_id;
   beforeEach((done) => { //Before each test we empty the database
     Item.remove({}, (err) => {
+      should.not.exist(err);
       User.remove({}, (err) => {
-        auth_helpers.createNewUser('test_user', 'test', 'ADMIN', function(error, user) {
+        should.not.exist(err);
+        auth_helpers.createNewUser('test_user', 'test', 'ADMIN', function(err, user) {
+          should.not.exist(err);
           token = auth_helpers.createAuthToken(user);
           fakeJSONData.instances = instances_helpers.createMockInstances();
           fakeJSONData.has_instance_objects=true;
@@ -40,6 +43,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(3);
@@ -54,6 +58,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?serial_number=123')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(1);
@@ -68,6 +73,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?serial_number=')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(3);
@@ -82,6 +88,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?condition=NEEDS_REPAIR')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(1);
@@ -96,6 +103,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?condition=')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(3);
@@ -110,6 +118,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?status=LOST')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(1);
@@ -124,6 +133,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?status=')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(3);
@@ -138,6 +148,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?status=AVAILABLE&condition=NEEDS_REPAIR')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(1);
@@ -152,6 +163,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?status=LOST&condition=NEEDS_REPAIR')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(0);
@@ -163,6 +175,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+'11111111'+'/instances?status=LOST&condition=NEEDS_REPAIR')
       .set('Authorization', token)
       .end((err, res) => {
+        should.exist(err);
         res.should.have.status(500);
         res.body.should.be.a('object');
         done();
@@ -173,6 +186,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+'900000000000000000000000'+'/instances?status=LOST&condition=NEEDS_REPAIR')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(0);
@@ -184,6 +198,7 @@ describe('Instance API Test', function() {
       .get('/api/inventory/'+item_id+'/instances?serial_asdnsdfumber=LgfdOST&condisdtion=dfs')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(3);
@@ -200,19 +215,23 @@ describe('Instance API Test', function() {
         condition: 'NEEDS_REPAIR'
       });
       Item.findById(item_id, function(err,item){
+        should.not.exist(err);
         item.instances.push(instance);
         item.save(function(err,item){
+          should.not.exist(err);
           chai.request(server)
           // PUT the modified item
           .get('/api/inventory/'+item_id)
           .set('Authorization', token)
           .send(item)
           .end((err, res) => {
+            should.not.exist(err);
             // GET by ID for Instance
             chai.request(server)
             .get('/api/inventory/'+item_id+'/'+instance.id)
             .set('Authorization', token)
             .end((err, res) => {
+              should.not.exist(err);
               res.should.have.status(200);
               res.body._id.should.be.eql(instance.id);
               res.body.serial_number.should.be.eql('999');
@@ -234,14 +253,17 @@ describe('Instance API Test', function() {
         condition: 'NEEDS_REPAIR'
       });
       Item.findById(item_id, function(err,item){
+        should.not.exist(err);
         item.instances.push(instance);
         item.save(function(err,item){
+          should.not.exist(err);
           chai.request(server)
           // PUT the modified item
           .get('/api/inventory/'+item_id)
           .set('Authorization', token)
           .send(item)
           .end((err, res) => {
+            should.not.exist(err);
             // PUT by ID for Instance
             instance.serial_number = '888';
             instance.condition = 'GOOD';
@@ -251,6 +273,7 @@ describe('Instance API Test', function() {
             .set('Authorization', token)
             .send(instance)
             .end((err, res) => {
+              should.not.exist(err);
               res.should.have.status(200);
               res.body._id.should.be.eql(instance.id);
               res.body.serial_number.should.be.eql('888');
@@ -267,6 +290,7 @@ describe('Instance API Test', function() {
   describe('POST Instance', () => {
     it('Should not POST instance without serial number', (done) => {
       Item.findById(item_id, function (err, item){
+        should.not.exist(err);
         let instance = new Instance({
           status: 'IN_USE',
           condition: 'NEEDS_REPAIR'
@@ -286,6 +310,7 @@ describe('Instance API Test', function() {
     });
     it('Should not POST instance with invalid item id', (done) => {
       Item.findById(item_id, function (err, item){
+        should.not.exist(err);
         let instance = new Instance({
           serial_number: '888',
           status: 'IN_USE',
@@ -296,6 +321,7 @@ describe('Instance API Test', function() {
         .set('Authorization', token)
         .send(item)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.should.have.property('error','Item does not exist');
@@ -305,6 +331,7 @@ describe('Instance API Test', function() {
     });
     it('Should POST instance with default values given invalid body params', (done) => {
       Item.findById(item_id, function (err, item){
+        should.not.exist(err);
         let instance = new Instance({
           serial_number: '888',
           statusssss: 'IN_USE',
@@ -315,6 +342,7 @@ describe('Instance API Test', function() {
         .set('Authorization', token)
         .send(instance)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.should.have.property('serial_number', '888');
@@ -342,6 +370,7 @@ describe('Instance API Test', function() {
       .set('Authorization', token)
       .send(item)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('object');
         res.body.has_instance_objects.should.be.false;
@@ -356,6 +385,7 @@ describe('Instance API Test', function() {
         .set('Authorization', token)
         .send(instance)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           Item.findById(item_id, function(err, item){
             item.has_instance_objects.should.be.true;
@@ -394,11 +424,13 @@ describe('Instance API Test', function() {
         "condition": "GOOD"
       }
       item.save(function(err, item){
+        should.not.exist(err);
         chai.request(server)
         // DELETE the modified item
         .post('/api/inventory/'+item._id+'/instances')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           Item.findById(item._id, function(err,item){
@@ -411,6 +443,7 @@ describe('Instance API Test', function() {
 
     it('Should POST instance successfully', (done) => {
       Item.findById(item_id, function (err, item){
+        should.not.exist(err);
         let instance = new Instance({
           serial_number: '888',
           status: 'IN_USE',
@@ -421,6 +454,7 @@ describe('Instance API Test', function() {
         .set('Authorization', token)
         .send(instance)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.should.have.property('serial_number', '888');
@@ -439,6 +473,7 @@ describe('Instance API Test', function() {
         condition: 'NEEDS_REPAIR'
       });
       Item.findById(item_id, function(err,item){
+        should.not.exist(err);
         item.instances.push(instance);
         item.save(function(err,item){
           chai.request(server)
@@ -446,6 +481,7 @@ describe('Instance API Test', function() {
           .delete('/api/inventory/'+item_id+'/'+instance.id)
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.message.should.be.eql('Delete successful');
@@ -471,6 +507,7 @@ describe('Instance API Test', function() {
       .set('Authorization', token)
       .send(item)
       .end((err, res) => {
+        should.not.exist(err);
         // Post an instance
         let instance = {
           "serial_number": "11111",
@@ -483,12 +520,15 @@ describe('Instance API Test', function() {
         .set('Authorization', token)
         .send(instance)
         .end((err,res) => {
+          should.not.exist(err);
           Item.findById(itemID, function(err, item){
+            should.not.exist(err);
             item.has_instance_objects.should.be.true;
             chai.request(server)
             .delete('/api/inventory/'+itemID+'/'+res.body._id)
             .set('Authorization', token)
             .end((err,res)=>{
+              should.not.exist(err);
               Item.findById(itemID, function(err, item){
                 item.has_instance_objects.should.be.false;
                 done();
@@ -524,16 +564,19 @@ describe('Instance API Test', function() {
         ]
       });
       item.save(function(err, item){
+        should.not.exist(err);
         var instance_id = item.instances[0]._id;
         chai.request(server)
         // DELETE the modified item
         .delete('/api/inventory/'+item._id+'/'+instance_id)
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.message.should.be.eql("Delete successful");
           Item.findById(item._id, function(err,item){
+            should.not.exist(err);
             item.has_instance_objects.should.be.true;
             done();
           });
@@ -548,13 +591,16 @@ describe('Instance API Test', function() {
         condition: 'NEEDS_REPAIR'
       });
       Item.findById(item_id, function(err,item){
+        should.not.exist(err);
         item.instances.push(instance);
         item.save(function(err,item){
+          should.not.exist(err);
           chai.request(server)
           // DELETE the modified item
           .delete('/api/inventory/'+item_id+'/'+instance.id)
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.message.should.be.eql('Delete successful');
@@ -563,6 +609,7 @@ describe('Instance API Test', function() {
             .delete('/api/inventory/'+item_id+'/'+instance.id)
             .set('Authorization', token)
             .end((err, res) => {
+              should.not.exist(err);
               res.should.have.status(200);
               res.body.should.be.a('object');
               res.body.error.should.be.eql('Instance does not exist in item');
@@ -579,6 +626,7 @@ describe('Instance API Test', function() {
         condition: 'NEEDS_REPAIR'
       });
       Item.findById(item_id, function(err,item){
+        should.not.exist(err);
         item.instances.push(instance);
         item.save(function(err,item){
           chai.request(server)
@@ -586,6 +634,7 @@ describe('Instance API Test', function() {
           .delete('/api/inventory/'+item_id+'/'+instance.id)
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.message.should.be.eql('Delete successful');
@@ -594,6 +643,7 @@ describe('Instance API Test', function() {
             .get('/api/inventory/'+item_id+'/'+instance.id)
             .set('Authorization', token)
             .end((err, res) => {
+              should.not.exist(err);
               res.should.have.status(200);
               res.body.should.be.a('object');
               res.body.error.should.be.eql('Instance does not exist in item');
@@ -612,11 +662,13 @@ describe('Instance API Test', function() {
       Item.findById(item_id, function(err,item){
         item.instances.push(instance);
         item.save(function(err,item){
+          should.not.exist(err);
           chai.request(server)
           // DELETE the modified item
           .delete('/api/inventory/'+item_id+'/'+instance.id)
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.message.should.be.eql('Delete successful');
@@ -626,6 +678,7 @@ describe('Instance API Test', function() {
             .set('Authorization', token)
             .send(instance)
             .end((err, res) => {
+              should.not.exist(err);
               res.should.have.status(200);
               res.body.should.be.a('object');
               res.body.error.should.be.eql('Instance does not exist in item');
