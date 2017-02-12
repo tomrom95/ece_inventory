@@ -3,6 +3,16 @@ import '../../App.css';
 import RequestTable from './RequestTable.js';
 import PaginationContainer from '../global/PaginationContainer.js';
 
+function formatDate(dateString) {
+  var i;
+  var split = dateString.split(' ');
+  var date = '';
+  for (i=1; i<=4; i++) {
+    date += split[i] + ' ';
+  }
+  return date;
+}
+
 class CurrentOrders extends Component {
   constructor(props){
     super(props);
@@ -21,11 +31,10 @@ class CurrentOrders extends Component {
       var obj = requests[i];
       if(JSON.parse(localStorage.getItem('user')).is_admin){
         if(obj.user.username === JSON.parse(localStorage.getItem('user')).username){
-
           item = {
             "Username": obj.user.username,
             "Item": obj.item.name,
-            "Time Stamp": obj.created,
+            "Time Stamp": formatDate(new Date(obj.created).toString()),
             "Quantity": obj.quantity,
             "Reason": obj.reason,
             "Status": obj.status,
@@ -41,7 +50,7 @@ class CurrentOrders extends Component {
         item = {
           "Username": obj.user.username,
           "Item": obj.item.name,
-          "Time Stamp": obj.created,
+          "Time Stamp": formatDate(new Date(obj.created).toString()),
           "Quantity": obj.quantity,
           "Reason": obj.reason,
           "Status": obj.status,
@@ -49,7 +58,7 @@ class CurrentOrders extends Component {
           "_id": obj._id,
           "user_id": obj.user._id,
           "item_id": obj.item._id,
-        };
+        }; 
         items.push(item);
       }
 
