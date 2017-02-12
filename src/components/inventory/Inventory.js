@@ -217,7 +217,7 @@ class Inventory extends Component {
           title: title,
           message: message
         }
-      });   
+      });
   }
 
   // making a list of these <a> tags was giving me trouble, so I made them by hand.
