@@ -218,58 +218,66 @@ params:
 	reviewer_comment: String [optional],
 	requestor_comment: String [optional],
 	reason: String [optional],
-	quantity: Number [optional],
 	status: String [optional],
 	created: Date [optional],
-	item_id: [String] [optional], // query with array of item names
+	item: [String] [optional], // query with array of item names
 	user: String [optional] // Only for admin users entering another username
 }
 
 return:
 [
   {
-		_id: String,
+    _id: String,
     user: {
-			_id: String,
-			username: String
-		},
+		_id: String,
+		username: String
+	},
     item: [
 		{
-			id: String,
-			name: String
+		id: String,
+		name: String,
+		quantity: Integer
 		}
-		]
+	]
     reason: String,
     created: String,
     status: String,
-    quantity: Integer,
     requestor_comment: String,
-		reviewer_comment: String
+    reviewer_comment: String
   }
 ]
 
 POST
 body:
 {
-  item_id: [String],
+  item: [
+   {
+     id: String,
+     quantity: Integer
+   }
+  ],
   reason: String [optional],
   created: String [optional],
   status: String,
-  quantity: Integer,
-	requestor_comment: String [optional],
-	reviewer_comment: String [optional]
+  requestor_comment: String [optional],
+  reviewer_comment: String [optional]
 }
 
 return:
 {
   _id: String,
   user_id: String,
-  item: [String],
+  item: [
+  {
+	id: String,
+	name: String,
+	quantity: Integer
+  }
+  ],
   reason: String,
   time_stamp: String,
   status: String,
-  quantity: Integer,
-  comment: String,
+  comment: String
 }
 
 /api/requests/<id>
@@ -278,35 +286,49 @@ return:
 {
   _id: String,
   user_id: String,
-  item: [String],
+  item: [
+  {
+	id: String,
+	name: String,
+	quantity: Integer
+  }
+  ],
   reason: String,
   created: String,
   status: String,
-  quantity: Integer,
-  comment: String,
+  comment: String
 }
 
 PUT
 body:
 {
-  item_id: [String] [optional],
+  item: [
+  {
+	name: String,
+	quantity: Integer
+  }
+  ],
   reason: String [optional],
   created: String [optional],
   status: String [optional],
-  quantity: Integer [optional],
-  comment: String [optional],
+  comment: String [optional]
 }
 
 return:
 {
   _id: String,
   user_id: String,
-  item: [String],
+  item: [
+	  {
+		id: String,
+		name: String,
+		quantity: Integer
+	  }
+  ],
   reason: String,
   created: String,
   status: String,
-  quantity: Integer,
-  comment: String,
+  comment: String
 }
 
 DELETE
