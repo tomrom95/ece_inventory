@@ -9,6 +9,8 @@ import CreateUser from '../components/user/CreateUser.js';
 import Transactions from '../components/transactions/Transactions.js';
 import ItemDetailView from '../components/inventory/ItemDetailView.js';
 import { Route} from 'react-router';
+import querystring from 'querystring';
+import axios from 'axios';
 
 class InventoryWrapper extends Component {
     render() {
@@ -91,7 +93,7 @@ function checkForOAuth(nextState, replace) {
 }
 
 export default (
-  <Route path="/" component={Home}>
+  <Route path="/" component={Home} onEnter={checkForOAuth}>
     <Route path="UserProfile" component={UserProfile}></Route>
     <Route path="Inventory" component={Inventory}></Route>
     <Route path="CurrentOrders" component={CurrentOrders}></Route>
