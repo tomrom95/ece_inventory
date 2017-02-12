@@ -12,8 +12,8 @@ params:
 	per_page: String [optional] // needs age if included
 }
 returns:
-[
-  {
+{
+  docs: [{
     _id: String [unique],
     name: String [unique],
     quantity: Integer,
@@ -25,13 +25,11 @@ returns:
     custom_fields: [
     {
         _id: String,
-	name: String,
-	type: String,
-	isPrivate: Boolean
-    }
-    ]
-  }
-]
+	value: String // Mixed Type in MongoDB
+    }]
+  }],
+  total: Integer // total number of pages
+}
 POST
 params:
 {
@@ -40,7 +38,13 @@ params:
   model_number: String,
   description: String,
   location: String,
-  tags: String array
+  tags: String array,
+  custom_fields: [
+    {
+        _id: String,
+	value: String // Mixed Type in MongoDB
+    }
+  ]
 }
 return:
 {
@@ -52,6 +56,12 @@ return:
   location: String,
   tags: String array,
   has_instance_objects: Boolean,
+  custom_fields: [
+    {
+        _id: String,
+	value: String // Mixed Type in MongoDB
+    }
+  ]
 }
 
 /api/inventory/:item_id
@@ -66,6 +76,12 @@ return:
   location: String,
   tags: String array,
   has_instance_objects: Boolean,
+  custom_fields:[
+    {
+        _id: String,
+	value: String // Mixed Type in MongoDB
+    }
+   ]
 }
 
 PUT
@@ -76,7 +92,13 @@ body:
   model_number: String [optional],
   description: String [optional],
   location: String [optional],
-  tags: String array [optional]
+  tags: String array [optional],
+  custom_fields:[
+    {
+        _id: String,
+	value: String // Mixed Type in MongoDB
+    }
+   ] [optional]
 }
 return:
 {
@@ -88,6 +110,12 @@ return:
   location: String,
   tags: String array,
   has_instance_objects: Boolean,
+  custom_fields:[
+    {
+        _id: String,
+	value: String // Mixed Type in MongoDB
+    }
+   ]
 }
 
 DELETE
@@ -232,8 +260,8 @@ params:
 }
 
 return:
-[
-  {
+{
+  docs: [{
     _id: String,
     user: {
 		_id: String,
@@ -251,8 +279,9 @@ return:
     status: String,
     requestor_comment: String,
     reviewer_comment: String
-  }
-]
+  }],
+  total: Integer // total number of pages
+}
 
 POST
 body:
