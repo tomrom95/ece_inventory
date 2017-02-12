@@ -10,7 +10,7 @@ function lookUpNetIDUser(oauthToken, next) {
     'https://api.colab.duke.edu/identity/v1/',
     {
       headers: {
-        'x-api-key': 'ece-inventory',
+        'x-api-key': 'ece-inventory-colab-sbx-125',
         'Authorization': 'Bearer ' + oauthToken
       }
     }
@@ -37,7 +37,7 @@ function loginWithOAuth(oauthToken, res) {
           netid: user.netid,
           first_name: user.first_name,
           last_name: user.last_name,
-          is_admin: user.is_admin,
+          is_admin: false, // keep until role migration complete
           role: user.role
         }
       });
@@ -45,7 +45,6 @@ function loginWithOAuth(oauthToken, res) {
         netid: userInfo.netid,
         first_name: userInfo.firstName,
         last_name: userInfo.lastName,
-        is_admin: false, // keep for now until frontend converts to roles
         is_local: false,
       });
       // otherwise, create new user
@@ -58,7 +57,7 @@ function loginWithOAuth(oauthToken, res) {
             netid: user.netid,
             first_name: user.first_name,
             last_name: user.last_name,
-            is_admin: user.is_admin,
+            is_admin: false, // keep until role migration complete
             role: user.role
           }
         });
