@@ -5,12 +5,14 @@ var User = require('../../../model/users');
 var helpers = require('../../../auth/auth_helpers');
 var User = require('../../../model/users');
 
+const API_KEY = 'ece-inventory-colab-sbx-125'; // Works with any of our API keys
+
 function lookUpNetIDUser(oauthToken, next) {
   axios.get(
     'https://api.colab.duke.edu/identity/v1/',
     {
       headers: {
-        'x-api-key': 'ece-inventory-colab-sbx-125',
+        'x-api-key': API_KEY,
         'Authorization': 'Bearer ' + oauthToken
       }
     }
@@ -24,15 +26,16 @@ function lookUpNetIDUser(oauthToken, next) {
 /*
 Look up user on duke api to get netid and log user in
 */
-function loginWithOAuth(oauthToken, res) {
+function loginWithOAuth(oauthToken, next) {
   lookUpNetIDUser(oauthToken, function(error, userInfo) {
-    if (error) return res.send({error: error});
+    if (error) return next(error);
     User.findOne({netid: userInfo.netid}, function(err, user) {
-      if (err) return res.send({error: error});
+      if (err) return next(error);
       // If user already exists, log him in
-      if (user) return res.json({
-        token: helpers.createAuthToken(user),
-        user: {
+      if (user) return next(
+        null,
+        helpers.createAuthToken(user),
+        {
           _id: user._id,
           netid: user.netid,
           first_name: user.first_name,
@@ -40,7 +43,7 @@ function loginWithOAuth(oauthToken, res) {
           is_admin: false, // keep until role migration complete
           role: user.role
         }
-      });
+      );
       var user = User({
         netid: userInfo.netid,
         first_name: userInfo.firstName,
@@ -49,10 +52,11 @@ function loginWithOAuth(oauthToken, res) {
       });
       // otherwise, create new user
       user.save(function(error, user) {
-        if (error) return res.send({error: error});
-        return res.json({
-          token: helpers.createAuthToken(user),
-          user: {
+        if (error) return next(error);
+        return next(
+          null,
+          helpers.createAuthToken(user),
+          {
             _id: user._id,
             netid: user.netid,
             first_name: user.first_name,
@@ -60,36 +64,33 @@ function loginWithOAuth(oauthToken, res) {
             is_admin: false, // keep until role migration complete
             role: user.role
           }
-        });
+        );
       });
     });
   });
 }
 
-function loginWithUsername(username, password, res) {
+function loginWithUsername(username, password, next) {
   User.findOne({ username: username }, function(error, user) {
     if (error != null) {
-      res.send({error: err});
-      return;
+      return next(err);
     } else if (user == null) {
-      res.send({error: 'User does not exist'});
-      return;
+      return next('User does not exist');
     } else{
       helpers.compare(password, user.password_hash, function(error, matched) {
         if (error != null) {
-          res.send(error);
+          return next(error);
         } else if (!matched) {
-          res.send({error: 'Incorrect password'});
+          return next('Incorrect password');
         } else {
           var jwtToken = helpers.createAuthToken(user);
-          res.json({
-            token: jwtToken,
-            user: {
-              _id: user._id,
-              username: user.username,
-              role: user.role,
-              is_admin: user.is_admin
-            }
+          return next(null, jwtToken, {
+            _id: user._id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            username: user.username,
+            role: user.role,
+            is_admin: user.is_admin
           });
         }
       })
@@ -97,10 +98,24 @@ function loginWithUsername(username, password, res) {
   });
 }
 
-module.exports.login = function(req, res) {
-  if (req.body.token) {
-    loginWithOAuth(req.body.token, res);
-  } else if (req.body.username && req.body.password) {
-    loginWithUsername(req.body.username, req.body.password, res);
+function loginHelper(token, username, password, next) {
+  if (token && username && password) {
+    next('Either sign in with token or username/password');
+  } else if (token) {
+    loginWithOAuth(token, next);
+  } else if (username && password) {
+    loginWithUsername(username, password, next);
+  } else {
+    next('Invalid arguments');
   }
+}
+
+module.exports.login = function(req, res) {
+  loginHelper(req.body.token, req.body.username, req.body.password, function(error, token, user) {
+    if (error) return res.send({error: error});
+    return res.json({
+      token: token,
+      user: user
+    });
+  });
 }
