@@ -423,6 +423,7 @@ describe('Requests API Test', function () {
     });
     it('GET no Request by invalid request ID successful', (done) => {
       Item.findOne({"name": "2k resistor"}, function(err, item2){
+        should.not.exist(err);
         var request = new Request({
           "reviewer_comment": "NONADMIN",
           "requestor_comment": "NONADMIN",

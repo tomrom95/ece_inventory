@@ -157,7 +157,7 @@ describe('Inventory API Test', function () {
       });
       it('GETs items with multiple required tags', (done)=>{
         chai.request(server)
-        .get('/api/inventory?required_tags=component,eLeCtRiC')
+        .get('/api/inventory?required_tags=component , eLeCtRiC  ')
         .set('Authorization', token)
         .end((err, res) => {
           res.should.have.status(200);
@@ -184,7 +184,7 @@ describe('Inventory API Test', function () {
       });
       it('GETs items with 1 excluded tag', (done)=>{
         chai.request(server)
-        .get('/api/inventory?excluded_tags=cHeAp')
+        .get('/api/inventory?excluded_tags=cHeAp ')
         .set('Authorization', token)
         .end((err, res) => {
           res.should.have.status(200);
@@ -211,7 +211,7 @@ describe('Inventory API Test', function () {
       });
       it('GETs items with multiple excluded tags', (done)=>{
         chai.request(server)
-        .get('/api/inventory?excluded_tags=cHeAp,pOwEr')
+        .get('/api/inventory?excluded_tags=cHeAp, pOwEr')
         .set('Authorization', token)
         .end((err, res) => {
           res.should.have.status(200);
@@ -452,6 +452,42 @@ describe('Inventory API Test', function () {
         });
       });
     });
+    it('PUTs inventory item by item id with untrimmed tags', (done) => {
+      let item = new Item({
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+      });
+      item.save((err, item) =>{
+        chai.request(server)
+        .put('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .send({
+            'tags':[' o n e ', ' t w o ']
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.name.should.be.eql("Laptop");
+          res.body.quantity.should.be.eql(1000);
+          res.body._id.should.be.eql(item.id);
+          res.body.tags.should.include('o n e');
+          res.body.tags.should.include('t w o');
+          chai.request(server)
+          // Get the item to test whether tags remain saved trimmed
+          .get('/api/inventory?required_tags=   o n e ')
+          .set('Authorization', token)
+          .end((err,res)=>{
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body.length.should.be.eql(1);
+            res.body[0].tags.should.include('o n e');
+            res.body[0].tags.should.include('t w o');
+            done();
+          });
+        });
+      });
+    });
   });
 
   describe('POST /inventory', () =>{
@@ -482,6 +518,7 @@ describe('Inventory API Test', function () {
         .set('Authorization', token)
         .send(itemNoName)
         .end((err, res) => {
+          console.log(err);
           res.should.have.status(200);
           res.body.should.have.property('error');
           res.body.error.errors.should.have.property('name');
@@ -525,8 +562,71 @@ describe('Inventory API Test', function () {
           res.body.should.have.property("name","TEST_ITEM");
           res.body.should.have.property("quantity",100);
           res.body.should.have.property("vendor_info", "Microsoft");
+          done();
         })
-        done();
+
+    })
+    it('POSTs item with untrimmed tags, then GET successful by required tag', (done)=>{
+      let item = {
+          name: "TEST_ITEM",
+          quantity: 100,
+          tags:[" O ne  ", "   ch  eap "],
+          has_instance_objects:false
+      }
+      chai.request(server)
+        .post('/api/inventory')
+        .set('Authorization', token)
+        .send(item)
+        .end((err, res)=>{
+          res.should.have.status(200);
+          res.body.should.have.property("name","TEST_ITEM");
+          res.body.should.have.property("quantity",100);
+          res.body.tags.should.include("O ne");
+          res.body.tags.should.include("ch  eap");
+          // Then GET
+          chai.request(server)
+            .get('/api/inventory?required_tags=    ch  eap   ')
+            .set('Authorization', token)
+            .send(item)
+            .end((err, res)=>{
+              res.should.have.status(200);
+              res.body.length.should.be.eql(1);
+              res.body[0].should.have.property("name","TEST_ITEM");
+              res.body[0].should.have.property("quantity",100);
+              res.body[0].tags.should.include("O ne");
+              res.body[0].tags.should.include("ch  eap");
+              done();
+            });
+        })
+    })
+    it('POSTs item with untrimmed tags, then GET unsuccessful by excluded tag', (done)=>{
+      let item = {
+          name: "TEST_ITEM",
+          quantity: 100,
+          tags:[" O ne  ", "   ch  eap "],
+          has_instance_objects:false
+      }
+      chai.request(server)
+        .post('/api/inventory')
+        .set('Authorization', token)
+        .send(item)
+        .end((err, res)=>{
+          res.should.have.status(200);
+          res.body.should.have.property("name","TEST_ITEM");
+          res.body.should.have.property("quantity",100);
+          res.body.tags.should.include("O ne");
+          res.body.tags.should.include("ch  eap");
+          // Then GET
+          chai.request(server)
+            .get('/api/inventory?excluded_tags=    ch  eap   ')
+            .set('Authorization', token)
+            .send(item)
+            .end((err, res)=>{
+              res.should.have.status(200);
+              res.body.length.should.be.eql(12);
+              done();
+            });
+        })
     })
   })
 
