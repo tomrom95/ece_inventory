@@ -40,7 +40,7 @@ function loginWithOAuth(oauthToken, next) {
           netid: user.netid,
           first_name: user.first_name,
           last_name: user.last_name,
-          is_admin: false, // keep until role migration complete
+          is_admin: user.role !== 'STANDARD', // keep until role migration complete
           role: user.role
         }
       );
@@ -61,7 +61,7 @@ function loginWithOAuth(oauthToken, next) {
             netid: user.netid,
             first_name: user.first_name,
             last_name: user.last_name,
-            is_admin: false, // keep until role migration complete
+            is_admin: user.role !== 'STANDARD', // keep until role migration complete
             role: user.role
           }
         );
@@ -90,7 +90,7 @@ function loginWithUsername(username, password, next) {
             last_name: user.last_name,
             username: user.username,
             role: user.role,
-            is_admin: user.is_admin
+            is_admin: user.role !== 'STANDARD'
           });
         }
       })

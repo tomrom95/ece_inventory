@@ -21,7 +21,6 @@ class ErrorMessage extends Component {
 	}
 
 	hideError() {
-		console.log("HIDING!");
 		this.setState({
 			hidden: true
 		});

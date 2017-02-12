@@ -225,7 +225,6 @@ class InventorySubTable extends Component {
 		.then(function(response) {
 			this.props.callback(true);
 		}.bind(this));
-		console.log("Deleting item number " + id);
 	}
 
 	makeConfirmationPopup(text, type, id) {

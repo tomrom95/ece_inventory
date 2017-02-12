@@ -108,14 +108,26 @@ class ItemDetailView extends React.Component {
     if(JSON.parse(localStorage.getItem('user')).is_admin === true){
       return(
         <div className="row request-subtable">
-          <GlobalRequests itemID={this.props.params.itemID} rowsPerPage={2} status="PENDING"/>
+          <GlobalRequests
+          itemID={this.props.params.itemID} 
+          rowsPerPage={2} 
+          status="PENDING"
+          showFilterBox={false}
+          hasOtherParams={true}
+          id={"detail-view-"+this.props.params.itemID}/>
         </div>
       );
     }
     else{
       return(
         <div className="row request-subtable">
-          <CurrentOrders itemID={this.props.params.itemID} rowsPerPage={2} status="PENDING"/>
+          <CurrentOrders 
+          itemID={this.props.params.itemID} 
+          rowsPerPage={2} 
+          status="PENDING"
+          showFilterBox={false}
+          hasOtherParams={true}
+          id={"detail-view-"+this.props.params.itemID}/>
         </div>);
     }
   }

@@ -17,7 +17,7 @@ module.exports.register = function(req, res) {
       res.json({user: {
         _id: user._id,
         username: user.username,
-        is_admin: user.is_admin,
+        is_admin: user.role !== 'STANDARD',
         role: user.role
       }});
     }

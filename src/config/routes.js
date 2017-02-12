@@ -24,7 +24,10 @@ class HomeWrapper extends Component {
 
 class CurrentOrdersWrapper extends Component {
     render() {
-        return <CurrentOrders api={"something"}/>;
+        return <CurrentOrders 
+        showFilterBox={false}
+        hasOtherParams={false}
+        api={"something"}/>;
     }
 }
 
@@ -34,15 +37,12 @@ class PastOrdersWrapper extends Component {
     }
 }
 
-class UserProfileWrapper extends Component {
-    render() {
-        return <UserProfile api={"something"}/>;
-    }
-}
-
 class GlobalRequestsWrapper extends Component {
     render() {
-        return <GlobalRequests api={"something"}/>;
+        return <GlobalRequests 
+        showFilterBox={false} 
+        hasOtherParams={false}
+        api={"something"}/>;
     }
 }
 
@@ -67,13 +67,12 @@ class ItemDetailViewWrapper extends Component {
 
 export default (
   <Route path="/" component={Home}>
-    <Route path="UserProfile" component={UserProfileWrapper}></Route>
+    <Route path="UserProfile" component={UserProfile}></Route>
     <Route path="Inventory" component={InventoryWrapper}></Route>
     <Route path="CurrentOrders" component={CurrentOrdersWrapper}></Route>
     <Route path="GlobalRequests" component={GlobalRequestsWrapper}></Route>
     <Route path="CreateUser" component={CreateUserWrapper}></Route>
     <Route path="Transactions" component={TransactionsWrapper}></Route>
-    <Route path="PastOrders" component={PastOrdersWrapper}></Route>
     <Route path="Detail/:itemID" component={ItemDetailViewWrapper} />
   </Route>
 );

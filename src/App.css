@@ -54,7 +54,7 @@
 }
 
 .requesttable {
-  margin-left: 30px;
+  margin-left: 16px;
   min-width: 680px;
   border-left: solid;
   border-width: 4px;
@@ -71,12 +71,8 @@
 
 .maintable-container {
   width: 1500px;
-  margin-left: 20px;
+  margin-left: 15px;
   overflow-y: scroll;
-}
-
-.page-section {
-  margin-left: -10px;
 }
 
 .request-page-section {
@@ -159,7 +155,6 @@
 
 .request-subtable {
   width: 400px;
-  margin-left: -40px;
 }
 
 .info-icon {
@@ -296,9 +291,13 @@
 }
 
 .alert {
-  margin-top: -12px;
   margin-left: 10px;
-  margin-right: -15px;
+}
+
+.request-detail-title {
+  margin-left: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 body {
