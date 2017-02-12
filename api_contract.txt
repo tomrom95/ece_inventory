@@ -12,8 +12,7 @@ params:
 	per_page: String [optional] // needs age if included
 }
 returns:
-{
-  docs: [{
+[{
     _id: String [unique],
     name: String [unique],
     quantity: Integer,
@@ -27,9 +26,7 @@ returns:
         _id: String,
 	value: String // Mixed Type in MongoDB
     }]
-  }],
-  total: Integer // total number of pages
-}
+}]
 POST
 params:
 {
@@ -260,8 +257,8 @@ params:
 }
 
 return:
-{
-  docs: [{
+[
+  {
     _id: String,
     user: {
 		_id: String,
@@ -273,15 +270,14 @@ return:
 		name: String,
 		quantity: Integer
 		}
-	]
+	],
     reason: String,
     created: String,
     status: String,
     requestor_comment: String,
     reviewer_comment: String
-  }],
-  total: Integer // total number of pages
-}
+  }
+]
 
 POST
 body:
