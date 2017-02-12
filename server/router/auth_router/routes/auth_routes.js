@@ -45,6 +45,7 @@ function loginWithOAuth(oauthToken, res) {
         netid: userInfo.netid,
         first_name: userInfo.firstName,
         last_name: userInfo.lastName,
+        is_admin: false, // keep for now until frontend converts to roles
         is_local: false,
       });
       // otherwise, create new user
