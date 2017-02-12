@@ -39,7 +39,6 @@ class Home extends Component {
   }
 
   login() {
-    console.log('https:' + '//' + location.hostname + ':3001' + '/auth/login');
     axios.post('https:' + '//' + location.hostname + ':3001' + '/auth/login', {
       username: this.state.name,
       password: this.state.passwrd,
@@ -65,7 +64,6 @@ class Home extends Component {
   }
 
   signOut() {
-    console.log(this.state.token);
     localStorage.clear();
     this.setState({
       user: null,
@@ -86,11 +84,9 @@ class Home extends Component {
           token: this.state.token,
         });
       }
-      console.log(this.state.user);
       return (
         <div className="App">
 	         <NavBar isAdmin={this.state.user.is_admin} onClick={this.signOut}/>
-
           <div className="main-container">
             {children}
           </div>
@@ -98,45 +94,25 @@ class Home extends Component {
 
       );
     } else
-      /*return (
-        <div>
-          <h4>Please sign in to your account</h4>
-          <form>
-            <label>
-              Username:
-              <input type="text" value={this.state.name} onChange={this.handleNameChange} />
-            </label>
-            <label>
-              Password:
-              <input type="password" value={this.state.passwrd} onChange={this.handlePasswrdChange} />
-            </label>
-          </form>
-          <button className="btn btn-primary" onClick={this.login}>
-           Log In
-          </button>
-        </div>
-        );
-        */
-
         return(
           <div className="login-form container">
             <h3 className="row">Please Log In</h3>
             <form className="row">
               <div className="form-group">
                 <label htmlFor="username-field">Username</label>
-                <input type="text" 
-                    value={this.state.name} 
-                    className="form-control" 
-                    id="username-field" 
+                <input type="text"
+                    value={this.state.name}
+                    className="form-control"
+                    id="username-field"
                     placeholder="Username"
                     onChange={this.handleNameChange}/>
               </div>
               <div className="form-group">
                 <label htmlFor="password-field">Password</label>
-                <input type="password" 
-                  value={this.state.passwrd} 
-                  className="form-control" 
-                  id="password-field" 
+                <input type="password"
+                  value={this.state.passwrd}
+                  className="form-control"
+                  id="password-field"
                   placeholder="Password"
                   onChange={this.handlePasswrdChange}/>
               </div>
