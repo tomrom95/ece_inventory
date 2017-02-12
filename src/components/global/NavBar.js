@@ -29,7 +29,7 @@ class NavBar extends Component {
                 <Link to="/GlobalRequests" className="nav-link">USER REQUESTS</Link>
               </li>
               <li className="nav-item">
-                <Link to="/CurrentOrders" className="nav-link">YOUR REQUESTS</Link>
+                <Link to="/CurrentOrders" className="nav-link">MY REQUESTS</Link>
               </li>
               <li className="nav-item">
                 <Link to="/CreateUser" className="nav-link">CREATE USER</Link>
@@ -67,10 +67,7 @@ class NavBar extends Component {
                 <Link to="/Inventory" className="nav-link">INVENTORY</Link>
               </li>
               <li className="nav-item">
-                <Link to="/CurrentOrders" className="nav-link">CURRENT ORDERS</Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/PastOrders" className="nav-link">PAST ORDERS</Link>
+                <Link to="/CurrentOrders" className="nav-link">MY REQUESTS</Link>
               </li>
               <li className="nav-item btn-nav signout-button">
                 <button className="btn btn-outline-primary" onClick={this.props.onClick}>

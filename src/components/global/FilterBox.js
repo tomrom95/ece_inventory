@@ -44,13 +44,13 @@ class FilterBox extends Component {
             <div className="card filterbox">
               <div className="card-header" role="tab" id="headingOne">
                 <h5 className="mb-0">
-                  <div data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  <div data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                     <span className="fa fa-search"></span>
                   </div>
                 </h5>
               </div>
 
-              <div id="collapseOne" className="collapse show" role="tabpanel" aria-labelledby="headingOne">
+              <div id="collapseOne" role="tabpanel" aria-labelledby="headingOne">
 
                 <div className="card-block">
                   <div className="form-fields">

@@ -220,6 +220,7 @@ class RequestTable extends Component {
 					rows: rows,
 					raw_data: raw_data
 				});
+        this.props.callback(true);
       }
     }.bind(this))
     .catch(function(error) {
@@ -228,8 +229,6 @@ class RequestTable extends Component {
 
   }
   commentRequest(index) {
-
-
     this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
       {
         reviewer_comment: "for real",

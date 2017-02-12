@@ -22,7 +22,6 @@ class Request extends Component {
   makeList(elems) {
 		var i;
 		var htmlList = [];
-    console.log(elems);
 		for (i=0; i<elems.length; i++) {
 			// column tag is used as key. It is a tag for each column cell rendered.
 			// Required for React DOM.
