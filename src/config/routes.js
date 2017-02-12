@@ -79,7 +79,6 @@ export default (
     <Route path="GlobalRequests" component={GlobalRequestsWrapper}></Route>
     <Route path="CreateUser" component={CreateUserWrapper}></Route>
     <Route path="Transactions" component={TransactionsWrapper}></Route>
-    <Route path="PastOrders" component={PastOrdersWrapper}></Route>
     <Route path="Detail/:itemID" component={ItemDetailViewWrapper} />
   </Route>
 );
