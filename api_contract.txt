@@ -184,6 +184,13 @@ returns:
   "success"
 }
 
+/api/inventory/paginationInfo
+GET:
+return:
+{
+   total: Integer // total number of pages
+}
+
 /api/customFields
 GET:
 params:
