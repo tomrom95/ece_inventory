@@ -20,7 +20,7 @@ returns:
     model_number: String,
     description: String,
     location: String,
-    tags: String array,
+    tags: [String],
     has_instance_objects: Boolean,
     custom_fields: [
     {
@@ -38,7 +38,7 @@ params:
   model_number: String,
   description: String,
   location: String,
-  tags: String array,
+  tags: [String],
   custom_fields: [
     {
         _id: String,
@@ -54,7 +54,7 @@ return:
   model_number: String,
   description: String,
   location: String,
-  tags: String array,
+  tags: [String],
   has_instance_objects: Boolean,
   custom_fields: [
     {
