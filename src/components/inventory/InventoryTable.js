@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import SubtableRow from './TableRow.js';
+import TableRow from './TableRow.js';
 import ItemWizard from './ItemWizard.js';
 import RequestPopup from './RequestPopup.js';
 import ItemEditor from './ItemEditor.js';
@@ -21,7 +21,11 @@ function getKeys(data) {
 			meta = keys[i];
 			continue;
 		}
-		else ret.push(keys[i]);
+
+		if (["Name", "Quantity", "Model", "Vendor"].includes(keys[i])) {
+			ret.push(keys[i]);
+			console.log(keys[i]);
+		}
 	}
 	return ret;
 }
@@ -63,7 +67,7 @@ function getEmptyPrefill() {
 	});
 }
 
-class InventorySubTable extends Component {
+class InventoryTable extends Component {
 
 	constructor(props) {
 		super(props);
@@ -126,7 +130,7 @@ class InventorySubTable extends Component {
 		for (i=0; i<rowData.length; i++) {
 			var elem;
 			var id = this.props.data[i]["meta"]["id"];
-			elem = (<SubtableRow
+			elem = (<TableRow
 					columnKeys={this.props.columnKeys}
 					data={rowData[i]}
 					idTag={id}
@@ -248,4 +252,4 @@ class InventorySubTable extends Component {
 }
 
 
-export default InventorySubTable
+export default InventoryTable

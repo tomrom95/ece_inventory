@@ -83,10 +83,6 @@ class RequestPopup extends Component {
 		if(this.props.isAdmin){
 			return (
 			<div className="modal-body">
-				<RequestSubtable
-					className="row"
-					data={this.state.data}
-					itemId={this.props.itemId}/>
 				{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
 				{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
 				{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
@@ -98,10 +94,6 @@ class RequestPopup extends Component {
 		else{
 			return (
 			<div className="modal-body">
-				<RequestSubtable
-					className="row"
-					data={this.state.data}
-					itemId={this.props.itemId}/>
 				{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
 				{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
 				{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
