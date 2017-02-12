@@ -12,8 +12,6 @@ class FilterBox extends Component {
         if (response.error) {
           console.log(response.error);
         }
-        console.log("FILTER BOX");
-        console.log(response.data);
         var data = response.data.map(function(tag) {
           return {label: tag, value: tag}
         });

@@ -28,12 +28,18 @@ class CreateUser extends React.Component {
     var data = {
       username: this.refs.username.value,
       password: this.refs.password.value,
-      is_admin: this.refs.isAdmin.checked,
+      role: this.refs.role.value,
     };
+    var passwordConfirm = this.refs.passwordConfirm.value;
 
     if (data.username === "" || data.password === "") {
       this.setState({success: null, error: 'Please fill out the required fields'});
       return;
+    }
+
+    if (data.password !== passwordConfirm) {
+      this.setState({success: null, error: 'Passwords do not match'});
+      return
     }
 
     this.axiosInstance.post('/user', data)
@@ -59,7 +65,8 @@ class CreateUser extends React.Component {
   clearFields() {
     this.refs.username.value = '';
     this.refs.password.value = '';
-    this.refs.isAdmin.checked = false;
+    this.refs.role.value = 'STANDARD';
+    this.refs.passwordConfirm.value = '';
   }
 
   render() {
@@ -95,38 +102,51 @@ class CreateUser extends React.Component {
               <label>Password *</label>
               <input
                 className="form-control"
-                type="text"
+                type="password"
                 ref="password"
                 defaultValue=""
               />
             </div>
             <div>
-              <label>Make admin?</label>
-              <input type="checkbox" ref="isAdmin"></input>
+              <label>Confirm Password *</label>
+              <input
+                className="form-control"
+                type="password"
+                ref="passwordConfirm"
+                defaultValue=""
+              />
             </div>
-            <div className="form-footer">
+            <div>
+              <label>Role *</label>
+              <select className="form-control" ref="role">
+                <option>STANDARD</option>
+                <option>MANAGER</option>
+                <option>ADMIN</option>
+              </select>
+            </div>
+            <div className="text-right">
               <button
-                className="btn btn-primary pull-right"
+                className="btn btn-primary"
                 onClick={this.submitForm.bind(this)}
               >
                 Submit
               </button>
             </div>
-            {this.state.error ? (
-              <div className="pull-right">
-                <div className="alert alert-danger">
-                  <strong>Error:</strong> {this.state.error}
-                </div>
-              </div>
-            ): null}
-            {this.state.success ? (
-              <div className="pull-right">
-                <div className="alert alert-success">
-                  <strong>Success!</strong> {this.state.success}
-                </div>
-              </div>
-            ): null}
           </div>
+          {this.state.error ? (
+            <div className="row">
+              <div className="alert alert-danger">
+                <strong>Error:</strong> {this.state.error}
+              </div>
+            </div>
+          ): null}
+          {this.state.success ? (
+            <div className="row">
+              <div className="alert alert-success">
+                <strong>Success!</strong> {this.state.success}
+              </div>
+            </div>
+          ): null}
         </div>
       </div>
     );
