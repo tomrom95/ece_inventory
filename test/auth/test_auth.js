@@ -61,12 +61,14 @@ describe('/login Test', function () {
 describe('/register Test', function () {
   var adminToken;
   var normalToken;
+  var adminUser;
   beforeEach((done) => {
     User.remove({}, (err) => {
       should.not.exist(err);
       helpers.createNewUser('admin_user', 'test', 'ADMIN', function(err, user) {
         should.not.exist(err);
         adminToken = helpers.createAuthToken(user);
+        adminUser = user;
         helpers.createNewUser('not_admin', 'test', 'STANDARD', function(err, otherUser) {
           should.not.exist(err);
           normalToken = helpers.createAuthToken(otherUser);
@@ -110,10 +112,10 @@ describe('/register Test', function () {
     });
   });
 
-  describe('GET /user', () =>{
+  describe('GET /user by id', () =>{
     it('Gets information about a user', (done) => {
       chai.request(server)
-        .get('/api/users')
+        .get('/api/users/' + adminUser._id)
         .set('Authorization', adminToken)
         .end((err, res) => {
           should.not.exist(err);
