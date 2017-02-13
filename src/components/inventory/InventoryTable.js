@@ -166,7 +166,9 @@ class InventoryTable extends Component {
 			);
 			list.push(this.makeEditButton(data,id));
 			list.push(this.makeDeleteButton(id));
-			list.push(<td className="subtable-row" key = {"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
+			list.push(<td className="subtable-row" key = {"detail-view-" + id}> 
+							<ItemDetailView params={{itemID: id}}/> 
+					  </td>);
 			return list;
 		}
 
