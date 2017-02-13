@@ -41,6 +41,9 @@ class PaginationContainer extends Component {
       		id: props.id,
       		hasOtherParams: props.hasOtherParams
 		};
+		
+		if (props.rowsPerPage) 
+			this.state.rowsPerPage = props.rowsPerPage
 	}
 
 	componentWillReceiveNewProps(newProps) {
@@ -169,8 +172,8 @@ class PaginationContainer extends Component {
 	makePerPageController() {
 	    return(
 	      <div className="btn-group">
-	        <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	          Items per Page
+	        <button type="button" className="btn btn-primary dropdown-toggle perpage-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	          {this.state.rowsPerPage + " items/page"}
 	        </button>
 	        <div className="dropdown-menu rowcount-dropdown">
 	          <a onClick={()=>this.setRowCount(5)} className="dropdown-item" href="#">

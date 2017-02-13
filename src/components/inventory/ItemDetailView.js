@@ -4,7 +4,7 @@ import GlobalRequests from '../requests/GlobalRequests';
 import CurrentOrders from '../requests/CurrentOrders.js';
 
 function getString(str) {
-  if (str === undefined || str === null) {
+  if (str === undefined || str === null || str.length === 0) {
     return "N/A";
   }
   else return String(str);
@@ -31,7 +31,6 @@ class ItemDetailView extends React.Component {
   }
 
   loadData() {
-
     this.axiosInstance.get('/inventory/' + this.props.params.itemID)
     .then(function(response) {
       this.setState({item: response.data});
@@ -40,10 +39,6 @@ class ItemDetailView extends React.Component {
       console.log(error);
       this.setState({error: 'Could not load item'});
     }.bind(this));
-  }
-
-  componentWillReceiveProps(newProps) {
-    //this.loadData();
   }
 
   render() {
@@ -57,7 +52,8 @@ class ItemDetailView extends React.Component {
         <button type="button"
           className="btn btn-outline-primary info-button"
           data-toggle="modal"
-          data-target={"#infoModal-"+this.props.params.itemID}>
+          data-target={"#infoModal-"+this.props.params.itemID}
+          onClick={() => this.loadData()}>
             <span className="fa fa-info"></span>
         </button>
 
@@ -77,6 +73,9 @@ class ItemDetailView extends React.Component {
                   </div>
                   <div className="row">
                     <div className="offset-md-1 col-md-10">
+                      <div className="row">
+                        <p><strong>Model Number: </strong>{getString(this.state.item.model_number)}</p>
+                      </div>
                       <div className="row">
                         <p><strong>Quantity: </strong>{this.state.item.quantity}</p>
                       </div>
