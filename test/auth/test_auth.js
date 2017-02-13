@@ -76,10 +76,10 @@ describe('/register Test', function () {
     });
   });
 
-  describe('POST /user', () =>{
+  describe('POST /users', () =>{
     it('admin can register new user', (done) => {
       chai.request(server)
-        .post('/api/user')
+        .post('/api/users')
         .set('Authorization', adminToken)
         .send({
           username: 'test_user',
@@ -96,7 +96,7 @@ describe('/register Test', function () {
 
     it('non admin cannot register new user', (done) => {
       chai.request(server)
-        .post('/api/user')
+        .post('/api/users')
         .set('Authorization', normalToken)
         .send({
           username: 'other_user',
@@ -113,7 +113,7 @@ describe('/register Test', function () {
   describe('GET /user', () =>{
     it('Gets information about a user', (done) => {
       chai.request(server)
-        .get('/api/user')
+        .get('/api/users')
         .set('Authorization', adminToken)
         .end((err, res) => {
           should.not.exist(err);

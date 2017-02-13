@@ -42,7 +42,7 @@ class CreateUser extends React.Component {
       return
     }
 
-    this.axiosInstance.post('/user', data)
+    this.axiosInstance.post('/users', data)
       .then(function(response) {
         if (response.data.error) {
           console.log(response.data.error);

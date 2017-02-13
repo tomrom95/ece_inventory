@@ -26,8 +26,30 @@ module.exports.postAPI = function(req, res) {
 }
 
 module.exports.getAPI = function(req, res) {
+  let filterFields = ['first_name', 'last_name', 'username', 'netid'];
+  var query = {};
+  if (req.query.first_name) {
+    // case insensitive
+    query.first_name = {'$regex': req.query.first_name, '$options':'i'};
+  }
+  if (req.query.last_name) {
+    // case insensitive
+    query.last_name = {'$regex': req.query.last_name, '$options':'i'};
+  }
+  if (req.query.username) {
+    // exact case matching
+    query.username = req.query.username;
+  }
+  if (req.query.role) {
+    query.role = req.query.role;
+  }
+  if (req.query.netid) {
+    // net ids are always lower case
+    query.netid = req.query.netid.toLowerCase();
+  }
+
   User
-    .find({}, {password_hash: 0})
+    .find(query, {password_hash: 0})
     .exec(function(err, users) {
       if(err) {
         res.send({error: err});
@@ -35,4 +57,34 @@ module.exports.getAPI = function(req, res) {
         res.json(users);
       }
     });
+}
+
+module.exports.getAPIbyID = function(req, res) {
+  if ((req.user.role !== 'ADMIN') && (req.user._id !== req.params.user_id)) {
+    res.send({error: "You do not have permission to view another user's information"})
+  }
+  User.findById(req.params.user_id, function(error, user) {
+    if (error) return res.send({error: error});
+    delete user.password_hash
+    res.json(user);
+  });
+}
+
+module.exports.putAPI = function(req, res) {
+  var update = {};
+  ['first_name', 'last_name', 'role'].forEach(function(field) {
+    if (req.body[field]) {
+      update[field] = req.body[field];
+    }
+  });
+  User.findByIdAndUpdate(
+    req.params.user_id,
+    {$set: update},
+    {new: true},
+    function(error, user) {
+      if (error) return res.send({error: error});
+      delete user.password_hash
+      res.json(user);
+    }
+  );
 }
