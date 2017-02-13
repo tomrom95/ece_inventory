@@ -30,7 +30,7 @@ function loginWithOAuth(oauthToken, next) {
   lookUpNetIDUser(oauthToken, function(error, userInfo) {
     if (error) return next(error);
     User.findOne({netid: userInfo.netid}, function(err, user) {
-      if (err) return next(error);
+      if (err) return next(err);
       // If user already exists, log him in
       if (user) return next(
         null,
