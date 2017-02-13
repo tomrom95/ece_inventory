@@ -16,8 +16,11 @@ describe('Inventory API Test', function () {
   var token;
   beforeEach((done) => { //Before each test we empty the database
       Item.remove({}, (err) => {
+        should.not.exist(err);
         User.remove({}, (err) => {
-          helpers.createNewUser('test_user', 'test', true, function(error, user) {
+          should.not.exist(err);
+          helpers.createNewUser('test_user', 'test', 'ADMIN', function(err, user) {
+            should.not.exist(err);
             token = helpers.createAuthToken(user);
             Item.insertMany(fakeJSONData).then(function(obj){
               done();
@@ -34,6 +37,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(12);
@@ -48,6 +52,7 @@ describe('Inventory API Test', function () {
       .get('/api/inventory?name=osCiLloSCope')
       .set('Authorization', token)
       .end((err, res) => {
+        should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(1);
@@ -62,6 +67,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?name=')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(12);
@@ -73,6 +79,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?model_number=123')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(1);
@@ -87,6 +94,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?model_number=')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(12);
@@ -98,6 +106,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?location=HuDSoN')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(3);
@@ -110,6 +119,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?location=')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(12);
@@ -121,6 +131,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?vendor_info=Microsoft')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(4);
@@ -133,6 +144,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?vendor_info=')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(12);
@@ -144,6 +156,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?required_tags=component')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(9);
@@ -157,9 +170,10 @@ describe('Inventory API Test', function () {
       });
       it('GETs items with multiple required tags', (done)=>{
         chai.request(server)
-        .get('/api/inventory?required_tags=component,eLeCtRiC')
+        .get('/api/inventory?required_tags=component , eLeCtRiC  ')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(7);
@@ -176,6 +190,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?required_tags=')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(12);
@@ -184,9 +199,10 @@ describe('Inventory API Test', function () {
       });
       it('GETs items with 1 excluded tag', (done)=>{
         chai.request(server)
-        .get('/api/inventory?excluded_tags=cHeAp')
+        .get('/api/inventory?excluded_tags=cHeAp ')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(5);
@@ -203,6 +219,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?excluded_tags=chea')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(12);
@@ -211,9 +228,10 @@ describe('Inventory API Test', function () {
       });
       it('GETs items with multiple excluded tags', (done)=>{
         chai.request(server)
-        .get('/api/inventory?excluded_tags=cHeAp,pOwEr')
+        .get('/api/inventory?excluded_tags=cHeAp, pOwEr')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(2);
@@ -230,6 +248,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?excluded_tags=chea,pow')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(12);
@@ -241,6 +260,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?excluded_tags=')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(12);
@@ -252,6 +272,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?required_tags=electrIc, compOnent&excluded_tags=magneTic, Power')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(5);
@@ -268,9 +289,10 @@ describe('Inventory API Test', function () {
       });
       it('GETs items with name, multiple required and excluded tags', (done)=>{
         chai.request(server)
-        .get('/api/inventory?name=100k&required_tags=electrIc, compOnent&excluded_tags=magneTic, Power')
+        .get('/api/inventory?name=100k&required_tags=electrIc,compOnent&excluded_tags=magneTic, Power')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(1);
@@ -291,6 +313,7 @@ describe('Inventory API Test', function () {
         .get('/api/inventory?fds=sdot&dwer=fjks')
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(12);
@@ -302,6 +325,7 @@ describe('Inventory API Test', function () {
           .get('/api/inventory?page=3&per_page=3')
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(3);
@@ -316,6 +340,7 @@ describe('Inventory API Test', function () {
           .get('/api/inventory?page=3&per_page=100')
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(0);
@@ -327,6 +352,7 @@ describe('Inventory API Test', function () {
           .get('/api/inventory?page=100&per_page=3')
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(0);
@@ -338,6 +364,7 @@ describe('Inventory API Test', function () {
           .get('/api/inventory?page=100&per_page=100')
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(0);
@@ -349,6 +376,7 @@ describe('Inventory API Test', function () {
           .get('/api/inventory?page=3&per_pge=3')
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(12);
@@ -360,6 +388,7 @@ describe('Inventory API Test', function () {
           .get('/api/inventory?pag=3&per_page=3')
           .set('Authorization', token)
           .end((err, res) => {
+            should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(12);
@@ -376,11 +405,13 @@ describe('Inventory API Test', function () {
         "has_instance_objects": true,
       });
       item.save((err, item) =>{
+        should.not.exist(err);
         chai.request(server)
         .get('/api/inventory/'+item.id)
         .set('Authorization', token)
         .send(item)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.location.should.be.eql("PERKINS");
@@ -402,6 +433,7 @@ describe('Inventory API Test', function () {
         "vendor_info" : "Microsoft"
       });
       item.save((err, item) =>{
+        should.not.exist(err);
         chai.request(server)
         .put('/api/inventory/'+item.id)
         .set('Authorization', token)
@@ -412,6 +444,7 @@ describe('Inventory API Test', function () {
           'quantity': 3000
         })
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.location.should.be.eql("HUDSON");
@@ -432,6 +465,7 @@ describe('Inventory API Test', function () {
         "vendor_info" : "Microsoft"
       });
       item.save((err, item) =>{
+        should.not.exist(err);
         chai.request(server)
         .put('/api/inventory/'+item.id)
         .set('Authorization', token)
@@ -441,6 +475,7 @@ describe('Inventory API Test', function () {
           'vendor_info': 'Apple',
         })
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.location.should.be.eql("HUDSON");
@@ -449,6 +484,44 @@ describe('Inventory API Test', function () {
           res.body.quantity.should.be.eql(1000);
           res.body._id.should.be.eql(item.id);
         done();
+        });
+      });
+    });
+    it('PUTs inventory item by item id with untrimmed tags', (done) => {
+      let item = new Item({
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+      });
+      item.save((err, item) =>{
+        should.not.exist(err);
+        chai.request(server)
+        .put('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .send({
+            'tags':[' o n e ', ' t w o ']
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.name.should.be.eql("Laptop");
+          res.body.quantity.should.be.eql(1000);
+          res.body._id.should.be.eql(item.id);
+          res.body.tags.should.include('o n e');
+          res.body.tags.should.include('t w o');
+          chai.request(server)
+          // Get the item to test whether tags remain saved trimmed
+          .get('/api/inventory?required_tags=   o n e ')
+          .set('Authorization', token)
+          .end((err,res)=>{
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body.length.should.be.eql(1);
+            res.body[0].tags.should.include('o n e');
+            res.body[0].tags.should.include('t w o');
+            done();
+          });
         });
       });
     });
@@ -482,6 +555,7 @@ describe('Inventory API Test', function () {
         .set('Authorization', token)
         .send(itemNoName)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.have.property('error');
           res.body.error.errors.should.have.property('name');
@@ -495,6 +569,7 @@ describe('Inventory API Test', function () {
         .set('Authorization', token)
         .send(itemNoQuantity)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.have.property('error');
           res.body.error.errors.should.have.property('quantity');
@@ -508,6 +583,7 @@ describe('Inventory API Test', function () {
         .set('Authorization', token)
         .send(itemNoHasInstanceObjects)
         .end((err, res) => {
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.have.property('error');
           res.body.error.errors.should.have.property('has_instance_objects');
@@ -521,12 +597,79 @@ describe('Inventory API Test', function () {
         .set('Authorization', token)
         .send(item)
         .end((err, res)=>{
+          should.not.exist(err);
           res.should.have.status(200);
           res.body.should.have.property("name","TEST_ITEM");
           res.body.should.have.property("quantity",100);
           res.body.should.have.property("vendor_info", "Microsoft");
+          done();
         })
-        done();
+
+    })
+    it('POSTs item with untrimmed tags, then GET successful by required tag', (done)=>{
+      let item = {
+          name: "TEST_ITEM",
+          quantity: 100,
+          tags:[" O ne  ", "   ch  eap "],
+          has_instance_objects:false
+      }
+      chai.request(server)
+        .post('/api/inventory')
+        .set('Authorization', token)
+        .send(item)
+        .end((err, res)=>{
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.have.property("name","TEST_ITEM");
+          res.body.should.have.property("quantity",100);
+          res.body.tags.should.include("O ne");
+          res.body.tags.should.include("ch  eap");
+          // Then GET
+          chai.request(server)
+            .get('/api/inventory?required_tags=    ch  eap   ')
+            .set('Authorization', token)
+            .send(item)
+            .end((err, res)=>{
+              should.not.exist(err);
+              res.should.have.status(200);
+              res.body.length.should.be.eql(1);
+              res.body[0].should.have.property("name","TEST_ITEM");
+              res.body[0].should.have.property("quantity",100);
+              res.body[0].tags.should.include("O ne");
+              res.body[0].tags.should.include("ch  eap");
+              done();
+            });
+        })
+    })
+    it('POSTs item with untrimmed tags, then GET unsuccessful by excluded tag', (done)=>{
+      let item = {
+          name: "TEST_ITEM",
+          quantity: 100,
+          tags:[" O ne  ", "   ch  eap "],
+          has_instance_objects:false
+      }
+      chai.request(server)
+        .post('/api/inventory')
+        .set('Authorization', token)
+        .send(item)
+        .end((err, res)=>{
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.have.property("name","TEST_ITEM");
+          res.body.should.have.property("quantity",100);
+          res.body.tags.should.include("O ne");
+          res.body.tags.should.include("ch  eap");
+          // Then GET
+          chai.request(server)
+            .get('/api/inventory?excluded_tags=    ch  eap   ')
+            .set('Authorization', token)
+            .send(item)
+            .end((err, res)=>{
+              res.should.have.status(200);
+              res.body.length.should.be.eql(12);
+              done();
+            });
+        })
     })
   })
 
@@ -539,6 +682,7 @@ describe('Inventory API Test', function () {
         "has_instance_objects": true,
       });
       item.save((err, item) =>{
+        should.not.exist(err);
         chai.request(server)
         .delete('/api/inventory/'+item.id)
         .set('Authorization', token)
@@ -558,14 +702,17 @@ describe('Inventory API Test', function () {
         "has_instance_objects": true,
       });
       item.save((err, item) =>{
+        should.not.exist(err);
         chai.request(server)
         .delete('/api/inventory/'+item.id)
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
               chai.request(server)
               .delete('/api/inventory/'+item.id)
               .set('Authorization', token)
               .end((err, res) => {
+                should.not.exist(err);
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.a.property('error').eql('Item does not exist');
@@ -582,14 +729,17 @@ describe('Inventory API Test', function () {
         "has_instance_objects": true,
       });
       item.save((err, item) =>{
+        should.not.exist(err);
         chai.request(server)
         .delete('/api/inventory/'+item.id)
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
               chai.request(server)
               .get('/api/inventory/'+item.id)
               .set('Authorization', token)
               .end((err, res) => {
+                should.not.exist(err);
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.a.property('error').eql('Item does not exist');
@@ -606,14 +756,17 @@ describe('Inventory API Test', function () {
         "has_instance_objects": true,
       });
       item.save((err, item) =>{
+        should.not.exist(err);
         chai.request(server)
         .delete('/api/inventory/'+item.id)
         .set('Authorization', token)
         .end((err, res) => {
+          should.not.exist(err);
               chai.request(server)
               .put('/api/inventory/'+item.id)
               .set('Authorization', token)
               .end((err, res) => {
+                should.not.exist(err);
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.a.property('error').eql('Item does not exist');

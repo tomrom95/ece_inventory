@@ -79,7 +79,7 @@ module.exports.postAPI = function(req, res){
   item.location = req.body.location;
   item.vendor_info = req.body.vendor_info;
   item.description = req.body.description;
-  item.tags = req.body.tags;
+  item.tags = trimTags(req.body.tags);
   item.has_instance_objects = req.body.has_instance_objects;
   item.save(function(err){
     if(err)
@@ -87,6 +87,18 @@ module.exports.postAPI = function(req, res){
     res.json(item);
   })
 };
+
+function trimTags(tagArray){
+  var fieldObj;
+  if(tagArray){
+    fieldObj = tagArray.map(function(tag){
+        return tag.trim();
+    });
+  } else {
+    fieldObj = [];
+  }
+  return fieldObj;
+}
 
 function logQuantityChange(change, userID, itemID, next) {
   if (change == 0) {
@@ -110,7 +122,9 @@ module.exports.putAPI = function(req, res){
       return res.send({error: 'Item does not exist'});
     else{
       var old_quantity = old_item.quantity;
-      Object.assign(old_item, req.body).save((err,item) => {
+      var obj = Object.assign(old_item, req.body)
+      obj.tags = trimTags(req.body.tags);
+      obj.save((err,item) => {
         if(err) return res.send({error: err});
         if (req.body.quantity) {
           logQuantityChange(req.body.quantity - old_quantity, req.user._id, item._id, function(error) {
