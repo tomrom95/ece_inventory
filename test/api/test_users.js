@@ -135,6 +135,20 @@ describe('Inventory API Test', function () {
         });
     });
 
+    it('Filters by both names with bad spacing', (done) => {
+      chai.request(server)
+        .get('/api/users?first_name= tim &last_name= cook')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(1);
+          res.body[0].netid.should.be.eql('tc15');
+          done();
+        });
+    });
+
     it('Filters by role', (done) => {
       chai.request(server)
         .get('/api/users?role=ADMIN')
@@ -330,7 +344,8 @@ describe('Inventory API Test', function () {
         .send({
           role: 'MANAGER',
           username: 'other',
-          password: 'different'
+          password: 'different',
+          is_local: false
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -338,11 +353,13 @@ describe('Inventory API Test', function () {
           res.body.should.be.a('object');
           res.body.username.should.be.eql('standard');
           res.body.role.should.be.eql('MANAGER');
+          res.body.is_local.should.be.eql(true);
           User.findById(standardUser._id, function(error, user) {
             should.not.exist(error);
             user.username.should.be.eql('standard');
             user.role.should.be.eql('MANAGER');
             user.password_hash.should.be.eql(standardUser.password_hash);
+            user.is_local.should.be.eql(true);
             done();
           });
       });
