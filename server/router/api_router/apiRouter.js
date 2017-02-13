@@ -41,9 +41,13 @@ router.route('/requests/:request_id')
       .delete(request_routes.deleteAPI)
       .patch(restrictToManagers, request_routes.patchAPI);
 
-router.route('/user')
+router.route('/users')
       .get(restrictToAdmins, user_routes.getAPI)
       .post(restrictToAdmins, user_routes.postAPI);
+
+router.route('/users/:user_id')
+      .get(user_routes.getAPIbyID)
+      .put(restrictToAdmins, user_routes.putAPI);
 
 router.route('/logs')
       .get(restrictToManagers, log_routes.getAPI);
