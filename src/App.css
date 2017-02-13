@@ -307,6 +307,10 @@
   width: 170px;
 }
 
+.table > tbody > tr > td {
+  vertical-align: middle;
+}
+
 body {
     background-color: rgba(0,0,0,0.3);
 }

@@ -41,6 +41,9 @@ class PaginationContainer extends Component {
       		id: props.id,
       		hasOtherParams: props.hasOtherParams
 		};
+		
+		if (props.rowsPerPage) 
+			this.state.rowsPerPage = props.rowsPerPage
 	}
 
 	componentWillReceiveNewProps(newProps) {

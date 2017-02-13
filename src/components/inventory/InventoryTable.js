@@ -87,7 +87,7 @@ class InventoryTable extends Component {
 	render() {
 		return (
 			<div className="maintable-container">
-				<table className="table maintable-body">
+				<table className="table table-sm maintable-body">
 				  <thead className="thread">
 				    <tr>
 			    	  {this.makeColumnKeyElements(this.state.columnKeys)}
