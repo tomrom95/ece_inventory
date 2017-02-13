@@ -1,7 +1,8 @@
 'use strict';
 var helpers = require('../../../auth/auth_helpers');
+var User = require('../../../model/users');
 
-module.exports.register = function(req, res) {
+module.exports.postAPI = function(req, res) {
   var user = req.user;
   var newUsername = req.body.username;
   var newPassword = req.body.password;
@@ -25,11 +26,13 @@ module.exports.register = function(req, res) {
 }
 
 module.exports.getAPI = function(req, res) {
-  var user = req.user;
-  res.json({
-    _id: user._id,
-    username: user.username,
-    is_admin: user.is_admin,
-    role: user.role
-  });
+  User
+    .find({}, {password_hash: 0})
+    .exec(function(err, users) {
+      if(err) {
+        res.send({error: err});
+      } else {
+        res.json(users);
+      }
+    });
 }
