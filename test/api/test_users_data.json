@@ -15,7 +15,7 @@
     "role": "MANAGER"
   },
   {
-    "username": "test4",
+    "username": "Test3",
     "is_local": true,
     "role": "ADMIN"
   },
@@ -51,5 +51,5 @@
     "last_name": "Cookies",
     "is_local": false,
     "role": "MANAGER"
-  }  
+  }
 ]
