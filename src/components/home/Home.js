@@ -6,6 +6,7 @@ import querystring from 'querystring';
 
 class Home extends Component {
   constructor(props) {
+    console.log("CONSTRUCTING!!!");
     super(props);
     if(localStorage.getItem('user')){
       var user_stored = JSON.parse(localStorage.getItem('user'));
@@ -108,6 +109,7 @@ class Home extends Component {
     var host = location.hostname;
     return 'ece-inventory-' + host.split('.')[0];
   }
+<<<<<<< HEAD
 
   createNetIDLoginLink() {
     return "https://oauth.oit.duke.edu/oauth/authorize.php?"
@@ -120,6 +122,20 @@ class Home extends Component {
       });
   }
 
+=======
+
+  createNetIDLoginLink() {
+    return "https://oauth.oit.duke.edu/oauth/authorize.php?"
+      + querystring.stringify({
+        response_type: "token",
+        redirect_uri: location.origin,
+        client_id: this.getClientID(),
+        scope: "basic identity:netid:read",
+        state: "458458"
+      });
+  }
+
+>>>>>>> c34abcfae3eea6e06e8ed758c7de9ab0f0138d4a
   componentWillUpdate() {
     if(localStorage.getItem('token') && !this.state.token){
       this.setState({
@@ -130,9 +146,13 @@ class Home extends Component {
   }
 
   render() {
+<<<<<<< HEAD
     if (this.state.loggingIn) {
       return (<div></div>);
     }
+=======
+    console.log("RENDERING!!!");
+>>>>>>> c34abcfae3eea6e06e8ed758c7de9ab0f0138d4a
     if(this.state.user != null & localStorage.getItem('token') != null){
       let children = null;
       if (this.props.children) {
