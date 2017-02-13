@@ -39,7 +39,8 @@ class Inventory extends Component {
             renderComponent={table}
             showFilterBox={true}
             hasOtherParams={false}
-            id={'inventory-page'} />);
+            id={'inventory-page'}
+            rowsPerPage={10} />);
 
   }
 }

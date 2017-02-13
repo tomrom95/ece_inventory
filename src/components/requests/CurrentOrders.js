@@ -29,7 +29,7 @@ class CurrentOrders extends Component {
     var item;
     for (i=0; i<requests.length; i++) {
       var obj = requests[i];
-      if(JSON.parse(localStorage.getItem('user')).is_admin){
+      if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER"){
         if(obj.user.username === JSON.parse(localStorage.getItem('user')).username){
           item = {
             "Username": obj.user.username,
@@ -58,7 +58,7 @@ class CurrentOrders extends Component {
           "_id": obj._id,
           "user_id": obj.user._id,
           "item_id": obj.item._id,
-        }; 
+        };
         items.push(item);
       }
 
@@ -75,7 +75,7 @@ class CurrentOrders extends Component {
     }
 
     return (
-          <PaginationContainer 
+          <PaginationContainer
           url={url}
           processData={data=>this.processData(data)}
           renderComponent={table}
@@ -86,7 +86,7 @@ class CurrentOrders extends Component {
             {global: false}
           } />
     );
-    
+
 	}
 }
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import SubtableRow from './TableRow.js';
+import TableRow from './TableRow.js';
 import ItemWizard from './ItemWizard.js';
 import RequestPopup from './RequestPopup.js';
 import ItemEditor from './ItemEditor.js';
@@ -21,7 +21,11 @@ function getKeys(data) {
 			meta = keys[i];
 			continue;
 		}
-		else ret.push(keys[i]);
+
+		if (["Name", "Quantity", "Model", "Vendor"].includes(keys[i])) {
+			ret.push(keys[i]);
+			console.log(keys[i]);
+		}
 	}
 	return ret;
 }
@@ -63,7 +67,7 @@ function getEmptyPrefill() {
 	});
 }
 
-class InventorySubTable extends Component {
+class InventoryTable extends Component {
 
 	constructor(props) {
 		super(props);
@@ -83,7 +87,7 @@ class InventorySubTable extends Component {
 	render() {
 		return (
 			<div className="maintable-container">
-				<table className="table maintable-body">
+				<table className="table table-sm maintable-body">
 				  <thead className="thread">
 				    <tr>
 			    	  {this.makeColumnKeyElements(this.state.columnKeys)}
@@ -107,7 +111,7 @@ class InventorySubTable extends Component {
 		list.push(<th key={"buttonSpace-0"}></th>);
 		list.push(<th key={"buttonSpace-1"}></th>)
 
-		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
 			list.push(<th key={"buttonSpace-2"}></th>);
 			list.push(
 					<ItemWizard data={getEmptyPrefill()}
@@ -126,7 +130,7 @@ class InventorySubTable extends Component {
 		for (i=0; i<rowData.length; i++) {
 			var elem;
 			var id = this.props.data[i]["meta"]["id"];
-			elem = (<SubtableRow
+			elem = (<TableRow
 					columnKeys={this.props.columnKeys}
 					data={rowData[i]}
 					idTag={id}
@@ -142,46 +146,33 @@ class InventorySubTable extends Component {
 
 	makeInventoryButtons(data, id) {
 		var list = [];
-		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
 			list.push(
 					<RequestPopup
-						data={[ {
-							Serial: data.Serial,
-							Condition: data.Condition,
-							Status: data.Status,
-							Quantity: data.Quantity
-								}
-							]}
 						itemName={data.Name}
 						modelName={data.Model}
 						itemId={data.meta.id}
 						api={this.props.api}
 						ref={data.meta.id}
-						isAdmin={true}
+						role={JSON.parse(localStorage.getItem('user')).role}
 						key={"request-popup-button-"+id}/>
 			);
 			list.push(this.makeEditButton(data,id));
 			list.push(this.makeDeleteButton(id));
 			list.push(<td className="subtable-row" key={"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
+
 			return list;
 		}
 
 		else  {
 			list.push(
 			<RequestPopup
-				data={[ {
-							Serial: data.Serial,
-							Condition: data.Condition,
-							Status: data.Status,
-							Quantity: data.Quantity
-						}
-					]}
 				itemName={data.Name}
 				modelName={data.Model}
 				itemId={data.meta.id}
 				api={this.props.api}
 				ref={data.meta.id}
-				isAdmin={false}
+				role={JSON.parse(localStorage.getItem('user')).role}
 				key={"request-popup-id-"+ id}/>);
 				list.push(<td className="subtable-row" key={"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
 				return list;
@@ -194,7 +185,7 @@ class InventorySubTable extends Component {
 				<button data-toggle="modal" data-target={"#delete-"+id} key={"delete-button-"+id}
 					type="button"
 					className="btn btn-danger delete-button">
-						<span className="fa fa-remove"></span>
+						<span className="fa fa-trash"></span>
 				</button>
 				{this.makeConfirmationPopup(
 					"This will delete the selected item and all of its instances. Proceed?",
@@ -228,7 +219,7 @@ class InventorySubTable extends Component {
 
 	makeConfirmationPopup(text, type, id) {
 		return (
-			<div className="modal confirmation-popup" id={type+"-"+id}>
+			<div className="modal fade confirmation-popup" id={type+"-"+id}>
 			  <div className="modal-dialog confirmation-dialog" role="document">
 			    <div className="modal-content">
 			      <div className="modal-body padded">
@@ -247,4 +238,4 @@ class InventorySubTable extends Component {
 }
 
 
-export default InventorySubTable
+export default InventoryTable

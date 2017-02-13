@@ -47,6 +47,7 @@ class RequestPopup extends Component {
 		}
 	}
 
+
 	render() {
 		var modalBody = this.makeModalBody();
 		return (
@@ -81,13 +82,9 @@ class RequestPopup extends Component {
 	}
 
 	makeModalBody() {
-		if(this.props.isAdmin){
+		if(this.props.role === "ADMIN" || this.props.role === "MANAGER"){
 			return (
 			<div className="modal-body">
-				<RequestSubtable
-					className="row"
-					data={this.state.data}
-					itemId={this.props.itemId}/>
 				{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
 				{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
 				{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
@@ -100,10 +97,6 @@ class RequestPopup extends Component {
 		else{
 			return (
 			<div className="modal-body">
-				<RequestSubtable
-					className="row"
-					data={this.state.data}
-					itemId={this.props.itemId}/>
 				{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
 				{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
 				{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
@@ -159,12 +152,13 @@ class RequestPopup extends Component {
 			return;
 		}
 
-		if (reasonVal.length === 0 && JSON.parse(localStorage.getItem('user')).is_admin === false) {
+		if (reasonVal.length === 0 && JSON.parse(localStorage.getItem('user')).role === "STANDARD") {
+
 			alert("Reason is a required field");
 			return;
 		}
 		var check_status = "PENDING";
-		if(this.props.isAdmin ){
+		if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER" ){
 
 			check_status = "APPROVED";
 			if(document.getElementById("disburse-textbox-" + this.props.itemId).checked ){

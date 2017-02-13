@@ -7,7 +7,8 @@ class NavBar extends Component {
     super(props);
   }
   render() {
-    if(this.props.isAdmin){
+    
+    if(this.props.role === "ADMIN" || this.props.role === "MANAGER"){
       return (
         <nav className="navbar fixed-top navbar-toggleable-md navbar-light bg-faded">
           <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

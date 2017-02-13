@@ -73,7 +73,7 @@ class CreateUser extends React.Component {
     if (this.state.currUser == null) {
       return (<div></div>);
     }
-    if (!this.state.currUser.is_admin) {
+    if (this.state.currUser.role === "STANDARD") {
       return (
         <div>
           You are not allowed to access this page

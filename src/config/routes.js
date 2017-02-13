@@ -8,6 +8,8 @@ import CreateUser from '../components/user/CreateUser.js';
 import Transactions from '../components/transactions/Transactions.js';
 import ItemDetailView from '../components/inventory/ItemDetailView.js';
 import { Route} from 'react-router';
+import querystring from 'querystring';
+import axios from 'axios';
 
 class InventoryWrapper extends Component {
     render() {
@@ -53,7 +55,6 @@ class ItemDetailViewWrapper extends Component {
         return <ItemDetailView api={"something"}/>;
     }
 }
-
 
 export default (
   <Route path="/" component={Home}>

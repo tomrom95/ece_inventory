@@ -13,7 +13,6 @@ function getPrefill(data) {
 	});
 }
 
-
 class SubtableRow extends Component {
 
 	constructor(props) {
