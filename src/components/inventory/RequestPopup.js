@@ -176,16 +176,6 @@ class RequestPopup extends Component {
 		document.getElementById("reason-textbox-" + this.props.itemId).value = "";
 		document.getElementById("comment-textbox-" + this.props.itemId).value = "";
 	}
-
-	update(newData) {
-		// Method for later use when we have instances on front-end/
-
-		// make sure you format newData to include keys... or change the way it's passed in.
-		/*this.setState({
-			data: newData
-		});
-		*/
-	}
 }
 
 export default RequestPopup;

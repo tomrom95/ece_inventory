@@ -7,8 +7,12 @@ class FilterBox extends Component {
   }
 
   componentWillMount() {
+    this.loadData();
+  }
+
+  loadData() {
     this.props.api.get('/api/inventory/tags')
-      .then(function(response) {
+    .then(function(response) {
         if (response.error) {
           console.log(response.error);
         }

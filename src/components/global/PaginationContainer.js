@@ -211,6 +211,21 @@ class PaginationContainer extends Component {
 	      );
 	}
 
+	makePageDropDown() {
+		return(
+		<div className="btn-group">
+	        <button type="button" className="btn btn-primary dropdown-toggle perpage-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	          {"Page " + this.state.page}
+	        </button>
+	        <div className="dropdown-menu page-dropdown">
+	          <a onClick={()=>this.loadData(2)} className="dropdown-item" href="#">
+	            {2}
+	          </a>
+	        </div>
+        </div>
+        );
+	}
+
 	makePageControlBar() {
 		var pageControlBar =  this.state.items.length === 0 ? null : 
 			(<div className="row">

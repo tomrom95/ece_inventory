@@ -254,6 +254,11 @@
   overflow-y: scroll;
 }
 
+.page-dropdown {
+  max-height: 175px;
+  overflow-y: scroll;
+}
+
 .card {
   width: 300px;
 }

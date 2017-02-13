@@ -41,6 +41,13 @@ class ItemEditor extends Component {
 		}
 	}
 
+	componentWillReceiveProps(newProps) {
+		this.setState({
+			data: newProps.data,
+			formIds: []
+		});
+	}
+
 	makeForm() {
 		var keys = getKeys(this.state.data);
 		var vals = getValues(this.state.data, keys);
@@ -56,39 +63,38 @@ class ItemEditor extends Component {
 	}
 
 	render() {
-    return (
-		<div>
-			<button type="button"
-				className="btn btn-outline-primary edit-button"
-				data-toggle="modal"
-				data-target={"#editModal-"+this.props.itemId}>
-				<span className="fa fa-pencil"></span>
-			</button>
+	    return (
+			<div>
+				<button type="button"
+					className="btn btn-outline-primary edit-button"
+					data-toggle="modal"
+					data-target={"#editModal-"+this.props.itemId} >
+					<span className="fa fa-pencil"></span>
+				</button>
 
-			<div className="modal fade"
-				id={"editModal-"+this.props.itemId}
-				tabIndex="-1" role="dialog"
-				aria-labelledby="editLabel"
-				aria-hidden="true">
-			  <div className="modal-dialog" role="document">
-			    <div className="modal-content">
-			      <div className="modal-header">
-			        <h5 className="modal-title" id="editLabel">Edit Current Item</h5>
-			      </div>
-			      <div className="modal-body">
-			        {this.makeForm()}
-			      </div>
-			      <div className="modal-footer">
-			        <button type="button" onClick={e=>this.makeForm()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-			        <button onClick={e => this.onSubmission()} type="button" data-dismiss="modal" className="btn btn-primary">Submit</button>
-			      </div>
-			    </div>
-			  </div>
+				<div className="modal fade"
+					id={"editModal-"+this.props.itemId}
+					tabIndex="-1" role="dialog"
+					aria-labelledby="editLabel"
+					aria-hidden="true">
+				  <div className="modal-dialog" role="document">
+				    <div className="modal-content">
+				      <div className="modal-header">
+				        <h5 className="modal-title" id="editLabel">Edit Current Item</h5>
+				      </div>
+				      <div className="modal-body">
+				        {this.makeForm()}
+				      </div>
+				      <div className="modal-footer">
+				        <button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				        <button onClick={() => this.onSubmission()} type="button" data-dismiss="modal" className="btn btn-primary">Submit</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
 			</div>
-		</div>
-		);
+			);
 	}
-
 
 	makeTextBox(row, type, label, defaultValue){
 		var id = "createform-row-"+row;
