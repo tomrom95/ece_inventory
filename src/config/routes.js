@@ -66,82 +66,8 @@ class ItemDetailViewWrapper extends Component {
     }
 }
 
-function checkForOAuth(nextState, replace) {
-  if (nextState.location.hash) {
-    var token = querystring.parse(nextState.location.hash.slice(1)).access_token;
-    axios.post('https://' + location.hostname + ':3001/auth/login', {
-      token: token
-    }).then(function(result) {
-      if (result.error) {
-        console.log(result.error)
-      } else {
-        console.log("SETTING TOKEN!!");
-        localStorage.setItem('user', JSON.stringify(result.data.user));
-        localStorage.setItem('token', result.data.token);
-      }
-      location.hash = '';
-      replace('/');
-    }).catch(function(error) {
-      console.log(error);
-      location.hash = '';
-      replace('/');
-    });
-  }
-}
-
-import querystring from 'querystring';
-import axios from 'axios';
-
-function checkForOAuth(nextState, replace) {
-  if (nextState.location.hash) {
-    var token = querystring.parse(nextState.location.hash.slice(1)).access_token;
-    axios.post('https://' + location.hostname + ':3001/auth/login', {
-      token: token
-    }).then(function(result) {
-      if (result.error) {
-        console.log(result.error)
-      } else {
-        console.log("SETTING TOKEN!!");
-        localStorage.setItem('user', JSON.stringify(result.data.user));
-        localStorage.setItem('token', result.data.token);
-      }
-      location.hash = '';
-      replace('/');
-    }).catch(function(error) {
-      console.log(error);
-      location.hash = '';
-      replace('/');
-    });
-  }
-}
-
-import querystring from 'querystring';
-import axios from 'axios';
-
-function checkForOAuth(nextState, replace) {
-  if (nextState.location.hash) {
-    var token = querystring.parse(nextState.location.hash.slice(1)).access_token;
-    axios.post('https://' + location.hostname + ':3001/auth/login', {
-      token: token
-    }).then(function(result) {
-      if (result.error) {
-        console.log(result.error)
-      } else {
-        localStorage.setItem('user', JSON.stringify(result.data.user));
-        localStorage.setItem('token', result.data.token);
-      }
-      location.hash = '';
-      replace('/');
-    }).catch(function(error) {
-      console.log(error);
-      location.hash = '';
-      replace('/');
-    });
-  }
-}
-
 export default (
-  <Route path="/" component={Home} onEnter={checkForOAuth}>
+  <Route path="/" component={Home}>
     <Route path="UserProfile" component={UserProfile}></Route>
     <Route path="Inventory" component={InventoryWrapper}></Route>
     <Route path="CurrentOrders" component={CurrentOrdersWrapper}></Route>

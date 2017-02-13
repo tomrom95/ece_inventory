@@ -6,7 +6,6 @@ import querystring from 'querystring';
 
 class Home extends Component {
   constructor(props) {
-    console.log("CONSTRUCTING!!!");
     super(props);
     if(localStorage.getItem('user')){
       var user_stored = JSON.parse(localStorage.getItem('user'));
@@ -33,7 +32,7 @@ class Home extends Component {
   }
 
   componentWillMount() {
-    console.log("MOUNTING!!!");
+    this.checkForOAuth();
   }
 
   handleNameChange(event) {
@@ -45,7 +44,6 @@ class Home extends Component {
   }
 
   login() {
-    console.log('https:' + '//' + location.hostname + ':3001' + '/auth/login');
     axios.post('https:' + '//' + location.hostname + ':3001' + '/auth/login', {
       username: this.state.name,
       password: this.state.passwrd,
@@ -70,8 +68,33 @@ class Home extends Component {
 
   }
 
+  checkForOAuth() {
+    if (location.hash) {
+      var token = querystring.parse(location.hash.slice(1)).access_token;
+      if (!token) return;
+      location.hash = '';
+      this.setState({loggingIn: true});
+      axios.post('https://' + location.hostname + ':3001/auth/login', {
+        token: token
+      }).then(function(result) {
+        if (result.error) {
+          console.log(result.error)
+        } else {
+          localStorage.setItem('user', JSON.stringify(result.data.user));
+          localStorage.setItem('token', result.data.token);
+          this.setState({
+            loggingIn: false,
+            token: result.data.token,
+            user: result.data.user
+          });
+        }
+      }.bind(this)).catch(function(error) {
+        console.log(error);
+      });
+    }
+  }
+
   signOut() {
-    console.log(this.state.token);
     localStorage.clear();
     this.setState({
       user: null,
@@ -107,7 +130,9 @@ class Home extends Component {
   }
 
   render() {
-    console.log("RENDERING!!!");
+    if (this.state.loggingIn) {
+      return (<div></div>);
+    }
     if(this.state.user != null & localStorage.getItem('token') != null){
       let children = null;
       if (this.props.children) {
