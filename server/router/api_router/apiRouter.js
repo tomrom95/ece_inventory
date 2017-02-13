@@ -42,8 +42,8 @@ router.route('/requests/:request_id')
       .patch(restrictToManagers, request_routes.patchAPI);
 
 router.route('/user')
-      .get(user_routes.getAPI)
-      .post(restrictToAdmins, user_routes.register);
+      .get(restrictToAdmins, user_routes.getAPI)
+      .post(restrictToAdmins, user_routes.postAPI);
 
 router.route('/logs')
       .get(restrictToManagers, log_routes.getAPI);
