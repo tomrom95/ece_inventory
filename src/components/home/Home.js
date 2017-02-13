@@ -137,14 +137,12 @@ class Home extends Component {
     if(this.state.user != null & localStorage.getItem('token') != null){
       let children = null;
       if (this.props.children) {
-        console.log(this.props.children);
         children = React.cloneElement(this.props.children, {
           username: this.state.user.username,
           isAdmin: this.state.user.is_admin,
           token: this.state.token,
         });
       }
-      console.log(this.state.user);
       return (
         <div className="App">
 	         <NavBar isAdmin={this.state.user.is_admin} onClick={this.signOut}/>

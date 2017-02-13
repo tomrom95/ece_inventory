@@ -39,13 +39,6 @@ function getString(str) {
 
 class RequestPopup extends Component {
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			data: this.props.data
-		}
-	}
-
 	render() {
 		var modalBody = this.makeModalBody();
 		return (
@@ -83,10 +76,6 @@ class RequestPopup extends Component {
 		if(this.props.isAdmin){
 			return (
 			<div className="modal-body">
-				<RequestSubtable
-					className="row"
-					data={this.state.data}
-					itemId={this.props.itemId}/>
 				{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
 				{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
 				{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
@@ -98,10 +87,6 @@ class RequestPopup extends Component {
 		else{
 			return (
 			<div className="modal-body">
-				<RequestSubtable
-					className="row"
-					data={this.state.data}
-					itemId={this.props.itemId}/>
 				{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
 				{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
 				{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
@@ -136,11 +121,6 @@ class RequestPopup extends Component {
 
 		if (Number(qty) === 0) {
 			alert("Request quantity cannot be zero.");
-			return;
-		}
-
-		if (Number(qty) > this.props.data[0].Quantity) {
-			alert("Request quantity cannot exceed availability");
 			return;
 		}
 

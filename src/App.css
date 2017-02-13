@@ -75,6 +75,10 @@
   overflow-y: scroll;
 }
 
+.table-container {
+  margin-top: 200px;
+}
+
 .request-page-section {
   margin-left: 30px;
 }
@@ -110,7 +114,7 @@
 }
 
 .info-modal {
-  width: 700px;
+  margin-top: -50px;
 }
 
 .request-button {
@@ -144,8 +148,6 @@
   position: relative;
   font-weight: bold;
   font-size: 13px;
-  margin-top: -10px;
-  margin-bottom: -5px;
 }
 
 .request-quantity {
@@ -154,7 +156,7 @@
 }
 
 .request-subtable {
-  width: 400px;
+  max-width: 400px;
 }
 
 .info-icon {
@@ -225,8 +227,8 @@
 }
 
 .detail-view {
+  min-width:700px;
   min-height: 325px;
-  width: 1000px;
 }
 
 .detail-view-title {
@@ -299,6 +301,19 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+
+.perpage-button {
+  width: 170px;
+}
+
+.table > tbody > tr > td {
+  vertical-align: middle;
+}
+
+.table > thead > tr > th {
+  vertical-align: middle;
+}
+
 
 body {
     background-color: rgba(0,0,0,0.3);
