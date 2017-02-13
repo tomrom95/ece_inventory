@@ -194,7 +194,7 @@ class InventoryTable extends Component {
 				<button data-toggle="modal" data-target={"#delete-"+id} key={"delete-button-"+id}
 					type="button"
 					className="btn btn-danger delete-button">
-						<span className="fa fa-remove"></span>
+						<span className="fa fa-trash"></span>
 				</button>
 				{this.makeConfirmationPopup(
 					"This will delete the selected item and all of its instances. Proceed?",
@@ -228,7 +228,7 @@ class InventoryTable extends Component {
 
 	makeConfirmationPopup(text, type, id) {
 		return (
-			<div className="modal confirmation-popup" id={type+"-"+id}>
+			<div className="modal fade confirmation-popup" id={type+"-"+id}>
 			  <div className="modal-dialog confirmation-dialog" role="document">
 			    <div className="modal-content">
 			      <div className="modal-body padded">
