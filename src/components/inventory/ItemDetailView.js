@@ -74,6 +74,9 @@ class ItemDetailView extends React.Component {
                   <div className="row">
                     <div className="offset-md-1 col-md-10">
                       <div className="row">
+                        <p><strong>Model Number: </strong>{getString(this.state.item.model_number)}</p>
+                      </div>
+                      <div className="row">
                         <p><strong>Quantity: </strong>{this.state.item.quantity}</p>
                       </div>
                       <div className="row">
