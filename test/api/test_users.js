@@ -150,14 +150,14 @@ describe('Inventory API Test', function () {
 
     it('Filters by username', (done) => {
       chai.request(server)
-        .get('/api/users?username=test1')
+        .get('/api/users?username=test3')
         .set('Authorization', adminToken)
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(1);
-          res.body[0].username.should.be.eql('test1');
+          res.body[0].username.should.be.eql('test3');
           done();
         });
     });

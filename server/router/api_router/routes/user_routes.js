@@ -37,8 +37,8 @@ module.exports.getAPI = function(req, res) {
     query.last_name = {'$regex': req.query.last_name, '$options':'i'};
   }
   if (req.query.username) {
-    // exact case matching
-    query.username = req.query.username;
+    // case sensitive matching
+    query.username = {'$regex': req.query.username};
   }
   if (req.query.role) {
     query.role = req.query.role;
