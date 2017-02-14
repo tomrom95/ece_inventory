@@ -6,7 +6,6 @@ import querystring from 'querystring';
 
 class Home extends Component {
   constructor(props) {
-    console.log("CONSTRUCTING!!!");
     super(props);
     if(localStorage.getItem('user')){
       var user_stored = JSON.parse(localStorage.getItem('user'));
@@ -131,6 +130,7 @@ class Home extends Component {
   }
 
   render() {
+
     if (this.state.loggingIn) {
       return (<div></div>);
     }
@@ -140,13 +140,13 @@ class Home extends Component {
         children = React.cloneElement(this.props.children, {
           username: this.state.user.username,
           isAdmin: this.state.user.is_admin,
+          role: this.state.user.role,
           token: this.state.token,
         });
       }
       return (
         <div className="App">
-	         <NavBar isAdmin={this.state.user.is_admin} onClick={this.signOut}/>
-
+	         <NavBar onClick={this.signOut} role={this.state.user.role}/>
           <div className="main-container">
             {children}
           </div>
@@ -154,6 +154,7 @@ class Home extends Component {
 
       );
     } else
+
 
         return(
           <div className="login-form container">

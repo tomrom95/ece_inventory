@@ -15,7 +15,7 @@ class PaginationContainer extends Component {
 			- data processing method to feed the component.
 			- URL to query for items
 	*/
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -41,8 +41,8 @@ class PaginationContainer extends Component {
       		id: props.id,
       		hasOtherParams: props.hasOtherParams
 		};
-		
-		if (props.rowsPerPage) 
+
+		if (props.rowsPerPage)
 			this.state.rowsPerPage = props.rowsPerPage
 	}
 
@@ -96,7 +96,7 @@ class PaginationContainer extends Component {
 	        items: this.state.processData(response),
 	        page: page
 	      });
-		  
+
 	      document.getElementById("pageNum-"+this.state.id).value = page;
 	    }
 	  }.bind(this));
@@ -115,7 +115,7 @@ class PaginationContainer extends Component {
 		var url = this.state.url
 		  + pageQuery + page
 		  +'&per_page='+rowsPerPage;
-		
+
 		filterNames.forEach(function(filterName) {
 		  if (this.state.filters[filterName]) {
 		    url += "&" + filterName + "=" + this.state.filters[filterName];
@@ -166,7 +166,7 @@ class PaginationContainer extends Component {
 	        title: title,
 	        message: message
 	      }
-	    });		
+	    });
 	}
 
 	makePerPageController() {
@@ -227,7 +227,7 @@ class PaginationContainer extends Component {
 	}
 
 	makePageControlBar() {
-		var pageControlBar =  this.state.items.length === 0 ? null : 
+		var pageControlBar =  this.state.items.length === 0 ? null :
 			(<div className="row">
 				<div className="col-md-4">
 	                <nav aria-label="page-buttons">

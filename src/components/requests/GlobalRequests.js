@@ -65,7 +65,7 @@ class GlobalRequests extends Component {
 
     else{
       return (
-          <PaginationContainer 
+          <PaginationContainer
           url={url}
           processData={data=>this.processData(data)}
           renderComponent={table}

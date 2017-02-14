@@ -11,7 +11,7 @@ var meta;
 
 function getKeys(data) {
 
-	if (data.length == 0)
+	if (data.length === 0)
 		return;
 
 	var keys = Object.keys(data[0]);
@@ -25,7 +25,6 @@ function getKeys(data) {
 
 		if (["Name", "Quantity", "Model", "Vendor"].includes(keys[i])) {
 			ret.push(keys[i]);
-			console.log(keys[i]);
 		}
 	}
 	return ret;
@@ -112,7 +111,7 @@ class InventoryTable extends Component {
 		list.push(<th key={"buttonSpace-0"}></th>);
 		list.push(<th key={"buttonSpace-1"}></th>)
 
-		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
+		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
 			list.push(<th key={"buttonSpace-2"}></th>);
 			/*list.push(
 					<ItemWizard data={getEmptyPrefill()}
@@ -149,8 +148,8 @@ class InventoryTable extends Component {
 	}
 
 	makeInventoryButtons(data, id) {
-		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
-			var list = [];
+		var list = [];
+		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
 			list.push(
 					<RequestPopup
 						itemName={data.Name}
@@ -158,19 +157,17 @@ class InventoryTable extends Component {
 						itemId={data.meta.id}
 						api={this.props.api}
 						ref={data.meta.id}
-						isAdmin={true}
+						role={JSON.parse(localStorage.getItem('user')).role}
 						key={"request-popup-button-"+id}/>
 			);
 			list.push(this.makeEditButton(data,id));
 			list.push(this.makeDeleteButton(id));
-			list.push(<td className="subtable-row" key = {"detail-view-" + id}> 
-							<ItemDetailView params={{itemID: id}}/> 
-					  </td>);
+			list.push(<td className="subtable-row" key={"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
+
 			return list;
 		}
 
 		else  {
-			var list = [];
 			list.push(
 			<RequestPopup
 				itemName={data.Name}
@@ -178,9 +175,9 @@ class InventoryTable extends Component {
 				itemId={data.meta.id}
 				api={this.props.api}
 				ref={data.meta.id}
-				isAdmin={false}
+				role={JSON.parse(localStorage.getItem('user')).role}
 				key={"request-popup-id-"+ id}/>);
-				list.push(<td className="subtable-row" key = {"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
+				list.push(<td className="subtable-row" key={"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
 				return list;
 			}
 	}

@@ -81,14 +81,20 @@ class RequestTable extends Component {
           button_list=[this.denyButton(i), this.fulfillButton(i),this.commentButton(i)];
         }
         else if (rowData[i][5] === 'DENIED') {
-          button_list=[this.approveButton(i),this.commentButton(i)];
+          button_list=[this.blankSpace(i), this.approveButton(i),this.commentButton(i)];
         }
         else if (rowData[i][5] === 'FULFILLED') {
-          button_list=[this.commentButton(i)];
+          button_list=[this.blankSpace(i), this.blankSpace(i), this.commentButton(i)];
         }
       }
       else{
-        button_list=[this.deleteButton(i)];
+				if(rowData[i][5] != 'FULFILLED'){
+					button_list=[this.deleteButton(i)];
+				}
+				else{
+					button_list=[];
+				}
+
       }
 
 			var elem;
@@ -108,39 +114,56 @@ class RequestTable extends Component {
 
   denyButton(index){
     return(
-      <button key={"deny"+index} className="btn btn-primary btn-sm" onClick={e => this.denyRequest(index)}>
-        Deny
-      </button>
+			<td key={"delete-td-"+index} className="subtable-row">
+	      <button key={"deny"+index} className="btn btn-primary btn-sm" onClick={e => this.denyRequest(index)}>
+	        Deny
+	      </button>
+			</td>
     );
   }
 
   approveButton(index){
     return(
-      <button key={"approve"+index} className="btn btn-success btn-sm" onClick={e => this.approveRequest(index)}>
-        Approve
-      </button>
+			<td key={"approve-td-"+index} className="subtable-row">
+	      <button key={"approve"+index} className="btn btn-success btn-sm" onClick={e => this.approveRequest(index)}>
+	        Approve
+	      </button>
+			</td>
     );
   }
 
   fulfillButton(index){
     return(
-      <button key={"fulfill"+index} className="btn btn-primary btn-sm" onClick={e => this.fulfillRequest(index)}>
-        Fulfill
-      </button>
+			<td key={"fulfill-td-"+index} className="subtable-row">
+		    <button key={"fulfill"+index} className="btn btn-success btn-sm" onClick={e => this.fulfillRequest(index)}>
+		      Fulfill
+		    </button>
+			</td>
     );
   }
 
   deleteButton(index){
     return(
-      <button key={"delete"+index} onClick={()=>{this.deleteRequest(index)}} type="button" className="btn btn-danger delete-button">X</button>
-    )
+			<td key={"delete-td-"+index} className="subtable-row">
+      	<button key={"delete"+index} onClick={()=>{this.deleteRequest(index)}} type="button" className="btn btn-danger delete-button">X</button>
+			</td>
+		)
   }
 
   commentButton(index){
     return(
-      <LeaveCommentPopup key={"comment"+index} request={this.state.raw_data[index]._id} api={this.props.api}/>
+			<td key={"comment-td-"+index} className="subtable-row">
+      	<LeaveCommentPopup key={"comment"+index} request={this.state.raw_data[index]._id} api={this.props.api}/>
+			</td>
     )
   }
+
+	blankSpace(index){
+
+		<td key={"blank-td-"+index} className="subtable-row">
+			<button key={"blank"+index} className="btn btn-primary btn-sm"  > hey </button>
+		</td>
+	}
 
   approveRequest(index){
     this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
@@ -185,6 +208,7 @@ class RequestTable extends Component {
   }
 
   fulfillRequest(index){
+		console.log(this.state.raw_data[index]);
     this.props.api.patch('/api/requests/' + this.state.raw_data[index]._id,
       {
         action: "DISBURSE",

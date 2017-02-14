@@ -1,0 +1,55 @@
+[
+  {
+    "username": "test1",
+    "is_local": true,
+    "role": "STANDARD"
+  },
+  {
+    "username": "test2",
+    "is_local": true,
+    "role": "STANDARD"
+  },
+  {
+    "username": "test3",
+    "is_local": true,
+    "role": "MANAGER"
+  },
+  {
+    "username": "Test3",
+    "is_local": true,
+    "role": "ADMIN"
+  },
+  {
+    "username": "test5",
+    "is_local": true,
+    "role": "ADMIN"
+  },
+  {
+    "netid": "js1",
+    "first_name": "John",
+    "last_name": "Smith",
+    "is_local": false,
+    "role": "STANDARD"
+  },
+  {
+    "netid": "tc15",
+    "first_name": "Tim",
+    "last_name": "Cook",
+    "is_local": false,
+    "role": "ADMIN"
+  },
+  {
+    "netid": "ja12",
+    "first_name": "Johnny",
+    "last_name": "Appleseed",
+    "is_local": false,
+    "role": "STANDARD"
+  },
+  {
+    "netid": "cc66",
+    "first_name": "Colin",
+    "last_name": "Cookies",
+    "is_local": false,
+    "role": "MANAGER"
+  }
+]
