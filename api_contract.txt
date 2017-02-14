@@ -323,7 +323,20 @@ return:
 	"success"
 }
 
-
+PATCH
+params:{
+	action: "CHECKOUT"
+}
+return {
+	items: [
+		{
+			// same item body as before
+		}
+	],
+	request: {
+		// same request body as before
+	}
+}
 /api/requests
 GET
 params:
