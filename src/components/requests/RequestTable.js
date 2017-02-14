@@ -62,7 +62,10 @@ class RequestTable extends Component {
 		for (i=0; i<keys.length; i++) {
 			list.push(<th key={keys[i]+"-requestcol"}> {keys[i]} </th>);
 		}
-		list.push(<th key={"buttonSpace"}> </th>);
+		list.push(<th key={"buttonSpace" + 1}> </th>);
+		list.push(<th key={"buttonSpace" + 2}> </th>);
+		list.push(<th key={"buttonSpace" + 3}> </th>);
+
 		return list;
 	}
 
@@ -81,10 +84,10 @@ class RequestTable extends Component {
           button_list=[this.denyButton(i), this.fulfillButton(i),this.commentButton(i)];
         }
         else if (rowData[i][5] === 'DENIED') {
-          button_list=[this.blankSpace(i), this.approveButton(i),this.commentButton(i)];
+          button_list=[this.blankSpace(i , 1), this.approveButton(i , 2),this.commentButton(i)];
         }
         else if (rowData[i][5] === 'FULFILLED') {
-          button_list=[this.blankSpace(i), this.blankSpace(i), this.commentButton(i)];
+          button_list=[this.blankSpace(i , 1), this.blankSpace(i , 2), this.commentButton(i)];
         }
       }
       else{
@@ -158,11 +161,12 @@ class RequestTable extends Component {
     )
   }
 
-	blankSpace(index){
-
-		<td key={"blank-td-"+index} className="subtable-row">
-			<button key={"blank"+index} className="btn btn-primary btn-sm"  > hey </button>
-		</td>
+	blankSpace(index , col){
+		return(
+			<td key={"blank-td-"+index + col} className="subtable-row">
+				<button key={"blank"+index + col}  className="white-space-cell" type="button"> hey </button>
+			</td>
+		);
 	}
 
   approveRequest(index){

@@ -69,6 +69,9 @@
   border-color: rgba(0,150,255,1);
 }
 
+.white-space-cell {
+  display: none;
+}
 .maintable-container {
   width: 1500px;
   margin-left: 15px;
