@@ -296,6 +296,42 @@ return:
 	lastModified, String
 }
 
+/api/cart/items
+POST
+body:
+{
+	user: String, // admin-only
+	item: String, // item id
+	quantity: Integer
+}
+return:
+{
+	user: String,
+	item: String, 
+	quantity: Integer
+}
+
+/api/cart/items/:item_id
+PUT
+body:
+{
+	user: String, // admin-only
+	quantity: Integer
+}
+return:
+{
+	user: String,
+	item: String, 
+	quantity: Integer
+}
+
+DELETE
+return:
+{
+	"success"
+}
+
+
 /api/requests
 GET
 params:
