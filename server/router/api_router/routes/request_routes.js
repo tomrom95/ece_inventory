@@ -40,7 +40,10 @@ module.exports.getAPI = function (req, res) {
     }
     Request.paginate(query.toJSON(), paginateOptions, function(err, obj){
         if(err) return res.send({error: err});
-        res.json(obj.docs);
+        var payload = {};
+        payload.docs = obj.docs;
+        payload.total = obj.total;
+        res.json(payload);
     });
   } else {
     Request.find(query.toJSON())
