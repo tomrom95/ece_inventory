@@ -1,0 +1,27 @@
+[
+  {
+    "name": "location",
+    "type": "SHORT_STRING",
+    "isPrivate": false
+  },
+  {
+    "name": "restock_info",
+    "type": "LONG_STRING",
+    "isPrivate": true
+  },
+  {
+    "name": "int_number",
+    "type": "INT",
+    "isPrivate": true
+  },
+  {
+    "name": "float_number",
+    "type": "FLOAT",
+    "isPrivate": false
+  },
+  {
+    "name": "last_one",
+    "type": "SHORT_STRING",
+    "isPrivate": false
+  }
+]

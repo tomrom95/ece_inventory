@@ -6,7 +6,7 @@ function QueryBuilder() {
 }
 
 QueryBuilder.prototype.searchExact = function(name, value) {
-  if (value) {
+  if (value != null) {
     this.queryObject[name] = value;
   }
   return this;
