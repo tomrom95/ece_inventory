@@ -6,7 +6,6 @@ import querystring from 'querystring';
 
 class Home extends Component {
   constructor(props) {
-    console.log("CONSTRUCTING!!!");
     super(props);
     if(localStorage.getItem('user')){
       var user_stored = JSON.parse(localStorage.getItem('user'));
@@ -52,7 +51,6 @@ class Home extends Component {
     .then(res => {
 
       if(res.data.token){
-        console.log(res.data);
         localStorage.setItem('user', JSON.stringify(res.data.user));
         localStorage.setItem('token', res.data.token);
         this.setState({
