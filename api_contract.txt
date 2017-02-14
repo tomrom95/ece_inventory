@@ -254,7 +254,81 @@ DELETE: {
 GET
 return:
 {
+	_id: String,
+	user: String,
+	item: [{
+	   id:{ // populated info
+		id: String,
+		name: String, 
+	       },
+	   quantity: Integer
+	}],
+	description: String,
+	created: String,
+	lastModified, String	
+}
 
+/api/cart/:user_id
+PUT
+body:
+{
+	user: String, // Admin only
+	items: [{
+		id: String,
+		quantity: Integer		
+	}], // Admin only
+	description: String
+}
+
+return:
+{
+	_id: String,
+	user: String,
+	item: [{
+	   id:{ // populated info
+		id: String,
+		name: String, 
+	       },
+	   quantity: Integer
+	}],
+	description: String,
+	created: String,
+	lastModified, String
+}
+
+/api/cart/items
+POST
+body:
+{
+	user: String, // admin-only
+	item: String, // item id
+	quantity: Integer
+}
+return:
+{
+	user: String,
+	item: String, 
+	quantity: Integer
+}
+
+/api/cart/items/:item_id
+PUT
+body:
+{
+	user: String, // admin-only
+	quantity: Integer
+}
+return:
+{
+	user: String,
+	item: String, 
+	quantity: Integer
+}
+
+DELETE
+return:
+{
+	"success"
 }
 
 
