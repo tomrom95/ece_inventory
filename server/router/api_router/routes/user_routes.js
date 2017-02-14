@@ -1,6 +1,7 @@
 'use strict';
 var helpers = require('../../../auth/auth_helpers');
 var User = require('../../../model/users');
+var QueryBuilder = require('../../../queries/querybuilder');
 
 module.exports.postAPI = function(req, res) {
   var user = req.user;
@@ -27,29 +28,16 @@ module.exports.postAPI = function(req, res) {
 
 module.exports.getAPI = function(req, res) {
   let filterFields = ['first_name', 'last_name', 'username', 'netid'];
-  var query = {};
-  if (req.query.first_name) {
-    // case insensitive
-    query.first_name = {'$regex': req.query.first_name.trim(), '$options':'i'};
-  }
-  if (req.query.last_name) {
-    // case insensitive
-    query.last_name = {'$regex': req.query.last_name.trim(), '$options':'i'};
-  }
-  if (req.query.username) {
-    // case sensitive matching
-    query.username = {'$regex': req.query.username.trim()};
-  }
-  if (req.query.role) {
-    query.role = req.query.role.trim();
-  }
-  if (req.query.netid) {
-    // net ids are always lower case
-    query.netid = req.query.netid.trim().toLowerCase();
-  }
+  var query = new QueryBuilder();
+  query
+    .searchCaseInsensitive('first_name', req.query.first_name)
+    .searchCaseInsensitive('last_name', req.query.last_name)
+    .searchCaseSensitive('username', req.query.username)
+    .searchExact('role', req.query.role)
+    .searchExact('netid', req.query.netid ? req.query.netid.toLowerCase() : null);
 
   User
-    .find(query, {password_hash: 0})
+    .find(query.toJSON(), {password_hash: 0})
     .exec(function(err, users) {
       if(err) {
         res.send({error: err});
