@@ -6,6 +6,7 @@ var log_routes = require('./routes/log_routes');
 var restrictToAdmins = require('../../auth/auth_helpers').restrictToAdmins;
 var restrictToManagers = require('../../auth/auth_helpers').restrictToManagers;
 var tag_routes = require('./routes/tag_routes');
+var field_routes = require('./routes/field_routes');
 
 var express = require('express');
 var router = express.Router();
@@ -51,5 +52,14 @@ router.route('/users/:user_id')
 
 router.route('/logs')
       .get(restrictToManagers, log_routes.getAPI);
+
+router.route('/customFields')
+      .get(field_routes.getAPI)
+      .post(restrictToAdmins, field_routes.postAPI);
+
+router.route('/customFields/:field_id')
+      .get(field_routes.getAPIbyID)
+      .put(restrictToAdmins, field_routes.putAPI)
+      .delete(restrictToAdmins, field_routes.deleteAPI);
 
 module.exports = router;
