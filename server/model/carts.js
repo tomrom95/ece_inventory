@@ -22,6 +22,7 @@ var CartSchema = new mongoose.Schema({
       }
     }
   ],
+  description: String,
   created: {
     type: Date,
     default: Date.now,
