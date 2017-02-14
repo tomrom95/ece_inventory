@@ -70,7 +70,7 @@
 }
 
 .maintable-container {
-  width: 1500px;
+  width: 100%;
   margin-left: 15px;
   overflow-y: scroll;
 }
@@ -259,16 +259,33 @@
   overflow-y: scroll;
 }
 
-.card {
-  width: 300px;
-}
-
 .card-block {
   margin-left: 20px;
   margin-right: 20px;
 }
 
+.cart-item {
+  width: 400px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  color: gray;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.cart-body {
+  max-height: 500px;
+  overflow-y: scroll;
+  width: 430px;
+}
+
+.cart-modal {
+  color: gray;
+  width: 433px
+}
+
 .filterbox {
+  width: 310px;
   margin-left: 20px;
   margin-right: 0;
   margin-bottom: 30px;

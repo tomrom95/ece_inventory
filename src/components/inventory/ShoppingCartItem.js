@@ -10,6 +10,7 @@ class ShoppingCartItem extends Component {
 			- Model
 			- Vendor
 			- Quantity
+			- callback: delete cart item by id.
 	*/
 
 	constructor(props) {
@@ -21,24 +22,29 @@ class ShoppingCartItem extends Component {
 		return this.state.ID;
 	}
 
+	deleteItem() {
+		// do callback to remove the item from cart
+		// which also includes a call to refresh cart view
+		// takes this.state.id param
+	}
+
 	render() {
 		return (
-		<div className="card">
-		  <div className="card-header">
+		<div className="card cart-item">
+		  <div className="card-block">
 		  	<div className="row">
-			  	<h5 className="col-md-8"> 
+			  	<h5 className="col-md-10"> 
 			  		{this.state.Name}
 			  	</h5>
-			  	<div className="col-md-4">
-			  		<a href="#" className="btn btn-danger btn-sm">Delete</a>
+			  	<div className="col-md-2">
+			  		<button type="button" className="btn btn-danger btn-sm"><span className="fa fa-trash"></span></button>
 			  	</div>
 		  	</div>
-		  </div>
-
-		  <div className="card-block">
-		    <p><strong>Model: </strong>{this.state.Model}</p>
-		    <p><strong>Vendor: </strong>{this.state.Vendor}</p>
-		    <p><strong>Quantity: </strong>{this.state.Quantity}</p>
+			<div className="container">
+			    <div className="row"><strong>Model:</strong>{this.state.Model}</div>
+			    <div className="row"><strong>Vendor:</strong>{this.state.Vendor}</div>
+			    <div className="row"><strong>Quantity:</strong>{this.state.Quantity}</div>
+		    </div>
 		  </div>
 		</div>);
 	}

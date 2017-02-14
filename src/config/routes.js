@@ -9,6 +9,8 @@ import CreateUser from '../components/user/CreateUser.js';
 import Transactions from '../components/transactions/Transactions.js';
 import ItemDetailView from '../components/inventory/ItemDetailView.js';
 import { Route} from 'react-router';
+import querystring from 'querystring';
+import axios from 'axios';
 
 class InventoryWrapper extends Component {
     render() {
@@ -24,7 +26,7 @@ class HomeWrapper extends Component {
 
 class CurrentOrdersWrapper extends Component {
     render() {
-        return <CurrentOrders 
+        return <CurrentOrders
         showFilterBox={false}
         hasOtherParams={false}
         api={"something"}/>;
@@ -39,8 +41,8 @@ class PastOrdersWrapper extends Component {
 
 class GlobalRequestsWrapper extends Component {
     render() {
-        return <GlobalRequests 
-        showFilterBox={false} 
+        return <GlobalRequests
+        showFilterBox={false}
         hasOtherParams={false}
         api={"something"}/>;
     }
@@ -63,7 +65,6 @@ class ItemDetailViewWrapper extends Component {
         return <ItemDetailView api={"something"}/>;
     }
 }
-
 
 export default (
   <Route path="/" component={Home}>

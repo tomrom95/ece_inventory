@@ -5,6 +5,7 @@ import ItemWizard from './ItemWizard.js';
 import RequestPopup from './RequestPopup.js';
 import ItemEditor from './ItemEditor.js';
 import ItemDetailView from './ItemDetailView.js';
+import ShoppingCart from './ShoppingCart.js';
 
 var meta;
 
@@ -113,12 +114,15 @@ class InventoryTable extends Component {
 
 		if (JSON.parse(localStorage.getItem('user')).is_admin === true) {
 			list.push(<th key={"buttonSpace-2"}></th>);
-			list.push(
+			/*list.push(
 					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
 	          			key={"makeitem-button"}
 	          			callback={this.props.callback}/>
 	          	);
+			*/
+			// testing view
+			list.push(<ShoppingCart key={"unique"}/>);
 		}
 
 		return list;

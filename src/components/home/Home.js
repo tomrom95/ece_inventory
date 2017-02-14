@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import NavBar from '../global/NavBar.js';
 import '../../App.css';
 import axios from 'axios';
+import querystring from 'querystring';
 
 class Home extends Component {
   constructor(props) {
+    console.log("CONSTRUCTING!!!");
     super(props);
     if(localStorage.getItem('user')){
       var user_stored = JSON.parse(localStorage.getItem('user'));
@@ -30,6 +32,10 @@ class Home extends Component {
     this.signOut = this.signOut.bind(this);
   }
 
+  componentWillMount() {
+    this.checkForOAuth();
+  }
+
   handleNameChange(event) {
     this.setState({name: event.target.value});
   }
@@ -39,7 +45,6 @@ class Home extends Component {
   }
 
   login() {
-    console.log('https:' + '//' + location.hostname + ':3001' + '/auth/login');
     axios.post('https:' + '//' + location.hostname + ':3001' + '/auth/login', {
       username: this.state.name,
       password: this.state.passwrd,
@@ -64,8 +69,33 @@ class Home extends Component {
 
   }
 
+  checkForOAuth() {
+    if (location.hash) {
+      var token = querystring.parse(location.hash.slice(1)).access_token;
+      if (!token) return;
+      location.hash = '';
+      this.setState({loggingIn: true});
+      axios.post('https://' + location.hostname + ':3001/auth/login', {
+        token: token
+      }).then(function(result) {
+        if (result.error) {
+          console.log(result.error)
+        } else {
+          localStorage.setItem('user', JSON.stringify(result.data.user));
+          localStorage.setItem('token', result.data.token);
+          this.setState({
+            loggingIn: false,
+            token: result.data.token,
+            user: result.data.user
+          });
+        }
+      }.bind(this)).catch(function(error) {
+        console.log(error);
+      });
+    }
+  }
+
   signOut() {
-    console.log(this.state.token);
     localStorage.clear();
     this.setState({
       user: null,
@@ -75,8 +105,35 @@ class Home extends Component {
     });
   }
 
-  render() {
+  getClientID() {
+    var host = location.hostname;
+    return 'ece-inventory-' + host.split('.')[0];
+  }
 
+  createNetIDLoginLink() {
+    return "https://oauth.oit.duke.edu/oauth/authorize.php?"
+      + querystring.stringify({
+        response_type: "token",
+        redirect_uri: location.origin,
+        client_id: this.getClientID(),
+        scope: "basic identity:netid:read",
+        state: "458458"
+      });
+  }
+
+  componentWillUpdate() {
+    if(localStorage.getItem('token') && !this.state.token){
+      this.setState({
+        user: JSON.parse(localStorage.getItem('user')),
+        token: localStorage.getItem('token'),
+      });
+    }
+  }
+
+  render() {
+    if (this.state.loggingIn) {
+      return (<div></div>);
+    }
     if(this.state.user != null & localStorage.getItem('token') != null){
       let children = null;
       if (this.props.children) {
@@ -100,30 +157,32 @@ class Home extends Component {
 
         return(
           <div className="login-form container">
-            <h3 className="row">Please Log In</h3>
+            <h3 className="row">Log In Locally</h3>
             <form className="row">
               <div className="form-group">
                 <label htmlFor="username-field">Username</label>
-                <input type="text" 
-                    value={this.state.name} 
-                    className="form-control" 
-                    id="username-field" 
+                <input type="text"
+                    value={this.state.name}
+                    className="form-control"
+                    id="username-field"
                     placeholder="Username"
                     onChange={this.handleNameChange}/>
               </div>
               <div className="form-group">
                 <label htmlFor="password-field">Password</label>
-                <input type="password" 
-                  value={this.state.passwrd} 
-                  className="form-control" 
-                  id="password-field" 
+                <input type="password"
+                  value={this.state.passwrd}
+                  className="form-control"
+                  id="password-field"
                   placeholder="Password"
                   onChange={this.handlePasswrdChange}/>
               </div>
             </form>
             <button className="btn btn-primary" onClick={this.login}>
-                Log In
+                Local Log In
             </button>
+            <h3 className="row">Log In with your NetID</h3>
+            <a href={this.createNetIDLoginLink()} className="btn btn-primary" role="button">NetID Login</a>
           </div>
           );
   }

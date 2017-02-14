@@ -272,7 +272,7 @@ class PaginationContainer extends Component {
 		var TableComp = this.state.renderComponent;
 
 		var filterBox = this.state.showFilterBox ?     
-						(<div className="col-md-3">
+						(<div className="col-md-4">
 							<FilterBox
 		              		api={this.instance}
 		              		filterItems={this.filterItems.bind(this)}/>
@@ -293,19 +293,20 @@ class PaginationContainer extends Component {
 
 	    if (filterBox !== null) {
 		    return (
-		      <div className="row inventory-page">
-		      
-		       	{filterBox}
-		 
-		        <div className="col-md-9">
+			    <div className="container">
+			      <div className="row inventory-page">
+			      
+			       	{filterBox}
+			 
+			        <div className="col-md-8">
+			          {this.makePageControlBar()}
+			          <div className="row">
+			            {table}
+			          </div>
+			        </div>
 
-		          {this.makePageControlBar()}
-
-		          <div className="row">
-		            {table}
-		          </div>
-		        </div>
-		      </div>
+			      </div>
+			    </div>
 		    );
 		}
 		else return (
