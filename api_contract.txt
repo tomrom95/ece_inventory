@@ -250,7 +250,7 @@ return:
 	user: String,
 	items: [{
 	  item: { // populated info
-			id: String,
+			_id: String,
 			name: String,
 	  },
 	  quantity: Integer
@@ -278,7 +278,7 @@ return:
 	user: String,
 	items: [{
 	   item:{ // populated info
-			id: String,
+			_id: String,
 			name: String,
 	       },
 	   quantity: Integer
