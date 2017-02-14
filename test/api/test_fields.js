@@ -93,6 +93,11 @@ describe('Fields API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(3);
+          res.body.should.satisfy(function(fields){
+            return fields.every(function(field){
+              return field.isPrivate.should.be.eql(false)
+            })
+          });
           done();
         });
     });
@@ -133,6 +138,11 @@ describe('Fields API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(3);
+          res.body.should.satisfy(function(fields){
+            return fields.every(function(field){
+              return field.isPrivate.should.be.eql(false)
+            })
+          });
           done();
         });
     });
@@ -230,7 +240,7 @@ describe('Fields API Test', function () {
         });
     });
 
-    it('non admin cannot add field', (done) => {
+    it('standard user cannot add field', (done) => {
       chai.request(server)
         .post('/api/customFields')
         .set('Authorization', standardToken)
