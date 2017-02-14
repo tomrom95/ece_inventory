@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import Inventory from '../components/inventory/Inventory.js';
 import Home from '../components/home/Home.js';
 import CurrentOrders from '../components/requests/CurrentOrders.js';
-import PastOrders from '../components/requests/PastOrders.js';
 import UserProfile from '../components/user/UserProfile.js';
 import GlobalRequests from '../components/requests/GlobalRequests.js';
 import CreateUser from '../components/user/CreateUser.js';
@@ -18,11 +17,6 @@ class InventoryWrapper extends Component {
     }
 }
 
-class HomeWrapper extends Component {
-    render() {
-        return <Home api={"something"}/>;
-    }
-}
 
 class CurrentOrdersWrapper extends Component {
     render() {
@@ -33,11 +27,7 @@ class CurrentOrdersWrapper extends Component {
     }
 }
 
-class PastOrdersWrapper extends Component {
-    render() {
-        return <PastOrders api={"something"}/>;
-    }
-}
+
 
 class GlobalRequestsWrapper extends Component {
     render() {

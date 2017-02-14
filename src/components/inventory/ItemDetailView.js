@@ -13,7 +13,6 @@ function getString(str) {
 class ItemDetailView extends React.Component {
   constructor(props) {
     super(props);
-    var currUser = JSON.parse(localStorage.getItem('user'));
     this.state = {
       item: null,
       error: null,
@@ -104,12 +103,12 @@ class ItemDetailView extends React.Component {
 
 
   addPadding(){
-    if(JSON.parse(localStorage.getItem('user')).is_admin === true){
+    if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER"){
       return(
         <div className="row request-subtable">
           <GlobalRequests
-          itemID={this.props.params.itemID} 
-          rowsPerPage={2} 
+          itemID={this.props.params.itemID}
+          rowsPerPage={2}
           status="PENDING"
           showFilterBox={false}
           hasOtherParams={true}
@@ -120,9 +119,9 @@ class ItemDetailView extends React.Component {
     else{
       return(
         <div className="row request-subtable">
-          <CurrentOrders 
-          itemID={this.props.params.itemID} 
-          rowsPerPage={2} 
+          <CurrentOrders
+          itemID={this.props.params.itemID}
+          rowsPerPage={2}
           status="PENDING"
           showFilterBox={false}
           hasOtherParams={true}

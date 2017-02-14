@@ -52,6 +52,7 @@ class Home extends Component {
     .then(res => {
 
       if(res.data.token){
+        console.log(res.data);
         localStorage.setItem('user', JSON.stringify(res.data.user));
         localStorage.setItem('token', res.data.token);
         this.setState({
@@ -131,6 +132,7 @@ class Home extends Component {
   }
 
   render() {
+
     if (this.state.loggingIn) {
       return (<div></div>);
     }
@@ -140,13 +142,13 @@ class Home extends Component {
         children = React.cloneElement(this.props.children, {
           username: this.state.user.username,
           isAdmin: this.state.user.is_admin,
+          role: this.state.user.role,
           token: this.state.token,
         });
       }
       return (
         <div className="App">
-	         <NavBar isAdmin={this.state.user.is_admin} onClick={this.signOut}/>
-
+	         <NavBar onClick={this.signOut} role={this.state.user.role}/>
           <div className="main-container">
             {children}
           </div>
@@ -154,6 +156,7 @@ class Home extends Component {
 
       );
     } else
+
 
         return(
           <div className="login-form container">

@@ -15,7 +15,7 @@ class PaginationContainer extends Component {
 			- data processing method to feed the component.
 			- URL to query for items
 	*/
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -41,8 +41,8 @@ class PaginationContainer extends Component {
       		id: props.id,
       		hasOtherParams: props.hasOtherParams
 		};
-		
-		if (props.rowsPerPage) 
+
+		if (props.rowsPerPage)
 			this.state.rowsPerPage = props.rowsPerPage
 	}
 
@@ -91,12 +91,13 @@ class PaginationContainer extends Component {
 	      }
 	    }
 	    // response not empty:
-	    else {		  
+	    else {
+
 	      this.setState({
 	        items: this.state.processData(response),
 	        page: page
 	      });
-		  
+
 	      document.getElementById("pageNum-"+this.state.id).value = page;
 	    }
 	  }.bind(this));
@@ -115,7 +116,7 @@ class PaginationContainer extends Component {
 		var url = this.state.url
 		  + pageQuery + page
 		  +'&per_page='+rowsPerPage;
-		
+
 		filterNames.forEach(function(filterName) {
 		  if (this.state.filters[filterName]) {
 		    url += "&" + filterName + "=" + this.state.filters[filterName];
@@ -166,7 +167,7 @@ class PaginationContainer extends Component {
 	        title: title,
 	        message: message
 	      }
-	    });		
+	    });
 	}
 
 	makePerPageController() {
@@ -212,7 +213,7 @@ class PaginationContainer extends Component {
 	}
 
 	makePageControlBar() {
-		var pageControlBar =  this.state.items.length === 0 ? null : 
+		var pageControlBar =  this.state.items.length === 0 ? null :
 			(<div className="row">
 				<div className="col-md-4">
 	                <nav aria-label="page-buttons">
@@ -256,7 +257,7 @@ class PaginationContainer extends Component {
 	    var table = null;
 		var TableComp = this.state.renderComponent;
 
-		var filterBox = this.state.showFilterBox ?     
+		var filterBox = this.state.showFilterBox ?
 						(<div className="col-md-3">
 							<FilterBox
 		              		api={this.instance}
@@ -279,9 +280,9 @@ class PaginationContainer extends Component {
 	    if (filterBox !== null) {
 		    return (
 		      <div className="row inventory-page">
-		      
+
 		       	{filterBox}
-		 
+
 		        <div className="col-md-9">
 
 		          {this.makePageControlBar()}

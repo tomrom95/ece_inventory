@@ -49,26 +49,29 @@ class LeaveCommentPopup extends Component {
   render() {
     return (
       <div>
-        <button className="btn btn-primary btn-sm" onClick={this.openModal}>Leave Comment</button>
-        <Modal
-          isOpen={this.state.modalIsOpen}
-          onAfterOpen={this.afterOpenModal}
-          onRequestClose={this.closeModal}
+          <button className="btn btn-primary btn-sm" onClick={this.openModal}>Respond</button>
+          <Modal
+            isOpen={this.state.modalIsOpen}
+            onAfterOpen={this.afterOpenModal}
+            onRequestClose={this.closeModal}
 
-          style={customStyles}
-          contentLabel="Example Modal"
-        >
+            style={customStyles}
+            contentLabel="Example Modal"
+          >
 
-          <h2 ref="subtitle">Please leave a brief explanation</h2>
+            <h5 className="modal-title" id="editLabel">Please leave a brief message</h5>
 
+            <form>
+              <input type="text" value={this.state.value} onChange={this.handleChange}/>
+              <button className="btn btn-primary btn-sm" onClick={this.commentRequest}>Save</button>
+              <button className="btn btn-primary btn-sm" onClick={this.closeModal}>Cancel</button>
+            </form>
+          </Modal>
 
-          <form>
-            <input type="text" value={this.state.value} onChange={this.handleChange}/>
-            <button onClick={this.commentRequest}>Save</button>
-            <button onClick={this.closeModal}>Cancel</button>
-          </form>
-        </Modal>
       </div>
+
+
+
     );
   }
 
