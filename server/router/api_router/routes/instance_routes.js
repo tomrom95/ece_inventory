@@ -2,15 +2,15 @@
 var Item = require('../../../model/items');
 var Instance = require('../../../model/instances');
 var mongoose = require('mongoose');
+var QueryBuilder = require('../../../queries/querybuilder');
+
 module.exports.getAPI = function (req, res) {
   // queryable by serial number, condition and status
-  var serial_number = req.query.serial_number;
-  var condition = req.query.condition;
-  var status = req.query.status;
-  var query = {};
-  if(serial_number) query['instances.serial_number'] = serial_number;
-  if(condition)     query['instances.condition'] = condition;
-  if(status)        query['instances.status'] = status;
+  var query = new QueryBuilder();
+  query
+    .searchExact('instances.serial_number', req.query.serial_number)
+    .searchExact('instances.condition', req.query.condition)
+    .searchExact('instances.status', req.query.status);
 
   var item_id = req.params.item_id;
   Item.aggregate(
@@ -19,7 +19,7 @@ module.exports.getAPI = function (req, res) {
     // Separate item for each instance it has
     {$unwind: '$instances'},
     // Filter out each separated item according to instance query
-    {$match: query},
+    {$match: query.toJSON()},
     // Regroup separated items into one object with list of instances
     {$group: {_id:'$_id', filteredList:{$push: '$instances'}}}],
     function(err, result){

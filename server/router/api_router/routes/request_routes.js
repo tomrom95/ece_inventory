@@ -3,6 +3,7 @@ var Request = require('../../../model/requests');
 var Item = require('../../../model/items');
 var User = require('../../../model/users');
 var mongoose = require('mongoose');
+var QueryBuilder = require('../../../queries/querybuilder')
 // fields within the item to return
 var itemFieldsToReturn = 'name model_number location description';
 
@@ -14,16 +15,21 @@ module.exports.getAPI = function (req, res) {
   var requestor_comment = req.query.requestor_comment;
   var reviewer_comment = req.query.reviewer_comment;
 
-  var query = {};
+  var query = new QueryBuilder();
+
   // An admin can GET all requests, but users can only get their requests
-  if(req.user.role === 'STANDARD') query.user = mongoose.Types.ObjectId(req.user._id);
-  if(req.query.item_id) query.item = mongoose.Types.ObjectId(req.query.item_id);
-  if(reason) query.reason = {'$regex': reason, '$options':'i'};
-  if(req.query.created) query.created = new Date(req.query.created);
-  if(quantity) query.quantity = quantity;
-  if(status) query.status = status;
-  if(requestor_comment) query.requestor_comment = {'$regex': requestor_comment, '$options': 'i'};
-  if(reviewer_comment) query.reviewer_comment = {'$regex': reviewer_comment, '$options': 'i'};
+  if(req.user.role === 'STANDARD') {
+    query.searchForObjectId('user', req.user._id);
+  }
+
+  query
+    .searchForObjectId('item', req.query.item_id)
+    .searchCaseInsensitive('reason', req.query.reason)
+    .searchForDate('created', req.query.created)
+    .searchExact('quantity', req.query.quantity)
+    .searchExact('status', req.query.status)
+    .searchCaseInsensitive('requestor_comment', req.query.requestor_comment)
+    .searchCaseInsensitive('reviewer_comment', req.query.reviewer_comment)
 
   if(req.query.page && req.query.per_page && !isNaN(req.query.per_page)){
     let paginateOptions = {
@@ -32,12 +38,12 @@ module.exports.getAPI = function (req, res) {
       limit: Number(req.query.per_page),
       populate: [{path:'item', select: itemFieldsToReturn}, {path:'user', select:'username'}]
     }
-    Request.paginate(query, paginateOptions, function(err, obj){
+    Request.paginate(query.toJSON(), paginateOptions, function(err, obj){
         if(err) return res.send({error: err});
         res.json(obj.docs);
     });
   } else {
-    Request.find(query)
+    Request.find(query.toJSON())
       .populate('item', itemFieldsToReturn)
       .populate('user', 'username')
       .exec(function(err, requests){
