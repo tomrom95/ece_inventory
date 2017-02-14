@@ -7,14 +7,14 @@ var QueryBuilder = require('../../../queries/querybuilder');
 var getPrivateFields = function(next) {
   CustomField.find({isPrivate: true}, function(error, fields) {
     if (error) return next(error);
-    fields = fields.map((field) => {return field._id});
-    next(null, fields);
+    fields = fields.map((field) => {return field._id.toString()});
+    next(null, new Set(fields));
   });
 }
 
 var filterPrivateFields = function(fieldIds, item) {
-  item.custom_fields = item.custom_fields.filter(function(item) {
-    return !fieldIds.includes(item._id);
+  item.custom_fields = item.custom_fields.filter(function(obj) {
+    return !fieldIds.has(obj.field.toString());
   });
   return item;
 }
