@@ -25,6 +25,11 @@ class UserSelect extends Component {
       var label = user.username;
       if (user.first_name && user.last_name) {
         label = user.first_name + ' ' + user.last_name;
+        if (user.netid) {
+          label += ' (' + user.netid + ')';
+        } else {
+          label += ' (' + user.username + ')';
+        }
       } else if (user.netid) {
         label = user.netid;
       }
