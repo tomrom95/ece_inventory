@@ -250,6 +250,14 @@ DELETE: {
 	"success"
 }
 
+/api/cart
+GET
+return:
+{
+
+}
+
+
 /api/requests
 GET
 params:
