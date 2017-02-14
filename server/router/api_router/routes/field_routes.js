@@ -10,7 +10,7 @@ module.exports.getAPI = function (req, res) {
   query
     .searchCaseInsensitive('name', req.query.name)
     .searchExact('type', req.query.type)
-    .searchExact('isPrivate', req.query.isPrivate);
+    .searchBoolean('isPrivate', req.query.isPrivate);
   CustomField.find(query.toJSON(), function(error, fields) {
     if (error) return res.send({error: error});
     res.json(fields);
