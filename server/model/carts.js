@@ -9,9 +9,9 @@ var CartSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  item: [
+  items: [
     {
-      id: {
+      item: {
         type:mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Item'

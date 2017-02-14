@@ -267,7 +267,7 @@ params:
 	reason: String [optional],
 	status: String [optional],
 	created: Date [optional],
-	item: [String] [optional], // query with array of item names
+	items: [String] [optional], // query with array of item names
 	user: String [optional] // Only for admin users entering another username
 }
 
