@@ -63,6 +63,7 @@ class CurrentOrders extends Component {
       }
 
     }
+
     return items;
   }
 

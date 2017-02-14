@@ -43,7 +43,7 @@ class Transactions extends Component {
   }
 
   render() {
-    var url = '/api/log/';
+    var url = '/api/logs/';
     var table = TransactionTable;
 
     if (this.state.itemId && this.state.status) {

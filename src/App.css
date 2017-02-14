@@ -55,7 +55,7 @@
 
 .requesttable {
   margin-left: 16px;
-  min-width: 680px;
+  min-width: 1500px;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
@@ -227,7 +227,7 @@
 }
 
 .detail-view {
-  min-width:700px;
+  min-width:1500px;
   min-height: 325px;
 }
 

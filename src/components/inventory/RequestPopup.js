@@ -43,10 +43,19 @@ class RequestPopup extends Component {
 		super(props);
 		this.state = {
 			data: this.props.data,
-			disburse_checked: false,
+			disburse_checked: null,
 		}
+		this.handleInputChange = this.handleInputChange.bind(this);
+
 	}
 
+	handleInputChange(event) {
+	    const value = event.target.checked;
+
+	    this.setState({
+	      disburse_checked: value
+	    });
+	  }
 
 	render() {
 		var modalBody = this.makeModalBody();
@@ -83,16 +92,30 @@ class RequestPopup extends Component {
 
 	makeModalBody() {
 		if(this.props.role === "ADMIN" || this.props.role === "MANAGER"){
-			return (
-			<div className="modal-body">
-				{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
-				{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
-				{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
-				{this.makeTextBox("username-textbox-" + this.props.itemId, "text", "Username", "")}
-				{this.makeCheckBox("disburse-textbox-" + this.props.itemId, "checkbox", "Quick Disburse", "")}
+			if(this.state.disburse_checked ){
+				return (
+					<div className="modal-body">
+						{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
+						{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
+						{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
+						{this.makeTextBox("username-textbox-" + this.props.itemId, "text", "Username", "")}
+						{this.makeCheckBox("disburse-textbox-" + this.props.itemId, "checkbox", "Disburse to User", "")}
+					</div>
+				);
 
-			</div>
-			);
+			}
+			else{
+				return (
+					<div className="modal-body">
+						{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
+						{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
+						{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
+						{this.makeCheckBox("disburse-textbox-" + this.props.itemId, "checkbox", "Disburse to User", "")}
+
+					</div>
+				);
+			}
+
 		}
 		else{
 			return (
@@ -120,7 +143,7 @@ class RequestPopup extends Component {
 		return (
 			<div className="form-group row request-quantity" key={id}>
 			  <label htmlFor={id}>{label}</label>
-			  <input type={type} className="form-control" id={id}></input>
+			  <input type={type} className="form-control" id={id} onChange={this.handleInputChange}></input>
 			</div>
 		);
 	}
@@ -132,7 +155,6 @@ class RequestPopup extends Component {
 		var qty = document.getElementById("qty-textbox-" + this.props.itemId).value;
 		var reasonVal = document.getElementById("reason-textbox-"+ this.props.itemId).value;
 		var comment = document.getElementById("comment-textbox-" + this.props.itemId).value;
-		var quick_disburse = "";
 		var username = "";
 
 
@@ -147,56 +169,87 @@ class RequestPopup extends Component {
 			return;
 		}
 
-		if (Number(qty) > this.props.data[0].Quantity) {
-			alert("Request quantity cannot exceed availability");
-			return;
-		}
 
 		if (reasonVal.length === 0 && JSON.parse(localStorage.getItem('user')).role === "STANDARD") {
-
 			alert("Reason is a required field");
 			return;
 		}
-		var check_status = "PENDING";
+
+		var request;
 		if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER" ){
-
-			check_status = "APPROVED";
-			if(document.getElementById("disburse-textbox-" + this.props.itemId).checked ){
-				check_status = "FULLFILLED";
+			if(this.state.disburse_checked){
+				username = document.getElementById("username-textbox-" + this.props.itemId).value;
+				if(username !== null){
+					if(username.length > 0){
+						request = {
+							reviewer_comment: "",
+		          requestor_comment: comment,
+		          reason: reasonVal,
+		          quantity: qty,
+		          status: "FULFILLED",
+		          created: "",
+		          item: this.props.itemId,
+							user: username
+						};
+					}
+				}
+				else{
+					alert("stop");
+				}
 			}
-		}
-
-		var request = {
-          reviewer_comment: "",
+			else{
+				request = {
+					reviewer_comment: "",
           requestor_comment: comment,
           reason: reasonVal,
           quantity: qty,
-          status: check_status,
+          status: "FULFILLED",
           created: "",
-          item: this.props.itemId
-        };
+          item: this.props.itemId,
+				};
+			}
+			var request_id;
+			this.props.api.post('/api/requests', request)
+	  	.then(function(response) {
+	        if (response.data.error) {
+	        	console.log(response.data.error);
+	        } else {
+						request_id = response.data._id;
+						this.props.api.patch('/api/requests/' + request_id,
+				      {
+				        action: "DISBURSE",
+				      }
+				    )
+				    .then(function(response) {
+				      if(response.data.error){
+				        console.log(response.data.error);
+				      }
+				      else{
 
-			if(this.props.isAdmin ){
+				      }
+				    }.bind(this))
+				    .catch(function(error) {
+				      console.log(error);
+				    }.bind(this));
+	        }
+	      }.bind(this))
+	      .catch(function(error) {
+	        console.log(error);
+	      }.bind(this));
 
-				if(document.getElementById("username-textbox-" + this.props.itemId).value){
-					username = document.getElementById("username-textbox-" + this.props.itemId).value;
-					request = {
-						reviewer_comment: "",
+
+		}
+		else{
+			request = {
+	          reviewer_comment: "",
 	          requestor_comment: comment,
 	          reason: reasonVal,
 	          quantity: qty,
-	          status: check_status,
+	          status: "PENDING",
 	          created: "",
-	          item: this.props.itemId,
-						user: username
-					};
-				}
-
-
-
-
-			}
-  		this.props.api.post('/api/requests', request)
+	          item: this.props.itemId
+	        };
+			this.props.api.post('/api/requests', request)
 	  	.then(function(response) {
 	        if (response.data.error) {
 	        	console.log(response.data.error);
@@ -207,6 +260,11 @@ class RequestPopup extends Component {
 	      .catch(function(error) {
 	        console.log(error);
 	      }.bind(this));
+		}
+
+
+
+
 
 	}
 

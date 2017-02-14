@@ -24,7 +24,6 @@ function getKeys(data) {
 
 		if (["Name", "Quantity", "Model", "Vendor"].includes(keys[i])) {
 			ret.push(keys[i]);
-			console.log(keys[i]);
 		}
 	}
 	return ret;
