@@ -248,12 +248,12 @@ return:
 {
 	_id: String,
 	user: String,
-	item: [{
-	   id:{ // populated info
-		id: String,
-		name: String,
-	       },
-	   quantity: Integer
+	items: [{
+	  item: { // populated info
+			id: String,
+			name: String,
+	  },
+	  quantity: Integer
 	}],
 	description: String,
 	created: String,
@@ -266,7 +266,7 @@ body:
 {
 	user: String, // Admin only
 	items: [{
-		id: String,
+		item: String,
 		quantity: Integer
 	}], // Admin only
 	description: String
@@ -276,10 +276,10 @@ return:
 {
 	_id: String,
 	user: String,
-	item: [{
-	   id:{ // populated info
-		id: String,
-		name: String,
+	items: [{
+	   item:{ // populated info
+			id: String,
+			name: String,
 	       },
 	   quantity: Integer
 	}],
