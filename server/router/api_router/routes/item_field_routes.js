@@ -57,7 +57,7 @@ module.exports.deleteAPI = function(req, res){
     {new: true},
     function(error, item) {
       if (error) return res.send({error: error});
-      return res.json(item);
+      return res.json({item});
     }
   );
 }

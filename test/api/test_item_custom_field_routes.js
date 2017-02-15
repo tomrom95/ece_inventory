@@ -44,7 +44,6 @@ describe('Inventory Custom Fields API Test', function () {
   var managerUser;
 
   var defaultFields;
-  var defaultItem;
 
   beforeEach((done) => { //Before each test we empty the database
     Item.remove({}, (err) => {
@@ -69,14 +68,7 @@ describe('Inventory Custom Fields API Test', function () {
                   array.forEach(function(field) {
                     defaultFields[field.name] = field;
                   });
-                  var itemToCreate = Item({
-                    "quantity": 1000,
-                    "name": "test_item",
-                  });
-                  itemToCreate.save(function(err, itemCreated) {
-                    defaultItem = itemCreated;
-                    done();
-                  });
+                  done();
                 });
               });
             });
@@ -88,22 +80,326 @@ describe('Inventory Custom Fields API Test', function () {
 
   describe('POST /inventory/:item_id/customFields', () =>{
     it('adds a new customField', (done) => {
-      chai.request(server)
-        .post('/api/inventory/' + defaultItem._id + '/customFields')
-        .set('Authorization', adminToken)
-        .send({
-          field: defaultFields.location._id,
-          value: 'ciemas'
-        })
-        .end((err, res) => {
-          should.not.exist(err);
-          res.should.have.status(200);
-          res.body.custom_fields[0].field.should.be.eql(String(defaultFields.location._id));
-          res.body.custom_fields[0].value.should.be.eql('ciemas');
-          Item.findById(defaultItem._id, function(error, item) {
-            item.custom_fields[0].field.should.be.eql(defaultFields.location._id);
-            item.custom_fields[0].value.should.be.eql('ciemas');
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .post('/api/inventory/' + item._id + '/customFields')
+          .set('Authorization', adminToken)
+          .send({
+            field: defaultFields.location._id,
+            value: 'ciemas'
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            res.body.custom_fields[0].field.should.be.eql(String(defaultFields.location._id));
+            res.body.custom_fields[0].value.should.be.eql('ciemas');
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields[0].field.should.be.eql(defaultFields.location._id);
+              foundItem.custom_fields[0].value.should.be.eql('ciemas');
+              done();
+            });
+          });
+      });
+    });
+
+    it('updates custom field if it already exists', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+        custom_fields: [
+          {
+            field: defaultFields.location._id,
+            value: 'ciemas'
+          }
+        ]
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .post('/api/inventory/' + item._id + '/customFields')
+          .set('Authorization', adminToken)
+          .send({
+            field: defaultFields.location._id,
+            value: 'hudson'
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            res.body.custom_fields.length.should.be.eql(1);
+            res.body.custom_fields[0].field.should.be.eql(String(defaultFields.location._id));
+            res.body.custom_fields[0].value.should.be.eql('hudson');
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields.length.should.be.eql(1);
+              foundItem.custom_fields[0].field.should.be.eql(defaultFields.location._id);
+              foundItem.custom_fields[0].value.should.be.eql('hudson');
+              done();
+            });
+          });
+      });
+    });
+
+    it('does not allow managers to add new field', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .post('/api/inventory/' + item._id + '/customFields')
+          .set('Authorization', managerToken)
+          .send({
+            field: defaultFields.location._id,
+            value: 'hudson'
+          })
+          .end((err, res) => {
+            res.should.have.status(403);
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields.length.should.be.eql(0);
+              done();
+            });
+          });
+      });
+    });
+
+    it('does not allow standard users to add new field', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .post('/api/inventory/' + item._id + '/customFields')
+          .set('Authorization', standardToken)
+          .send({
+            field: defaultFields.location._id,
+            value: 'hudson'
+          })
+          .end((err, res) => {
+            res.should.have.status(403);
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields.length.should.be.eql(0);
+              done();
+            });
+          });
+      });
+    });
+
+  });
+
+  describe('PUT /inventory/:item_id/customFields/:field_id', () =>{
+    it('adds a new custom field if it does not exist', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .put('/api/inventory/' + item._id + '/customFields/' + defaultFields.location._id)
+          .set('Authorization', adminToken)
+          .send({ value: 'ciemas'})
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            res.body.custom_fields.length.should.be.eql(1);
+            res.body.custom_fields[0].field.should.be.eql(String(defaultFields.location._id));
+            res.body.custom_fields[0].value.should.be.eql('ciemas');
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields.length.should.be.eql(1);
+              foundItem.custom_fields[0].field.should.be.eql(defaultFields.location._id);
+              foundItem.custom_fields[0].value.should.be.eql('ciemas');
+              done();
+            });
+          });
+      });
+    });
+
+    it('updates custom field', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+        custom_fields: [
+          {
+            field: defaultFields.location._id,
+            value: 'ciemas'
+          }
+        ]
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .put('/api/inventory/' + item._id + '/customFields/' + defaultFields.location._id)
+          .set('Authorization', adminToken)
+          .send({value: 'hudson'})
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            res.body.custom_fields.length.should.be.eql(1);
+            res.body.custom_fields[0].field.should.be.eql(String(defaultFields.location._id));
+            res.body.custom_fields[0].value.should.be.eql('hudson');
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields.length.should.be.eql(1);
+              foundItem.custom_fields[0].field.should.be.eql(defaultFields.location._id);
+              foundItem.custom_fields[0].value.should.be.eql('hudson');
+              done();
+            });
+          });
+      });
+    });
+
+    it('does not allow managers to update a new field', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+        custom_fields: [
+          {
+            field: defaultFields.location._id,
+            value: 'ciemas'
+          }
+        ]
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .put('/api/inventory/' + item._id + '/customFields/' + defaultFields.location._id)
+          .set('Authorization', managerToken)
+          .send({value: 'hudson'})
+          .end((err, res) => {
+            res.should.have.status(403);
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields[0].value.should.be.eql('ciemas');
+              done();
+            });
+          });
+      });
+    });
+
+    it('does not allow standard users to update a new field', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+        custom_fields: [
+          {
+            field: defaultFields.location._id,
+            value: 'ciemas'
+          }
+        ]
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .put('/api/inventory/' + item._id + '/customFields/' + defaultFields.location._id)
+          .set('Authorization', managerToken)
+          .send({value: 'hudson'})
+          .end((err, res) => {
+            res.should.have.status(403);
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields[0].value.should.be.eql('ciemas');
+              done();
+            });
+          });
+      });
+    });
+
+  });
+
+  describe('DELETE /inventory/:item_id/customFields/:field_id', () =>{
+    it('deletes the custom field if it exists', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+        custom_fields: [
+          {
+            field: defaultFields.location._id,
+            value: 'ciemas'
+          }
+        ]
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .delete('/api/inventory/' + item._id + '/customFields/' + defaultFields.location._id)
+          .set('Authorization', adminToken)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            should.not.exist(res.body.custom_fields);
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields.length.should.be.eql(0);
+              done();
+            });
+          });
+      });
+    });
+
+    it('does not throw error if field does not exist', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+        custom_fields: [
+          {
+            field: defaultFields.location._id,
+            value: 'ciemas'
+          }
+        ]
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .delete('/api/inventory/' + item._id + '/customFields/' + defaultFields["restock_info"]._id)
+          .set('Authorization', adminToken)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            should.not.exist(res.body.error);
             done();
+          });
+      });
+    });
+
+    it('does not allow managers to delete a field', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+        custom_fields: [
+          {
+            field: defaultFields.location._id,
+            value: 'ciemas'
+          }
+        ]
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .delete('/api/inventory/' + item._id + '/customFields/' + defaultFields.location._id)
+          .set('Authorization', managerToken)
+          .end((err, res) => {
+            res.should.have.status(403);
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields[0].value.should.be.eql('ciemas');
+              done();
+            });
+          });
+      });
+    });
+
+    it('does not allow standard users to delete a field', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+        custom_fields: [
+          {
+            field: defaultFields.location._id,
+            value: 'ciemas'
+          }
+        ]
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .delete('/api/inventory/' + item._id + '/customFields/' + defaultFields.location._id)
+          .set('Authorization', managerToken)
+          .end((err, res) => {
+            res.should.have.status(403);
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields[0].value.should.be.eql('ciemas');
+              done();
+            });
           });
       });
     });
