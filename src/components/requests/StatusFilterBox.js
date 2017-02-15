@@ -51,7 +51,6 @@ class StatusFilterBox extends Component {
                       <div className="form-group row">
                         <label htmlFor="model-field">Status</label>
                         <Select
-                          multi
                           simpleValue
                           value={this.state.status}
                           placeholder="Choose status"
