@@ -3,42 +3,48 @@ var Item = require('../../../model/items');
 var mongoose = require('mongoose');
 
 module.exports.postAPI = function(req, res){
-  Item.findById(req.params.item_id, function(error, item) {
-    if (error) return res.send({error: error});
-    if (!item) return res.send({error: 'Item does not exist'});
-    var fieldExists = item.custom_fields.some(function (obj) {
-        return obj.field.equals(req.body.field);
-    });
-    if (fieldExists) return res.send({error: 'Field already exists in item'});
-    item.custom_fields.push({
-      field: req.body.field,
-      value: req.body.value
-    });
-    item.save(function(error, newItem) {
-      if (error) return res.send({error: error});
-      return res.json(newItem);
-    });
-  });
-};
-
-module.exports.putAPI = function(req, res){
-  Item.findOneAndUpdate(
-    {
-      "_id": req.params.item_id,
-      "custom_fields.field": mongoose.Types.ObjectId(req.params.field_id)
-    },
-    {
-        "$set": {
-            "custom_fields.$.value": req.body.value
-        }
-    },
-    {new: true},
+  createOrUpdateField(
+    req.params.item_id,
+    req.body.field,
+    req.body.value,
     function(error, item) {
       if (error) return res.send({error: error});
-      return res.json(item);
+      res.json(item);
     }
   );
 };
+
+module.exports.putAPI = function(req, res){
+  createOrUpdateField(
+    req.params.item_id,
+    req.params.field_id,
+    req.body.value,
+    function(error, item) {
+      if (error) return res.send({error: error});
+      res.json(item);
+    }
+  );
+};
+
+var createOrUpdateField = function(itemId, fieldId, value, next) {
+  Item.findById(itemId, function(error, item) {
+    if (error) return next(error);
+    if (!item) return next('Item does not exist');
+    var fieldIndex = item.custom_fields.findIndex(f => f.field.equals(fieldId));
+    if (fieldIndex >= 0) { // field exists
+      item.custom_fields[fieldIndex].value = value;
+    } else {
+      item.custom_fields.push({
+        field: fieldId,
+        value: value
+      });
+    }
+    item.save(function(error, newItem) {
+      if (error) return next(error);
+      next(null, newItem);
+    });
+  });
+}
 
 module.exports.deleteAPI = function(req, res){
   Item.findByIdAndUpdate(
