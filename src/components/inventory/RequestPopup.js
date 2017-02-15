@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../../App.css';
 import RequestSubtable from '../requests/RequestSubtable.js';
+import UserSelect from '../user/UserSelect';
 
 function validNumber(num) {
 	return !isNaN(num);
@@ -98,7 +99,7 @@ class RequestPopup extends Component {
 						{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity to Request", "")}
 						{this.makeTextBox("reason-textbox-" + this.props.itemId, "text", "Reason for Request", "")}
 						{this.makeTextBox("comment-textbox-" + this.props.itemId, "text", "Additional Comments", "")}
-						{this.makeTextBox("username-textbox-" + this.props.itemId, "text", "Username", "")}
+						<UserSelect ref="userSelect" api={this.props.api}/>
 						{this.makeCheckBox("disburse-textbox-" + this.props.itemId, "checkbox", "Disburse to User", "")}
 					</div>
 				);
@@ -178,20 +179,18 @@ class RequestPopup extends Component {
 		var request;
 		if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER" ){
 			if(this.state.disburse_checked){
-				username = document.getElementById("username-textbox-" + this.props.itemId).value;
-				if(username !== null){
-					if(username.length > 0){
-						request = {
-							reviewer_comment: "",
-		          requestor_comment: comment,
-		          reason: reasonVal,
-		          quantity: qty,
-		          status: "FULFILLED",
-		          created: "",
-		          item: this.props.itemId,
-							user: username
-						};
-					}
+				var userId = this.refs.userSelect.getSelectedUserId();
+				if(userId){
+					request = {
+						reviewer_comment: "",
+	          requestor_comment: comment,
+	          reason: reasonVal,
+	          quantity: qty,
+	          status: "FULFILLED",
+	          created: "",
+	          item: this.props.itemId,
+						user: userId
+					};
 				}
 				else{
 					alert("stop");
@@ -272,6 +271,7 @@ class RequestPopup extends Component {
 		document.getElementById("qty-textbox-" + this.props.itemId).value = "";
 		document.getElementById("reason-textbox-" + this.props.itemId).value = "";
 		document.getElementById("comment-textbox-" + this.props.itemId).value = "";
+		this.refs.userSelect.clearUser();
 	}
 
 	update(newData) {

@@ -651,7 +651,7 @@ describe('Requests API Test', function () {
         });
       });
     });
-    it('Should POST as standard user with own username', (done) => {
+    it('Should POST as standard user with own user id', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
         should.not.exist(err);
         var standard_token = helpers.createAuthToken(user);
@@ -660,7 +660,7 @@ describe('Requests API Test', function () {
           var request = {
             "status": "PENDING",
             "quantity": 2000,
-            "user": "standardUser"
+            "user": user._id
           };
           request.item = item2._id;
           chai.request(server)
@@ -679,7 +679,7 @@ describe('Requests API Test', function () {
         });
       });
     });
-    it('Should POST as admin with specified user name', (done) => {
+    it('Should POST as admin with specified user id', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
         should.not.exist(err);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
@@ -687,7 +687,7 @@ describe('Requests API Test', function () {
           var request = {
             "status": "PENDING",
             "quantity": 2000,
-            "user": "standardUser"
+            "user": user._id
           };
           request.item = item2._id;
           chai.request(server)
@@ -706,7 +706,7 @@ describe('Requests API Test', function () {
         });
       });
     });
-    it('Should not POST with non-existing user name', (done) => {
+    it('Should not POST with non-existing user id', (done) => {
         helpers.createNewUser('standardUser', 'standard', 'STANDARD' , function(err, user) {
         should.not.exist(err);
         Item.findOne({"name": "2k resistor"}, function(err, item2){
@@ -714,7 +714,7 @@ describe('Requests API Test', function () {
           var request = {
             "status": "PENDING",
             "quantity": 2000,
-            "user": "asdfs"
+            "user": "53cb6b9b4f4ddef1ad47f943"
           };
           request.item = item2._id;
           chai.request(server)
@@ -740,7 +740,7 @@ describe('Requests API Test', function () {
           var request = {
             "status": "PENDING",
             "quantity": 2000,
-            "user": "standard"
+            "user": user_id
           };
           request.item = item2._id;
           chai.request(server)
@@ -793,7 +793,7 @@ describe('Requests API Test', function () {
         });
       });
     });
-    it('PUTS request - admin user can specify user name', (done) => {
+    it('PUTS request - admin user can specify user id', (done) => {
       var request = new Request({
         "reviewer_comment": "NONADMIN",
         "requestor_comment": "NONADMIN",
@@ -813,7 +813,7 @@ describe('Requests API Test', function () {
           'reason': 'NONE',
           'status': 'FULFILLED',
           'quantity': 3000,
-          'user': 'test_user'
+          'user': user_id
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -828,7 +828,7 @@ describe('Requests API Test', function () {
         });
       });
     });
-    it('Should not PUT request - admin user specifies invalid user name', (done) => {
+    it('Should not PUT request - admin user specifies invalid user id', (done) => {
       var request = new Request({
         "reviewer_comment": "NONADMIN",
         "requestor_comment": "NONADMIN",
@@ -848,7 +848,7 @@ describe('Requests API Test', function () {
           'reason': 'NONE',
           'status': 'FULFILLED',
           'quantity': 3000,
-          'user': 'asdfasdf'
+          'user': '111111111111111111111111'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -882,7 +882,7 @@ describe('Requests API Test', function () {
             'reason': 'NONE',
             'status': 'FULFILLED',
             'quantity': 3000,
-            'user': "test_user"
+            'user': user_id
           })
           .end((err, res) => {
             should.not.exist(err);
