@@ -3,6 +3,7 @@ import '../../App.css';
 import SubtableRow from '../inventory/TableRow';
 import Modal from 'react-modal';
 import LeaveCommentPopup from './LeaveCommentPopup.js';
+import ButtonGroup from 'react-bootstrap';
 
 
 function getKeys(data) {
@@ -62,7 +63,8 @@ class RequestTable extends Component {
 		for (i=0; i<keys.length; i++) {
 			list.push(<th key={keys[i]+"-requestcol"}> {keys[i]} </th>);
 		}
-		list.push(<th key={"buttonSpace"}> </th>);
+		list.push(<th key={"buttonSpace" + 1}> </th>);
+
 		return list;
 	}
 
@@ -81,10 +83,10 @@ class RequestTable extends Component {
           button_list=[this.denyButton(i), this.fulfillButton(i),this.commentButton(i)];
         }
         else if (rowData[i][5] === 'DENIED') {
-          button_list=[this.blankSpace(i), this.approveButton(i),this.commentButton(i)];
+          button_list=[this.blankSpace(i , 1), this.approveButton(i , 2),this.commentButton(i)];
         }
         else if (rowData[i][5] === 'FULFILLED') {
-          button_list=[this.blankSpace(i), this.blankSpace(i), this.commentButton(i)];
+          button_list=[this.blankSpace(i , 1), this.blankSpace(i , 2), this.commentButton(i)];
         }
       }
       else{
@@ -96,6 +98,7 @@ class RequestTable extends Component {
 				}
 
       }
+			//var button_group = this.makeButtonsVertical(i, button_list);
 
 			var elem;
 			var id = this.props.data[i]["item_id"] ;
@@ -112,6 +115,14 @@ class RequestTable extends Component {
 		return list;
 	}
 
+	/*makeButtonsVertical(index, buttons){
+
+		return(
+			<td key={"buttongroup-td" + index} className="subtable-row">
+				<ButtonGroup key={"buttongroup" + index}>{buttons}</ButtonGroup>
+			</td>
+		);
+	}*/
   denyButton(index){
     return(
 			<td key={"delete-td-"+index} className="subtable-row">
@@ -158,11 +169,12 @@ class RequestTable extends Component {
     )
   }
 
-	blankSpace(index){
-
-		<td key={"blank-td-"+index} className="subtable-row">
-			<button key={"blank"+index} className="btn btn-primary btn-sm"  > hey </button>
-		</td>
+	blankSpace(index , col){
+		return(
+			<td key={"blank-td-"+index + col} className="subtable-row">
+				<button key={"blank"+index + col}  className="white-space-cell" type="button"> hey </button>
+			</td>
+		);
 	}
 
   approveRequest(index){
