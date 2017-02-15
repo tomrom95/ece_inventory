@@ -16,12 +16,7 @@ class StatusFilterBox extends Component {
     }
   }
 
-  componentWillMount() {
-
-  }
-
-
-
+  
   filterButton() {
     var status = this.state.status;
     this.props.filterRequests(status);

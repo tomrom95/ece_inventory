@@ -20,7 +20,20 @@ class CurrentOrders extends Component {
       itemId: props.itemID,
       status: props.status
     };
+
   }
+  getUserDisplay(user){
+    if (!user) {
+      return "unknown";
+    }
+    if (user.first_name && user.last_name) {
+      return user.first_name + ' ' + user.last_name;
+    } else if (user.netid) {
+      return user.netid;
+    } else {
+      return user.username;
+    }
+ }
 
   processData(responseData) {
     var requests = responseData.data;
@@ -29,10 +42,12 @@ class CurrentOrders extends Component {
     var item;
     for (i=0; i<requests.length; i++) {
       var obj = requests[i];
+      var userDisplay = this.getUserDisplay(obj.user);
+      var user_id = obj.user ? obj.user._id : "";
       if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER"){
-        if(obj.user.username === JSON.parse(localStorage.getItem('user')).username){
+        if(obj.user._id == JSON.parse(localStorage.getItem('user'))._id){
           item = {
-            "Username": obj.user.username,
+            "User": userDisplay,
             "Item": obj.item.name,
             "Time Stamp": formatDate(new Date(obj.created).toString()),
             "Quantity": obj.quantity,
@@ -40,7 +55,7 @@ class CurrentOrders extends Component {
             "Status": obj.status,
             "Response": obj.reviewer_comment,
             "_id": obj._id,
-            "user_id": obj.user._id,
+            "user_id": user_id,
             "item_id": obj.item._id,
           };
           items.push(item);
@@ -48,7 +63,7 @@ class CurrentOrders extends Component {
       }
       else{
         item = {
-          "Username": obj.user.username,
+          "User": userDisplay,
           "Item": obj.item.name,
           "Time Stamp": formatDate(new Date(obj.created).toString()),
           "Quantity": obj.quantity,
@@ -56,7 +71,7 @@ class CurrentOrders extends Component {
           "Status": obj.status,
           "Response": obj.reviewer_comment,
           "_id": obj._id,
-          "user_id": obj.user._id,
+          "user_id": user_id,
           "item_id": obj.item._id,
         };
         items.push(item);
