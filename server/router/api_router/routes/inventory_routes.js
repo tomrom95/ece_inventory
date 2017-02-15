@@ -7,6 +7,7 @@ module.exports.getAPI = function (req, res) {
   // Remove required_tags and excluded_tags first
   var query = new QueryBuilder();
   query
+    .searchBoolean('is_deleted', false)
     .searchInArray('tags', req.query.required_tags, req.query.excluded_tags)
     .searchCaseInsensitive('name', req.query.name)
     .searchCaseInsensitive('location', req.query.location)
@@ -40,7 +41,13 @@ module.exports.getAPI = function (req, res) {
 module.exports.getAPIbyID = function(req,res){
   Item.findById(req.params.item_id, function (err, item){
     if(err) return res.send({error: err});
-    (!item) ? res.send({error: 'Item does not exist'}) : res.json(item);
+    if (!item) {
+      res.send({error: 'Item does not exist'});
+    }
+    if (req.user.role === 'STANDARD' && item.is_deleted) {
+      return res.status(403).send({error: 'You do not have privileges to view this item'});
+    }
+    res.json(item);
   });
 };
 
@@ -74,10 +81,13 @@ function trimTags(tagArray){
 }
 
 module.exports.putAPI = function(req, res){
+  if (req.body.is_deleted !== null && req.body.is_deleted !== undefined) {
+    return res.send({error: 'You cannot update the delete field'})
+  }
   Item.findById(req.params.item_id, function (err, old_item){
     if(err) return res.send({error: err});
-    if(!old_item)
-      return res.send({error: 'Item does not exist'});
+    if(!old_item || old_item.is_deleted)
+      return res.send({error: 'Item does not exist or has been deleted'});
     else{
       var old_quantity = old_item.quantity;
       var obj = Object.assign(old_item, req.body)
@@ -91,15 +101,12 @@ module.exports.putAPI = function(req, res){
 };
 
 module.exports.deleteAPI = function(req, res){
-  Item.findById(req.params.item_id, function(err, item){
-    if(err) return res.send({error: err});
-    if(!item)
-     return res.send({error: 'Item does not exist'});
-    else{
-      item.remove(function(err){
-        if(err) return res.send({error: err});
-        res.send({message: 'Delete successful'});
-    });
-  }
-  })
+  Item.findByIdAndUpdate(
+    req.params.item_id,
+    {$set: {is_deleted: true}},
+    function(err, item) {
+      if (err) return res.send(err);
+      return res.json({message: "Delete successful"});
+    }
+  );
 }
