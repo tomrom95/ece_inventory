@@ -31,13 +31,7 @@ db.open(function(err, db) {
             console.log(err.message);
           }
           Item.insertMany(fakeJSONData).then(function(obj){
-            console.log("inserted items");
-            Cart.insert({
-              user: user._id,
-              items: []
-            }).then(function(obj){
               process.exit();
-            })
           });
         });
     });
