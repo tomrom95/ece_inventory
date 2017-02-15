@@ -242,7 +242,7 @@ return: {
 DELETE: {
 	"success"
 }
-/api/cart
+/api/cart/:user_id
 GET
 return:
 {
