@@ -27,9 +27,10 @@ var ItemSchema = new mongoose.Schema({
   },
   instances: [InstanceSchema],
   custom_fields:[{
+    _id: false,
     field: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'CustomField'
+      ref: 'CustomField',
     },
     value:    mongoose.Schema.Types.Mixed,
   }]
