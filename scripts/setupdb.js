@@ -32,7 +32,12 @@ db.open(function(err, db) {
           }
           Item.insertMany(fakeJSONData).then(function(obj){
             console.log("inserted items");
-            process.exit();
+            Cart.insert({
+              user: user._id,
+              items: []
+            }).then(function(obj){
+              process.exit();
+            })
           });
         });
     });
