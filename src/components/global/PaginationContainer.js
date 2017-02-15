@@ -3,8 +3,9 @@ import '../../App.css';
 import axios from 'axios';
 import FilterBox from './FilterBox.js';
 import ErrorMessage from './ErrorMessage.js';
+import StatusFilterBox from '../requests/StatusFilterBox.js';
 
-var filterNames = ["name", "model_number", "required_tags", "excluded_tags"];
+var filterNames = ["name", "model_number", "required_tags", "excluded_tags", "status"];
 
 class PaginationContainer extends Component {
 
@@ -28,18 +29,20 @@ class PaginationContainer extends Component {
 				title: "",
 				message: ""
 			},
-      		filters: {
-		        name: "",
-		        model_number: "",
-		        excluded_tags: "",
-		        required_tags: ""
-      		},
-      		url: props.url,
-      		processData: props.processData,
-      		renderComponent: props.renderComponent,
-      		showFilterBox: props.showFilterBox,
-      		id: props.id,
-      		hasOtherParams: props.hasOtherParams
+  		filters: {
+        name: "",
+        model_number: "",
+        excluded_tags: "",
+        required_tags: "",
+				status: "",
+  		},
+  		url: props.url,
+  		processData: props.processData,
+  		renderComponent: props.renderComponent,
+  		showFilterBox: props.showFilterBox,
+  		id: props.id,
+  		hasOtherParams: props.hasOtherParams,
+
 		};
 
 		if (props.rowsPerPage)
@@ -132,17 +135,34 @@ class PaginationContainer extends Component {
 	        name: name,
 	        model_number: modelNumber,
 	        required_tags: requiredTags,
-	        excluded_tags: excludedTags
+	        excluded_tags: excludedTags,
+					status: "",
 	      }
 	    }, function () {
 	      this.loadData(1, false);
 	    });
-  	}
+  }
 
-  	setRowCount(numRows) {
-    	this.state.rowsPerPage = numRows;
-    	this.loadData(1, false);
-  	}
+	filterRequests(status){
+		this.setState({
+			page: 1,
+			filters: {
+				name: "",
+				model_number: "",
+				required_tags: "",
+				excluded_tags: "",
+				status: status,
+			}
+		}, function () {
+			this.loadData(1, false);
+		});
+	}
+
+
+	setRowCount(numRows) {
+  	this.state.rowsPerPage = numRows;
+  	this.loadData(1, false);
+	}
 
 	makePageBox() {
     	return (
@@ -254,16 +274,15 @@ class PaginationContainer extends Component {
 	}
 
 	render() {
-	    var table = null;
+	  var table = null;
 		var TableComp = this.state.renderComponent;
-
 		var filterBox = this.state.showFilterBox ?
 						(<div className="col-md-3">
-							<FilterBox
-		              		api={this.instance}
-		              		filterItems={this.filterItems.bind(this)}/>
-		              	</div>)
-		              	: null;
+								<FilterBox
+			              		api={this.instance}
+			              		filterItems={this.filterItems.bind(this)}/>
+		        	</div>)
+		        : null;
 
 	    if (this.state.initialLoad) {
 	      table = (<div></div>);
@@ -278,6 +297,7 @@ class PaginationContainer extends Component {
 	    }
 
 	    if (filterBox !== null) {
+
 		    return (
 		      <div className="row inventory-page">
 
@@ -294,8 +314,14 @@ class PaginationContainer extends Component {
 		      </div>
 		    );
 		}
-		else return (
+		else{
+
+			return (
 	        <div className="col-xs-12">
+
+						<div className="col-md-3">
+							<StatusFilterBox filterRequests={this.filterRequests.bind(this)}/>
+						</div>
 
 	          {this.makePageControlBar()}
 
@@ -303,7 +329,9 @@ class PaginationContainer extends Component {
 	            {table}
 	          </div>
 	        </div>
-		);
+			);
+
+		}
 	}
 }
 

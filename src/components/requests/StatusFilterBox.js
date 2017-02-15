@@ -14,16 +14,14 @@ class StatusFilterBox extends Component {
 
   }
 
-  
+
 
   filterButton() {
     var status = this.refs.status.value;
     this.props.filterRequests(status);
   }
 
-  handleStatusChange(value) {
-    this.setState({Status: value});
-  }
+  
 
   render() {
     return(
@@ -43,7 +41,7 @@ class StatusFilterBox extends Component {
                   <div className="form-fields">
                       <div className="form-group row">
                         <label htmlFor="model-field">Status</label>
-
+                        <input className="form-control" type="text" defaultValue="" ref="status" id="name-field"/>
                       </div>
 
                       <div className="row">
