@@ -7,19 +7,6 @@ class FilterBox extends Component {
   }
 
   componentWillMount() {
-    this.props.api.get('/api/inventory/tags')
-      .then(function(response) {
-        if (response.error) {
-          console.log(response.error);
-        }
-        var data = response.data.map(function(tag) {
-          return {label: tag, value: tag}
-        });
-        this.setState({allTags: data});
-      }.bind(this))
-      .catch(function(error) {
-        console.log(error);
-      });
   }
 
   filterButton() {
@@ -28,14 +15,6 @@ class FilterBox extends Component {
     var required = this.refs.required.getSelectedTags();
     var excluded = this.refs.excluded.getSelectedTags();
     this.props.filterItems(name, modelNumber, required, excluded);
-  }
-
-  handleRequiredChange(value) {
-    this.setState({requiredTags: value});
-  }
-
-  handleExcludedChange(value) {
-    this.setState({excludedTags: value});
   }
 
   render() {
