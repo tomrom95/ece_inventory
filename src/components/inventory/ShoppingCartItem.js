@@ -37,7 +37,7 @@ class ShoppingCartItem extends Component {
 			  		{this.state.Name}
 			  	</h5>
 			  	<div className="col-md-2">
-			  		<button type="button" className="btn btn-danger btn-sm"><span className="fa fa-trash"></span></button>
+			  		<button type="button" className="btn btn-danger btn-sm"><span className="fa fa-remove"></span></button>
 			  	</div>
 		  	</div>
 			<div className="container">

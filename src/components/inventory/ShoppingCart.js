@@ -32,7 +32,7 @@ class ShoppingCart extends Component {
 
 	render() {
 		return (			
-			<div>	
+			<th>	
 				<button data-toggle="modal" data-target={"#cart-button"}
 						type="button"
 						className="btn btn-secondary">
@@ -70,7 +70,7 @@ class ShoppingCart extends Component {
 				    </div>
 				  </div>
 				</div>
-			</div>
+			</th>
 		);
 	}
 }
