@@ -121,6 +121,32 @@ return:
 	"success"
 }
 
+/api/inventory/:item_id/customFields
+POST
+// Will update custom field if it already exists
+params: {
+	field: String (the id not the field name),
+	value: Mixed
+}
+return: {
+	// Item object from before
+}
+
+/api/inventory/:item_id/customFields/:field_id
+PUT
+// will add custom field if it doesn't exist
+params: {
+	value: Mixed
+}
+return: {
+	// Item object from before
+}
+DELETE
+// Won't return error if the field doesn't exist
+return: {
+	// Item object from before
+}
+
 /api/inventory/:item_id/instances
 GET
 params:{
@@ -184,6 +210,13 @@ returns:
   "success"
 }
 
+/api/inventory/paginationInfo
+GET:
+return:
+{
+   total: Integer // total number of pages
+}
+
 /api/customFields
 GET:
 params:
@@ -242,101 +275,7 @@ return: {
 DELETE: {
 	"success"
 }
-/api/cart
-GET
-return:
-{
-	_id: String,
-	user: String,
-	items: [{
-	  item: { // populated info
-			_id: String,
-			name: String,
-	  },
-	  quantity: Integer
-	}],
-	description: String,
-	created: String,
-	lastModified, String
-}
 
-/api/cart/:user_id
-PUT
-body:
-{
-	user: String, // Admin only
-	items: [{
-		item: String,
-		quantity: Integer
-	}], // Admin only
-	description: String
-}
-
-return:
-{
-	_id: String,
-	user: String,
-	items: [{
-	   item:{ // populated info
-			_id: String,
-			name: String,
-	       },
-	   quantity: Integer
-	}],
-	description: String,
-	created: String,
-	lastModified, String
-}
-
-/api/cart/items
-POST
-body:
-{
-	user: String, // admin-only
-	item: String, // item id
-	quantity: Integer
-}
-return:
-{
-	user: String,
-	item: String,
-	quantity: Integer
-}
-
-/api/cart/items/:item_id
-PUT
-body:
-{
-	user: String, // admin-only
-	quantity: Integer
-}
-return:
-{
-	user: String,
-	item: String,
-	quantity: Integer
-}
-
-DELETE
-return:
-{
-	"success"
-}
-
-PATCH
-params:{
-	action: "CHECKOUT"
-}
-return {
-	items: [
-		{
-			// same item body as before
-		}
-	],
-	request: {
-		// same request body as before
-	}
-}
 /api/requests
 GET
 params:
@@ -346,7 +285,7 @@ params:
 	reason: String [optional],
 	status: String [optional],
 	created: Date [optional],
-	items: [String] [optional], // query with array of item names
+	item: [String] [optional], // query with array of item names
 	user: String [optional] // Only for admin users entering another username
 }
 
@@ -358,7 +297,7 @@ return:
 		_id: String,
 		username: String
 	},
-    items: [
+    item: [
 		{
 		id: String,
 		name: String,
@@ -376,7 +315,7 @@ return:
 POST
 body:
 {
-  items: [
+  item: [
    {
      id: String,
      quantity: Integer
@@ -393,7 +332,7 @@ return:
 {
   _id: String,
   user_id: String,
-  items: [
+  item: [
   {
 	id: String,
 	name: String,
@@ -412,7 +351,7 @@ return:
 {
   _id: String,
   user_id: String,
-  items: [
+  item: [
   {
 	id: String,
 	name: String,
@@ -428,7 +367,7 @@ return:
 PUT
 body:
 {
-  items: [
+  item: [
   {
 	name: String,
 	quantity: Integer
@@ -444,7 +383,7 @@ return:
 {
   _id: String,
   user_id: String,
-  items: [
+  item: [
 	  {
 		id: String,
 		name: String,
@@ -483,24 +422,31 @@ return {
 /api/log
 GET
 params:
-
+{
+	user: String,
+	items: String (CSV), //(the item ids)
+	type: String
+}
 return:
 [
   {
     _id: String,
-    created_by: {
+    initiating_user: {
 			_id: String,
-			username: String
+			username: String,
+			netid: String,
+			first_name: String,
+			last_name: String
 		},
-		item: [
+		items: [
 			{
 				_id: String,
 				name: String,
 			}
 		],
-  	type: String,
-    quantity: Integer,
+  	type: String ('EDIT', 'NEW', 'DELETED', 'FULFILLED'),
     time_stamp: String,
+		description: String
   }
 ]
 
