@@ -141,6 +141,30 @@ describe('Inventory Custom Fields API Test', function () {
       });
     });
 
+    it('returns an error if the field is invalid', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .post('/api/inventory/' + item._id + '/customFields')
+          .set('Authorization', adminToken)
+          .send({
+            field: "111111111111111111111111",
+            value: 'hudson'
+          })
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.error.should.be.eql('Invalid field id');
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields.length.should.be.eql(0);
+              done();
+            });
+          });
+      });
+    });
+
     it('does not allow managers to add new field', (done) => {
       var itemToCreate = Item({
         "quantity": 1000,
@@ -242,6 +266,29 @@ describe('Inventory Custom Fields API Test', function () {
               foundItem.custom_fields.length.should.be.eql(1);
               foundItem.custom_fields[0].field.should.be.eql(defaultFields.location._id);
               foundItem.custom_fields[0].value.should.be.eql('hudson');
+              done();
+            });
+          });
+      });
+    });
+
+    it('returns an error if the field is invalid', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .put('/api/inventory/' + item._id + '/customFields/' + '111111111111111111111111')
+          .set('Authorization', adminToken)
+          .send({
+            value: 'hudson'
+          })
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.error.should.be.eql('Invalid field id');
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields.length.should.be.eql(0);
               done();
             });
           });
