@@ -3,6 +3,7 @@ import '../../App.css';
 import SubtableRow from '../inventory/TableRow';
 import Modal from 'react-modal';
 import LeaveCommentPopup from './LeaveCommentPopup.js';
+import ButtonGroup from 'react-bootstrap';
 
 
 function getKeys(data) {
@@ -63,8 +64,6 @@ class RequestTable extends Component {
 			list.push(<th key={keys[i]+"-requestcol"}> {keys[i]} </th>);
 		}
 		list.push(<th key={"buttonSpace" + 1}> </th>);
-		list.push(<th key={"buttonSpace" + 2}> </th>);
-		list.push(<th key={"buttonSpace" + 3}> </th>);
 
 		return list;
 	}
@@ -99,6 +98,7 @@ class RequestTable extends Component {
 				}
 
       }
+			//var button_group = this.makeButtonsVertical(i, button_list);
 
 			var elem;
 			var id = this.props.data[i]["item_id"] ;
@@ -115,6 +115,14 @@ class RequestTable extends Component {
 		return list;
 	}
 
+	/*makeButtonsVertical(index, buttons){
+
+		return(
+			<td key={"buttongroup-td" + index} className="subtable-row">
+				<ButtonGroup key={"buttongroup" + index}>{buttons}</ButtonGroup>
+			</td>
+		);
+	}*/
   denyButton(index){
     return(
 			<td key={"delete-td-"+index} className="subtable-row">
