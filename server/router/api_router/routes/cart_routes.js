@@ -3,16 +3,17 @@ var Cart = require("../../../model/cart");
 var QueryBuilder = require('../../../queries/querybuilder');
 var itemFieldsToReturn = 'name model_number location description';
 
-// module.exports.getAPI = function (req, res) {
-//     var query = new QueryBuilder();
-//     query.searchForObjectId('user', req.user._id);
-//     Cart.findOne(query.toJSON())
-//         .populate('item', itemFieldsToReturn)
-//         .exec(function(err, cart){
-//             if(err) return res.send({error: err});
-//             res.json(cart);
-//         });
-// };
+module.exports.getAPI = function (req, res) {
+    createCartIfNotExistent(req.user._id);
+    var query = new QueryBuilder();
+    query.searchForObjectId('user', req.user._id);
+    Cart.findOne(query.toJSON())
+        .populate('item', itemFieldsToReturn)
+        .exec(function(err, cart){
+            if(err) return res.send({error: err});
+            res.json(cart);
+        });
+};
 
 module.exports.putAPI = function(req,res){
   var obj = {};
@@ -43,3 +44,14 @@ module.exports.putAPI = function(req,res){
      });
     });
   };
+
+var createCartIfNotExistent = function(user_id){
+  Cart.insert({user: user_id})
+      .then(function(value){
+        console.log("Successfully created cart for user "+user_id);
+        return;
+      })
+      .catch(function(error){
+        return res.send({error:error});
+      })
+};

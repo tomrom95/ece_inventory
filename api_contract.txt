@@ -242,7 +242,7 @@ return: {
 DELETE: {
 	"success"
 }
-/api/cart/:user_id
+/api/cart
 GET
 return:
 {
@@ -264,6 +264,23 @@ return:
 }
 
 /api/cart/:user_id
+GET
+return:
+{
+_id: String,
+user: String,
+items: [{
+	 item:{ // populated info
+		_id: String,
+		name: String,
+			 },
+	 quantity: Integer
+}],
+description: String,
+created: String,
+lastModified, String
+}
+
 PUT
 body:
 {
