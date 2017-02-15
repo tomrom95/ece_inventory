@@ -22,19 +22,6 @@ class CurrentOrders extends Component {
     };
   }
 
-  getUserDisplay(user) {
-    if (!user) {
-      return "unknown";
-    }
-    if (user.first_name && user.last_name) {
-      return user.first_name + ' ' + user.last_name;
-    } else if (user.netid) {
-      return user.netid;
-    } else {
-      return user.username;
-    }
-  }
-
   processData(responseData) {
     var requests = responseData.data;
     var i;
@@ -42,12 +29,10 @@ class CurrentOrders extends Component {
     var item;
     for (i=0; i<requests.length; i++) {
       var obj = requests[i];
-      var userDisplay = this.getUserDisplay(obj.user);
-      var user_id = obj.user ? obj.user._id : "";
       if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER"){
-        if(obj.user._id == JSON.parse(localStorage.getItem('user'))._id){
+        if(obj.user.username === JSON.parse(localStorage.getItem('user')).username){
           item = {
-            "User": userDisplay,
+            "Username": obj.user.username,
             "Item": obj.item.name,
             "Time Stamp": formatDate(new Date(obj.created).toString()),
             "Quantity": obj.quantity,
@@ -55,7 +40,7 @@ class CurrentOrders extends Component {
             "Status": obj.status,
             "Response": obj.reviewer_comment,
             "_id": obj._id,
-            "user_id": user_id,
+            "user_id": obj.user._id,
             "item_id": obj.item._id,
           };
           items.push(item);
@@ -63,7 +48,7 @@ class CurrentOrders extends Component {
       }
       else{
         item = {
-          "User": userDisplay,
+          "Username": obj.user.username,
           "Item": obj.item.name,
           "Time Stamp": formatDate(new Date(obj.created).toString()),
           "Quantity": obj.quantity,
@@ -71,7 +56,7 @@ class CurrentOrders extends Component {
           "Status": obj.status,
           "Response": obj.reviewer_comment,
           "_id": obj._id,
-          "user_id": user_id,
+          "user_id": obj.user._id,
           "item_id": obj.item._id,
         };
         items.push(item);
@@ -96,6 +81,7 @@ class CurrentOrders extends Component {
           processData={data=>this.processData(data)}
           renderComponent={table}
           showFilterBox={this.props.showFilterBox}
+          showStatusFilterBox={this.props.showStatusFilterBox}
           id={"user-requests-"+this.props.id}
           hasOtherParams={this.props.hasOtherParams}
           extraProps={

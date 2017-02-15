@@ -40,6 +40,7 @@ class PaginationContainer extends Component {
   		processData: props.processData,
   		renderComponent: props.renderComponent,
   		showFilterBox: props.showFilterBox,
+			showStatusFilterBox: props.showStatusFilterBox,
   		id: props.id,
   		hasOtherParams: props.hasOtherParams,
 
@@ -284,44 +285,32 @@ class PaginationContainer extends Component {
 		        	</div>)
 		        : null;
 
-	    if (this.state.initialLoad) {
-	      table = (<div></div>);
-	    } else if (this.state.items.length === 0) {
-	      table = (<div className="center-text">No items found.</div>);
-	    } else {
-	      table = (<TableComp
-	        data={this.state.items}
-	        api={this.instance}
-	        callback={e => this.loadData(this.state.page, e)}
-	        {...this.props.extraProps} />);
-	    }
-
-	    if (filterBox !== null) {
-
-		    return (
-		      <div className="row inventory-page">
-
-		       	{filterBox}
-
-		        <div className="col-md-9">
-
-		          {this.makePageControlBar()}
-
-		          <div className="row">
-		            {table}
-		          </div>
-		        </div>
-		      </div>
-		    );
-		}
-		else{
-
-			return (
-	        <div className="col-xs-12">
-
-						<div className="col-md-3">
+		var statusFilterBox = this.state.showStatusFilterBox ?
+						(<div className="col-md-3">
 							<StatusFilterBox filterRequests={this.filterRequests.bind(this)}/>
-						</div>
+						</div>)
+						: null;
+
+    if (this.state.initialLoad) {
+      table = (<div></div>);
+    } else if (this.state.items.length === 0) {
+      table = (<div className="center-text">No items found.</div>);
+    } else {
+      table = (<TableComp
+        data={this.state.items}
+        api={this.instance}
+        callback={e => this.loadData(this.state.page, e)}
+        {...this.props.extraProps} />);
+    }
+
+    if (filterBox !== null) {
+
+	    return (
+	      <div className="row inventory-page">
+
+	       	{filterBox}
+
+	        <div className="col-md-9">
 
 	          {this.makePageControlBar()}
 
@@ -329,8 +318,36 @@ class PaginationContainer extends Component {
 	            {table}
 	          </div>
 	        </div>
-			);
+	      </div>
+	    );
+		}
+		else if(statusFilterBox != null){
 
+				return (
+		        <div className="col-xs-12">
+
+							{statusFilterBox}
+
+		          {this.makePageControlBar()}
+
+		          <div className="row">
+		            {table}
+		          </div>
+		        </div>
+				);
+
+		}
+		else{
+			return (
+					<div className="col-xs-12">
+
+						{this.makePageControlBar()}
+
+						<div className="row">
+							{table}
+						</div>
+					</div>
+			);
 		}
 	}
 }

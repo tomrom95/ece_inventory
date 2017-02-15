@@ -28,29 +28,14 @@ class GlobalRequests extends Component {
     }
   }
 
-  getUserDisplay(user) {
-    if (!user) {
-      return "unknown";
-    }
-    if (user.first_name && user.last_name) {
-      return user.first_name + ' ' + user.last_name;
-    } else if (user.netid) {
-      return user.netid;
-    } else {
-      return user.username;
-    }
-  }
-
   processData(responseData) {
     var requests = responseData.data;
     var i;
     var items = [];
     for (i=0; i<requests.length; i++) {
       var obj = requests[i];
-      var userDisplay = this.getUserDisplay(obj.user);
-      var user_id = obj.user ? obj.user._id : "";
       var item = {
-        "User": userDisplay,
+        "Username": obj.user.username,
         "Item": obj.item.name,
         "Time Stamp": obj.created,
         "Quantity": obj.quantity,
@@ -58,7 +43,7 @@ class GlobalRequests extends Component {
         "Status": obj.status,
         "Response": obj.reviewer_comment,
         "_id": obj._id,
-        "user_id": user_id,
+        "user_id": obj.user._id,
         "item_id": obj.item._id,
       };
       items.push(item);
@@ -85,6 +70,7 @@ class GlobalRequests extends Component {
           processData={data=>this.processData(data)}
           renderComponent={table}
           showFilterBox={this.props.showFilterBox}
+          showStatusFilterBox={this.props.showStatusFilterBox}
           id={"global-request-"+this.props.id}
           hasOtherParams={this.props.hasOtherParams}
           extraProps={
