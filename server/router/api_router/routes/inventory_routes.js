@@ -1,6 +1,39 @@
 'use strict';
 var Item = require('../../../model/items');
+var CustomField = require('../../../model/customFields');
 var QueryBuilder = require('../../../queries/querybuilder');
+
+var getPrivateFields = function(next) {
+  CustomField.find({isPrivate: true}, function(error, fields) {
+    if (error) return next(error);
+    fields = fields.map((field) => {return field._id.toString()});
+    next(null, new Set(fields));
+  });
+}
+
+var filterPrivateFields = function(fieldIds, item) {
+  item.custom_fields = item.custom_fields.filter(function(obj) {
+    return !fieldIds.has(obj.field.toString());
+  });
+  return item;
+}
+
+var getAndRemovePrivateFieldsFromItem = function(item, next) {
+  getPrivateFields(function(error, fieldIds) {
+    if (error) return next(error);
+    next(null, filterPrivateFields(fieldIds, item));
+  });
+}
+
+var getAndRemovePrivateFieldsFromList = function(itemList, next) {
+  getPrivateFields(function(error, fieldIds) {
+    if (error) return next(error);
+    itemList = itemList.map(function(item) {
+      return filterPrivateFields(fieldIds, item);
+    });
+    next(null, itemList);
+  });
+}
 
 module.exports.getAPI = function (req, res) {
   // required_tags and excluded_tags: CSV separated values
@@ -23,7 +56,14 @@ module.exports.getAPI = function (req, res) {
     }
     Item.paginate(query.toJSON(), paginateOptions, function(err, obj){
         if(err) return res.send({error: err});
-        res.json(obj.docs);
+        if (req.user.role === 'STANDARD') {
+          getAndRemovePrivateFieldsFromList(obj.docs, function(error, filteredItems) {
+            if (error) return res.send({error: error});
+            return res.json(filteredItems);
+          });
+        } else {
+          res.json(obj.docs);
+        }
       });
   } else {
     let projection = {
@@ -31,7 +71,14 @@ module.exports.getAPI = function (req, res) {
     }
     Item.find(query.toJSON(), projection, function (err, items){
       if(err) return res.send({error: err});
-      res.json(items);
+      if (req.user.role === 'STANDARD') {
+        getAndRemovePrivateFieldsFromList(items, function(error, filteredItems) {
+          if (error) return res.send({error: error});
+          return res.json(filteredItems);
+        });
+      } else {
+        res.json(items);
+      }
     })
   }
 };
@@ -40,7 +87,15 @@ module.exports.getAPI = function (req, res) {
 module.exports.getAPIbyID = function(req,res){
   Item.findById(req.params.item_id, function (err, item){
     if(err) return res.send({error: err});
-    (!item) ? res.send({error: 'Item does not exist'}) : res.json(item);
+    if (!item) return res.send({error: 'Item does not exist'});
+    if (req.user.role === 'STANDARD') {
+      getAndRemovePrivateFieldsFromItem(item, function(error, filteredItem) {
+        if (error) return res.send({error: error});
+        return res.json(filteredItem);
+      });
+    } else {
+      res.json(item);
+    }
   });
 };
 
