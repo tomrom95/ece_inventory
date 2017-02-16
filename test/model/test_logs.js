@@ -6,11 +6,23 @@ var Item = require('../../server/model/items.js');
 var assert = require('chai').assert
 
 describe('Logs', function() {
-  it('should throw error for invalid object', function(done) {
+  it('should throw error for invalid user', function(done) {
     var log = new Log({
       initiating_user: '1234',
       items: ['53cb6b9b4f4ddef1ad47f943'],
-      type: 'DELETED'
+      type: 'DELETED',
+      description: ""
+    });
+    log.validate(function (err) {
+      assert.isNotNull(err, 'Invalid object');
+      done();
+    });
+  });
+  it('should throw error for missing fields', function(done) {
+    var log = new Log({
+      initiating_user: '53cb6b9b4f4ddef1ad47f943',
+      items: ['53cb6b9b4f4ddef1ad47f943'],
+      description: "idk what happened"
     });
     log.validate(function (err) {
       assert.isNotNull(err, 'Invalid object');
