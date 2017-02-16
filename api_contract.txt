@@ -121,6 +121,32 @@ return:
 	"success"
 }
 
+/api/inventory/:item_id/customFields
+POST
+// Will update custom field if it already exists
+params: {
+	field: String (the id not the field name),
+	value: Mixed
+}
+return: {
+	// Item object from before
+}
+
+/api/inventory/:item_id/customFields/:field_id
+PUT
+// will add custom field if it doesn't exist
+params: {
+	value: Mixed
+}
+return: {
+	// Item object from before
+}
+DELETE
+// Won't return error if the field doesn't exist
+return: {
+	message: "Successful"
+}
+
 /api/inventory/:item_id/instances
 GET
 params:{
@@ -252,6 +278,9 @@ return:
 	  item: { // populated info
 			_id: String,
 			name: String,
+			model_number: String,
+			location: String,
+			description: String
 	  },
 	  quantity: Integer
 	}],
@@ -260,7 +289,7 @@ return:
 	lastModified, String
 }
 
-/api/cart/:user_id
+/api/cart/
 PUT
 body:
 {

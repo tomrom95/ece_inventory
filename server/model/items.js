@@ -27,12 +27,18 @@ var ItemSchema = new mongoose.Schema({
   },
   instances: [InstanceSchema],
   custom_fields:[{
+    _id: false,
     field: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'CustomField'
+      ref: 'CustomField',
     },
     value:    mongoose.Schema.Types.Mixed,
-  }]
+  }],
+  is_deleted: {
+    type: Boolean,
+    required: true,
+    default: false
+  }
 })
 ItemSchema.plugin(mongoosePaginate);
 
