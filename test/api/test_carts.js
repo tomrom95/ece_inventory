@@ -93,7 +93,12 @@ describe('Cart API Test', function () {
         res.body.should.be.a('object');
         res.body.items.should.be.a('array');
         res.body.items.length.should.be.eql(2);
-        console.log(res.body.items);
+        res.body.items.forEach(function(itemObj){
+          itemObj.item.should.have.property("name");
+          itemObj.item.should.have.property("location");
+          (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
+          (["CIEMAS"]).should.include(itemObj.item.location);
+        });
         res.body.user.should.be.eql(adminUser._id.toString());
         done();
       });
@@ -124,6 +129,12 @@ describe('Cart API Test', function () {
         res.body.should.be.a('object');
         res.body.items.should.be.a('array');
         res.body.items.length.should.be.eql(2);
+        res.body.items.forEach(function(itemObj){
+          itemObj.item.should.have.property("name");
+          itemObj.item.should.have.property("location");
+          (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
+          (["CIEMAS"]).should.include(itemObj.item.location);
+        });
         res.body.user.should.be.eql(managerUser._id.toString());
         done();
       });
@@ -154,6 +165,12 @@ describe('Cart API Test', function () {
         res.body.should.be.a('object');
         res.body.items.should.be.a('array');
         res.body.items.length.should.be.eql(2);
+        res.body.items.forEach(function(itemObj){
+          itemObj.item.should.have.property("name");
+          itemObj.item.should.have.property("location");
+          (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
+          (["CIEMAS"]).should.include(itemObj.item.location);
+        });
         res.body.user.should.be.eql(standardUser._id.toString());
         done();
       });

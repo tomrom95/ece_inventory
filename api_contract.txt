@@ -263,7 +263,7 @@ return:
 	lastModified, String
 }
 
-/api/cart/:user_id
+/api/cart/
 PUT
 body:
 {
