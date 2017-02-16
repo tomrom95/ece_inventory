@@ -144,7 +144,7 @@ return: {
 DELETE
 // Won't return error if the field doesn't exist
 return: {
-	// Item object from before
+	message: "Successful"
 }
 
 /api/inventory/:item_id/instances
@@ -509,31 +509,24 @@ return {
 /api/log
 GET
 params:
-{
-	user: String,
-	items: String (CSV), //(the item ids)
-	type: String
-}
+
 return:
 [
   {
     _id: String,
-    initiating_user: {
+    created_by: {
 			_id: String,
-			username: String,
-			netid: String,
-			first_name: String,
-			last_name: String
+			username: String
 		},
-		items: [
+		item: [
 			{
 				_id: String,
 				name: String,
 			}
 		],
-  	type: String ('EDIT', 'NEW', 'DELETED', 'FULFILLED'),
+  	type: String,
+    quantity: Integer,
     time_stamp: String,
-		description: String
   }
 ]
 
