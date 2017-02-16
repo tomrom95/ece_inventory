@@ -32,7 +32,6 @@ class SubtableRow extends Component {
 		return (
 			<tr>
 				{this.makeList(this.state.data)}
-
 				{this.makeButtons()}
 
 			</tr>

@@ -55,10 +55,15 @@
 
 .requesttable {
   margin-left: 16px;
-  min-width: 1500px;
+  max-width: 100%;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
+}
+
+.col-xs-12 {
+  margin-left: 20px;
+  margin-right: 50px;
 }
 
 .maintable-body {
@@ -69,6 +74,9 @@
   border-color: rgba(0,150,255,1);
 }
 
+.white-space-cell {
+  display: none;
+}
 .maintable-container {
   width: 100%;
   margin-left: 15px;
@@ -84,7 +92,6 @@
 }
 
 .subtable-row {
-  max-width:50px!important;
   text-align: left;
   color: gray;
   font-size: 13px;

@@ -34,14 +34,6 @@ class FilterBox extends Component {
     this.props.filterItems(name, modelNumber, required, excluded);
   }
 
-  handleRequiredChange(value) {
-    this.setState({requiredTags: value});
-  }
-
-  handleExcludedChange(value) {
-    this.setState({excludedTags: value});
-  }
-
   render() {
     return(
           <div id="accordion" role="tablist" aria-multiselectable="true">

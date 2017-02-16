@@ -16,7 +16,10 @@ function getValues(data, keys) {
 }
 
 function validNumber(num) {
-	return !isNaN(num);
+	if (!isNaN(num)) {
+		return (num >= 0);
+	}
+	return false;
 }
 
 function isWholeNumber(num) {

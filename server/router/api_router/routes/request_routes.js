@@ -36,7 +36,7 @@ module.exports.getAPI = function (req, res) {
       // page number (not offset)
       page: req.query.page,
       limit: Number(req.query.per_page),
-      populate: [{path:'item', select: itemFieldsToReturn}, {path:'user', select:'username'}]
+      populate: [{path:'item', select: itemFieldsToReturn}, {path:'user', select:'username netid first_name last_name'}]
     }
     Request.paginate(query.toJSON(), paginateOptions, function(err, obj){
         if(err) return res.send({error: err});
@@ -45,7 +45,7 @@ module.exports.getAPI = function (req, res) {
   } else {
     Request.find(query.toJSON())
       .populate('item', itemFieldsToReturn)
-      .populate('user', 'username')
+      .populate('user', 'username netid first_name last_name')
       .exec(function(err, requests){
         if(err) return res.send({error:err});
         res.json(requests);
@@ -62,11 +62,11 @@ module.exports.postAPI = function(req,res){
     if(req.user.role === 'ADMIN' || req.user.role === 'MANAGER'){
       // if user is admin, find user id if the user field is entered
       if(req.body.user){
-        // Find the user id from the username, and set it to .user field
-        User.findOne({username: req.body.user}, function(err, user){
-          if(err) return res.send({error:err});
-          if(!user) return res.send({error:"There is no such user"});
-          request.user = user._id;
+        // set user id to .user field
+        User.findById(req.body.user, function(error, user) {
+          if (error) return res.send({error: error});
+          if (!user) return res.send({error: "There is no such user"});
+          request.user = req.body.user;
           processAndPost(request, req, res);
         });
       } else {
@@ -76,8 +76,8 @@ module.exports.postAPI = function(req,res){
       }
     } else {
       // Standard user here
-      if(req.body.user && req.user.username != req.body.user){
-        // If the user field is filled and the username of the user doesn't match what's given in the field
+      if(req.body.user && req.user._id != req.body.user){
+        // If the user field is filled and the user id of the user doesn't match what's given in the field
         return res.send({error:"You are not authorized to modify another user's request"});
       }
       // Post the user's request as the standard user
@@ -128,9 +128,9 @@ module.exports.putAPI = function(req,res){
     else{
       var obj;
       if(req.user.role === 'STANDARD'){
-        // if the current user's id is not equal to the user id in the request, or if the current username is not equal
-        // to the username in the PUT body
-          if(req.user._id != request.user || req.user.username != req.body.user){
+        // if the current user's id is not equal to the user id in the request, or if the current user id is not equal
+        // to the user id in the PUT body
+          if(req.user._id != request.user || req.user._id != req.body.user){
             // Standard user cannot modify the user_id
             return res.send({error: "You are not authorized to modify another user's request"});
           } else {
@@ -143,10 +143,10 @@ module.exports.putAPI = function(req,res){
         // Admin can take in username
          obj = Object.assign(request, req.body);
          if(req.body.user){
-           User.findOne({username: req.body.user}, function(err, user){
-             if(err) return res.send({error:err});
-             if(!user) return res.send({error: "There is no such user"});
-             obj.user = user._id;
+           User.findById(req.body.user, function(error, user) {
+             if (error) return res.send({error: error});
+             if (!user) return res.send({error: "There is no such user"});
+             obj.user = req.body.user;
              saveObject(obj, res);
            });
          } else {
