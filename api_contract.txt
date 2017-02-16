@@ -252,6 +252,9 @@ return:
 	  item: { // populated info
 			_id: String,
 			name: String,
+			model_number: String,
+			location: String,
+			description: String
 	  },
 	  quantity: Integer
 	}],
@@ -260,7 +263,7 @@ return:
 	lastModified, String
 }
 
-/api/cart/:user_id
+/api/cart/
 PUT
 body:
 {
