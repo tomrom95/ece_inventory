@@ -368,7 +368,7 @@ describe('Inventory Custom Fields API Test', function () {
           .end((err, res) => {
             should.not.exist(err);
             res.should.have.status(200);
-            should.not.exist(res.body.custom_fields);
+            res.body.message.should.be.eql('Successful');
             Item.findById(item._id, function(error, foundItem) {
               foundItem.custom_fields.length.should.be.eql(0);
               done();
