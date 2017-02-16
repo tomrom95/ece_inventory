@@ -7,6 +7,7 @@ let Cart = require('../../server/model/carts');
 let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
 let fakeItemData = require('./test_inventory_data');
+let fakeCartData = require('./test_carts_data');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let should = chai.should();
@@ -20,6 +21,8 @@ describe('Cart API Test', function () {
   var standardUser;
   var managerToken;
   var managerUser;
+  var item1_id;
+  var item2_id;
   beforeEach((done) => { //Before each test we empty the database
     Cart.remove({}, (err) => {
       should.not.exist(err);
@@ -40,7 +43,33 @@ describe('Cart API Test', function () {
                 managerToken = helpers.createAuthToken(user);
                 managerUser = user;
                 Item.insertMany(fakeItemData).then(function(obj){
-                  done();
+                  // get one of the items back
+                  Item.findOne({name: "1k resistor"}, function(err,item1){
+                    item1_id = item1.id;
+                    Item.findOne({name: "2k resistor"}, function(err,item2){
+                      item2_id = item2.id;
+                      var itemsArray = [
+                        {
+                          item: item1_id,
+                          quantity: 100
+                        },
+                        {
+                          item: item2_id,
+                          quantity: 200
+                        }
+                      ];
+                      // Process JSON fake data for saving
+                      let idArray = [adminUser._id, managerUser._id, standardUser._id];
+                      for(i = 0; i < fakeCartData.length ; i++){
+                        fakeCartData[i].user = idArray[i];
+                        fakeCartData[i].items = itemsArray;
+                      }
+                      Cart.insertMany(fakeCartData, function(err,obj){
+                        done();
+                      });
+                    });
+                  });
+
                 }).catch(function(error) {
                   should.not.exist(error);
                   done();
@@ -54,7 +83,7 @@ describe('Cart API Test', function () {
   });
 
   describe('GET /cart', () =>{
-    it('GETs cart for admin - initial new cart', (done) => {
+    it('GETs cart for admin - existing cart', (done) => {
       chai.request(server)
       .get('/api/cart')
       .set('Authorization', adminToken)
@@ -62,9 +91,93 @@ describe('Cart API Test', function () {
         should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('object');
+        res.body.items.should.be.a('array');
+        res.body.items.length.should.be.eql(2);
+        console.log(res.body.items);
         res.body.user.should.be.eql(adminUser._id.toString());
         done();
+      });
+    });
+    it('GETs cart for admin - new cart', (done) => {
+      Cart.remove({user: adminUser._id}).then(function(obj){
+        chai.request(server)
+        .get('/api/cart')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.items.should.be.a('array');
+          res.body.items.length.should.be.eql(0);
+          res.body.user.should.be.eql(adminUser._id.toString());
+          done();
+        });
+      });
+    });
+    it('GETs cart for manager - existing cart', (done) => {
+      chai.request(server)
+      .get('/api/cart')
+      .set('Authorization', managerToken)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.items.should.be.a('array');
+        res.body.items.length.should.be.eql(2);
+        res.body.user.should.be.eql(managerUser._id.toString());
+        done();
+      });
+    });
+    it('GETs cart for manager - new cart', (done) => {
+      Cart.remove({user: managerUser._id}).then(function(obj){
+        chai.request(server)
+        .get('/api/cart')
+        .set('Authorization', managerToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.items.should.be.a('array');
+          res.body.items.length.should.be.eql(0);
+          res.body.user.should.be.eql(managerUser._id.toString());
+          done();
+        });
+      });
+    });
+    it('GETs cart for standard user - existing cart', (done) => {
+      chai.request(server)
+      .get('/api/cart')
+      .set('Authorization', standardToken)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.items.should.be.a('array');
+        res.body.items.length.should.be.eql(2);
+        res.body.user.should.be.eql(standardUser._id.toString());
+        done();
+      });
+    });
+    it('GETs cart for standard user - new cart', (done) => {
+      Cart.remove({user: standardUser._id}).then(function(obj){
+        chai.request(server)
+        .get('/api/cart')
+        .set('Authorization', standardToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.items.should.be.a('array');
+          res.body.items.length.should.be.eql(0);
+          res.body.user.should.be.eql(standardUser._id.toString());
+          done();
+        });
+      });
     });
   });
-});
+  describe('PUT /cart/:user_id', () =>{
+    it('GETs cart for admin - existing cart', (done) => {
+      done();
+    });
+  });
 });

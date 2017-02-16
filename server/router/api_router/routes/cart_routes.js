@@ -14,8 +14,7 @@ var createCartIfNotExistent = function(user_id, res, next){
       var cart = new Cart({
         user: user_id
       });
-      return cart.save()
-      .then(function(value){
+      return cart.save().then(function(value){
         next(user_id, res);
       })
       .catch(function(err){
@@ -32,12 +31,13 @@ var returnCart = function (user_id, res){
   var query = new QueryBuilder();
   query.searchForObjectId('user', user_id);
   Cart.findOne(query.toJSON())
-  .populate('item', itemFieldsToReturn)
+  .populate('items.item', itemFieldsToReturn)
   .exec(function(err, cart){
     if(err) return res.send({error: err});
     res.json(cart);
   });
 }
+
 
 module.exports.putAPI = function(req,res){
   var obj = {};
