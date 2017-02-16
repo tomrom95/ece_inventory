@@ -418,6 +418,34 @@ describe('Cart API Test', function () {
         });
       })
     });
+    // Manager User can change his own description
+    it('PUTs cart for manager - existing cart, changed description for own cart', (done) => {
+      Cart.findOne({user: managerUser._id}, function(err, cart){
+        var newCart = {
+          description : "CHANGED"
+        }
+        chai.request(server)
+        .put('/api/cart')
+        .set('Authorization', managerToken)
+        .send(newCart)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.description.should.be.eql("CHANGED");
+          res.body.user.should.be.eql(managerUser._id.toString());
+          Cart.findOne({user: managerUser._id}, function(err, cart){
+            should.not.exist(err);
+            cart.should.be.a('object');
+            cart.items.should.be.a("array");
+            cart.description.should.be.eql("CHANGED");
+            cart.items.length.should.be.eql(2);
+            cart.user.should.be.eql(managerUser._id);
+            done();
+          })
+        });
+      })
+    });
     // Manager user cannot change his own items
     it('PUTs cart for manager - existing cart, cannot change items for own cart', (done) => {
       Cart.findOne({user: managerUser._id}, function(err, cart){
