@@ -33,7 +33,12 @@ var ItemSchema = new mongoose.Schema({
       ref: 'CustomField',
     },
     value:    mongoose.Schema.Types.Mixed,
-  }]
+  }],
+  is_deleted: {
+    type: Boolean,
+    required: true,
+    default: false
+  }
 })
 ItemSchema.plugin(mongoosePaginate);
 

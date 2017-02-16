@@ -509,24 +509,31 @@ return {
 /api/log
 GET
 params:
-
+{
+	user: String,
+	items: String (CSV), //(the item ids)
+	type: String
+}
 return:
 [
   {
     _id: String,
-    created_by: {
+    initiating_user: {
 			_id: String,
-			username: String
+			username: String,
+			netid: String,
+			first_name: String,
+			last_name: String
 		},
-		item: [
+		items: [
 			{
 				_id: String,
 				name: String,
 			}
 		],
-  	type: String,
-    quantity: Integer,
+  	type: String ('EDIT', 'NEW', 'DELETED', 'FULFILLED'),
     time_stamp: String,
+		description: String
   }
 ]
 

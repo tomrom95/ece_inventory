@@ -1,29 +1,31 @@
 import React, { Component } from 'react';
+import Select from 'react-select';
 
-const statuses = ["PENDING", "APPROVED", "FULFILLED", "DENIED"];
+
+const statuses = [
+    { value: 'PENDING', label: 'PENDING' },
+    { value: 'APPROVED', label: 'APPROVED' },
+    { value: 'FULFILLED', label: 'FULFILLED' },
+    { value: 'DENIED', label: 'DENIED' }];
 
 class StatusFilterBox extends Component {
   constructor(props){
     super(props);
     this.state = {
-      requests: this.props.requests
+      status: "",
     }
   }
 
-  componentWillMount() {
-
-  }
-
   
-
   filterButton() {
-    var status = this.refs.status.value;
+    var status = this.state.status;
     this.props.filterRequests(status);
   }
 
-  handleStatusChange(value) {
-    this.setState({Status: value});
+  handleChange(value) {
+    this.setState({status: value});
   }
+
 
   render() {
     return(
@@ -43,7 +45,13 @@ class StatusFilterBox extends Component {
                   <div className="form-fields">
                       <div className="form-group row">
                         <label htmlFor="model-field">Status</label>
-
+                        <Select
+                          simpleValue
+                          value={this.state.status}
+                          placeholder="Choose status"
+                          options={statuses}
+                          onChange={this.handleChange.bind(this)}
+                        />
                       </div>
 
                       <div className="row">
