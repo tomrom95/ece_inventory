@@ -33,7 +33,8 @@ router.route('/inventory/:item_id/:instance_id')
       .delete(restrictToManagers, instance_routes.deleteAPI);
 
 router.route('/cart')
-      .get(cart_routes.getAPI);
+      .get(cart_routes.getAPI)
+      .put(cart_routes.putAPI);
 
 router.route('/requests')
       .get(request_routes.getAPI)

@@ -40,31 +40,37 @@ var returnCart = function (user_id, res){
 
 
 module.exports.putAPI = function(req,res){
-  var obj = {};
-  var intendedUserID;
-  intendedUserID = (req.user.role === 'ADMIN' &&
-                    req.body.user &&
-                    req.user._id != req.body.user) ?
-                    // If you are admin and the user field exists and is not you
-                    req.body.user :
-                    // Everyone else uses their own user id
-                    req.user._id;
-  obj.user = intendedUserID;
+  createCartIfNotExistent(req.user._id, res, function() {
+    var intendedUserID;
+    if(req.user.role !== 'ADMIN' && req.body.user) return res.send({error: "You are not authorized to change the user field"});
+    intendedUserID = (req.user.role === 'ADMIN' &&
+                      req.body.user &&
+                      req.user._id != req.body.user) ?
+                      // If you are admin and the user field exists and is not you
+                      req.body.user :
+                      // Everyone else uses their own user id
+                      req.user._id;
 
-  Cart.findOne({user: intendedUserID}, function(err, oldCart){
-    if(err) return res.send({error:err});
-    // If the admin enters items field
-    obj.items = (req.user.role === 'ADMIN' && req.body.items) ?
-                // Use items if you are an admin and it exists
-                req.body.items :
-                oldCart.items;
-    obj.description = (req.body.description) ?
-                      // Use the body description if it exists
-                      req.body.description :
-                      oldCart.description;
-    obj.save(function(err, cart){
+    Cart.findOne({user: intendedUserID}, function(err, oldCart){
       if(err) return res.send({error:err});
-      res.json(cart);
+      // If the admin enters items field
+      oldCart.user = intendedUserID;
+      if(req.user.role !== 'ADMIN' && req.body.items) return res.send({error: "You are not authorized to change the items field"});
+      oldCart.items = (req.user.role === 'ADMIN' && req.body.items) ?
+                      // Use items if you are an admin and it exists
+                      req.body.items :
+                      oldCart.items;
+
+      oldCart.description = (req.body.description) ?
+                        // Use the body description if it exists
+                        req.body.description :
+                        oldCart.description;
+      oldCart.save(function(err, cart){
+        if(err) return res.send({error:err});
+        res.json(cart);
+      });
     });
   });
+
+
 };
