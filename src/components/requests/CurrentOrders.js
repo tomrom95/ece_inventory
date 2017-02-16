@@ -20,9 +20,9 @@ class CurrentOrders extends Component {
       itemId: props.itemID,
       status: props.status
     };
-  }
 
-  getUserDisplay(user) {
+  }
+  getUserDisplay(user){
     if (!user) {
       return "unknown";
     }
@@ -33,7 +33,7 @@ class CurrentOrders extends Component {
     } else {
       return user.username;
     }
-  }
+ }
 
   processData(responseData) {
     var requests = responseData.data;
@@ -96,6 +96,7 @@ class CurrentOrders extends Component {
           processData={data=>this.processData(data)}
           renderComponent={table}
           showFilterBox={this.props.showFilterBox}
+          showStatusFilterBox={this.props.showStatusFilterBox}
           id={"user-requests-"+this.props.id}
           hasOtherParams={this.props.hasOtherParams}
           extraProps={

@@ -1,6 +1,5 @@
 'use strict';
 var Item = require('../../../model/items');
-var Log = require('../../../model/logs');
 var CustomField = require('../../../model/customFields');
 var QueryBuilder = require('../../../queries/querybuilder');
 
@@ -129,21 +128,6 @@ function trimTags(tagArray){
   return fieldObj;
 }
 
-function logQuantityChange(change, userID, itemID, next) {
-  if (change == 0) {
-    return next(null);
-  }
-  var log = new Log({
-    created_by: userID,
-    type: change > 0 ? 'ACQUISITION' : 'LOSS',
-    item: itemID,
-    quantity: Math.abs(change),
-  });
-  log.save(function(err) {
-    next(err);
-  });
-}
-
 module.exports.putAPI = function(req, res){
   Item.findById(req.params.item_id, function (err, old_item){
     if(err) return res.send({error: err});
@@ -155,17 +139,7 @@ module.exports.putAPI = function(req, res){
       obj.tags = trimTags(req.body.tags);
       obj.save((err,item) => {
         if(err) return res.send({error: err});
-        if (req.body.quantity) {
-          logQuantityChange(req.body.quantity - old_quantity, req.user._id, item._id, function(error) {
-            if(err) {
-              return res.send({error: err});
-            } else {
-              res.json(item);
-            }
-          });
-        } else {
-          res.json(item);
-        }
+        res.json(item);
       });
     }
   });
