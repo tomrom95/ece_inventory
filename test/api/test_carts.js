@@ -529,5 +529,33 @@ describe('Cart API Test', function () {
       })
     });
     // Test if cart not already present
+    it('PUTs cart for admin, non-existing cart', (done) => {
+      Cart.remove({}).then(function(err){
+        var newCart = {
+          description: "NEW CART"
+        }
+        chai.request(server)
+        .put('/api/cart')
+        .set('Authorization', adminToken)
+        .send(newCart)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.user.should.be.eql(adminUser._id.toString());
+          res.body.description.should.be.eql("NEW CART");
+          res.body.items.length.should.be.eql(0);
+          Cart.findOne({user: adminUser._id}, function(err, cart){
+            should.not.exist(err);
+            cart.should.be.a('object');
+            cart.items.should.be.a("array");
+            cart.items.length.should.be.eql(0);
+            cart.user.should.be.eql(adminUser._id);
+            cart.description.should.be.eql("NEW CART");
+            done();
+          })
+        });
+      })
+    });
   });
 });
