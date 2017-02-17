@@ -126,7 +126,6 @@ describe('Cart API Test', function () {
       .set('Authorization', managerToken)
       .end((err, res) => {
         should.not.exist(err);
-        console.log(res.body);
         res.should.have.status(200);
         res.body.should.be.a('object');
         res.body.items.should.be.a('array');
