@@ -517,6 +517,7 @@ describe('Cart API Test', function () {
           res.body.should.be.a('object');
           res.body.user.should.be.eql(standardUser._id.toString());
           res.body.items.length.should.be.eql(2);
+          console.log(res.body.items);
           Cart.findOne({user: standardUser._id}, function(err, cart){
             should.not.exist(err);
             cart.should.be.a('object');

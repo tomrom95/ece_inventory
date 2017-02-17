@@ -1,5 +1,6 @@
 var inventory_routes = require('./routes/inventory_routes');
 var cart_routes = require('./routes/cart_routes');
+var cart_item_routes = require('./routes/cart_item_routes');
 var instance_routes = require('./routes/instance_routes');
 var request_routes = require('./routes/request_routes');
 var user_routes = require('./routes/user_routes');
@@ -35,6 +36,9 @@ router.route('/inventory/:item_id/:instance_id')
 router.route('/cart')
       .get(cart_routes.getAPI)
       .put(cart_routes.putAPI);
+
+router.route('/cart/items')
+      .post(cart_item_routes.postAPI);
 
 router.route('/requests')
       .get(request_routes.getAPI)
