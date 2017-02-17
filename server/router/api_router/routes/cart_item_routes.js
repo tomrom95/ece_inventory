@@ -19,10 +19,16 @@ module.exports.postAPI = function (req, res){
       item: req.body.item,
       quantity: req.body.quantity
     }
-    oldCart.items.push(newItem);
-    oldCart.save(function(err, cart){
-      if(err) return res.send({error:err});
-      res.json(cart);
+    oldCart.update({user: intendedUserID},
+                   {$addToSet: {items: newItem}},
+                   function(err, obj){
+          if(err) return res.send({error:err});
+          Cart.findOne({user: intendedUserID})
+              .populate('items.item', itemFieldsToReturn)
+              .exec(function(err, cart){
+                if(err) return res.send({error:err});
+                res.json(cart);
+          });
     });
   });
 };

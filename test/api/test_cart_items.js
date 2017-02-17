@@ -65,6 +65,7 @@ describe('Cart Items API Test', function () {
                         fakeCartData[i].items = itemsArray;
                       }
                       Cart.insertMany(fakeCartData, function(err,obj){
+                        should.not.exist(err);
                         done();
                       });
                     });
@@ -105,7 +106,14 @@ describe('Cart Items API Test', function () {
           (["CIEMAS"]).should.include(itemObj.item.location);
         });
         res.body.user.should.be.eql(adminUser._id.toString());
-        done();
+        Cart.findOne({user: adminUser._id}, function(err, cart){
+          should.not.exist(err);
+          cart.should.be.a('object');
+          cart.items.should.be.a("array");
+          cart.items.length.should.be.eql(3);
+          cart.user.should.be.eql(adminUser._id);
+          done();
+        })
       });
     });
   });

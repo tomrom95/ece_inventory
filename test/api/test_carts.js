@@ -65,6 +65,7 @@ describe('Cart API Test', function () {
                         fakeCartData[i].items = itemsArray;
                       }
                       Cart.insertMany(fakeCartData, function(err,obj){
+                        should.not.exist(err);
                         done();
                       });
                     });
@@ -125,6 +126,7 @@ describe('Cart API Test', function () {
       .set('Authorization', managerToken)
       .end((err, res) => {
         should.not.exist(err);
+        console.log(res.body);
         res.should.have.status(200);
         res.body.should.be.a('object');
         res.body.items.should.be.a('array');
@@ -208,6 +210,12 @@ describe('Cart API Test', function () {
           res.body.should.be.a('object');
           res.body.description.should.be.eql("CHANGED");
           res.body.user.should.be.eql(adminUser._id.toString());
+          res.body.items.forEach(function(itemObj){
+            itemObj.item.should.have.property("name");
+            itemObj.item.should.have.property("location");
+            (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
+            (["CIEMAS"]).should.include(itemObj.item.location);
+          });
           done();
         });
       })
@@ -255,6 +263,12 @@ describe('Cart API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.items.should.be.a("array");
+          res.body.items.forEach(function(itemObj){
+            itemObj.item.should.have.property("name");
+            itemObj.item.should.have.property("location");
+            (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
+            (["CIEMAS"]).should.include(itemObj.item.location);
+          });
           res.body.description.should.be.eql("CHANGED");
           res.body.user.should.be.eql(managerUser._id.toString());
           Cart.findOne({user: managerUser._id}, function(err, cart){
@@ -271,7 +285,7 @@ describe('Cart API Test', function () {
     it('PUTs cart for admin - existing cart, changed description for standard cart', (done) => {
       Cart.findOne({user: adminUser._id}, function(err, cart){
         var newCart = {
-          description : "CHANGED",
+          description: "CHANGED",
           user: standardUser._id
         }
         chai.request(server)
@@ -279,6 +293,16 @@ describe('Cart API Test', function () {
         .set('Authorization', adminToken)
         .send(newCart)
         .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.items.should.be.a("array");
+          res.body.items.forEach(function(itemObj){
+            itemObj.item.should.have.property("name");
+            itemObj.item.should.have.property("location");
+            (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
+            (["CIEMAS"]).should.include(itemObj.item.location);
+          });
           Cart.findOne({user: standardUser._id}, function(err, cart){
             should.not.exist(err);
             cart.should.be.a('object');
@@ -328,6 +352,17 @@ describe('Cart API Test', function () {
         .set('Authorization', adminToken)
         .send(newCart)
         .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.items.should.be.a("array");
+          res.body.items.length.should.be.eql(2);
+          res.body.items.forEach(function(itemObj){
+            itemObj.item.should.have.property("name");
+            itemObj.item.should.have.property("location");
+            (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
+            (["CIEMAS"]).should.include(itemObj.item.location);
+          });
           Cart.findOne({user: managerUser._id}, function(err, cart){
             should.not.exist(err);
             cart.should.be.a('object');
@@ -381,6 +416,13 @@ describe('Cart API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.description.should.be.eql("CHANGED");
+          res.body.items.length.should.be.eql(2);
+          res.body.items.forEach(function(itemObj){
+            itemObj.item.should.have.property("name");
+            itemObj.item.should.have.property("location");
+            (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
+            (["CIEMAS"]).should.include(itemObj.item.location);
+          });
           res.body.user.should.be.eql(standardUser._id.toString());
           Cart.findOne({user: standardUser._id}, function(err, cart){
             should.not.exist(err);
@@ -460,6 +502,13 @@ describe('Cart API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
+          res.body.items.length.should.be.eql(2);
+          res.body.items.forEach(function(itemObj){
+            itemObj.item.should.have.property("name");
+            itemObj.item.should.have.property("location");
+            (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
+            (["CIEMAS"]).should.include(itemObj.item.location);
+          });
           res.body.description.should.be.eql("CHANGED");
           res.body.user.should.be.eql(managerUser._id.toString());
           Cart.findOne({user: managerUser._id}, function(err, cart){
@@ -517,7 +566,12 @@ describe('Cart API Test', function () {
           res.body.should.be.a('object');
           res.body.user.should.be.eql(standardUser._id.toString());
           res.body.items.length.should.be.eql(2);
-          console.log(res.body.items);
+          res.body.items.forEach(function(itemObj){
+            itemObj.item.should.have.property("name");
+            itemObj.item.should.have.property("location");
+            (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
+            (["CIEMAS"]).should.include(itemObj.item.location);
+          });
           Cart.findOne({user: standardUser._id}, function(err, cart){
             should.not.exist(err);
             cart.should.be.a('object');
