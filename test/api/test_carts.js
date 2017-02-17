@@ -240,6 +240,34 @@ describe('Cart API Test', function () {
         });
       })
     });
+    it('PUTs cart for admin - existing cart, changed user id', (done) => {
+      Cart.findOne({user: adminUser._id}, function(err, cart){
+        var newCart = {
+          user: managerUser._id,
+          description: "CHANGED"
+        }
+        chai.request(server)
+        .put('/api/cart')
+        .set('Authorization', adminToken)
+        .send(newCart)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.items.should.be.a("array");
+          res.body.description.should.be.eql("CHANGED");
+          res.body.user.should.be.eql(managerUser._id.toString());
+          Cart.findOne({user: managerUser._id}, function(err, cart){
+            should.not.exist(err);
+            cart.should.be.a('object');
+            cart.items.should.be.a("array");
+            cart.description.should.be.eql("CHANGED");
+            cart.user.should.be.eql(managerUser._id);
+            done();
+          })
+        });
+      })
+    });
     it('PUTs cart for admin - existing cart, changed description for standard cart', (done) => {
       Cart.findOne({user: adminUser._id}, function(err, cart){
         var newCart = {
@@ -473,10 +501,11 @@ describe('Cart API Test', function () {
       })
     });
     // Manager user cannot change his own user id
-    it('PUTs cart for manager - existing cart, cannot change user id for own cart', (done) => {
+    it('PUTs cart for manager - existing cart, can change user id', (done) => {
       Cart.findOne({user: managerUser._id}, function(err, cart){
         var newCart = {
-          user : adminUser._id
+          user : standardUser._id,
+          description: "CHANGED FOR MANAGER"
         }
         chai.request(server)
         .put('/api/cart')
@@ -486,13 +515,14 @@ describe('Cart API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.error.should.be.eql("You are not authorized to change the user field");
-          Cart.findOne({user: managerUser._id}, function(err, cart){
+          res.body.user.should.be.eql(standardUser._id.toString());
+          res.body.items.length.should.be.eql(2);
+          Cart.findOne({user: standardUser._id}, function(err, cart){
             should.not.exist(err);
             cart.should.be.a('object');
             cart.items.should.be.a("array");
             cart.items.length.should.be.eql(2);
-            cart.user.should.be.eql(managerUser._id);
+            cart.user.should.be.eql(standardUser._id);
             done();
           })
         });

@@ -42,8 +42,8 @@ var returnCart = function (user_id, res){
 module.exports.putAPI = function(req,res){
   createCartIfNotExistent(req.user._id, res, function() {
     var intendedUserID;
-    if(req.user.role !== 'ADMIN' && req.body.user) return res.send({error: "You are not authorized to change the user field"});
-    intendedUserID = (req.user.role === 'ADMIN' &&
+    if(req.user.role === 'STANDARD' && req.body.user) return res.send({error: "You are not authorized to change the user field"});
+    intendedUserID = (req.user.role !== 'STANDARD' &&
                       req.body.user &&
                       req.user._id != req.body.user) ?
                       // If you are admin and the user field exists and is not you
