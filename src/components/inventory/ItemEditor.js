@@ -183,7 +183,8 @@ class ItemEditor extends Component {
 				      </div>
 				      <div className="modal-footer">
 				        <button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-				        <button onClick={() => this.onSubmission()} type="button" data-dismiss="modal" className="btn btn-primary">Submit</button>
+				        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+				        <button onClick={() => this.onSubmission()} type="button" className="btn btn-primary">Apply</button>
 				      </div>
 				    </div>
 				  </div>

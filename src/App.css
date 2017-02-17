@@ -158,7 +158,7 @@
 }
 
 .request-quantity {
-  width: 200px;
+  width: 50%;
   margin-left: 10px;
 }
 
@@ -331,6 +331,15 @@
   margin-bottom: 20px;
 }
 
+.add-to-cart {
+  margin-top: 40%;
+}
+
+.add-to-cart-icon {
+  margin-left: -60%;
+  margin-right: 50%;
+}
+
 .perpage-button {
   width: 170px;
 }
@@ -342,7 +351,6 @@
 .table > thead > tr > th {
   vertical-align: middle;
 }
-
 
 body {
     background-color: rgba(0,0,0,0.3);

@@ -3,6 +3,7 @@ import '../../App.css';
 import TableRow from './TableRow.js';
 import ItemWizard from './ItemWizard.js';
 import RequestPopup from './RequestPopup.js';
+import AddToCartButton from './AddToCartButton.js';
 import ItemEditor from './ItemEditor.js';
 import ItemDetailView from './ItemDetailView.js';
 import ShoppingCart from './ShoppingCart.js';
@@ -108,20 +109,22 @@ class InventoryTable extends Component {
 			list.push(<th key={keys[i]+"-inventorycol"}> {keys[i]} </th>);
 		}
 
-		list.push(<th key={"buttonSpace-0"}></th>);
-		list.push(<th key={"buttonSpace-1"}></th>)
+
 
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
-			list.push(<th key={"buttonSpace-2"}></th>);
-			/*list.push(
+			list.push(<th key={"buttonSpace-0"}></th>);
+    		list.push(<th key={"buttonSpace-1"}></th>);
+			list.push(<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>);
+			list.push(
 					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
 	          			key={"makeitem-button"}
 	          			callback={this.props.callback}/>
 	          	);
-			*/
-			// testing view
-			list.push(<ShoppingCart key={"unique"}/>);
+		}
+		else {
+    		list.push(<th key={"buttonSpace-1"}></th>);
+			list.push(<ShoppingCart key={"shopping-cart-button"}/>);
 		}
 
 		return list;
@@ -151,7 +154,7 @@ class InventoryTable extends Component {
 		var list = [];
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
 			list.push(
-					<RequestPopup
+					<AddToCartButton
 						itemName={data.Name}
 						modelName={data.Model}
 						itemId={data.meta.id}

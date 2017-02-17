@@ -3,29 +3,31 @@
 var mongoose = require('mongoose');
 
 var LogSchema = new mongoose.Schema({
-  created_by: {
+  initiating_user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
+  affected_user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+  items: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Item'
+  }],
   type: {
     type: String,
-    enum: ['ACQUISITION', 'LOSS'],
+    enum: ['EDIT', 'NEW', 'DELETED', 'FULFILLED'],
     required: true,
-  },
-  item: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Item',
-    required: true
-  },
-  quantity: {
-    type: Number,
-    required: true,
-    min: 0
   },
   time_stamp: {
     type: Date,
     default: Date.now,
+    required: true,
+  },
+  description: {
+    type: String,
     required: true,
   }
 });

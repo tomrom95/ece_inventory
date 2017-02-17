@@ -6,44 +6,68 @@ class ShoppingCartItem extends Component {
 	/*
 		props will contain:
 			- ID
-			- Name 
-			- Model
-			- Vendor
 			- Quantity
-			- callback: delete cart item by id.
+			- callback: rerender the cart.
 	*/
 
 	constructor(props) {
 		super(props);
-		this.state = props;
-	}
-
-	getItemId() {
-		return this.state.ID;
+		this.state = {
+			quantity: props.quantity
+		}
 	}
 
 	deleteItem() {
-		// do callback to remove the item from cart
-		// which also includes a call to refresh cart view
-		// takes this.state.id param
+		this.props.api.delete("/api/cart/items/" + this.props.id)
+		.then(function (response) {
+			if (response.data.error) {
+				console.log(response.data.error);
+			}
+			else {
+				this.props.callback();
+			}
+		}.bind(this));
+	}
+
+	getItemData(id) {
+		this.props.api.get('api/inventory/' + this.props.id)
+	    .then(function(response) {
+	    	if (response.data.error) {
+	    		console.log(response.data.error);
+	    	}
+	    	else {
+	    		this.setState({
+	    			itemName: response.data.name,
+	    			modelNumber: response.data.model_number
+	    		});
+	    	}
+	    }.bind(this))
+	    .catch(function(error) {
+	      console.log(error);
+	    }.bind(this));
 	}
 
 	render() {
+		this.getItemData(this.props.id);
 		return (
 		<div className="card cart-item">
 		  <div className="card-block">
 		  	<div className="row">
 			  	<h5 className="col-md-10"> 
-			  		{this.state.Name}
+			  		{this.state.itemName}
 			  	</h5>
 			  	<div className="col-md-2">
-			  		<button type="button" className="btn btn-danger btn-sm"><span className="fa fa-remove"></span></button>
+			  		<button 
+			  		onClick={() => this.deleteItem()} 
+			  		type="button" 
+			  		className="btn btn-danger btn-sm">
+			  			<span className="fa fa-remove"></span>
+			  		</button>
 			  	</div>
 		  	</div>
 			<div className="container">
-			    <div className="row"><strong>Model:</strong>{this.state.Model}</div>
-			    <div className="row"><strong>Vendor:</strong>{this.state.Vendor}</div>
-			    <div className="row"><strong>Quantity:</strong>{this.state.Quantity}</div>
+			    <div className="row">{"Model: " + this.state.modelNumber}</div>
+			    <div className="row">{"Quantity: " + this.state.quantity}</div>
 		    </div>
 		  </div>
 		</div>);

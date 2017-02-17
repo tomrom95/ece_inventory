@@ -4,34 +4,62 @@ import '../../App.css';
 
 class ShoppingCart extends Component {
 
-	/*
-		The way this cart is populated:
-			- all requests in cart are retrieved from API call
-		State = {
-			reason: [String]
-			requestObject: Array({RequestObjects}) (as defined by backend)
-		}
-	*/
-
 	constructor(props) {
 		super(props);
+		this.state = {
+			items: []
+		}
+	}
+
+	componentDidMount() {
+		this.loadData();
 	}
 
 	loadData() {
-		// api call that loads data and re-renders
+		this.props.api.get('api/cart/')
+		.then(function(response) {
+			if (response.data.error) {
+				console.log(response.data.error);
+			}
+			else {
+				console.log(response.data.items);
+				this.setState({
+					items: [{item: "5897a11d8f9904df9c765fe9", quantity: 10}]
+					//items: response.data.items
+				});
+			}
+		}.bind(this));
+	}
+
+	makeCartItems() {
+		var items = this.state.items;
+		var list = []; var i;
+		for (i=0; i<items.length; i++) {
+			list.push(
+				(<div key={"div-"+i} className="row">
+					<ShoppingCartItem 
+					api={this.props.api} 
+					key={"cart-item-"+i} 
+					id={items[i].item} 
+					quantity={items[i].quantity}
+					callback={() => this.loadData()} />
+				</div>));
+		}
+		return list;
 	}
 
 	sendRequests() {
 		// api call with all request objects
 	}
 
-	deleteCartItem(itemId) {
-		// api call to delete item
-		// invoke loadData method
-	}
-
 	render() {
-		return (			
+		var reasonBox = (this.state.items.length===0) ? <div>Your cart is currently empty</div> 
+						  : (<div className="form-group row">
+		                          <label htmlFor="cart-reason"><strong>Reason for Request</strong></label>
+		                          <input className="form-control" type="text" defaultValue="" id="cart-reason"/>
+		                    </div>);
+		var submitDisabled = (this.state.items.length===0) ? "disabled" : "";
+ 		return (			
 			<th>	
 				<button data-toggle="modal" data-target={"#cart-button"}
 						type="button"
@@ -42,30 +70,24 @@ class ShoppingCart extends Component {
 				  <div className="modal-dialog" role="document">
 				    <div className="modal-content cart-modal">
 				      <div className="modal-header">
-				        <h5 className="modal-title">{"Shopping Cart (3 items)"}</h5>
+				        <h5 className="modal-title">
+				        {"Shopping Cart (" + 
+				        	this.state.items.length + 
+				        	((this.state.items.length===1) ? " item)" : " items)"
+				        	)}
+				        </h5>
 				      </div>
 				      <div className="modal-body">
 				      	<div className="cart-body container">
-				      		<div className="row">
-				      			<ShoppingCartItem Name={"Oscilloscope"} Model={"Unknown"} Vendor={"Agilent"} Quantity={10} />
-				      		</div>
-				      		<div className="row">
-				      			<ShoppingCartItem Name={"Oscilloscope"} Model={"Unknown"} Vendor={"Agilent"} Quantity={10} />
-				      		</div>	
-				      		<div className="row">
-				      			<ShoppingCartItem Name={"Oscilloscope"} Model={"Unknown"} Vendor={"Agilent"} Quantity={10} />
-				      		</div>			        	
+				      		{this.makeCartItems()}	        	
 			        	</div>
 			        	<div className="container">
-					        <div className="form-group row">
-		                          <label htmlFor="cart-reason"><strong>Reason *</strong></label>
-		                          <input className="form-control" type="text" defaultValue="" id="cart-reason"/>
-		                    </div>
+			        		{reasonBox}
 	                    </div>
 				      </div>
 				      <div className="modal-footer">
 				      	<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-				        <button type="button" data-dismiss="modal" className="btn btn-primary">Request These Items</button>
+				        <button type="button" data-dismiss="modal" className={"btn btn-primary " + submitDisabled}>Request These Items</button>
 				      </div>
 				    </div>
 				  </div>

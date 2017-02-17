@@ -3,6 +3,16 @@ import '../../App.css';
 import RequestTable from './RequestTable.js';
 import PaginationContainer from '../global/PaginationContainer';
 
+function formatDate(dateString) {
+  var i;
+  var split = dateString.split(' ');
+  var date = '';
+  for (i=1; i<=4; i++) {
+    date += split[i] + ' ';
+  }
+  return date;
+}
+
 class GlobalRequests extends Component {
 
   constructor(props){
@@ -28,7 +38,7 @@ class GlobalRequests extends Component {
     }
   }
 
-  getUserDisplay(user) {
+  getUserDisplay(user){
     if (!user) {
       return "unknown";
     }
@@ -52,7 +62,7 @@ class GlobalRequests extends Component {
       var item = {
         "User": userDisplay,
         "Item": obj.item.name,
-        "Time Stamp": obj.created,
+        "Time Stamp": formatDate(new Date(obj.created).toString()),
         "Quantity": obj.quantity,
         "Reason": obj.reason,
         "Status": obj.status,
@@ -85,6 +95,7 @@ class GlobalRequests extends Component {
           processData={data=>this.processData(data)}
           renderComponent={table}
           showFilterBox={this.props.showFilterBox}
+          showStatusFilterBox={this.props.showStatusFilterBox}
           id={"global-request-"+this.props.id}
           hasOtherParams={this.props.hasOtherParams}
           extraProps={

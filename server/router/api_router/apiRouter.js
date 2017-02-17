@@ -1,4 +1,5 @@
 var inventory_routes = require('./routes/inventory_routes');
+var cart_routes = require('./routes/cart_routes');
 var instance_routes = require('./routes/instance_routes');
 var request_routes = require('./routes/request_routes');
 var user_routes = require('./routes/user_routes');
@@ -6,6 +7,8 @@ var log_routes = require('./routes/log_routes');
 var restrictToAdmins = require('../../auth/auth_helpers').restrictToAdmins;
 var restrictToManagers = require('../../auth/auth_helpers').restrictToManagers;
 var tag_routes = require('./routes/tag_routes');
+var field_routes = require('./routes/field_routes');
+var item_field_routes = require('./routes/item_field_routes');
 
 var express = require('express');
 var router = express.Router();
@@ -22,6 +25,13 @@ router.route('/inventory/:item_id')
       .put(restrictToAdmins, inventory_routes.putAPI)
       .delete(restrictToAdmins, inventory_routes.deleteAPI);
 
+router.route('/inventory/:item_id/customFields')
+      .post(restrictToAdmins, item_field_routes.postAPI);
+
+router.route('/inventory/:item_id/customFields/:field_id')
+      .put(restrictToAdmins, item_field_routes.putAPI)
+      .delete(restrictToAdmins, item_field_routes.deleteAPI);
+
 router.route('/inventory/:item_id/instances')
       .get(instance_routes.getAPI)
       .post(restrictToManagers, instance_routes.postAPI);
@@ -30,6 +40,10 @@ router.route('/inventory/:item_id/:instance_id')
       .get(instance_routes.getAPIbyID)
       .put(restrictToManagers, instance_routes.putAPI)
       .delete(restrictToManagers, instance_routes.deleteAPI);
+
+router.route('/cart')
+      .get(cart_routes.getAPI)
+      .put(cart_routes.putAPI);
 
 router.route('/requests')
       .get(request_routes.getAPI)
@@ -51,5 +65,14 @@ router.route('/users/:user_id')
 
 router.route('/logs')
       .get(restrictToManagers, log_routes.getAPI);
+
+router.route('/customFields')
+      .get(field_routes.getAPI)
+      .post(restrictToAdmins, field_routes.postAPI);
+
+router.route('/customFields/:field_id')
+      .get(field_routes.getAPIbyID)
+      .put(restrictToAdmins, field_routes.putAPI)
+      .delete(restrictToAdmins, field_routes.deleteAPI);
 
 module.exports = router;
