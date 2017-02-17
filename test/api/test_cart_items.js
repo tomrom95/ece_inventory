@@ -339,7 +339,208 @@ describe('Cart Items API Test', function () {
       });
     });
   });
-
+  describe('PUT /cart/items', () =>{
+    it('PUT item with new quantity, for admin', (done) => {
+      let itemObj = {
+        quantity: 111
+      }
+      chai.request(server)
+      .put('/api/cart/items/'+item1_id)
+      .set('Authorization', adminToken)
+      .send(itemObj)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.items.should.be.a('array');
+        res.body.items.length.should.be.eql(2);
+        let itemIndex = res.body.items.findIndex(el => el.item._id === (item1_id));
+        itemIndex.should.be.at.least(0);
+        res.body.items[itemIndex].item._id.should.be.eql(item1_id);
+        res.body.items[itemIndex].quantity.should.be.eql(111);
+        res.body.user.should.be.eql(adminUser._id.toString());
+        Cart.findOne({user: adminUser._id}, function(err, cart){
+          should.not.exist(err);
+          cart.should.be.a('object');
+          cart.items.should.be.a("array");
+          cart.items.length.should.be.eql(2);
+          let itemIndex = cart.items.findIndex(el => el.item.toString() === (item1_id));
+          itemIndex.should.be.at.least(0);
+          cart.items[itemIndex].item.toString().should.be.eql(item1_id);
+          cart.items[itemIndex].quantity.should.be.eql(111);
+          cart.user.should.be.eql(adminUser._id);
+          done();
+        })
+      });
+    });
+      it('PUT item with new quantity, for manager', (done) => {
+        let itemObj = {
+          quantity: 111
+        }
+        chai.request(server)
+        .put('/api/cart/items/'+item1_id)
+        .set('Authorization', managerToken)
+        .send(itemObj)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.items.should.be.a('array');
+          res.body.items.length.should.be.eql(2);
+          let itemIndex = res.body.items.findIndex(el => el.item._id === (item1_id));
+          itemIndex.should.be.at.least(0);
+          res.body.items[itemIndex].item._id.should.be.eql(item1_id);
+          res.body.items[itemIndex].quantity.should.be.eql(111);
+          res.body.user.should.be.eql(managerUser._id.toString());
+          Cart.findOne({user: managerUser._id}, function(err, cart){
+            should.not.exist(err);
+            cart.should.be.a('object');
+            cart.items.should.be.a("array");
+            cart.items.length.should.be.eql(2);
+            let itemIndex = cart.items.findIndex(el => el.item.toString() === (item1_id));
+            itemIndex.should.be.at.least(0);
+            cart.items[itemIndex].item.toString().should.be.eql(item1_id);
+            cart.items[itemIndex].quantity.should.be.eql(111);
+            cart.user.should.be.eql(managerUser._id);
+            done();
+          })
+        });
+      });
+      it('PUT item with new quantity, for standard', (done) => {
+        let itemObj = {
+          quantity: 111
+        }
+        chai.request(server)
+        .put('/api/cart/items/'+item1_id)
+        .set('Authorization', standardToken)
+        .send(itemObj)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.items.should.be.a('array');
+          res.body.items.length.should.be.eql(2);
+          let itemIndex = res.body.items.findIndex(el => el.item._id === (item1_id));
+          itemIndex.should.be.at.least(0);
+          res.body.items[itemIndex].item._id.should.be.eql(item1_id);
+          res.body.items[itemIndex].quantity.should.be.eql(111);
+          res.body.user.should.be.eql(standardUser._id.toString());
+          Cart.findOne({user: standardUser._id}, function(err, cart){
+            should.not.exist(err);
+            cart.should.be.a('object');
+            cart.items.should.be.a("array");
+            cart.items.length.should.be.eql(2);
+            let itemIndex = cart.items.findIndex(el => el.item.toString() === (item1_id));
+            itemIndex.should.be.at.least(0);
+            cart.items[itemIndex].item.toString().should.be.eql(item1_id);
+            cart.items[itemIndex].quantity.should.be.eql(111);
+            cart.user.should.be.eql(standardUser._id);
+            done();
+          })
+        });
+      });
+    it('PUT item with new user and quantity, for admin', (done) => {
+      let itemObj = {
+        user: standardUser._id,
+        quantity: 111
+      }
+      chai.request(server)
+      .put('/api/cart/items/'+item1_id)
+      .set('Authorization', adminToken)
+      .send(itemObj)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.items.should.be.a('array');
+        res.body.items.length.should.be.eql(2);
+        let itemIndex = res.body.items.findIndex(el => el.item._id === (item1_id));
+        itemIndex.should.be.at.least(0);
+        res.body.items[itemIndex].item._id.should.be.eql(item1_id);
+        res.body.items[itemIndex].quantity.should.be.eql(111);
+        res.body.user.should.be.eql(standardUser._id.toString());
+        Cart.findOne({user: standardUser._id}, function(err, cart){
+          should.not.exist(err);
+          cart.should.be.a('object');
+          cart.items.should.be.a("array");
+          cart.items.length.should.be.eql(2);
+          let itemIndex = cart.items.findIndex(el => el.item.toString() === (item1_id));
+          itemIndex.should.be.at.least(0);
+          cart.items[itemIndex].item.toString().should.be.eql(item1_id);
+          cart.items[itemIndex].quantity.should.be.eql(111);
+          cart.user.should.be.eql(standardUser._id);
+          done();
+        })
+      });
+    });
+    it('PUT item with new user and quantity, for manager', (done) => {
+      let itemObj = {
+        user: standardUser._id,
+        quantity: 111
+      }
+      chai.request(server)
+      .put('/api/cart/items/'+item1_id)
+      .set('Authorization', managerToken)
+      .send(itemObj)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.items.should.be.a('array');
+        res.body.items.length.should.be.eql(2);
+        let itemIndex = res.body.items.findIndex(el => el.item._id === (item1_id));
+        itemIndex.should.be.at.least(0);
+        res.body.items[itemIndex].item._id.should.be.eql(item1_id);
+        res.body.items[itemIndex].quantity.should.be.eql(111);
+        res.body.user.should.be.eql(standardUser._id.toString());
+        Cart.findOne({user: standardUser._id}, function(err, cart){
+          should.not.exist(err);
+          cart.should.be.a('object');
+          cart.items.should.be.a("array");
+          cart.items.length.should.be.eql(2);
+          let itemIndex = cart.items.findIndex(el => el.item.toString() === (item1_id));
+          itemIndex.should.be.at.least(0);
+          cart.items[itemIndex].item.toString().should.be.eql(item1_id);
+          cart.items[itemIndex].quantity.should.be.eql(111);
+          cart.user.should.be.eql(standardUser._id);
+          done();
+        })
+      });
+    });
+    it('Does not PUT item with new user and quantity, for user', (done) => {
+      let itemObj = {
+        user: managerUser._id,
+        quantity: 111
+      }
+      chai.request(server)
+      .put('/api/cart/items/'+item1_id)
+      .set('Authorization', standardToken)
+      .send(itemObj)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.should.have.status(200);
+        res.body.should.be.a('object');
+        res.body.error.should.be.eql("You are not authorized to change the user field");
+        done();
+      });
+    });
+  it('Does not PUT item with negative quantity, for standard', (done) => {
+    let itemObj = {
+      quantity: -100
+    }
+    chai.request(server)
+    .put('/api/cart/items/'+item1_id)
+    .set('Authorization', standardToken)
+    .send(itemObj)
+    .end((err, res) => {
+      should.not.exist(err);
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.error.message.should.be.eql("Cart validation failed");
+      done();
+    });
+  });
+});
   // Test that user with new cart can exist
   // Test negative quantity
 });

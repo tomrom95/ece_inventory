@@ -37,7 +37,7 @@ module.exports.postAPI = function (req, res){
 };
 
 module.exports.putAPI = function (req, res){
-  CartHelper.createCartIfNotExistent(req.user._id, res, function() {
+    if(req.user.role === 'STANDARD' && req.body.user) return res.send({error: "You are not authorized to change the user field"});
     let intendedUserID = CartHelper.setAppropriateUserId(req, res);
     Cart.findOne({user:intendedUserID}, function (err, cart){
       if(err) return res.send({error: err});
@@ -56,7 +56,6 @@ module.exports.putAPI = function (req, res){
         });
       };
     });
-  });
 };
 
 module.exports.deleteAPI = function(req,res){
