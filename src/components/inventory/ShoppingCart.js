@@ -22,7 +22,7 @@ class ShoppingCart extends Component {
 				console.log(response.data.error);
 			}
 			else {
-				console.log(response.data.items);
+				// DUMMY ITEM
 				this.setState({
 					items: [{item: "5897a11d8f9904df9c765fe9", quantity: 10}]
 					//items: response.data.items
