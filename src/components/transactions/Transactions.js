@@ -56,6 +56,7 @@ class Transactions extends Component {
         processData={data=>this.processData(data)}
         renderComponent={table}
         showFilterBox={this.props.showFilterBox}
+        showStatusFilterBox={false}
         id={"logs-"+this.props.id}
         hasOtherParams={this.props.hasOtherParams}
        />

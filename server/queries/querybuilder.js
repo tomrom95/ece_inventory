@@ -5,6 +5,13 @@ function QueryBuilder() {
   this.queryObject = {};
 }
 
+QueryBuilder.prototype.searchBoolean = function(name, value) {
+  if (value !== null && value !== undefined) {
+    this.queryObject[name] = value;
+  }
+  return this;
+}
+
 QueryBuilder.prototype.searchExact = function(name, value) {
   if (value) {
     this.queryObject[name] = value;

@@ -8,9 +8,9 @@ module.exports.getAPI = function (req, res) {
   // queryable by serial number, condition and status
   var query = new QueryBuilder();
   query
-    .searchExact('instances.serial_number', req.query.serial_number)
-    .searchExact('instances.condition', req.query.condition)
-    .searchExact('instances.status', req.query.status);
+    .searchExact('instances.serial_number', req.query.serial_number, true)
+    .searchExact('instances.condition', req.query.condition, true)
+    .searchExact('instances.status', req.query.status, true);
 
   var item_id = req.params.item_id;
   Item.aggregate(

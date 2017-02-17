@@ -1,0 +1,124 @@
+{
+  "fields": [
+    {
+      "_id": "111111111111111111111111",
+      "name": "location",
+      "type": "SHORT_STRING",
+      "isPrivate": false
+    },
+    {
+      "_id": "222222222222222222222222",
+      "name": "restock_info",
+      "type": "LONG_STRING",
+      "isPrivate": true
+    },
+    {
+      "_id": "333333333333333333333333",
+      "name": "int_number",
+      "type": "INT",
+      "isPrivate": true
+    },
+    {
+      "_id": "444444444444444444444444",
+      "name": "float_number",
+      "type": "FLOAT",
+      "isPrivate": false
+    }
+  ],
+  "items": [
+    {
+      "location": "CIEMAS",
+      "quantity": 1000,
+      "name": "1k resistor",
+      "has_instance_objects": true,
+      "vendor_info": "Microsoft",
+      "tags": [
+        "component",
+        "electric",
+        "cheap"
+      ],
+      "custom_fields": [
+        {
+          "field": "111111111111111111111111",
+          "value": "Ciemas"
+        },
+        {
+          "field": "222222222222222222222222",
+          "value": "will restock tomorrow"
+        },
+        {
+          "field": "333333333333333333333333",
+          "value": 1
+        },
+        {
+          "field": "444444444444444444444444",
+          "value": 2.0
+        }
+      ]
+    },
+    {
+      "location": "CIEMAS",
+      "quantity": 1000,
+      "name": "2k resistor",
+      "has_instance_objects": true,
+      "vendor_info": "Microsoft",
+      "tags": [
+        "component",
+        "electric",
+        "cheap"
+      ],
+      "custom_fields": [
+        {
+          "field": "111111111111111111111111",
+          "value": "Hudson"
+        },
+        {
+          "field": "222222222222222222222222",
+          "value": "will restock monday"
+        },
+        {
+          "field": "333333333333333333333333",
+          "value": 4
+        },
+        {
+          "field": "444444444444444444444444",
+          "value": 2.5
+        }
+      ]
+    },
+    {
+      "location": "CIEMAS",
+      "quantity": 1000,
+      "name": "5k resistor",
+      "has_instance_objects": true,
+      "vendor_info": "Microsoft",
+      "tags": [
+        "component",
+        "electric",
+        "cheap"
+      ],
+      "custom_fields": [
+        {
+          "field": "333333333333333333333333",
+          "value": 4
+        },
+        {
+          "field": "444444444444444444444444",
+          "value": 2.5
+        }
+      ]
+    },
+    {
+      "location": "CIEMAS",
+      "quantity": 1000,
+      "name": "10k resistor",
+      "has_instance_objects": true,
+      "vendor_info": "Microsoft",
+      "tags": [
+        "component",
+        "electric",
+        "cheap"
+      ]
+    }
+  ]
+}

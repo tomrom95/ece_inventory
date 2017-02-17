@@ -38,6 +38,7 @@ class Inventory extends Component {
             processData={data => this.processData(data)}
             renderComponent={table}
             showFilterBox={true}
+            showStatusFilterBox={false}
             hasOtherParams={false}
             id={'inventory-page'}
             rowsPerPage={10} />);

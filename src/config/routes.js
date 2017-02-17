@@ -22,6 +22,7 @@ class CurrentOrdersWrapper extends Component {
     render() {
         return <CurrentOrders
         showFilterBox={false}
+        showStatusFilterBox={true}
         hasOtherParams={false}
         api={"something"}/>;
     }
@@ -33,6 +34,7 @@ class GlobalRequestsWrapper extends Component {
     render() {
         return <GlobalRequests
         showFilterBox={false}
+        showStatusFilterBox={true}
         hasOtherParams={false}
         api={"something"}/>;
     }
