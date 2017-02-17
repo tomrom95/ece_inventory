@@ -341,4 +341,5 @@ describe('Cart Items API Test', function () {
   });
 
   // Test that user with new cart can exist
+  // Test negative quantity
 });

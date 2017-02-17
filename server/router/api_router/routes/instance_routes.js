@@ -51,7 +51,7 @@ module.exports.putAPI = function(req,res){
   Item.findById(req.params.item_id, function (err, item){
     if(err) return res.send({error: err});
     if(!item){
-      res.send({error: 'Item does not exist'});
+      return res.send({error: 'Item does not exist'});
     } else {
       // find instance from contained schema
       // Handle if the id doesn't exist

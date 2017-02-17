@@ -40,6 +40,10 @@ router.route('/cart')
 router.route('/cart/items')
       .post(cart_item_routes.postAPI);
 
+router.route('/cart/items/:item_id')
+      .put(cart_item_routes.putAPI)
+      .delete(cart_item_routes.deleteAPI);
+
 router.route('/requests')
       .get(request_routes.getAPI)
       .post(request_routes.postAPI);

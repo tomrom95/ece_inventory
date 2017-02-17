@@ -68,6 +68,7 @@ module.exports.putAPI = function(req,res){
                         // Use the body description if it exists
                         req.body.description :
                         oldCart.description;
+      oldCart.lastModified = new Date();
       oldCart.save(function(err, cart){
         if(err) return res.send({error:err});
         Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
