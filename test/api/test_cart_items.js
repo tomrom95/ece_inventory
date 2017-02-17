@@ -541,6 +541,109 @@ describe('Cart Items API Test', function () {
     });
   });
 });
-  // Test that user with new cart can exist
-  // Test negative quantity
+
+describe('DELETE /api/cart/items/:item_id', ()=>{
+  it('DELETE cart item by item id by admin', (done) => {
+    chai.request(server)
+    .delete('/api/cart/items/'+item1_id)
+    .set('Authorization', adminToken)
+    .end((err, res) => {
+      should.not.exist(err);
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('message').eql('Deleted item successfully');
+      Cart.findOne({user: adminUser._id}, function(err, cart){
+        should.not.exist(err);
+        cart.should.be.a('object');
+        cart.items.should.be.a("array");
+        cart.items.length.should.be.eql(1);
+        let itemIndex = cart.items.findIndex(el => el.item.toString() === (item1_id));
+        itemIndex.should.be.below(0);
+        cart.user.should.be.eql(adminUser._id);
+        done();
+      })
+    });
+  });
+  it('DELETE cart item by item id by manager', (done) => {
+    chai.request(server)
+    .delete('/api/cart/items/'+item1_id)
+    .set('Authorization', managerToken)
+    .end((err, res) => {
+      should.not.exist(err);
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('message').eql('Deleted item successfully');
+      Cart.findOne({user: managerUser._id}, function(err, cart){
+        should.not.exist(err);
+        cart.should.be.a('object');
+        cart.items.should.be.a("array");
+        cart.items.length.should.be.eql(1);
+        let itemIndex = cart.items.findIndex(el => el.item.toString() === (item1_id));
+        itemIndex.should.be.below(0);
+        cart.user.should.be.eql(managerUser._id);
+        done();
+      })
+    });
+  });
+  it('DELETE cart item by item id by standard', (done) => {
+    chai.request(server)
+    .delete('/api/cart/items/'+item1_id)
+    .set('Authorization', standardToken)
+    .end((err, res) => {
+      should.not.exist(err);
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('message').eql('Deleted item successfully');
+      Cart.findOne({user: standardUser._id}, function(err, cart){
+        should.not.exist(err);
+        cart.should.be.a('object');
+        cart.items.should.be.a("array");
+        cart.items.length.should.be.eql(1);
+        let itemIndex = cart.items.findIndex(el => el.item.toString() === (item1_id));
+        itemIndex.should.be.below(0);
+        cart.user.should.be.eql(standardUser._id);
+        done();
+      })
+    });
+  });
+  it('DELETE cart item by item id by standard, then DELETE should fail', (done) => {
+    chai.request(server)
+    .delete('/api/cart/items/'+item1_id)
+    .set('Authorization', standardToken)
+    .end((err, res) => {
+      should.not.exist(err);
+      res.should.have.status(200);
+      res.body.should.be.a('object');
+      res.body.should.have.property('message').eql('Deleted item successfully');
+      Cart.findOne({user: standardUser._id}, function(err, cart){
+        should.not.exist(err);
+        cart.should.be.a('object');
+        cart.items.should.be.a("array");
+        cart.items.length.should.be.eql(1);
+        let itemIndex = cart.items.findIndex(el => el.item.toString() === (item1_id));
+        itemIndex.should.be.below(0);
+        cart.user.should.be.eql(standardUser._id);
+        // Then delete it again
+        chai.request(server)
+        .delete('/api/cart/items/'+item1_id)
+        .set('Authorization', standardToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.eql('Item does not exist in this cart');
+          Cart.findOne({user: standardUser._id}, function(err, cart){
+            should.not.exist(err);
+            cart.should.be.a('object');
+            cart.items.should.be.a("array");
+            cart.items.length.should.be.eql(1);
+            let itemIndex = cart.items.findIndex(el => el.item.toString() === (item1_id));
+            itemIndex.should.be.below(0);
+            done();
+          });
+        });
+      })
+    });
+  });
+});
 });

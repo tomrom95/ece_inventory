@@ -59,8 +59,7 @@ module.exports.putAPI = function (req, res){
 };
 
 module.exports.deleteAPI = function(req,res){
-  let intendedUserID = CartHelper.setAppropriateUserId(req, res);
-  Cart.findOne({user:intendedUserID}, function (err, cart){
+  Cart.findOne({user:req.user._id}, function (err, cart){
     if(err) return res.send({error: err});
     if(!cart){
       return res.send({error: 'Cart does not exist'});
