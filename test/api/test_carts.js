@@ -4,6 +4,7 @@ let mongoose = require("mongoose");
 let Item = require('../../server/model/items');
 let User = require('../../server/model/users');
 let Cart = require('../../server/model/carts');
+let Request = require('../../server/model/requests');
 let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
 let fakeItemData = require('./test_inventory_data');
@@ -612,4 +613,184 @@ describe('Cart API Test', function () {
       })
     });
   });
+  describe('PATCH /cart', () =>{
+    it('PATCH cart for admin cart', (done) => {
+      Cart.findOne({user: adminUser._id}, function(err, cart){
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/cart')
+        .set('Authorization', adminToken)
+        .send({
+          action: 'CHECKOUT',
+          reason: 'Test request'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.message.should.eql("Request successful");
+          res.body.cart.items.length.should.be.eql(2);
+          res.body.cart.items.forEach(function(item){
+            [100, 200].should.include(item.quantity);
+            ["1k resistor","2k resistor"].should.include(item.item.name);
+          })
+          res.body.request.user.should.eql(adminUser._id.toString());
+          res.body.request.reason.should.eql("Test request");
+          res.body.request.status.should.eql("PENDING");
+          res.body.request.items.should.be.a('array');
+          res.body.request.items.length.should.be.eql(2);
+          res.body.request.items.forEach(function(item){
+            [100, 200].should.include(item.quantity);
+            ["1k resistor","2k resistor"].should.include(item.item.name);
+          })
+          Request.findById(res.body.request._id, function(err, request){
+            should.not.exist(err);
+            request.user.should.eql(adminUser._id);
+            request.reason.should.eql("Test request");
+            request.status.should.eql("PENDING");
+            request.items.should.be.a('array');
+            request.items.length.should.be.eql(2);
+            request.items.forEach(function(item){
+              [100, 200].should.include(item.quantity);
+            })
+            done();
+          });
+      });
+      });
+    });
+    it('PATCH cart for manager cart', (done) => {
+      Cart.findOne({user: managerUser._id}, function(err, cart){
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/cart')
+        .set('Authorization', managerToken)
+        .send({
+          action: 'CHECKOUT',
+          reason: 'Test request'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.message.should.eql("Request successful");
+          res.body.cart.items.length.should.be.eql(2);
+          res.body.cart.items.forEach(function(item){
+            [100, 200].should.include(item.quantity);
+            ["1k resistor","2k resistor"].should.include(item.item.name);
+          })
+          res.body.request.user.should.eql(managerUser._id.toString());
+          res.body.request.reason.should.eql("Test request");
+          res.body.request.status.should.eql("PENDING");
+          res.body.request.items.should.be.a('array');
+          res.body.request.items.length.should.be.eql(2);
+          res.body.request.items.forEach(function(item){
+            [100, 200].should.include(item.quantity);
+            ["1k resistor","2k resistor"].should.include(item.item.name);
+          })
+          Request.findById(res.body.request._id, function(err, request){
+            should.not.exist(err);
+            request.user.should.eql(managerUser._id);
+            request.reason.should.eql("Test request");
+            request.status.should.eql("PENDING");
+            request.items.should.be.a('array');
+            request.items.length.should.be.eql(2);
+            request.items.forEach(function(item){
+              [100, 200].should.include(item.quantity);
+            })
+            done();
+          });
+      });
+      });
+    });
+    it('PATCH cart for standard cart', (done) => {
+      Cart.findOne({user: standardUser._id}, function(err, cart){
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/cart')
+        .set('Authorization', standardToken)
+        .send({
+          action: 'CHECKOUT',
+          reason: 'Test request'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.message.should.eql("Request successful");
+          res.body.cart.items.length.should.be.eql(2);
+          res.body.cart.items.forEach(function(item){
+            [100, 200].should.include(item.quantity);
+            ["1k resistor","2k resistor"].should.include(item.item.name);
+          })
+          res.body.request.user.should.eql(standardUser._id.toString());
+          res.body.request.reason.should.eql("Test request");
+          res.body.request.status.should.eql("PENDING");
+          res.body.request.items.should.be.a('array');
+          res.body.request.items.length.should.be.eql(2);
+          res.body.request.items.forEach(function(item){
+            [100, 200].should.include(item.quantity);
+            ["1k resistor","2k resistor"].should.include(item.item.name);
+          })
+          Request.findById(res.body.request._id, function(err, request){
+            should.not.exist(err);
+            request.user.should.eql(standardUser._id);
+            request.reason.should.eql("Test request");
+            request.status.should.eql("PENDING");
+            request.items.should.be.a('array');
+            request.items.length.should.be.eql(2);
+            request.items.forEach(function(item){
+              [100, 200].should.include(item.quantity);
+            })
+            done();
+          });
+      });
+      });
+    });
+    it('Does not PATCH cart for standard cart without reason', (done) => {
+      Cart.findOne({user: standardUser._id}, function(err, cart){
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/cart')
+        .set('Authorization', standardToken)
+        .send({
+          action: 'CHECKOUT',
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.eql("Reason not provided in checkout");
+          Request.find({user: standardUser._id}, function(err, request){
+            should.not.exist(err);
+            request.should.be.a('array');
+            request.length.should.be.eql(0);
+            done();
+          });
+      });
+      });
+    });
+    it('Does not PATCH cart for standard cart without correct word CHECKOUT', (done) => {
+      Cart.findOne({user: standardUser._id}, function(err, cart){
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/cart')
+        .set('Authorization', standardToken)
+        .send({
+          action: 'CHECKIN',
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.eql("Action not recognized");
+          Request.find({user: standardUser._id}, function(err, request){
+            should.not.exist(err);
+            request.should.be.a('array');
+            request.length.should.be.eql(0);
+            done();
+          });
+      });
+      });
+    });
+});
 });

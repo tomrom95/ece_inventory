@@ -238,6 +238,7 @@ function disburse(requestID, next) {
         // of a certain item in the cart to disburse.
         request.status = "FULFILLED";
         request.save(function(err, updatedRequest) {
+          if (err) return next(err);
           next(null, updatedRequest, updatedCart);
         });
       }, function(err){
