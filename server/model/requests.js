@@ -9,11 +9,20 @@ var RequestSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  item: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: 'Item',
-  },
+  items: [
+    {
+      item: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Item',
+      },
+      quantity: {
+        type: Number,
+        min: 0,
+        required: true
+      }
+    }
+  ],
   reason: String,
   created: {
     type: Date,
@@ -21,9 +30,8 @@ var RequestSchema = new mongoose.Schema({
     required: true,
   },
   quantity: {
-    type: Number,
-    required: true
-  },
+    type: Number
+    },
   status: {
     type: String,
     enum: ['PENDING', 'APPROVED', 'DENIED', 'FULFILLED'],

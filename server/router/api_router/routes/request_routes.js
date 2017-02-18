@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 var QueryBuilder = require('../../../queries/querybuilder')
 // fields within the item to return
 var itemFieldsToReturn = 'name model_number location description';
-
+var userFieldsToReturn = 'username netid first_name last_name';
 module.exports.getAPI = function (req, res) {
   // searchable by user, item_id, reason, created, quantity, status
   var reason = req.query.reason;
@@ -23,7 +23,7 @@ module.exports.getAPI = function (req, res) {
   }
 
   query
-    .searchForObjectId('item', req.query.item_id)
+    .searchInArrayForObjectId('items', 'item', req.query.item_id)
     .searchCaseInsensitive('reason', req.query.reason)
     .searchForDate('created', req.query.created)
     .searchExact('quantity', req.query.quantity)
@@ -36,7 +36,7 @@ module.exports.getAPI = function (req, res) {
       // page number (not offset)
       page: req.query.page,
       limit: Number(req.query.per_page),
-      populate: [{path:'item', select: itemFieldsToReturn}, {path:'user', select:'username netid first_name last_name'}]
+      populate: [{path:'items.item', select: itemFieldsToReturn}, {path:'user', select: userFieldsToReturn}]
     }
     Request.paginate(query.toJSON(), paginateOptions, function(err, obj){
         if(err) return res.send({error: err});
@@ -44,8 +44,8 @@ module.exports.getAPI = function (req, res) {
     });
   } else {
     Request.find(query.toJSON())
-      .populate('item', itemFieldsToReturn)
-      .populate('user', 'username netid first_name last_name')
+      .populate('items.item', itemFieldsToReturn)
+      .populate('user', userFieldsToReturn)
       .exec(function(err, requests){
         if(err) return res.send({error:err});
         res.json(requests);
@@ -89,11 +89,10 @@ module.exports.postAPI = function(req,res){
 };
 
 function processAndPost(request, req, res){
-  if(!req.body.item_id && !req.body.item) {
-    return res.send({error: "Item ID null"});
+  if(!req.body.items.length){
+    return res.send({error: "Items not specified in request"});
   } else {
-    if(req.body.item) request.item = mongoose.Types.ObjectId(req.body.item);
-    else if(req.body.item_id) request.item = mongoose.Types.ObjectId(req.body.item_id);
+    request.items = req.body.items;
   }
   request.reason = req.body.reason;
   if(req.body.created) request.created = new Date(req.body.created);
@@ -101,16 +100,18 @@ function processAndPost(request, req, res){
   request.status = req.body.status;
   request.requestor_comment = req.body.requestor_comment;
   request.reviewer_comment = req.body.reviewer_comment;
-  request.save(function(err){
+  request.save(function(err, request){
     if(err) return res.send({error:err});
-    res.json(request);
+    Request.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, request){
+      res.json(request);
+    })
   });
 };
 
 
 module.exports.getAPIbyID = function(req, res){
   Request.findById(req.params.request_id)
-         .populate('item', itemFieldsToReturn)
+         .populate('items.item', itemFieldsToReturn)
          .populate('user', 'username')
          .exec(function(err,request){
     if(err) return res.send({error:err});
