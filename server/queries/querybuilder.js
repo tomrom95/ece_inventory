@@ -29,6 +29,18 @@ QueryBuilder.prototype.searchForDate = function(name, date) {
   return this;
 }
 
+QueryBuilder.prototype.searchInDateRange = function(name, startDate, endDate) {
+  var dateQuery = {};
+  if (startDate) {
+    dateQuery['$gte'] = new Date(startDate);
+  }
+  if (endDate) {
+    dateQuery['$lte'] = new Date(endDate);
+  }
+  this.queryObject[name] = dateQuery;
+  return this;
+}
+
 QueryBuilder.prototype.searchCaseInsensitive = function(name, value, trim=true) {
   if (value) {
     value = trim ? value.trim() : value;
