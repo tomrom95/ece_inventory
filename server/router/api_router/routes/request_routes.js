@@ -261,5 +261,7 @@ module.exports.patchAPI = function(req, res) {
         });
       })
     });
+  } else {
+    return res.send({error: "Action not recognized"});
   }
 }

@@ -1298,6 +1298,37 @@ describe('Requests API Test', function () {
   });
 
   describe('PATCH /requests/:request_id', ()=> {
+    it('Error if DISBURSE not entered as action', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "APPROVED",
+        "created": "2019-01-29"
+      });
+      request.items = [
+        {
+          item: item2_id,
+          quantity:100
+        }
+      ];
+      request.user = user_id;
+      request.save((err, request) => {
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'action': 'DISBRSS'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.error.should.be.eql("Action not recognized");
+          done();
+        });
+      });
+    });
     it('updates the request and item after disbursement', (done) => {
       var request = new Request({
         "reviewer_comment": "NONADMIN",
