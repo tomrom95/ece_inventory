@@ -142,13 +142,13 @@ describe('Logging API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.length.should.be.eql(3);
-          var firstLog = res.body.find(log => log.description === "added 1k resistor");
-          should.exist(firstLog);
-          firstLog.items.length.should.be.eql(1);
           // make sure fields are populating
-          firstLog.items[0].name.should.be.eql('1k resistor');
-          firstLog.initiating_user.username.should.be.eql('admin');
-          firstLog.type.should.be.eql('NEW');
+          res.body.items.forEach(function(itemObj){
+            itemObj.item.should.have.property("name");
+            itemObj.initiating_user.should.have.property("username");
+            (["1k resistor", "2k resistor", "5k resistor"]).should.include(itemObj.item.name);
+            (["admin", "manager"]).should.include(itemObj.initiating_user.username);
+          });
           done();
         });
     });
