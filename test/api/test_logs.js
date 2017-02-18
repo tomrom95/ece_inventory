@@ -143,10 +143,10 @@ describe('Logging API Test', function () {
           res.should.have.status(200);
           res.body.length.should.be.eql(3);
           // make sure fields are populating
-          res.body.items.forEach(function(itemObj){
-            itemObj.item.should.have.property("name");
+          res.body.forEach(function(itemObj){
+            itemObj.items[0].should.have.property("name");
             itemObj.initiating_user.should.have.property("username");
-            (["1k resistor", "2k resistor", "5k resistor"]).should.include(itemObj.item.name);
+            (["1k resistor", "2k resistor", "5k resistor"]).should.include(itemObj.items[0].name);
             (["admin", "manager"]).should.include(itemObj.initiating_user.username);
           });
           done();
