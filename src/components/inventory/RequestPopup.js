@@ -4,7 +4,10 @@ import RequestSubtable from '../requests/RequestSubtable.js';
 import UserSelect from '../user/UserSelect';
 
 function validNumber(num) {
-	return !isNaN(num);
+	if (!isNaN(num)) {
+		return (num >= 0);
+	}
+	return false;
 }
 
 function isWholeNumber(num) {
@@ -272,16 +275,6 @@ class RequestPopup extends Component {
 		document.getElementById("reason-textbox-" + this.props.itemId).value = "";
 		document.getElementById("comment-textbox-" + this.props.itemId).value = "";
 		this.refs.userSelect.clearUser();
-	}
-
-	update(newData) {
-		// Method for later use when we have instances on front-end/
-
-		// make sure you format newData to include keys... or change the way it's passed in.
-		/*this.setState({
-			data: newData
-		});
-		*/
 	}
 }
 
