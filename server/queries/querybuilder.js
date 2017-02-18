@@ -24,6 +24,15 @@ QueryBuilder.prototype.searchForObjectId = function(name, objectId) {
   return this;
 }
 
+QueryBuilder.prototype.searchInIdArrayForIdList = function(name, objectIds){
+  if(objectIds) {
+    this.queryObject[name] = {
+      $in: [objectIds]
+    }
+  }
+  return this;
+}
+
 QueryBuilder.prototype.searchInArrayForObjectId = function(arrayName, fieldName, objectId){
   if(objectId) {
     this.queryObject[arrayName] = {
@@ -41,6 +50,8 @@ QueryBuilder.prototype.searchForDate = function(name, date) {
 }
 
 QueryBuilder.prototype.searchInDateRange = function(name, startDate, endDate) {
+  if (!startDate && !endDate) return this;
+
   var dateQuery = {};
   if (startDate) {
     dateQuery['$gte'] = new Date(startDate);
