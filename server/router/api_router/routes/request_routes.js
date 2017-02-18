@@ -194,6 +194,7 @@ function disburse(requestID, next) {
     for (var i = 0; i < request.items.length; i++){
       // Pass down index i into the closure for async call
       (function(i){
+        // Push each promise to an array
         checkQuantityPromises.push(new Promise((resolve, reject) => {
           Item.findById(request.items[i].item, function(err, item) {
             if(err) return next(err);
@@ -207,7 +208,7 @@ function disburse(requestID, next) {
       })(i);
 
     }
-
+    // Resolve array of promises sequentially
     Promise.all(checkQuantityPromises).then(function(obj) {
       // returned
       var updatedCart = [];
@@ -221,8 +222,10 @@ function disburse(requestID, next) {
               item.save(function(err, updatedItem) {
                 if (err) return next(err);
                 if (!updatedItem) return next('Item does not exist');
-                updatedCart.push(updatedItem);
-                resolve();
+                Item.populate(updatedItem,{path: "item", select: itemFieldsToReturn}, function(err, item){
+                  updatedCart.push(updatedItem);
+                  resolve();
+                })
               });
             });
           }))
@@ -254,7 +257,7 @@ module.exports.patchAPI = function(req, res) {
         res.json({
           message: 'Disbursement successful',
           request: request,
-          cart: cart
+          items: cart
         });
       })
     });
