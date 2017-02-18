@@ -499,7 +499,7 @@ params: {
 	action: "DISBURSE" // for now this is the only action
 }
 return {
-	item: [
+	items: [
 		{
 			// same item body as before
 		}
