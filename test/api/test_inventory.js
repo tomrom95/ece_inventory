@@ -15,6 +15,7 @@ chai.use(require('chai-things'));
 describe('Inventory API Test', function () {
   var token;
   var standardToken;
+  var managerToken
   beforeEach((done) => { //Before each test we empty the database
       Item.remove({}, (err) => {
         should.not.exist(err);
@@ -26,8 +27,12 @@ describe('Inventory API Test', function () {
             helpers.createNewUser('standard', 'test', 'STANDARD', function(err, user) {
               should.not.exist(err);
               standardToken = helpers.createAuthToken(user);
-              Item.insertMany(fakeJSONData).then(function(obj){
-                done();
+              helpers.createNewUser('manager', 'test', 'MANAGER', function(err, user) {
+                should.not.exist(err);
+                managerToken = helpers.createAuthToken(user);
+                Item.insertMany(fakeJSONData).then(function(obj){
+                  done();
+                });
               });
             });
           });
@@ -551,7 +556,10 @@ describe('Inventory API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.error.should.be.eql('You cannot update the delete field');
-        done();
+          Item.findById(item._id, function(error, item) {
+            item.is_deleted.should.be.eql(false);
+            done();
+          });
         });
       });
     });
@@ -723,6 +731,34 @@ describe('Inventory API Test', function () {
         chai.request(server)
         .delete('/api/inventory/'+item.id)
         .set('Authorization', token)
+        .end((err, res) => {
+          should.not.exist(err);
+              chai.request(server)
+              .get('/api/inventory/'+item.id)
+              .set('Authorization', token)
+              .end((err, res) => {
+                should.not.exist(err);
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.name.should.be.eql('Laptop');
+                done();
+          });
+        });
+      });
+    });
+
+    it('DELETE inventory item by item id, then GET should succeed for manager', (done) => {
+      let item = new Item({
+        "location": "PERKINS",
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+      });
+      item.save((err, item) =>{
+        should.not.exist(err);
+        chai.request(server)
+        .delete('/api/inventory/'+item.id)
+        .set('Authorization', managerToken)
         .end((err, res) => {
           should.not.exist(err);
               chai.request(server)

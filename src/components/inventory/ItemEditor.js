@@ -16,7 +16,10 @@ function getValues(data, keys) {
 }
 
 function validNumber(num) {
-	return !isNaN(num);
+	if (!isNaN(num)) {
+		return (num >= 0);
+	}
+	return false;
 }
 
 function isWholeNumber(num) {
@@ -41,6 +44,21 @@ class ItemEditor extends Component {
 		}
 	}
 
+	componentWillReceiveProps(newProps) {
+		this.setState({
+			data: newProps.data,
+			formIds: []
+		});
+	}
+
+	handleFormChange(event, label) {
+		var data = this.state.data;
+		data[label] = event.target.value;
+		this.setState({
+			data: data
+		});
+	}
+
 	makeForm() {
 		var keys = getKeys(this.state.data);
 		var vals = getValues(this.state.data, keys);
@@ -55,41 +73,6 @@ class ItemEditor extends Component {
 		return list;
 	}
 
-	render() {
-    return (
-		<div>
-			<button type="button"
-				className="btn btn-outline-primary edit-button"
-				data-toggle="modal"
-				data-target={"#editModal-"+this.props.itemId}>
-				<span className="fa fa-pencil"></span>
-			</button>
-
-			<div className="modal fade"
-				id={"editModal-"+this.props.itemId}
-				tabIndex="-1" role="dialog"
-				aria-labelledby="editLabel"
-				aria-hidden="true">
-			  <div className="modal-dialog" role="document">
-			    <div className="modal-content">
-			      <div className="modal-header">
-			        <h5 className="modal-title" id="editLabel">Edit Current Item</h5>
-			      </div>
-			      <div className="modal-body">
-			        {this.makeForm()}
-			      </div>
-			      <div className="modal-footer">
-			        <button type="button" onClick={e=>this.makeForm()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-			        <button onClick={e => this.onSubmission()} type="button" data-dismiss="modal" className="btn btn-primary">Submit</button>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-		</div>
-		);
-	}
-
-
 	makeTextBox(row, type, label, defaultValue){
 		var id = "createform-row-"+row;
 		this.state.formIds.push(id);
@@ -100,14 +83,14 @@ class ItemEditor extends Component {
 				api={this.props.api}
 				id={id}
 				ref={label}
-        defaultTags={defaultValue}
-			/>
+        		defaultTags={defaultValue} />
 	} else {
 		input = <input type={type}
 			className="form-control"
-			defaultValue={defaultValue}
+			value={defaultValue}
 			ref={label}
-			key={id}>
+			key={id}
+			onChange={e => this.handleFormChange(e, label)}>
 			</input>
 	}
 
@@ -172,8 +155,43 @@ class ItemEditor extends Component {
 			        console.log(error);
 			      }.bind(this));
 		}
-  }
+    }
 
+  	render() {
+	    return (
+			<div>
+				<button type="button"
+					className="btn btn-outline-primary edit-button"
+					data-toggle="modal"
+					data-target={"#editModal-"+this.props.itemId} 
+					data-backdrop="static">
+					<span className="fa fa-pencil"></span>
+				</button>
+
+				<div className="modal fade"
+					id={"editModal-"+this.props.itemId}
+					tabIndex="-1" role="dialog"
+					aria-labelledby="editLabel"
+					aria-hidden="true">
+				  <div className="modal-dialog" role="document">
+				    <div className="modal-content">
+				      <div className="modal-header">
+				        <h5 className="modal-title" id="editLabel">Edit Current Item</h5>
+				      </div>
+				      <div className="modal-body">
+				        {this.makeForm()}
+				      </div>
+				      <div className="modal-footer">
+				        <button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+				        <button onClick={() => this.onSubmission()} type="button" className="btn btn-primary">Apply</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+			</div>
+			);
+	}
 }
 
 export default ItemEditor

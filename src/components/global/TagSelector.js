@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select';
 
 class TagSelector extends Component {
+
   constructor(props){
     super(props);
     this.state = {
@@ -21,6 +22,10 @@ class TagSelector extends Component {
   }
 
   componentWillMount() {
+    this.loadData();
+  }
+
+  loadData() {
     this.props.api.get('/api/inventory/tags')
       .then(function(response) {
         if (response.error) {
@@ -50,6 +55,7 @@ class TagSelector extends Component {
           placeholder="Choose tag(s)"
           options={this.state.allTags}
           onChange={this.handleChange.bind(this)}
+          onFocus={() => this.loadData()}
         />
       );
     } else {
@@ -61,6 +67,7 @@ class TagSelector extends Component {
           placeholder="Choose tag(s)"
           options={this.state.allTags}
           onChange={this.handleChange.bind(this)}
+          onFocus={() => this.loadData()}
         />
       );
     }
