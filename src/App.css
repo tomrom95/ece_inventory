@@ -78,7 +78,7 @@
   display: none;
 }
 .maintable-container {
-  width: 1500px;
+  width: 100%;
   margin-left: 15px;
   overflow-y: scroll;
 }
@@ -158,7 +158,7 @@
 }
 
 .request-quantity {
-  width: 200px;
+  width: 50%;
   margin-left: 10px;
 }
 
@@ -261,8 +261,9 @@
   overflow-y: scroll;
 }
 
-.card {
-  width: 300px;
+.page-dropdown {
+  max-height: 175px;
+  overflow-y: scroll;
 }
 
 .card-block {
@@ -270,7 +271,28 @@
   margin-right: 20px;
 }
 
+.cart-item {
+  width: 400px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  color: gray;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.cart-body {
+  max-height: 500px;
+  overflow-y: scroll;
+  width: 430px;
+}
+
+.cart-modal {
+  color: gray;
+  width: 433px
+}
+
 .filterbox {
+  width: 310px;
   margin-left: 20px;
   margin-right: 0;
   margin-bottom: 30px;
@@ -309,6 +331,15 @@
   margin-bottom: 20px;
 }
 
+.add-to-cart {
+  margin-top: 40%;
+}
+
+.add-to-cart-icon {
+  margin-left: -60%;
+  margin-right: 50%;
+}
+
 .perpage-button {
   width: 170px;
 }
@@ -320,7 +351,6 @@
 .table > thead > tr > th {
   vertical-align: middle;
 }
-
 
 body {
     background-color: rgba(0,0,0,0.3);

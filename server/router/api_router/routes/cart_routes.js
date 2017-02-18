@@ -26,6 +26,7 @@ var createCartIfNotExistent = function(user_id, res, next){
     }
   });
 };
+module.exports.createCartIfNotExistent = createCartIfNotExistent;
 
 var returnCart = function (user_id, res){
   var query = new QueryBuilder();
@@ -38,19 +39,21 @@ var returnCart = function (user_id, res){
   });
 }
 
+var setAppropriateUserId = function(req, res) {
+  return           (req.user.role !== 'STANDARD' &&
+                    req.body.user &&
+                    req.user._id != req.body.user) ?
+                    // If you are admin and the user field exists and is not you
+                    req.body.user :
+                    // Everyone else uses their own user id
+                    req.user._id;
+}
+module.exports.setAppropriateUserId = setAppropriateUserId;
 
 module.exports.putAPI = function(req,res){
   createCartIfNotExistent(req.user._id, res, function() {
-    var intendedUserID;
-    if(req.user.role !== 'ADMIN' && req.body.user) return res.send({error: "You are not authorized to change the user field"});
-    intendedUserID = (req.user.role === 'ADMIN' &&
-                      req.body.user &&
-                      req.user._id != req.body.user) ?
-                      // If you are admin and the user field exists and is not you
-                      req.body.user :
-                      // Everyone else uses their own user id
-                      req.user._id;
-
+    if(req.user.role === 'STANDARD' && req.body.user) return res.send({error: "You are not authorized to change the user field"});
+    var intendedUserID = setAppropriateUserId(req, res);
     Cart.findOne({user: intendedUserID}, function(err, oldCart){
       if(err) return res.send({error:err});
       // If the admin enters items field
@@ -65,12 +68,13 @@ module.exports.putAPI = function(req,res){
                         // Use the body description if it exists
                         req.body.description :
                         oldCart.description;
+      oldCart.lastModified = new Date();
       oldCart.save(function(err, cart){
         if(err) return res.send({error:err});
-        res.json(cart);
+        Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
+          res.json(cart);
+        })
       });
     });
   });
-
-
 };

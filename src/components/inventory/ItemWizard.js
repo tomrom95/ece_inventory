@@ -16,7 +16,10 @@ function getValues(data, keys) {
 }
 
 function validNumber(num) {
-	return !isNaN(num);
+	if (!isNaN(num)) {
+		return (num >= 0);
+	}
+	return false;
 }
 
 function isWholeNumber(num) {
@@ -61,7 +64,8 @@ class ItemWizard extends Component {
 			<button type="button"
 				className="btn btn-outline-primary add-button"
 				data-toggle="modal"
-				data-target={"#createModal"}>
+				data-target={"#createModal"}
+				data-backdrop="static">
 				<span className="fa fa-plus"></span>
 			</button>
 
@@ -81,7 +85,8 @@ class ItemWizard extends Component {
 			      </div>
 			      <div className="modal-footer">
 			        <button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-			        <button onClick={e => {this.onSubmission(); this.clearForm();}} type="button" data-dismiss="modal" className="btn btn-primary">Submit</button>
+			        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+			        <button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Submit</button>
 			      </div>
 			    </div>
 			  </div>
@@ -166,6 +171,8 @@ class ItemWizard extends Component {
 		        		alert(response.data.error.errmsg);
 			        } else {
 			        	this.props.callback();
+			        	this.clearForm();
+			        	alert("Successfully created new item: " + response.data.name);
 			        }
 			      }.bind(this))
 			      .catch(function(error) {
@@ -175,7 +182,6 @@ class ItemWizard extends Component {
   }
 
   	clearForm() {
-			console.log("CLEARING");
   		var keys = getKeys(this.state.data);
 			keys.forEach(function(key) {
 				if (key === "Tags") {

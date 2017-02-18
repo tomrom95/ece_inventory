@@ -2,6 +2,9 @@
 var Log = require('../../../model/logs');
 var QueryBuilder = require('../../../queries/querybuilder');
 
+const ITEM_FIELDS = 'name';
+const USER_FIELDS = 'username netid first_name last_name';
+
 module.exports.getAPI = function(req, res) {
   var query = new QueryBuilder();
   if (isInvalidDate(req.body.start_date) || isInvalidDate(req.body.end_date)) {
@@ -26,9 +29,9 @@ module.exports.getAPI = function(req, res) {
   Log
     .find(query.toJSON())
     .or([initiatingUserQuery, affectedUserQuery])
-    .populate('items', 'name')
-    .populate('initiating_user', 'username netid first_name last_name')
-    .populate('affected_user', 'username netid first_name last_name')
+    .populate('items', ITEM_FIELDS)
+    .populate('initiating_user', USER_FIELDS)
+    .populate('affected_user', USER_FIELDS)
     .exec(function(err, logs) {
       if(err) {
         res.send({error: err});

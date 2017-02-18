@@ -7,6 +7,23 @@ class FilterBox extends Component {
   }
 
   componentWillMount() {
+    this.loadData();
+  }
+
+  loadData() {
+    this.props.api.get('/api/inventory/tags')
+    .then(function(response) {
+        if (response.error) {
+          console.log(response.error);
+        }
+        var data = response.data.map(function(tag) {
+          return {label: tag, value: tag}
+        });
+        this.setState({allTags: data});
+      }.bind(this))
+      .catch(function(error) {
+        console.log(error);
+      });
   }
 
   filterButton() {

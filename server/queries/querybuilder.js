@@ -24,6 +24,17 @@ QueryBuilder.prototype.searchForObjectId = function(name, objectId) {
   return this;
 }
 
+QueryBuilder.prototype.searchInArrayForObjectId = function(arrayName, fieldName, objectId){
+  if(objectId) {
+    this.queryObject[arrayName] = {
+        $elemMatch: {
+            [fieldName]: objectId
+        }
+      }
+  }
+  return this;
+}
+
 QueryBuilder.prototype.searchForDate = function(name, date) {
   if (date) return this.searchExact(name, new Date(date));
   return this;
