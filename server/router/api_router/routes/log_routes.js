@@ -19,10 +19,8 @@ module.exports.getAPI = function(req, res) {
     .searchForObjectId('affected_user', req.body.user)
     .toJSON();
 
-  if (req.body.items)
-
   query
-    .searchInArray('items', req.body.items) // check this
+    .searchInArrayForObjectId('items', req.body.item)
     .searchExact('type', req.body.type)
     .searchInDateRange('time_stamp', req.body.start_date, req.body.end_date);
 
