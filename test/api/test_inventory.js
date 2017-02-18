@@ -758,12 +758,12 @@ describe('Inventory API Test', function () {
         should.not.exist(err);
         chai.request(server)
         .delete('/api/inventory/'+item.id)
-        .set('Authorization', managerToken)
+        .set('Authorization', token)
         .end((err, res) => {
           should.not.exist(err);
               chai.request(server)
               .get('/api/inventory/'+item.id)
-              .set('Authorization', token)
+              .set('Authorization', managerToken)
               .end((err, res) => {
                 should.not.exist(err);
                 res.should.have.status(200);
