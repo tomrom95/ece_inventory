@@ -22,7 +22,6 @@ var ItemSchema = new mongoose.Schema({
   tags: [String],
   has_instance_objects: {
     type: Boolean,
-    required: true,
     default: false
   },
   instances: [InstanceSchema],

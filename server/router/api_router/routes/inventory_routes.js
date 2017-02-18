@@ -2,6 +2,7 @@
 var Item = require('../../../model/items');
 var CustomField = require('../../../model/customFields');
 var QueryBuilder = require('../../../queries/querybuilder');
+var LogHelpers = require('../../../logging/log_helpers');
 
 var getPrivateFields = function(next) {
   CustomField.find({isPrivate: true}, function(error, fields) {
@@ -115,10 +116,13 @@ module.exports.postAPI = function(req, res){
   item.description = req.body.description;
   item.tags = trimTags(req.body.tags);
   item.has_instance_objects = req.body.has_instance_objects;
-  item.save(function(err){
+  item.save(function(err, newItem){
     if(err)
     return res.send({error: err});
-    res.json(item);
+    LogHelpers.logNewItem(newItem, req.user, function(error) {
+      if (error) return res.send({error: error});
+      return res.json(newItem);
+    });
   })
 };
 
@@ -160,7 +164,10 @@ module.exports.deleteAPI = function(req, res){
     {$set: {is_deleted: true}},
     function(err, item) {
       if (err) return res.send(err);
-      return res.json({message: "Delete successful"});
+      LogHelpers.logDeletion(item, req.user, function(error) {
+        if (error) return res.send({error: error});
+        return res.json({message: "Delete successful"});
+      });
     }
   );
 }

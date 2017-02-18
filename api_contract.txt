@@ -509,27 +509,44 @@ return {
 	}
 }
 
-/api/log
+/api/logs
 GET
 params:
-
+{
+	item_id: String,
+	item_name: String,
+	type: String,
+	user_id: String,
+	start_date: String, // in format '2017-01-25' (YEAR-MONTH-DAY)
+	end_date: String // in format '2017-01-25' (YEAR-MONTH-DAY)
+}
 return:
 [
   {
     _id: String,
-    created_by: {
+    initiating_user: {
 			_id: String,
-			username: String
+			username: String,
+			netid: String,
+			first_name: String,
+			last_name: String
 		},
-		item: [
+		affected_user: {
+			_id: String,
+			username: String,
+			netid: String,
+			first_name: String,
+			last_name: String
+		}
+		items: [
 			{
 				_id: String,
 				name: String,
 			}
 		],
-  	type: String,
-    quantity: Integer,
+  	type: String ('EDIT', 'NEW', 'DELETED', 'FULFILLED'),
     time_stamp: String,
+		description: String
   }
 ]
 

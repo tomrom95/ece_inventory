@@ -615,20 +615,6 @@ describe('Inventory API Test', function () {
         done();
       });
     });
-    it('Should not POST without has_instance_objects field', (done) => {
-      chai.request(server)
-        .post('/api/inventory')
-        .set('Authorization', token)
-        .send(itemNoHasInstanceObjects)
-        .end((err, res) => {
-          should.not.exist(err);
-          res.should.have.status(200);
-          res.body.should.have.property('error');
-          res.body.error.errors.should.have.property('has_instance_objects');
-          res.body.error.errors.has_instance_objects.should.have.property('kind').eql('required');
-        done();
-      });
-    });
     it('POSTs successfully', (done)=>{
       chai.request(server)
         .post('/api/inventory')
