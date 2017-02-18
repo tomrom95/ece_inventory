@@ -318,18 +318,12 @@ return:
 }
 
 PATCH
-params:{
-	action: "CHECKOUT"
-}
 body: {
+	action: "CHECKOUT"
 	reason: String
 }
 return {
-	items: [
-		{
-			// same item body as before
-		}
-	],
+	message: "Request successful"
 	request: {
 		// same request body as before
 	}

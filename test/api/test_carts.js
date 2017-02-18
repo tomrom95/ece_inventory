@@ -629,11 +629,6 @@ describe('Cart API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.message.should.eql("Request successful");
-          res.body.cart.items.length.should.be.eql(2);
-          res.body.cart.items.forEach(function(item){
-            [100, 200].should.include(item.quantity);
-            ["1k resistor","2k resistor"].should.include(item.item.name);
-          })
           res.body.request.user.should.eql(adminUser._id.toString());
           res.body.request.reason.should.eql("Test request");
           res.body.request.status.should.eql("PENDING");
@@ -653,7 +648,12 @@ describe('Cart API Test', function () {
             request.items.forEach(function(item){
               [100, 200].should.include(item.quantity);
             })
-            done();
+            Cart.findOne({user: adminUser._id}, function(err, cart){
+              should.not.exist(err);
+              cart.items.should.be.a('array');
+              cart.items.length.should.be.eql(0);
+              done();
+            })
           });
       });
       });
@@ -673,11 +673,6 @@ describe('Cart API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.message.should.eql("Request successful");
-          res.body.cart.items.length.should.be.eql(2);
-          res.body.cart.items.forEach(function(item){
-            [100, 200].should.include(item.quantity);
-            ["1k resistor","2k resistor"].should.include(item.item.name);
-          })
           res.body.request.user.should.eql(managerUser._id.toString());
           res.body.request.reason.should.eql("Test request");
           res.body.request.status.should.eql("PENDING");
@@ -697,7 +692,12 @@ describe('Cart API Test', function () {
             request.items.forEach(function(item){
               [100, 200].should.include(item.quantity);
             })
-            done();
+            Cart.findOne({user: managerUser._id}, function(err, cart){
+              should.not.exist(err);
+              cart.items.should.be.a('array');
+              cart.items.length.should.be.eql(0);
+              done();
+            })
           });
       });
       });
@@ -717,11 +717,6 @@ describe('Cart API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.message.should.eql("Request successful");
-          res.body.cart.items.length.should.be.eql(2);
-          res.body.cart.items.forEach(function(item){
-            [100, 200].should.include(item.quantity);
-            ["1k resistor","2k resistor"].should.include(item.item.name);
-          })
           res.body.request.user.should.eql(standardUser._id.toString());
           res.body.request.reason.should.eql("Test request");
           res.body.request.status.should.eql("PENDING");
@@ -741,7 +736,12 @@ describe('Cart API Test', function () {
             request.items.forEach(function(item){
               [100, 200].should.include(item.quantity);
             })
-            done();
+            Cart.findOne({user: standardUser._id}, function(err, cart){
+              should.not.exist(err);
+              cart.items.should.be.a('array');
+              cart.items.length.should.be.eql(0);
+              done();
+            })
           });
       });
       });

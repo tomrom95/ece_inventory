@@ -82,16 +82,13 @@ module.exports.putAPI = function(req,res){
 
 module.exports.patchAPI = function(req, res){
   if (req.body.action == 'CHECKOUT') {
-    checkout(req.user._id, req.body.reason, function(err, cart, request){
+    checkout(req.user._id, req.body.reason, function(err, request){
       if (err) return res.send({error: err});
       // populate cart items in cart object
-      Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
         res.json({
           message: 'Request successful',
-          cart: cart,
           request: request
         });
-      })
     });
   } else {
     return res.send({error: "Action not recognized"});
@@ -117,7 +114,15 @@ function checkout (userID, reasonString, next) {
        if (err) return next(err);
        // populate cart items in requests object
        Cart.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
-         next(err, cart, request);
+         // Delete cart, and put in a new one
+         Cart.remove({user: userID}, function(err){
+           if(err) return next(err);
+           var newCart = new Cart({user: userID});
+           newCart.save(function(err){
+             if(err) return next(err);
+             next(null, request);
+           })
+         })
        })
      })
   })
