@@ -103,6 +103,37 @@ describe('Logging API Test', function () {
           });
       });
     });
+
+    it('logs editing an item', (done) => {
+      chai.request(server)
+        .put('/api/inventory/' + allItems['1k resistor']._id)
+        .set('Authorization', adminToken)
+        .send({
+          name: '1k thingy',
+          quantity: 2000,
+          tags: ["component", "electric","cheap", "thingy"],
+          location: 'CIEMAS'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Log.find({}, function(err, logs) {
+            should.not.exist(err);
+            logs.length.should.be.eql(1);
+            var log = logs[0];
+            log.items.length.should.be.eql(1);
+            log.items[0].should.be.eql(allItems['1k resistor']._id);
+            log.initiating_user.should.be.eql(adminUser._id);
+            log.type.should.be.eql('EDIT');
+            should.not.exist(log.affected_user);
+            log.description.should.include('name from 1k resistor to 1k thingy');
+            log.description.should.include('quantity from 1000 to 2000');
+            log.description.should.include('tags from component,electric,cheap to component,electric,cheap,thingy');
+            log.description.should.not.include('location');
+            done();
+          });
+        });
+    });
   });
 
   describe('GET /logs', () =>{

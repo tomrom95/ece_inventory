@@ -147,12 +147,15 @@ module.exports.putAPI = function(req, res){
     if(!old_item || old_item.is_deleted)
       return res.send({error: 'Item does not exist or has been deleted'});
     else{
-      var old_quantity = old_item.quantity;
+      var oldItemCopy = new Item(old_item);
       var obj = Object.assign(old_item, req.body)
       obj.tags = trimTags(req.body.tags);
       obj.save((err,item) => {
         if(err) return res.send({error: err});
-        res.json(item);
+        LogHelpers.logEditing(oldItemCopy, req.body, req.user, function(err) {
+          if(err) return res.send({error: err});
+          res.json(item);
+        });
       });
     }
   });
