@@ -4,7 +4,8 @@ var Item = require('../../../model/items');
 var User = require('../../../model/users');
 var Cart = require('../../../model/carts');
 var mongoose = require('mongoose');
-var QueryBuilder = require('../../../queries/querybuilder')
+var QueryBuilder = require('../../../queries/querybuilder');
+var LogHelpers = require('../../../logging/log_helpers.js');
 // fields within the item to return
 var itemFieldsToReturn = 'name model_number location description';
 var userFieldsToReturn = 'username netid first_name last_name';
@@ -189,7 +190,9 @@ function disburse(requestID, next) {
   Request.findById(requestID, function(err, request) {
     if (err) return next(err);
     if (!request) return next('Request does not exist');
-
+    if (request.status === 'FULFILLED') {
+      return next('Request has already been disbursed to the user');
+    }
     var checkQuantityPromises = [];
     for (var i = 0; i < request.items.length; i++){
       // Pass down index i into the closure for async call
@@ -255,10 +258,16 @@ module.exports.patchAPI = function(req, res) {
     disburse(req.params.request_id, function(err, request, cart) {
       if (err) return res.send({error: err});
       Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
-        res.json({
-          message: 'Disbursement successful',
-          request: request,
-          items: cart
+        if (err) res.send({error: err});
+        LogHelpers.logDisbursement(request, cart, req.user, function(err) {
+          if (err) {
+            console.log(err);
+          }
+          res.json({
+            message: 'Disbursement successful',
+            request: request,
+            items: cart
+          });
         });
       })
     });

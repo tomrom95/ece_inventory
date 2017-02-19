@@ -4,6 +4,7 @@ let mongoose = require("mongoose");
 let Item = require('../../server/model/items');
 let User = require('../../server/model/users');
 let Log = require('../../server/model/logs');
+let Request = require('../../server/model/requests');
 let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
 let fakeJSONData = require('./test_inventory_data');
@@ -57,7 +58,7 @@ describe('Logging API Test', function () {
   });
 
 
-  describe('Logging adding/removing inventory items', () =>{
+  describe('Logging adding/removing/disbursing inventory items', () =>{
     it('logs adding an item', (done) => {
       chai.request(server)
         .post('/api/inventory')
@@ -101,6 +102,58 @@ describe('Logging API Test', function () {
               done();
             });
           });
+      });
+    });
+
+    it('logs disbursing an item', (done) => {
+      Request.remove({}, (err) => {
+        var newRequest = new Request({
+          user: standardUser._id,
+          items: [
+            {
+              item: allItems["1k resistor"]._id,
+              quantity: 2
+            },
+            {
+              item: allItems["2k resistor"]._id,
+              quantity: 5
+            },
+            {
+              item: allItems["Oscilloscope"]._id,
+              quantity: 1
+            }
+          ],
+          reason: "cuz"
+        });
+        newRequest.save(function(error, request) {
+          chai.request(server)
+            .patch('/api/requests/' + request._id)
+            .set('Authorization', adminToken)
+            .send({action: "DISBURSE"})
+            .end((err, res) => {
+              should.not.exist(err);
+              res.should.have.status(200);
+              Log.find({}, function(err, logs) {
+                should.not.exist(err);
+                logs.length.should.be.eql(1);
+                var log = logs[0];
+                log.items.length.should.be.eql(3);
+                log.items.forEach(function(item) {
+                  ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
+                    .should.include(item);
+                })
+                log.type.should.be.eql('DISBURSED');
+                log.initiating_user.should.be.eql(adminUser._id);
+                log.affected_user.should.be.eql(standardUser._id);
+                log.description.should.include('2 1k resistors');
+                log.description.should.include('5 2k resistors');
+                log.description.should.include('1 Oscilloscope');
+                log.description.should.include('The user admin disbursed');
+                log.description.should.include('to the user standard');
+                done();
+              });
+            });
+        });
       });
     });
   });
@@ -192,7 +245,7 @@ describe('Logging API Test', function () {
           initiating_user: managerUser._id,
           affected_user: standardUser._id,
           items: [allItems["Oscilloscope"]._id, allItems["120V"]._id],
-          type: 'FULFILLED',
+          type: 'DISBURSED',
           description: 'Disbursed oscilloscope and 120V',
           time_stamp: new Date('2017-02-13'),
         },
@@ -200,7 +253,7 @@ describe('Logging API Test', function () {
           initiating_user: adminUser._id,
           affected_user: managerUser._id,
           items: [allItems["Oscilloscope"]._id, allItems["100k resistor"]._id],
-          type: 'FULFILLED',
+          type: 'DISBURSED',
           description: 'Disbursed oscilloscope and 100k resistor',
           time_stamp: new Date('2017-02-14'),
         },
