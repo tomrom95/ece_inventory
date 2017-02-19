@@ -40,35 +40,57 @@ module.exports.getAPI = function(req, res) {
       if (error) return res.send({error: error});
       var itemIdList = items.map(i => i._id);
       query.searchInIdArrayForIdList('items', itemIdList);
-      queryLog(query.toJSON(), initiatingUserQuery, affectedUserQuery, function (error, logs) {
-        if (error) return res.send({error: error});
-        return res.json(logs);
-      });
+      queryLog(query.toJSON(), initiatingUserQuery, affectedUserQuery,
+        req.query.page, req.query.per_page, function (error, logs) {
+          if (error) return res.send({error: error});
+          return res.json(logs);
+        }
+      );
     });
   } else {
-    queryLog(query.toJSON(), initiatingUserQuery, affectedUserQuery, function (error, logs) {
-      if (error) return res.send({error: error});
-      return res.json(logs);
-    });
+    queryLog(query.toJSON(), initiatingUserQuery, affectedUserQuery,
+      req.query.page, req.query.per_page, function (error, logs) {
+        if (error) return res.send({error: error});
+        return res.json(logs);
+      }
+    );
   }
 
 }
 
-function queryLog(logQuery, initiatingUserQuery, affectedUserQuery, next) {
-  Log
+/**
+Construct the log query. It's a complicated query so it requires the base
+log query, the two queries for finding either the initiating user or affected user,
+and pagination options.
+*/
+function queryLog(
+    logQuery,
+    initiatingUserQuery,
+    affectedUserQuery,
+    page,
+    perPage,
+    next) {
+  var mongooseQuery = Log
     .find(logQuery)
     .or([initiatingUserQuery, affectedUserQuery])
     .populate('items', ITEM_FIELDS)
     .populate('initiating_user', USER_FIELDS)
     .populate('affected_user', USER_FIELDS)
-    .sort({time_stamp: 'desc'})
-    .exec(function(err, logs) {
-      if(err) {
-        next(err);
-      } else {
-        next(null, logs);
-      }
-    });
+    .sort({time_stamp: 'desc'});
+
+  if (page && perPage && !isNaN(perPage)) {
+    page = Number(page); perPage = Number(perPage);
+    mongooseQuery = mongooseQuery
+      .skip((page - 1)*perPage)
+      .limit(perPage);
+  }
+  mongooseQuery.exec(function(err, logs) {
+    if(err) {
+      next(err);
+    } else {
+      next(null, logs);
+    }
+  });
 }
 
 function isInvalidDate(date) {
