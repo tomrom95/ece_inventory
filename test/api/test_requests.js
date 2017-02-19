@@ -1297,85 +1297,319 @@ describe('Requests API Test', function () {
     });
   });
 
-  // describe('PATCH /requests/:request_id', ()=> {
-  //   it('updates the request and item after disbursement', (done) => {
-  //     var request = new Request({
-  //       "reviewer_comment": "NONADMIN",
-  //       "requestor_comment": "NONADMIN",
-  //       "reason": "NONADMIN",
-  //       "status": "APPROVED",
-  //       "quantity": 400,
-  //       "created": "2019-01-29"
-  //     });
-  //     request.items = [
-  //       {
-  //         item: item2_id,
-  //         quantity:1000
-  //       }
-  //     ];
-  //     request.user = user_id;
-  //     request.save((err, request) => {
-  //       should.not.exist(err);
-  //       chai.request(server)
-  //       .patch('/api/requests/'+request._id)
-  //       .set('Authorization', token)
-  //       .send({
-  //         'action': 'DISBURSE'
-  //       })
-  //       .end((err, res) => {
-  //         should.not.exist(err);
-  //         res.should.have.status(200);
-  //         res.body.request.status.should.be.eql('FULFILLED');
-  //         res.body.item.quantity.should.be.eql(600);
-  //         Item.findById(item_id, function(err, item) {
-  //           should.not.exist(err);
-  //           item.quantity.should.be.eql(600);
-  //           Request.findById(request._id, function(err, request) {
-  //             should.not.exist(err);
-  //             request.status.should.be.eql('FULFILLED');
-  //             done();
-  //           });
-  //         });
-  //       });
-  //     });
-  //   });
-  //
-  //   it('cannot update a quantity below 0', (done) => {
-  //     var request = new Request({
-  //       "reviewer_comment": "NONADMIN",
-  //       "requestor_comment": "NONADMIN",
-  //       "reason": "NONADMIN",
-  //       "status": "APPROVED",
-  //       "quantity": 2000,
-  //       "created": "2019-01-29"
-  //     });
-  //     request.items = [
-  //       {
-  //         item: item2_id,
-  //         quantity:1000
-  //       }
-  //     ];
-  //     request.user = user_id;
-  //     request.save((err, request) => {
-  //       should.not.exist(err);
-  //       chai.request(server)
-  //       .patch('/api/requests/'+request._id)
-  //       .set('Authorization', token)
-  //       .send({
-  //         'action': 'DISBURSE'
-  //       })
-  //       .end((err, res) => {
-  //         should.not.exist(err);
-  //         res.should.have.status(200);
-  //         res.body.error.should.be.eql('Insufficient quantity');
-  //         Request.findById(request._id, function(err, request) {
-  //           should.not.exist(err);
-  //           request.status.should.be.eql('APPROVED');
-  //           done();
-  //         });
-  //       });
-  //     });
-  //   });
-  // });
+  describe('PATCH /requests/:request_id', ()=> {
+    it('Error if DISBURSE not entered as action', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "APPROVED",
+        "created": "2019-01-29"
+      });
+      request.items = [
+        {
+          item: item2_id,
+          quantity:100
+        }
+      ];
+      request.user = user_id;
+      request.save((err, request) => {
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'action': 'DISBRSS'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.error.should.be.eql("Action not recognized");
+          done();
+        });
+      });
+    });
+    it('updates the request and item after disbursement', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "APPROVED",
+        "created": "2019-01-29"
+      });
+      request.items = [
+        {
+          item: item2_id,
+          quantity:100
+        }
+      ];
+      request.user = user_id;
+      request.save((err, request) => {
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'action': 'DISBURSE'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.request.status.should.be.eql('FULFILLED');
+          res.body.message.should.be.eql("Disbursement successful");
+          res.body.items.should.be.a('array');
+          res.body.items.length.should.be.eql(1);
+          Item.findById(item2_id, function(err, item) {
+            should.not.exist(err);
+            item.quantity.should.be.eql(900);
+            item.name.should.be.eql("2k resistor");
+            Request.findById(request._id, function(err, request) {
+              should.not.exist(err);
+              request.status.should.be.eql('FULFILLED');
+              done();
+            });
+          });
+        });
+      });
+    });
+    it('updates the request and multiple items after disbursement', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "APPROVED",
+        "created": "2019-01-29"
+      });
+      request.items = [
+        {
+          item: item1_id,
+          quantity: 100
+        },
+        {
+          item: item2_id,
+          quantity:100
+        }
+      ];
+      request.user = user_id;
+      request.save((err, request) => {
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'action': 'DISBURSE'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.request.status.should.be.eql('FULFILLED');
+          res.body.message.should.be.eql("Disbursement successful");
+          res.body.items.should.be.a('array');
+          res.body.items.length.should.be.eql(2);
+          Item.findById(item2_id, function(err, item) {
+            should.not.exist(err);
+            item.quantity.should.be.eql(900);
+            item.name.should.be.eql("2k resistor");
+            Item.findById(item1_id, function(err, item) {
+              should.not.exist(err);
+              item.quantity.should.be.eql(900);
+              item.name.should.be.eql("1k resistor");
+              Request.findById(request._id, function(err, request) {
+                should.not.exist(err);
+                request.status.should.be.eql('FULFILLED');
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
+    it('updates the request and multiple items after disbursement of all remaining quantity', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "APPROVED",
+        "created": "2019-01-29"
+      });
+      request.items = [
+        {
+          item: item1_id,
+          quantity: 1000
+        },
+        {
+          item: item2_id,
+          quantity:1000
+        }
+      ];
+      request.user = user_id;
+      request.save((err, request) => {
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'action': 'DISBURSE'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.request.status.should.be.eql('FULFILLED');
+          res.body.message.should.be.eql("Disbursement successful");
+          res.body.items.should.be.a('array');
+          res.body.items.length.should.be.eql(2);
+          Item.findById(item2_id, function(err, item) {
+            should.not.exist(err);
+            item.quantity.should.be.eql(0);
+            item.name.should.be.eql("2k resistor");
+            Item.findById(item1_id, function(err, item) {
+              should.not.exist(err);
+              item.quantity.should.be.eql(0);
+              item.name.should.be.eql("1k resistor");
+              Request.findById(request._id, function(err, request) {
+                should.not.exist(err);
+                request.status.should.be.eql('FULFILLED');
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
+    it('Does not disburse if first item has insufficient quantity', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "APPROVED",
+        "created": "2019-01-29"
+      });
+      request.items = [
+        {
+          item: item1_id,
+          quantity: 1001
+        },
+        {
+          item: item2_id,
+          quantity:100
+        }
+      ];
+      request.user = user_id;
+      request.save((err, request) => {
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'action': 'DISBURSE'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.error.should.be.eql('Insufficient quantity of item: 1k resistor');
+          Item.findById(item2_id, function(err, item) {
+            should.not.exist(err);
+            item.quantity.should.be.eql(1000);
+            item.name.should.be.eql("2k resistor");
+            Item.findById(item1_id, function(err, item) {
+              should.not.exist(err);
+              item.quantity.should.be.eql(1000);
+              item.name.should.be.eql("1k resistor");
+              Request.findById(request._id, function(err, request) {
+                should.not.exist(err);
+                request.status.should.be.eql('APPROVED');
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
+    it('Does not disburse if second item has insufficient quantity', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "APPROVED",
+        "created": "2019-01-29"
+      });
+      request.items = [
+        {
+          item: item1_id,
+          quantity: 100
+        },
+        {
+          item: item2_id,
+          quantity:1001
+        }
+      ];
+      request.user = user_id;
+      request.save((err, request) => {
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'action': 'DISBURSE'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.error.should.be.eql('Insufficient quantity of item: 2k resistor');
+          Item.findById(item2_id, function(err, item) {
+            should.not.exist(err);
+            item.quantity.should.be.eql(1000);
+            item.name.should.be.eql("2k resistor");
+            Item.findById(item1_id, function(err, item) {
+              should.not.exist(err);
+              item.quantity.should.be.eql(1000);
+              item.name.should.be.eql("1k resistor");
+              Request.findById(request._id, function(err, request) {
+                should.not.exist(err);
+                request.status.should.be.eql('APPROVED');
+                done();
+              });
+            });
+          });
+        });
+      });
+    });
+
+    it('cannot update a quantity below 0', (done) => {
+      var request = new Request({
+        "reviewer_comment": "NONADMIN",
+        "requestor_comment": "NONADMIN",
+        "reason": "NONADMIN",
+        "status": "APPROVED",
+        "created": "2019-01-29"
+      });
+      request.items = [
+        {
+          item: item2_id,
+          quantity:1001
+        }
+      ];
+      request.user = user_id;
+      request.save((err, request) => {
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'action': 'DISBURSE'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.error.should.be.eql('Insufficient quantity of item: 2k resistor');
+          Request.findById(request._id, function(err, request) {
+            should.not.exist(err);
+            request.status.should.be.eql('APPROVED');
+            done();
+          });
+        });
+      });
+    });
+  });
 
 });

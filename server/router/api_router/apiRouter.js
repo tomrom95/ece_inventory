@@ -44,7 +44,8 @@ router.route('/inventory/:item_id/:instance_id')
 
 router.route('/cart')
       .get(cart_routes.getAPI)
-      .put(cart_routes.putAPI);
+      .put(cart_routes.putAPI)
+      .patch(cart_routes.patchAPI);
 
 router.route('/cart/items')
       .post(cart_item_routes.postAPI);

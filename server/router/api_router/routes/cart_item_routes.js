@@ -25,6 +25,7 @@ module.exports.postAPI = function (req, res){
       return res.send({error: "Item already exists in this cart"});
     } else {
       oldCart.items.push(newItem);
+      oldCart.lastModified = new Date();
       oldCart.save(function(err, cart){
         if(err) return res.send({error: err});
         Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){

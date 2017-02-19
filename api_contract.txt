@@ -317,6 +317,18 @@ return:
 	lastModified, String
 }
 
+PATCH
+body: {
+	action: "CHECKOUT"
+	reason: String
+}
+return {
+	message: "Request successful"
+	request: {
+		// same request body as before
+	}
+}
+
 /api/cart/items
 POST
 body:
@@ -352,20 +364,6 @@ return:
 	"success"
 }
 
-PATCH
-params:{
-	action: "CHECKOUT"
-}
-return {
-	items: [
-		{
-			// same item body as before
-		}
-	],
-	request: {
-		// same request body as before
-	}
-}
 /api/requests
 GET
 params:
@@ -499,7 +497,7 @@ params: {
 	action: "DISBURSE" // for now this is the only action
 }
 return {
-	item: [
+	items: [
 		{
 			// same item body as before
 		}

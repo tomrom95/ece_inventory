@@ -21,7 +21,6 @@ User.findOne({'username': 'admin'}, function(err, user) {
         }
       }
       Request.insertMany(fakeJSONData, function(obj){
-        console.log("done");
         process.exit();
       });
     });

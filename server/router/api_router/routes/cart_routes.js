@@ -1,5 +1,6 @@
 'use strict';
 var Cart = require("../../../model/carts");
+var Request = require("../../../model/requests");
 var QueryBuilder = require('../../../queries/querybuilder');
 var itemFieldsToReturn = 'name model_number location description';
 
@@ -78,3 +79,51 @@ module.exports.putAPI = function(req,res){
     });
   });
 };
+
+module.exports.patchAPI = function(req, res){
+  if (req.body.action == 'CHECKOUT') {
+    checkout(req.user._id, req.body.reason, function(err, request){
+      if (err) return res.send({error: err});
+      // populate cart items in cart object
+        res.json({
+          message: 'Request successful',
+          request: request
+        });
+    });
+  } else {
+    return res.send({error: "Action not recognized"});
+  }
+}
+function checkout (userID, reasonString, next) {
+  if(!reasonString) return next('Reason not provided in checkout');
+  Cart.findOne({user: userID}, function(err, cart){
+    if (err) return next(err);
+     // Create Request
+     var request = new Request({
+       user: userID,
+       reason: reasonString,
+       status: 'PENDING'
+     });
+     // Copy array of items
+     request.items = [];
+     cart.items.forEach(function(item){
+       var itemCopy = Object.assign(item, {_id: undefined}); // ID field not copied
+       request.items.push(itemCopy);
+     })
+     request.save(function(err, request){
+       if (err) return next(err);
+       // populate cart items in requests object
+       Cart.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
+         // Delete cart, and put in a new one
+         Cart.remove({user: userID}, function(err){
+           if(err) return next(err);
+           var newCart = new Cart({user: userID});
+           newCart.save(function(err){
+             if(err) return next(err);
+             next(null, request);
+           })
+         })
+       })
+     })
+  })
+}
