@@ -130,7 +130,6 @@ describe('Logging API Test', function () {
       Log.insertMany(testLogData).then(function(array) {
         done();
       }).catch(function(error) {
-        console.log(error);
         done();
       });
     })
@@ -141,6 +140,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          res.body.should.be.a('array');
           res.body.length.should.be.eql(3);
           // make sure fields are populating
           res.body.forEach(function(itemObj){
@@ -208,7 +208,6 @@ describe('Logging API Test', function () {
       Log.insertMany(testLogData).then(function(array) {
         done();
       }).catch(function(error) {
-        console.log(error);
         done();
       });
     });
@@ -220,6 +219,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          res.body.should.be.a('array');
           res.body.length.should.be.eql(1);
           res.body[0].affected_user._id.should.be.eql(String(standardUser._id));
           done();
@@ -233,6 +233,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          res.body.should.be.a('array');
           res.body.length.should.be.eql(3);
           res.body.forEach(function(log) {
             log.should.satisfy(function(thisLog) {
@@ -251,6 +252,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          res.body.should.be.a('array');
           res.body.length.should.be.eql(2);
           res.body.forEach(function(log) {
             log.type.should.be.eql('NEW');
@@ -266,6 +268,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          res.body.should.be.a('array');
           res.body.length.should.be.eql(3);
           var queryDate = new Date('2017-02-12');
           res.body.forEach(function(log) {
@@ -285,6 +288,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          res.body.should.be.a('array');
           res.body.length.should.be.eql(3);
           var queryDate = new Date('2017-02-12');
           res.body.forEach(function(log) {
@@ -304,6 +308,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          res.body.should.be.a('array');
           res.body.length.should.be.eql(2);
           var startDate = new Date('2017-02-11');
           var endDate = new Date('2017-02-12');
@@ -325,6 +330,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          res.body.should.be.a('array');
           res.body.length.should.be.eql(2);
           res.body.forEach(function(log) {
             log.items.should.satisfy(function(items) {
@@ -343,6 +349,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          res.body.should.be.a('array');
           res.body.length.should.be.eql(4);
           res.body.forEach(function(log) {
             var hasResistor = false;
@@ -364,6 +371,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          res.body.should.be.a('array');
           res.body.length.should.be.eql(0);
           done();
         });
