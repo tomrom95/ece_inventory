@@ -384,6 +384,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          res.body.should.be.a('array');
           res.body.length.should.be.eql(3);
           var queryDate = new Date('2017-02-12');
           res.body.forEach(function(log) {
@@ -403,6 +404,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          res.body.should.be.a('array');
           res.body.length.should.be.eql(2);
           var startDate = new Date('2017-02-10');
           var endDate = new Date('2017-02-11')
@@ -424,6 +426,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          res.body.should.be.a('array');
           should.not.exist(res.body.error);
           res.body.length.should.be.eql(0);
           done();
