@@ -66,7 +66,6 @@ describe('Carts', function() {
       lastModified: "02/14/2017"
       });
     cart.validate(function (err) {
-      console.log(err);
       assert.isNull(err, 'Valid object');
       done();
     });
