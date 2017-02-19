@@ -134,6 +134,24 @@ describe('Logging API Test', function () {
           });
         });
     });
+
+    it('should not log edit if nothing was actually changed', (done) => {
+      chai.request(server)
+        .put('/api/inventory/' + allItems['1k resistor']._id)
+        .set('Authorization', adminToken)
+        .send({
+          name: '1k resistor',
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Log.find({}, function(err, logs) {
+            should.not.exist(err);
+            logs.length.should.be.eql(0);
+            done();
+          });
+        });
+    });
   });
 
   describe('GET /logs', () =>{

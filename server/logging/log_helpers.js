@@ -40,7 +40,7 @@ module.exports.logEditing = function(oldItem, changes, user, next) {
 
   // If nothing actually changed, don't log
   if (Object.keys(filteredChanges).length === 0) {
-    next();
+    return next();
   }
   var newLog = new Log({
     initiating_user: user._id,
