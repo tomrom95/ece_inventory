@@ -163,4 +163,212 @@ describe('Logging API Test', function () {
         });
     });
   });
+
+  describe('GET /logs filtering', () =>{
+    beforeEach((done) => {
+      var testLogData = [
+        {
+          initiating_user: adminUser._id,
+          items: [allItems["1k resistor"]._id],
+          type: 'NEW',
+          description: 'added 1k resistor',
+          time_stamp: new Date('2017-02-10')
+        },
+        {
+          initiating_user: managerUser._id,
+          items: [allItems["2k resistor"]._id],
+          type: 'DELETED',
+          description: 'deleted 2k resistor',
+          time_stamp: new Date('2017-02-11')
+        },
+        {
+          initiating_user: adminUser._id,
+          items: [allItems["5k resistor"]._id],
+          type: 'NEW',
+          description: 'added 4k resistor',
+          time_stamp: new Date('2017-02-12')
+        },
+        {
+          initiating_user: managerUser._id,
+          affected_user: standardUser._id,
+          items: [allItems["Oscilloscope"]._id, allItems["120V"]._id],
+          type: 'FULFILLED',
+          description: 'Disbursed oscilloscope and 120V',
+          time_stamp: new Date('2017-02-13'),
+        },
+        {
+          initiating_user: adminUser._id,
+          affected_user: managerUser._id,
+          items: [allItems["Oscilloscope"]._id, allItems["100k resistor"]._id],
+          type: 'FULFILLED',
+          description: 'Disbursed oscilloscope and 100k resistor',
+          time_stamp: new Date('2017-02-14'),
+        },
+      ];
+      Log.insertMany(testLogData).then(function(array) {
+        done();
+      }).catch(function(error) {
+        console.log(error);
+        done();
+      });
+    });
+
+    it('filters by user id for affected user', (done) => {
+      chai.request(server)
+        .get('/api/logs?user_id=' + standardUser._id)
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.length.should.be.eql(1);
+          res.body[0].affected_user._id.should.be.eql(String(standardUser._id));
+          done();
+        });
+    });
+
+    it('filters by user id for both affected user and initiating_user', (done) => {
+      chai.request(server)
+        .get('/api/logs?user_id=' + managerUser._id)
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.length.should.be.eql(3);
+          res.body.forEach(function(log) {
+            log.should.satisfy(function(thisLog) {
+              return thisLog.initiating_user._id === String(managerUser._id)
+                || thisLog.affected_user._id === String(managerUser._id);
+            });
+          });
+          done();
+        });
+    });
+
+    it('filters by type', (done) => {
+      chai.request(server)
+        .get('/api/logs?type=' + 'NEW')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.length.should.be.eql(2);
+          res.body.forEach(function(log) {
+            log.type.should.be.eql('NEW');
+          });
+          done();
+        });
+    });
+
+    it('filters by time stamp start date', (done) => {
+      chai.request(server)
+        .get('/api/logs?start_date=' + '2017-02-12')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.length.should.be.eql(3);
+          var queryDate = new Date('2017-02-12');
+          res.body.forEach(function(log) {
+            log.time_stamp.should.satisfy(function(timeStamp) {
+              var logDate = new Date(timeStamp);
+              return logDate.getTime() >= queryDate.getTime();
+            });
+          });
+          done();
+        });
+    });
+
+    it('filters by time stamp end date', (done) => {
+      chai.request(server)
+        .get('/api/logs?end_date=' + '2017-02-12')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.length.should.be.eql(3);
+          var queryDate = new Date('2017-02-12');
+          res.body.forEach(function(log) {
+            log.time_stamp.should.satisfy(function(timeStamp) {
+              var logDate = new Date(timeStamp);
+              return logDate.getTime() <= queryDate.getTime();
+            });
+          });
+          done();
+        });
+    });
+
+    it('filters by time stamp start date and end date', (done) => {
+      chai.request(server)
+        .get('/api/logs?end_date=2017-02-12&start_date=2017-02-11')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.length.should.be.eql(2);
+          var startDate = new Date('2017-02-11');
+          var endDate = new Date('2017-02-12');
+          res.body.forEach(function(log) {
+            log.time_stamp.should.satisfy(function(timeStamp) {
+              var logDate = new Date(timeStamp);
+              return logDate.getTime() >= startDate.getTime()
+                && logDate.getTime() <= endDate.getTime();
+            });
+          });
+          done();
+        });
+    });
+
+    it('filters by item id', (done) => {
+      chai.request(server)
+        .get('/api/logs?item_id=' + allItems["Oscilloscope"]._id)
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.length.should.be.eql(2);
+          res.body.forEach(function(log) {
+            log.items.should.satisfy(function(items) {
+              var index = items.findIndex(f=> f._id === String(allItems["Oscilloscope"]._id));
+              return index >= 0;
+            });
+          });
+          done();
+        });
+    });
+
+    it('filters by item name', (done) => {
+      chai.request(server)
+        .get('/api/logs?item_name=Resistor')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.length.should.be.eql(4);
+          res.body.forEach(function(log) {
+            var hasResistor = false;
+            log.items.forEach(function(item) {
+              if (item.name.includes('resistor')) {
+                hasResistor = true;
+              }
+            });
+            hasResistor.should.be.eql(true);
+          });
+          done();
+        });
+    });
+
+    it('filters by item name that has no matches', (done) => {
+      chai.request(server)
+        .get('/api/logs?item_name=blahblah')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.length.should.be.eql(0);
+          done();
+        });
+    });
+
+  });
+
 });

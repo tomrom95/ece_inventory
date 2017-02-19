@@ -40,7 +40,6 @@ module.exports.getAPI = function(req, res) {
       if (error) return res.send({error: error});
       var itemIdList = items.map(i => i._id);
       query.searchInIdArrayForIdList('items', itemIdList);
-
       queryLog(query.toJSON(), initiatingUserQuery, affectedUserQuery, function (error, logs) {
         if (error) return res.send({error: error});
         return res.json(logs);
@@ -62,6 +61,7 @@ function queryLog(logQuery, initiatingUserQuery, affectedUserQuery, next) {
     .populate('items', ITEM_FIELDS)
     .populate('initiating_user', USER_FIELDS)
     .populate('affected_user', USER_FIELDS)
+    .sort({time_stamp: 'desc'})
     .exec(function(err, logs) {
       if(err) {
         next(err);

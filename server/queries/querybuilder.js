@@ -27,7 +27,7 @@ QueryBuilder.prototype.searchForObjectId = function(name, objectId) {
 QueryBuilder.prototype.searchInIdArrayForIdList = function(name, objectIds){
   if(objectIds) {
     this.queryObject[name] = {
-      $in: [objectIds]
+      $in: objectIds
     }
   }
   return this;
