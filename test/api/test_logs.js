@@ -154,73 +154,111 @@ describe('Logging API Test', function () {
         });
     });
 
-    it('logs editing a custom field in an item', (done) => {
-      CustomField.remove({}, function(error) {
-        var newField = new CustomField({name: "test_field", type: "SHORT_STRING", isPrivate: false});
-        newField.save(function(error, field) {
-          var newItem = new Item({
-            name: "test_item",
-            quantity: 10,
-            custom_fields: [{field: field._id, value: 'first value'}],
-          });
-          newItem.save(function(error, item) {
-            chai.request(server)
-              .put('/api/inventory/' + item._id + '/customFields/' + field._id)
-              .set('Authorization', adminToken)
-              .send({
-                value: 'new value',
-              })
-              .end((err, res) => {
-                console.log(err);
-                should.not.exist(err);
-                res.should.have.status(200);
-                Log.find({}, function(err, logs) {
-                  should.not.exist(err);
-                  logs.length.should.be.eql(1);
-                  var log = logs[0];
-                  log.items.length.should.be.eql(1);
-                  log.items[0].should.be.eql(item._id);
-                  log.initiating_user.should.be.eql(adminUser._id);
-                  log.type.should.be.eql('EDIT');
-                  should.not.exist(log.affected_user);
-                  log.description.should.be.eql('The item test_item was edited by changing the custom field '
-                    + 'test_field from first value to new value.');
-                  done();
-                });
-              });
+    describe('Logging editing custom fields in inventory items', () =>{
+      var testField;
+      beforeEach((done) => {
+        CustomField.remove({}, function(error) {
+          var newField = new CustomField({name: "test_field", type: "SHORT_STRING", isPrivate: false});
+          newField.save(function(error, field) {
+            testField = field;
+            done();
           });
         });
       });
-    });
 
-    it('does not log a custom field edit if nothing was actually changed', (done) => {
-      CustomField.remove({}, function(error) {
-        var newField = new CustomField({name: "test_field", type: "SHORT_STRING", isPrivate: false});
-        newField.save(function(error, field) {
-          var newItem = new Item({
-            name: "test_item",
-            quantity: 10,
-            custom_fields: [{field: field._id, value: 'first value'}],
-          });
-          newItem.save(function(error, item) {
-            chai.request(server)
-              .put('/api/inventory/' + item._id + '/customFields/' + field._id)
-              .set('Authorization', adminToken)
-              .send({
-                value: 'first value',
-              })
-              .end((err, res) => {
+      it('logs editing a custom field in an item through PUT', (done) => {
+        var newItem = new Item({
+          name: "test_item",
+          quantity: 10,
+          custom_fields: [{field: testField._id, value: 'first value'}],
+        });
+        newItem.save(function(error, item) {
+          chai.request(server)
+            .put('/api/inventory/' + item._id + '/customFields/' + testField._id)
+            .set('Authorization', adminToken)
+            .send({
+              value: 'new value',
+            })
+            .end((err, res) => {
+              console.log(err);
+              should.not.exist(err);
+              res.should.have.status(200);
+              Log.find({}, function(err, logs) {
                 should.not.exist(err);
-                res.should.have.status(200);
-                Log.find({}, function(err, logs) {
-                  should.not.exist(err);
-                  logs.length.should.be.eql(0);
-                  done();
-                });
+                logs.length.should.be.eql(1);
+                var log = logs[0];
+                log.items.length.should.be.eql(1);
+                log.items[0].should.be.eql(item._id);
+                log.initiating_user.should.be.eql(adminUser._id);
+                log.type.should.be.eql('EDIT');
+                should.not.exist(log.affected_user);
+                log.description.should.be.eql('The item test_item was edited by changing the custom field '
+                  + 'test_field from first value to new value.');
+                done();
               });
-          });
+            });
         });
       });
+
+      it('logs editing a custom field in an item through POST', (done) => {
+        var newItem = new Item({
+          name: "test_item",
+          quantity: 10,
+        });
+        newItem.save(function(error, item) {
+          chai.request(server)
+            .post('/api/inventory/' + item._id + '/customFields/')
+            .set('Authorization', adminToken)
+            .send({
+              field: testField._id,
+              value: 'new value'
+            })
+            .end((err, res) => {
+              console.log(err);
+              should.not.exist(err);
+              res.should.have.status(200);
+              Log.find({}, function(err, logs) {
+                should.not.exist(err);
+                logs.length.should.be.eql(1);
+                var log = logs[0];
+                log.items.length.should.be.eql(1);
+                log.items[0].should.be.eql(item._id);
+                log.initiating_user.should.be.eql(adminUser._id);
+                log.type.should.be.eql('EDIT');
+                should.not.exist(log.affected_user);
+                log.description.should.be.eql('The item test_item was edited by changing the custom field '
+                  + 'test_field from null to new value.');
+                done();
+              });
+            });
+        });
+      });
+
+      it('does not log a custom field edit if nothing was actually changed', (done) => {
+        var newItem = new Item({
+          name: "test_item",
+          quantity: 10,
+          custom_fields: [{field: testField._id, value: 'first value'}],
+        });
+        newItem.save(function(error, item) {
+          chai.request(server)
+            .put('/api/inventory/' + item._id + '/customFields/' + testField._id)
+            .set('Authorization', adminToken)
+            .send({
+              value: 'first value',
+            })
+            .end((err, res) => {
+              should.not.exist(err);
+              res.should.have.status(200);
+              Log.find({}, function(err, logs) {
+                should.not.exist(err);
+                logs.length.should.be.eql(0);
+                done();
+              });
+            });
+        });
+      });
+
     });
 
   });
