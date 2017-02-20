@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var Item = require('./server/model/items');
 var User = require('./server/model/users');
 var passportJWT = require('passport-jwt');
+var passportLocalAPI = require('passport-localapikey-update');
 var passport = require('passport');
 var secrets = require('./server/secrets.js');
 var fs = require('fs');
@@ -22,7 +23,7 @@ app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH');
-  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Accept, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Accept, Authorization, apikey');
   res.setHeader('Cache-Control', 'no-cache');
   if ('OPTIONS' == req.method) {
     res.send(200);
@@ -55,7 +56,22 @@ passport.use(new passportJWT.Strategy(opts, function(jwt_payload, done) {
   });
 }));
 
-app.use('/api', passport.authenticate('jwt', { session: false }), api_router);
+passport.use(new passportLocalAPI.Strategy(
+  function(apikey, done) {
+    console.log(apikey);
+    User.findOne({ apikey: apikey }, function (err, user) {
+      if (err) {
+        return done(err, false);
+      }
+      if (!user) {
+        return done(null, false);
+      }
+      return done(null, user);
+    });
+  }
+));
+
+app.use('/api', passport.authenticate(['jwt', 'localapikey'], { session: false }), api_router);
 app.use('/auth', auth_router);
 
 if (process.env.NODE_ENV == 'test') {

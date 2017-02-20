@@ -36,6 +36,7 @@ describe('/login Test', function () {
           res.should.have.status(200);
           res.body.token.should.be.a('string');
           res.body.user.username.should.be.eql('test_user');
+          should.exist(res.body.user.apikey);
           done();
         });
     });

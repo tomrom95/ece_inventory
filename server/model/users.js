@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var uuidV4 = require('uuid/v4');
 
 var UserSchema = new mongoose.Schema({
   username: {
@@ -26,6 +27,10 @@ var UserSchema = new mongoose.Schema({
     type: String,
     enum: ['MANAGER', 'ADMIN', 'STANDARD'],
     default: 'STANDARD'
+  },
+  apikey: {
+    type: String,
+    default: uuidV4()
   }
 });
 
