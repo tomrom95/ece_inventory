@@ -53,3 +53,19 @@ module.exports.logEditing = function(oldItem, changes, user, next) {
     next();
   });
 }
+
+module.exports.logItemCustomFieldEdit = function(item, field, oldValue, newValue, user, next) {
+  if (oldValue === newValue) {
+    return next();
+  }
+  var newLog = new Log({
+    initiating_user: user._id,
+    items: [item._id],
+    type: 'EDIT',
+    description: LogDescriptions.editedItemCustomField(item, field, oldValue, newValue)
+  });
+  newLog.save(function(error) {
+    if (error) return next(error);
+    next();
+  });
+}

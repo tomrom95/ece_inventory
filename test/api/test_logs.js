@@ -4,6 +4,7 @@ let mongoose = require("mongoose");
 let Item = require('../../server/model/items');
 let User = require('../../server/model/users');
 let Log = require('../../server/model/logs');
+let CustomField = require('../../server/model/customFields');
 let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
 let fakeJSONData = require('./test_inventory_data');
@@ -152,6 +153,76 @@ describe('Logging API Test', function () {
           });
         });
     });
+
+    it('logs editing a custom field in an item', (done) => {
+      CustomField.remove({}, function(error) {
+        var newField = new CustomField({name: "test_field", type: "SHORT_STRING", isPrivate: false});
+        newField.save(function(error, field) {
+          var newItem = new Item({
+            name: "test_item",
+            quantity: 10,
+            custom_fields: [{field: field._id, value: 'first value'}],
+          });
+          newItem.save(function(error, item) {
+            chai.request(server)
+              .put('/api/inventory/' + item._id + '/customFields/' + field._id)
+              .set('Authorization', adminToken)
+              .send({
+                value: 'new value',
+              })
+              .end((err, res) => {
+                console.log(err);
+                should.not.exist(err);
+                res.should.have.status(200);
+                Log.find({}, function(err, logs) {
+                  should.not.exist(err);
+                  logs.length.should.be.eql(1);
+                  var log = logs[0];
+                  log.items.length.should.be.eql(1);
+                  log.items[0].should.be.eql(item._id);
+                  log.initiating_user.should.be.eql(adminUser._id);
+                  log.type.should.be.eql('EDIT');
+                  should.not.exist(log.affected_user);
+                  log.description.should.be.eql('The item test_item was edited by changing the custom field '
+                    + 'test_field from first value to new value.');
+                  done();
+                });
+              });
+          });
+        });
+      });
+    });
+
+    it('does not log a custom field edit if nothing was actually changed', (done) => {
+      CustomField.remove({}, function(error) {
+        var newField = new CustomField({name: "test_field", type: "SHORT_STRING", isPrivate: false});
+        newField.save(function(error, field) {
+          var newItem = new Item({
+            name: "test_item",
+            quantity: 10,
+            custom_fields: [{field: field._id, value: 'first value'}],
+          });
+          newItem.save(function(error, item) {
+            chai.request(server)
+              .put('/api/inventory/' + item._id + '/customFields/' + field._id)
+              .set('Authorization', adminToken)
+              .send({
+                value: 'first value',
+              })
+              .end((err, res) => {
+                should.not.exist(err);
+                res.should.have.status(200);
+                Log.find({}, function(err, logs) {
+                  should.not.exist(err);
+                  logs.length.should.be.eql(0);
+                  done();
+                });
+              });
+          });
+        });
+      });
+    });
+
   });
 
   describe('GET /logs', () =>{

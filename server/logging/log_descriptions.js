@@ -23,3 +23,8 @@ module.exports.editedItem = function(oldItem, changes, user) {
   description += '.';
   return description;
 }
+
+module.exports.editedItemCustomField = function(item, field, oldValue, newValue) {
+  return 'The item ' + item.name + ' was edited by changing the custom field '
+    + field.name + ' from ' + oldValue + ' to ' + newValue + '.';
+}

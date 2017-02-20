@@ -1,6 +1,7 @@
 'use strict';
 var Item = require('../../../model/items');
 var CustomField = require('../../../model/customFields');
+var LogHelpers = require('../../../logging/log_helpers');
 var mongoose = require('mongoose');
 
 module.exports.postAPI = function(req, res){
@@ -8,6 +9,7 @@ module.exports.postAPI = function(req, res){
     req.params.item_id,
     req.body.field,
     req.body.value,
+    req.user,
     function(error, item) {
       if (error) return res.send({error: error});
       res.json(item);
@@ -20,6 +22,7 @@ module.exports.putAPI = function(req, res){
     req.params.item_id,
     req.params.field_id,
     req.body.value,
+    req.user,
     function(error, item) {
       if (error) return res.send({error: error});
       res.json(item);
@@ -27,7 +30,7 @@ module.exports.putAPI = function(req, res){
   );
 };
 
-var createOrUpdateField = function(itemId, fieldId, value, next) {
+var createOrUpdateField = function(itemId, fieldId, value, user, next) {
   CustomField.findById(fieldId, function(error, field) {
     if (error) return next(error);
     if (!field) return next('Invalid field id');
@@ -35,7 +38,9 @@ var createOrUpdateField = function(itemId, fieldId, value, next) {
       if (error) return next(error);
       if (!item) return next('Item does not exist');
       var fieldIndex = item.custom_fields.findIndex(f => f.field.equals(fieldId));
+      var oldValue = "null"; var newValue = value;
       if (fieldIndex >= 0) { // field exists
+        oldValue = item.custom_fields[fieldIndex].value;
         item.custom_fields[fieldIndex].value = value;
       } else {
         item.custom_fields.push({
@@ -45,7 +50,10 @@ var createOrUpdateField = function(itemId, fieldId, value, next) {
       }
       item.save(function(error, newItem) {
         if (error) return next(error);
-        next(null, newItem);
+        LogHelpers.logItemCustomFieldEdit(newItem, field, oldValue, newValue, user, function(error) {
+          if (error) return next(error);
+          next(null, newItem);
+        });
       });
     });
   });
