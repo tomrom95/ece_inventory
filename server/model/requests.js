@@ -29,9 +29,6 @@ var RequestSchema = new mongoose.Schema({
     default: Date.now,
     required: true,
   },
-  quantity: {
-    type: Number
-    },
   status: {
     type: String,
     enum: ['PENDING', 'APPROVED', 'DENIED', 'FULFILLED'],
