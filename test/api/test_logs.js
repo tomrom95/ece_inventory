@@ -180,7 +180,6 @@ describe('Logging API Test', function () {
               value: 'new value',
             })
             .end((err, res) => {
-              console.log(err);
               should.not.exist(err);
               res.should.have.status(200);
               Log.find({}, function(err, logs) {
@@ -203,7 +202,7 @@ describe('Logging API Test', function () {
       it('logs editing a custom field in an item through POST', (done) => {
         var newItem = new Item({
           name: "test_item",
-          quantity: 10,
+          quantity: 10
         });
         newItem.save(function(error, item) {
           chai.request(server)
@@ -228,6 +227,36 @@ describe('Logging API Test', function () {
                 should.not.exist(log.affected_user);
                 log.description.should.be.eql('The item test_item was edited by changing the custom field '
                   + 'test_field from null to new value.');
+                done();
+              });
+            });
+        });
+      });
+
+      it('logs editing a custom field in an item through DELETE', (done) => {
+        var newItem = new Item({
+          name: "test_item",
+          quantity: 10,
+          custom_fields: [{field: testField._id, value: 'first value'}]
+        });
+        newItem.save(function(error, item) {
+          chai.request(server)
+            .delete('/api/inventory/' + item._id + '/customFields/' + testField._id)
+            .set('Authorization', adminToken)
+            .end((err, res) => {
+              should.not.exist(err);
+              res.should.have.status(200);
+              Log.find({}, function(err, logs) {
+                should.not.exist(err);
+                logs.length.should.be.eql(1);
+                var log = logs[0];
+                log.items.length.should.be.eql(1);
+                log.items[0].should.be.eql(item._id);
+                log.initiating_user.should.be.eql(adminUser._id);
+                log.type.should.be.eql('EDIT');
+                should.not.exist(log.affected_user);
+                log.description.should.be.eql('The item test_item was edited by changing the custom field '
+                  + 'test_field from first value to null.');
                 done();
               });
             });

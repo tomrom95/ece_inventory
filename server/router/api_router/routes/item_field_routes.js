@@ -70,10 +70,20 @@ module.exports.deleteAPI = function(req, res){
             custom_fields: { field: mongoose.Types.ObjectId(req.params.field_id) }
         }
       },
-      {new: true},
-      function(error, item) {
+      function(error, oldItem) {
         if (error) return res.send({error: error});
-        return res.json({message: "Successful"});
+        var oldValue = oldItem.custom_fields.find(f => String(f.field) === req.params.field_id).value;
+        LogHelpers.logItemCustomFieldEdit(
+          oldItem,
+          field,
+          oldValue,
+          "null",
+          req.user,
+          function(error) {
+            if (error) return res.send({error: error});
+            return res.json({message: "Successful"});
+          }
+        );
       }
     );
   });
