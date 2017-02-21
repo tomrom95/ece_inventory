@@ -516,7 +516,9 @@ params:
 	type: String,
 	user_id: String,
 	start_date: String, // in format '2017-01-25' (YEAR-MONTH-DAY)
-	end_date: String // in format '2017-01-25' (YEAR-MONTH-DAY)
+	end_date: String, // in format '2017-01-25' (YEAR-MONTH-DAY)
+	page: Int,
+	per_page: Int
 }
 return:
 [
