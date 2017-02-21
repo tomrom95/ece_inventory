@@ -72,11 +72,15 @@ module.exports.deleteAPI = function(req, res){
       },
       function(error, oldItem) {
         if (error) return res.send({error: error});
-        var oldValue = oldItem.custom_fields.find(f => String(f.field) === req.params.field_id).value;
+        var oldItemField = oldItem.custom_fields.find(f => String(f.field) === req.params.field_id);
+        // check if field doesn't exist (i.e. no field was deleted)
+        if (!oldItemField) {
+          return res.json({message: "Successful"});
+        }
         LogHelpers.logItemCustomFieldEdit(
           oldItem,
           field,
-          oldValue,
+          oldItemField.value,
           "null",
           req.user,
           function(error) {
