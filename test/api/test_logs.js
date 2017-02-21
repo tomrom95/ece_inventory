@@ -433,6 +433,29 @@ describe('Logging API Test', function () {
         });
     });
 
+    it('paginates and returns all logs with high per page', (done) => {
+      chai.request(server)
+        .get('/api/logs?page=1&per_page=10000')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(5);
+          done();
+        });
+    });
+    it('returns error with invalid page or per page', (done) => {
+      chai.request(server)
+        .get('/api/logs?page=-1&per_page=10000')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          should.exist(res.body.error);
+          done();
+        });
+    });
+
   });
 
 });
