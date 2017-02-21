@@ -4,6 +4,7 @@ var bcrypt = require('bcrypt-nodejs');
 var User = require('../model/users');
 var jwt = require('jsonwebtoken');
 var secrets = require('../secrets');
+var uuidV4 = require('uuid/v4');
 
 const SALT_NUM = 5;
 const TOKEN_EXPIRY = 60*60*24;
@@ -70,6 +71,10 @@ module.exports.restrictToManagers = function(req, res, next) {
 
 module.exports.restrictToAdmins = function(req, res, next) {
   restrictToRoles(['ADMIN'], req, res, next);
+}
+
+module.exports.createAPIKey = function() {
+  return uuidV4();
 }
 
 module.exports.createPasswordHash = createPasswordHash;
