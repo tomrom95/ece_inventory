@@ -117,7 +117,6 @@ module.exports.login = function(req, res) {
   loginHelper(req.body.token, req.body.username, req.body.password, function(error, token, user) {
     if (error) return res.send({error: error});
     if (!user.apikey) {
-      console.log("here");
       User.findByIdAndUpdate(
         user._id,
         {$set: {apikey: helpers.createAPIKey()}},

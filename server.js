@@ -58,7 +58,6 @@ passport.use(new passportJWT.Strategy(opts, function(jwt_payload, done) {
 
 passport.use(new passportLocalAPI.Strategy(
   function(apikey, done) {
-    console.log(apikey);
     User.findOne({ apikey: apikey }, function (err, user) {
       if (err) {
         return done(err, false);
