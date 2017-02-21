@@ -156,6 +156,34 @@ describe('Logging API Test', function () {
         });
       });
     });
+
+    it('should not log if disbursement fails', (done) => {
+      Request.remove({}, (err) => {
+        var newRequest = new Request({
+          user: standardUser._id,
+          items: [{
+            item: allItems["1k resistor"]._id,
+            quantity: 2000
+          }],
+          reason: "cuz"
+        });
+        newRequest.save(function(error, request) {
+          chai.request(server)
+            .patch('/api/requests/' + request._id)
+            .set('Authorization', adminToken)
+            .send({action: "DISBURSE"})
+            .end((err, res) => {
+              should.not.exist(err);
+              res.should.have.status(200);
+              Log.find({}, function(err, logs) {
+                should.not.exist(err);
+                logs.length.should.be.eql(0);
+                done();
+              });
+            });
+        });
+      });
+    });
   });
 
   describe('GET /logs', () =>{

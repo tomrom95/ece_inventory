@@ -260,10 +260,8 @@ module.exports.patchAPI = function(req, res) {
       Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
         if (err) res.send({error: err});
         LogHelpers.logDisbursement(request, cart, req.user, function(err) {
-          if (err) {
-            console.log(err);
-          }
-          res.json({
+          if (err) return res.send({error: err});
+          return res.json({
             message: 'Disbursement successful',
             request: request,
             items: cart
