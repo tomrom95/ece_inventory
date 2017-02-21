@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../../App.css';
 import TagSelector from '../global/TagSelector.js';
+import CustomFieldSelect from './CustomFieldSelect.js';
 
 function getKeys(data) {
 	return Object.keys(data);
@@ -37,8 +38,15 @@ class ItemEditor extends Component {
 		super(props);
 		this.state = {
 			data: props.data,
-			formIds: []
+			formIds: [],
 		}
+	}
+
+	componentWillReceiveProps(newProps) {
+		this.setState({
+			data: newProps.data,
+			formIds: getValues(newProps.data, getKeys(newProps.data))
+		});
 	}
 
 	makeForm() {
@@ -48,14 +56,36 @@ class ItemEditor extends Component {
 		for (i=0; i<keys.length; i++) {
 			if (keys[i] === 'Tags') {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
-			} else {
+			}
+			else if (keys[i] === 'Custom Fields'){
+				if(vals[i].length > 0){
+					for(var j = 0; j < vals[i].length; j++){
+						list.push(this.makeCustomTextBox(i, vals[i][j].value ));
+						list.push(
+							<button
+								key={"delete-field"+i}
+								onClick={()=>{this.deleteCustomField(i)}}
+								type="button"
+								className="btn btn-danger delete-button">
+								X
+								</button>);
+					}
+
+				}
+				list.push(this.addCustomField(i));
+
+
+			}
+			else {
 				list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
 			}
 		}
+
 		return list;
 	}
 
 	render() {
+
     return (
 		<div>
 			<button type="button"
@@ -89,6 +119,65 @@ class ItemEditor extends Component {
 		);
 	}
 
+
+
+	addCustomField(row){
+		return(
+			<div className="form-group" key={"createform-div-row-"+row}>
+			  <label htmlFor={"createform-row-"+row}>Add custom field</label>
+				<CustomFieldSelect
+					api={this.props.api}
+					key={"add-field-"+row}
+					ref="added-custom-field"
+				/>
+				<input type="text"
+					className="form-control"
+					ref="custom-field-value"
+					key={"add-field-value"+row}
+					placeholder="Value">
+					</input>
+			</div>
+
+		);
+
+
+	}
+
+	addField(custom_field){
+
+		if(custom_field.value){
+			this.props.api.put('/api/inventory/'+ this.props.itemId+ "/customFields/" + custom_field._id)
+				.then(function(response) {
+						if (response.data.error) {
+							alert(response.data.error);
+						} else {
+						}
+					}.bind(this))
+					.catch(function(error) {
+						console.log(error);
+					}.bind(this));
+		}
+
+	}
+
+	deleteCustomField(row){
+		var id = "createform-row-"+row;
+		this.state.formIds.splice(0,id);
+		console.log(this.state.data["Custom Fields"][0]._id);
+
+		this.props.api.delete('/api/inventory/'+ this.props.itemId+ "/customFields/" + this.state.data["Custom Fields"][0]._id)
+			.then(function(response) {
+					if (response.data.error) {
+						alert(response.data.error);
+					} else {
+
+					}
+				}.bind(this))
+				.catch(function(error) {
+					console.log(error);
+				}.bind(this));
+
+	}
 
 	makeTextBox(row, type, label, defaultValue){
 		var id = "createform-row-"+row;
@@ -147,15 +236,26 @@ class ItemEditor extends Component {
 	onSubmission() {
 		var tags = this.refs.Tags.getSelectedTags();
 		var object = {
-			name: this.refs.Name.value,
+				name: this.refs.Name.value,
 	  		quantity: this.refs.Quantity.value,
-	 		model_number: this.refs["Model Number"].value,
+	 			model_number: this.refs["Model Number"].value,
 	  		description: this.refs.Description.value,
 	  		location: this.refs.Location.value,
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
+				custom_fields: [
+					{
+					_id: this.refs["Custom Fields Name"].value,
+					value: {
+						name: this.refs["Custom Fields Name"].value,
+						value: this.refs["Custom Fields Value"].value,
+						}
+					}
+				],
 	  		has_instance_objects: false
   		}
+
+
 
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);

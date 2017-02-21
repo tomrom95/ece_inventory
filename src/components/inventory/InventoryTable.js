@@ -5,6 +5,8 @@ import ItemWizard from './ItemWizard.js';
 import RequestPopup from './RequestPopup.js';
 import ItemEditor from './ItemEditor.js';
 import ItemDetailView from './ItemDetailView.js';
+import CustomFieldsPopup from './CustomFieldsPopup.js';
+
 
 var meta;
 
@@ -50,7 +52,8 @@ function getPrefill(data) {
 		"Description": data["Description"],
 		"Location": data["Location"],
 		"Vendor Info": data["Vendor"],
-		"Tags": data["Tags"]
+		"Tags": data["Tags"],
+		"Custom Fields": data["Custom Fields"],
 	});
 }
 
@@ -62,7 +65,8 @@ function getEmptyPrefill() {
 		"Description": "",
 		"Location": "",
 		"Vendor Info": "",
-		"Tags": ""
+		"Tags": "",
+		"Custom Fields": "",
 	});
 }
 
@@ -111,13 +115,17 @@ class InventoryTable extends Component {
 		list.push(<th key={"buttonSpace-1"}></th>)
 
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
-			list.push(<th key={"buttonSpace-2"}></th>);
+			list.push(
+					<CustomFieldsPopup
+									key={"makefields-button"}/>
+							);
 			list.push(
 					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
 	          			key={"makeitem-button"}
 	          			callback={this.props.callback}/>
 	          	);
+
 		}
 
 		return list;
@@ -159,7 +167,6 @@ class InventoryTable extends Component {
 			list.push(this.makeEditButton(data,id));
 			list.push(this.makeDeleteButton(id));
 			list.push(<td className="subtable-row" key={"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
-
 			return list;
 		}
 

@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import GlobalRequests from '../requests/GlobalRequests';
 import CurrentOrders from '../requests/CurrentOrders.js';
+import CustomFieldsPopup from './CustomFieldsPopup.js';
 
 function getString(str) {
   if (str === undefined || str === null || str.length === 0) {
@@ -38,6 +39,28 @@ class ItemDetailView extends React.Component {
       console.log(error);
       this.setState({error: 'Could not load item'});
     }.bind(this));
+  }
+
+
+  makeCustomFields(){
+    var fields = this.state.item.custom_fields;
+    if(fields.length === 0){
+      return(
+        <div>
+          <p>No custom fields</p>
+
+        </div>
+      );
+    }
+    var html_list = []
+    for(var i = 0; i < fields.length; i++){
+      html_list.push(<div className="row" key={fields[i]._id+i}>
+                        <p>
+                          {fields[i].value}
+                        </p>
+                      </div>);
+    }
+    return(html_list);
   }
 
   render() {
@@ -90,7 +113,9 @@ class ItemDetailView extends React.Component {
                       <div className="row">
                         <p><strong>Tags: </strong>{getString(this.state.item.tags.join(', '))}</p>
                       </div>
+                      {this.makeCustomFields()}
                     </div>
+
                   </div>
                   {this.addPadding()}
                 </div>
