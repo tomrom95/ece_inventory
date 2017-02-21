@@ -106,7 +106,12 @@ class Home extends Component {
 
   getClientID() {
     var host = location.hostname;
-    return 'ece-inventory-' + host.split('.')[0];
+    var protocol = location.protocol;
+    var clientId = 'ece-inventory-' + host.split('.')[0];
+    if (protocol === "https:") {
+      clientId += "-https";
+    }
+    return clientId;
   }
 
   createNetIDLoginLink() {
