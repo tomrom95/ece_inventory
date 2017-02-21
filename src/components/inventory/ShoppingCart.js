@@ -24,8 +24,7 @@ class ShoppingCart extends Component {
 			else {
 				// DUMMY ITEM
 				this.setState({
-					items: [{item: "5897a11d8f9904df9c765fe9", quantity: 10}]
-					//items: response.data.items
+					items: response.data.items
 				});
 			}
 		}.bind(this));
@@ -40,7 +39,7 @@ class ShoppingCart extends Component {
 					<ShoppingCartItem 
 					api={this.props.api} 
 					key={"cart-item-"+i} 
-					id={items[i].item} 
+					itemData={items[i].item} 
 					quantity={items[i].quantity}
 					callback={() => this.loadData()} />
 				</div>));
@@ -49,7 +48,19 @@ class ShoppingCart extends Component {
 	}
 
 	sendRequests() {
-		// api call with all request objects
+		var params = {
+			action: "CHECKOUT",
+			reason: document.getElementById('cart-reason').value
+		}
+		this.props.api.patch('api/cart/', params)
+		.then(function (response) {
+			if (response.data.error) {
+				alert(response.data.error);
+			}
+			else {
+				alert(response.data.message);
+			}
+		}.bind(this));
 	}
 
 	render() {
@@ -61,9 +72,11 @@ class ShoppingCart extends Component {
 		var submitDisabled = (this.state.items.length===0) ? "disabled" : "";
  		return (			
 			<th>	
-				<button data-toggle="modal" data-target={"#cart-button"}
+				<button data-toggle="modal" 
+						data-target={"#cart-button"}
 						type="button"
-						className="btn btn-secondary">
+						className="btn btn-secondary"
+						onClick={() => this.loadData()}>
 							<span className="fa fa-shopping-cart"></span>
 				</button>
 				<div className="modal fade" id="cart-button">
@@ -87,7 +100,12 @@ class ShoppingCart extends Component {
 				      </div>
 				      <div className="modal-footer">
 				      	<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-				        <button type="button" data-dismiss="modal" className={"btn btn-primary " + submitDisabled}>Request These Items</button>
+				        <button onClick={() => this.sendRequests()} 
+				        		type="button" 
+				        		data-dismiss="modal" 
+				        		className={"btn btn-primary " + submitDisabled}>
+				        		Request These Items
+				        </button>
 				      </div>
 				    </div>
 				  </div>
