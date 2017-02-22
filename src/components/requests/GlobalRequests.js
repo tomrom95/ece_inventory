@@ -51,32 +51,8 @@ class GlobalRequests extends Component {
     }
   }
 
-  processData(responseData) {
-    var requests = responseData.data;
-    var i;
-    var items = [];
-    for (i=0; i<requests.length; i++) {
-      var obj = requests[i];
-      var userDisplay = this.getUserDisplay(obj.user);
-      var user_id = obj.user ? obj.user._id : "";
-      var item = {
-        "User": userDisplay,
-        "Item": obj.item.name,
-        "Time Stamp": formatDate(new Date(obj.created).toString()),
-        "Quantity": obj.quantity,
-        "Reason": obj.reason,
-        "Status": obj.status,
-        "Response": obj.reviewer_comment,
-        "_id": obj._id,
-        "user_id": user_id,
-        "item_id": obj.item._id,
-      };
-      items.push(item);
-    }
-    return items;
-  }
 
-  processData2(responseData) {
+  processData(responseData) {
     var requests = responseData.data;
     var i; var j;
     var items = [];
@@ -118,7 +94,7 @@ class GlobalRequests extends Component {
       return (
           <PaginationContainer
           url={url}
-          processData={data=>this.processData2(data)}
+          processData={data=>this.processData(data)}
           renderComponent={table}
           showFilterBox={this.props.showFilterBox}
           showStatusFilterBox={this.props.showStatusFilterBox}
