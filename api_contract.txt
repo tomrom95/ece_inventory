@@ -6,7 +6,6 @@ params:
 	excluded_tags: String (CSV) [optional],
 	name: String [optional],
 	model_number: String [optional],
-	location: String [optional],
 	custom_fields: String (CSV) [optional], // Custom field names or custom field names with value
 	page: String [optional], // needs per_page if included
 	per_page: String [optional] // needs age if included
@@ -18,7 +17,6 @@ returns: // does not return instance objects
     quantity: Integer,
     model_number: String,
     description: String,
-    location: String,
     tags: [String],
     has_instance_objects: Boolean,
     custom_fields: [
@@ -34,7 +32,6 @@ params:
   quantity: Integer [required],
   model_number: String,
   description: String,
-  location: String,
   tags: [String],
   custom_fields: [
     {
@@ -50,7 +47,6 @@ return:
   quantity: Integer,
   model_number: String,
   description: String,
-  location: String,
   tags: [String],
   has_instance_objects: Boolean,
   custom_fields: [
@@ -70,7 +66,6 @@ return:
   quantity: Integer,
   model_number: String,
   description: String,
-  location: String,
   tags: String array,
   has_instance_objects: Boolean,
   custom_fields:[
@@ -88,7 +83,6 @@ body:
   quantity: Integer [optional],
   model_number: String [optional],
   description: String [optional],
-  location: String [optional],
   tags: String array [optional],
   custom_fields:[
     {
@@ -104,7 +98,6 @@ return:
   quantity: Integer,
   model_number: String,
   description: String,
-  location: String,
   tags: String array,
   has_instance_objects: Boolean,
   custom_fields:[
@@ -279,7 +272,6 @@ return:
 			_id: String,
 			name: String,
 			model_number: String,
-			location: String,
 			description: String
 	  },
 	  quantity: Integer
@@ -516,9 +508,7 @@ params:
 	type: String,
 	user_id: String,
 	start_date: String, // in format '2017-01-25' (YEAR-MONTH-DAY)
-	end_date: String, // in format '2017-01-25' (YEAR-MONTH-DAY)
-	page: Int,
-	per_page: Int
+	end_date: String // in format '2017-01-25' (YEAR-MONTH-DAY)
 }
 return:
 [

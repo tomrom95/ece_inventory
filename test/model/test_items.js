@@ -28,7 +28,6 @@ describe('Items', function() {
       name: 'name',
       quantity: 2,
       model_numer: '1234',
-      location: 'hudson',
       tags: ['thing', 'other'],
       has_instance_objects: false
     });
@@ -46,7 +45,6 @@ describe('Items', function() {
       name: 'name',
       quantity: 2,
       model_numer: '1234',
-      location: 'hudson',
       tags: ['thing', 'other'],
       has_instance_objects: true,
       instances: [instance]
