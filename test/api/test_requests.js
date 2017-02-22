@@ -824,40 +824,43 @@ describe('Requests API Test', function () {
       });
     });
     it('PUTS request - admin user can specify user id', (done) => {
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "PENDING",
-        "quantity": 2000,
-        "created": "2019-01-29"
-      });
-      request.items = [
-        {
-          item: item2_id,
-          quantity:1000
-        }
-      ]
-      request.user = "1996510c820ada1a8d7b5875";
-      request.save((err, request) => {
+      helpers.createNewUser('standard_user', 'test', 'STANDARD' , function(err, user) {
         should.not.exist(err);
-        chai.request(server)
-        .put('/api/requests/'+request._id)
-        .set('Authorization', token)
-        .send({
-          'reason': 'NONE',
-          'status': 'APPROVED',
-          'user': user_id
-        })
-        .end((err, res) => {
+        var request = new Request({
+          "reviewer_comment": "NONADMIN",
+          "requestor_comment": "NONADMIN",
+          "reason": "NONADMIN",
+          "status": "PENDING",
+          "quantity": 2000,
+          "created": "2019-01-29"
+        });
+        request.items = [
+          {
+            item: item2_id,
+            quantity:1000
+          }
+        ]
+        request.user = user_id;
+        request.save((err, request) => {
           should.not.exist(err);
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          res.body.reason.should.be.eql('NONE');
-          res.body.status.should.be.eql('APPROVED');
-          res.body.user.should.be.eql(user_id.toString());
-          res.body._id.should.be.eql(request._id.toString());
-          done();
+          chai.request(server)
+          .put('/api/requests/'+request._id)
+          .set('Authorization', token)
+          .send({
+            'reason': 'NONE',
+            'status': 'APPROVED',
+            'user': user._id
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.reason.should.be.eql('NONE');
+            res.body.status.should.be.eql('APPROVED');
+            res.body.user.should.be.eql(String(user._id));
+            res.body._id.should.be.eql(request._id.toString());
+            done();
+          });
         });
       });
     });
@@ -897,6 +900,36 @@ describe('Requests API Test', function () {
         });
       });
     });
+
+    it('Should not PUT request - user tries to fulfill a request through PUT', (done) => {
+      var request = new Request({
+        "reason": "NONADMIN",
+      });
+      request.items = [
+        {
+          item: item2_id,
+          quantity:1000
+        }
+      ]
+      request.user = "1996510c820ada1a8d7b5875";
+      request.save((err, request) => {
+        should.not.exist(err);
+        chai.request(server)
+        .put('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          status: 'FULFILLED',
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.be.eql("You cannot fulfill a request through this endpoint. Use PATCH");
+          done();
+        });
+      });
+    });
+
     it('Should not PUT request for standard user specifying another username in PUT body', (done) => {
         helpers.createNewUser('standard_user', 'test', 'STANDARD' , function(err, user) {
           should.not.exist(err);

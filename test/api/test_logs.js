@@ -290,83 +290,209 @@ describe('Logging API Test', function () {
 
     });
 
-    it('logs disbursing an item', (done) => {
-      Request.remove({}, (err) => {
-        var newRequest = new Request({
-          user: standardUser._id,
-          items: [
-            {
-              item: allItems["1k resistor"]._id,
-              quantity: 2
-            },
-            {
-              item: allItems["2k resistor"]._id,
-              quantity: 5
-            },
-            {
-              item: allItems["Oscilloscope"]._id,
-              quantity: 1
-            }
-          ],
-          reason: "cuz"
-        });
-        newRequest.save(function(error, request) {
-          chai.request(server)
-            .patch('/api/requests/' + request._id)
-            .set('Authorization', adminToken)
-            .send({action: "DISBURSE"})
-            .end((err, res) => {
-              should.not.exist(err);
-              res.should.have.status(200);
-              Log.find({}, function(err, logs) {
-                should.not.exist(err);
-                logs.length.should.be.eql(1);
-                var log = logs[0];
-                log.items.length.should.be.eql(3);
-                log.items.forEach(function(item) {
-                  ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
-                    .should.include(item);
-                })
-                log.type.should.be.eql('REQUEST_DISBURSED');
-                log.initiating_user.should.be.eql(adminUser._id);
-                log.affected_user.should.be.eql(standardUser._id);
-                log.description.should.include('2 1k resistors');
-                log.description.should.include('5 2k resistors');
-                log.description.should.include('1 Oscilloscope');
-                log.description.should.include('The user admin disbursed');
-                log.description.should.include('to the user standard');
-                done();
-              });
-            });
+    describe('Logging requests', () =>{
+      var testRequest;
+      beforeEach((done) => {
+        Request.remove({}, (err) => {
+          var newRequest = new Request({
+            user: standardUser._id,
+            items: [
+              {
+                item: allItems["1k resistor"]._id,
+                quantity: 2
+              },
+              {
+                item: allItems["2k resistor"]._id,
+                quantity: 5
+              },
+              {
+                item: allItems["Oscilloscope"]._id,
+                quantity: 1
+              }
+            ],
+            reason: "cuz"
+          });
+          newRequest.save(function(error, request) {
+            testRequest = request;
+            done();
+          });
         });
       });
-    });
 
-    it('should not log if disbursement fails', (done) => {
-      Request.remove({}, (err) => {
-        var newRequest = new Request({
-          user: standardUser._id,
-          items: [{
-            item: allItems["1k resistor"]._id,
-            quantity: 2000
-          }],
-          reason: "cuz"
-        });
-        newRequest.save(function(error, request) {
-          chai.request(server)
-            .patch('/api/requests/' + request._id)
-            .set('Authorization', adminToken)
-            .send({action: "DISBURSE"})
-            .end((err, res) => {
+      it('logs disbursing an item', (done) => {
+        chai.request(server)
+          .patch('/api/requests/' + testRequest._id)
+          .set('Authorization', adminToken)
+          .send({action: "DISBURSE"})
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
               should.not.exist(err);
-              res.should.have.status(200);
-              Log.find({}, function(err, logs) {
-                should.not.exist(err);
-                logs.length.should.be.eql(0);
-                done();
-              });
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.length.should.be.eql(3);
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              })
+              log.type.should.be.eql('REQUEST_DISBURSED');
+              log.initiating_user.should.be.eql(adminUser._id);
+              log.affected_user.should.be.eql(standardUser._id);
+              log.description.should.include('2 1k resistors');
+              log.description.should.include('5 2k resistors');
+              log.description.should.include('1 Oscilloscope');
+              log.description.should.include('The user admin disbursed');
+              log.description.should.include('to the user standard');
+              done();
             });
+          });
+      });
+
+      it('should not log if disbursement fails', (done) => {
+        Request.remove({}, (err) => {
+          var newRequest = new Request({
+            user: standardUser._id,
+            items: [{
+              item: allItems["1k resistor"]._id,
+              quantity: 2000
+            }],
+            reason: "cuz"
+          });
+          newRequest.save(function(error, request) {
+            chai.request(server)
+              .patch('/api/requests/' + request._id)
+              .set('Authorization', adminToken)
+              .send({action: "DISBURSE"})
+              .end((err, res) => {
+                should.not.exist(err);
+                res.should.have.status(200);
+                Log.find({}, function(err, logs) {
+                  should.not.exist(err);
+                  logs.length.should.be.eql(0);
+                  done();
+                });
+              });
+          });
         });
+      });
+
+      it('logs a standard user creating a request for himself', (done) => {
+        chai.request(server)
+          .post('/api/requests/')
+          .set('Authorization', standardToken)
+          .send({
+            user: standardUser._id,
+            items: [
+              {
+                item: allItems["1k resistor"]._id,
+                quantity: 10,
+              },
+              {
+                item: allItems["Oscilloscope"]._id,
+                quantity: 1,
+              }
+            ],
+            reason: "cuz"
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.length.should.be.eql(2);
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              });
+              log.type.should.be.eql('REQUEST_CREATED');
+              log.initiating_user.should.be.eql(standardUser._id);
+              should.not.exist(log.affectedUser);
+              log.description.should.include('10 1k resistors');
+              log.description.should.include('1 Oscilloscope');
+              log.description.should.include('The user standard requested');
+              done();
+            });
+          });
+      });
+
+      it('logs an admin user creating a request for someone else', (done) => {
+        chai.request(server)
+          .post('/api/requests/')
+          .set('Authorization', adminToken)
+          .send({
+            user: standardUser._id,
+            items: [
+              {
+                item: allItems["1k resistor"]._id,
+                quantity: 10,
+              },
+              {
+                item: allItems["Oscilloscope"]._id,
+                quantity: 1,
+              }
+            ],
+            reason: "cuz"
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.initiating_user.should.be.eql(adminUser._id);
+              log.affected_user.should.be.eql(standardUser._id);
+              log.description.should.include("The user admin requested");
+              log.description.should.include("for the user standard.");
+              done();
+            });
+          });
+      });
+
+      it('logs an editing a request', (done) => {
+        chai.request(server)
+          .put('/api/requests/' + testRequest._id)
+          .set('Authorization', adminToken)
+          .send({
+            reason: "different reason",
+            status: "APPROVED"
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.initiating_user.should.be.eql(adminUser._id);
+              log.affected_user.should.be.eql(standardUser._id);
+              log.description.should.include("The user admin edited standard's request by changing");
+              log.description.should.include("reason from cuz to different reason");
+              log.description.should.include("status from PENDING to APPROVED");
+              done();
+            });
+          });
+      });
+
+      it('does not log editing a request if nothing changed', (done) => {
+        chai.request(server)
+          .put('/api/requests/' + testRequest._id)
+          .set('Authorization', adminToken)
+          .send({
+            reason: "cuz"
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(0);
+              done();
+            });
+          });
       });
     });
 

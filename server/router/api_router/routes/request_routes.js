@@ -165,10 +165,11 @@ module.exports.putAPI = function(req,res){
 };
 
 function saveRequest(oldRequest, changes, res, user){
+  var oldRequestCopy = new Request(oldRequest);
   var obj = Object.assign(oldRequest, changes);
   obj.save((err,request)=>{
     if(err) return res.send({error:err});
-    LogHelpers.logRequestEdit(oldRequest, changes, user, function(error) {
+    LogHelpers.logRequestEdit(oldRequestCopy, changes, user, function(error) {
       if(error) return res.send({error: error});
       return res.json(request);
     });

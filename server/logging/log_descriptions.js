@@ -39,7 +39,7 @@ module.exports.requestCreated = function(request, createdByUser, createdForUser)
   var description = 'The user ' + getDisplayName((createdByUser) ? createdByUser : createdForUser) + ' requested';
   var requestItemMap = {};
   request.items.forEach(function(item) {
-    requestItemMap[item.item] = item.quantity;
+    requestItemMap[item.item._id] = item.quantity;
   });
   var itemNames = request.items.map(obj => obj.item);
   description += createRequestItemString(requestItemMap, itemNames);
