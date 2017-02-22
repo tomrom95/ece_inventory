@@ -151,3 +151,21 @@ module.exports.logRequestEdit = function(oldRequest, changes, initiatingUser, ne
     });
   })
 }
+
+module.exports.logCancelledRequest = function(request, initiatingUser, next) {
+  var itemIds = request.items.map(i => i.item);
+  User.findById(request.user, function(error, requestUser) {
+    if (error) return next(error);
+    var newLog = new Log({
+      initiating_user: initiatingUser._id,
+      affected_user: request.user.equals(initiatingUser._id) ? null : request.user,
+      items: itemIds,
+      type: 'REQUEST_DELETED',
+      description: LogDescriptions.deletedRequest(request, initiatingUser, requestUser)
+    });
+    newLog.save(function(error) {
+      if (error) return next(error);
+      next();
+    });
+  });
+}

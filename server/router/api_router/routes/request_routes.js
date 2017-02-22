@@ -24,6 +24,7 @@ module.exports.getAPI = function (req, res) {
   }
 
   query
+  .searchBoolean('is_cancelled', false)
   .searchInArrayForObjectId('items', 'item', req.query.item_id)
   .searchCaseInsensitive('reason', req.query.reason)
   .searchForDate('created', req.query.created)
@@ -116,6 +117,9 @@ module.exports.getAPIbyID = function(req, res){
   .exec(function(err,request){
     if(err) return res.send({error:err});
     if(!request) return res.send({error: 'Request does not exist'});
+    else if (req.user.role === 'STANDARD' && !request.user.equals(req.user._id)) {
+      return res.send({error: "You cannot view another user's request"});
+    }
     else{
       res.json(request);
     }
@@ -130,6 +134,8 @@ module.exports.putAPI = function(req,res){
       return res.send({error: 'You cannot fulfill a request through this endpoint. Use PATCH'});
     } else if (req.user.role === 'STANDARD' && String(req.user._id) !== String(request.user)) {
       return res.send({error: "You are not authorized to modify another user's request"});
+    } else if (request.is_cancelled) {
+      return res.send({error: "You cannot edit a cancelled request"});
     }
     else{
       var obj;
@@ -184,9 +190,16 @@ module.exports.deleteAPI = function(req,res){
     else{
       // If id of current user matches the one in the request, or user is an admin
       if(req.user._id.toString() == request.user.toString() || req.user.role === 'ADMIN' || req.user.role == 'MANAGER'){
-        request.remove(function(err){
-          if(err) return res.send({error:err});
-          res.json({message: 'Delete successful'});
+        if (request.is_cancelled) {
+          return res.send({error: "Request has already been cancelled"})
+        }
+        request.is_cancelled = true;
+        request.save(function(error, updatedRequest) {
+          if(error) return res.send({error: error});
+          LogHelpers.logCancelledRequest(updatedRequest, req.user, function(error) {
+            if(error) return res.send({error: error});
+            res.json({message: 'Delete successful'});
+          });
         });
       } else {
         res.json({error: "You are not authorized to remove this request"});
@@ -201,6 +214,9 @@ function disburse(requestID, next) {
     if (!request) return next('Request does not exist');
     if (request.status === 'FULFILLED') {
       return next('Request has already been disbursed to the user');
+    }
+    if (request.is_cancelled) {
+      return next('You cannot fulfill a cancelled request');
     }
     var checkQuantityPromises = [];
     for (var i = 0; i < request.items.length; i++){

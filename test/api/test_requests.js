@@ -1070,13 +1070,13 @@ describe('Requests API Test', function () {
             should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
-            res.body.should.have.property('error').eql('Request does not exist');
+            res.body.should.have.property('error').eql('Request has already been cancelled');
             done();
           });
         });
       })
     });
-    it('DELETE request by request id then GET should fail', (done) =>{
+    it('DELETE request by request id then GET should not fail', (done) =>{
       var request = new Request({
         "reviewer_comment": "NONADMIN",
         "requestor_comment": "NONADMIN",
@@ -1106,7 +1106,7 @@ describe('Requests API Test', function () {
             should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
-            res.body.should.have.property('error').eql('Request does not exist');
+            res.body.is_cancelled.should.be.eql(true);
             done();
           });
         });
@@ -1142,7 +1142,7 @@ describe('Requests API Test', function () {
             should.not.exist(err);
             res.should.have.status(200);
             res.body.should.be.a('object');
-            res.body.should.have.property('error').eql('Request does not exist');
+            res.body.should.have.property('error').eql('You cannot edit a cancelled request');
             done();
           });
         });
@@ -1186,7 +1186,7 @@ describe('Requests API Test', function () {
               should.not.exist(err);
               res.should.have.status(200);
               res.body.should.be.a('object');
-              res.body.should.have.property('error').eql('Request does not exist');
+              res.body.is_cancelled.should.be.eql(true);
               done();
             });
           });
@@ -1284,7 +1284,7 @@ describe('Requests API Test', function () {
               should.not.exist(err);
               res.should.have.status(200);
               res.body.should.be.a('object');
-              res.body.should.have.property('error').eql('Request does not exist');
+              res.body.is_cancelled.should.be.eql(true);
               done();
             });
           });

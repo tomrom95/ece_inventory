@@ -51,6 +51,16 @@ module.exports.requestCreated = function(request, createdByUser, createdForUser)
   return description;
 }
 
+module.exports.deletedRequest = function(request, initiatingUser, requestUser) {
+  var description = 'The user ' + getDisplayName(initiatingUser) + ' cancelled ';
+  if (initiatingUser._id.equals(requestUser._id)) {
+    description += 'his/her own request.';
+  } else {
+    description += getDisplayName(requestUser) + '\'s request.';
+  }
+  return description;
+}
+
 module.exports.disbursedItem = function(request, items, disbursedFrom, disbursedTo) {
   var description = 'The user ' + getDisplayName(disbursedFrom) + ' disbursed';
   var requestItemMap = {};

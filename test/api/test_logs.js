@@ -443,6 +443,11 @@ describe('Logging API Test', function () {
               should.not.exist(err);
               logs.length.should.be.eql(1);
               var log = logs[0];
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              });
+              log.type.should.be.eql('REQUEST_CREATED');
               log.initiating_user.should.be.eql(adminUser._id);
               log.affected_user.should.be.eql(standardUser._id);
               log.description.should.include("The user admin requested");
@@ -467,6 +472,11 @@ describe('Logging API Test', function () {
               should.not.exist(err);
               logs.length.should.be.eql(1);
               var log = logs[0];
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              })
+              log.type.should.be.eql('REQUEST_EDITED');
               log.initiating_user.should.be.eql(adminUser._id);
               log.affected_user.should.be.eql(standardUser._id);
               log.description.should.include("The user admin edited standard's request by changing");
@@ -512,6 +522,54 @@ describe('Logging API Test', function () {
             Log.find({}, function(err, logs) {
               should.not.exist(err);
               logs.length.should.be.eql(0);
+              done();
+            });
+          });
+      });
+
+      it('logs someone cancelling their own request', (done) => {
+        chai.request(server)
+          .delete('/api/requests/' + testRequest._id)
+          .set('Authorization', standardToken)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              })
+              log.type.should.be.eql('REQUEST_DELETED');
+              log.initiating_user.should.be.eql(standardUser._id);
+              should.not.exist(log.affected_user);
+              log.description.should.be.eql("The user standard cancelled his/her own request.");
+              done();
+            });
+          });
+      });
+
+      it('logs someone cancelling another persons request', (done) => {
+        chai.request(server)
+          .delete('/api/requests/' + testRequest._id)
+          .set('Authorization', adminToken)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              })
+              log.type.should.be.eql('REQUEST_DELETED');
+              log.initiating_user.should.be.eql(adminUser._id);
+              log.affected_user.should.be.eql(standardUser._id);
+              log.description.should.be.eql("The user admin cancelled standard's request.");
               done();
             });
           });
