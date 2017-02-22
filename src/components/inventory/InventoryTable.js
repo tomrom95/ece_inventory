@@ -47,7 +47,6 @@ function getValues(data, keys) {
 }
 
 function getPrefill(data) {
-	console.log(data["Custom Fields"]);
 	return ({
 		"Name": data["Name"],
 		"Quantity": data["Quantity"],

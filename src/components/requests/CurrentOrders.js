@@ -42,12 +42,12 @@ class CurrentOrders extends Component {
     var item;
     for (i=0; i<requests.length; i++) {
       var obj = requests[i];
-      console.log(obj.user);
       var userDisplay = this.getUserDisplay(obj.user);
       var user_id = obj.user ? obj.user._id : "";
       if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER"){
-        console.log("request");
-        if(obj.user._id == JSON.parse(localStorage.getItem('user'))._id){
+        console.log(obj.user);
+        console.log(JSON.parse(localStorage.getItem('user')))
+        if(obj.user._id === JSON.parse(localStorage.getItem('user'))._id){
           console.log("admin request");
           item = {
             "User": userDisplay,

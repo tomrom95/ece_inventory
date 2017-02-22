@@ -72,11 +72,12 @@ class ItemEditor extends Component {
 			else if (keys[i] === 'Custom Fields'){
 				if(vals[i].length > 0){
 					for(var j = 0; j < vals[i].length; j++){
-						list.push(this.makeCustomTextBox(i, vals[i][j]));
+						var field = vals[i][j];
+						list.push(this.makeCustomTextBox(i, field));
 						list.push(
 							<button
 								key={i + "delete-field" + j}
-								onClick={()=>{this.deleteCustomField(i)}}
+								onClick={()=>{this.deleteCustomField(i, field)}}
 								type="button"
 								className="btn btn-danger delete-button">
 								X
@@ -84,7 +85,7 @@ class ItemEditor extends Component {
 					}
 
 				}
-				list.push(this.addCustomField(i));
+				list.push(this.addCustomField(i, vals[i]));
 
 
 			}
@@ -133,7 +134,7 @@ class ItemEditor extends Component {
 
 
 
-	addCustomField(row){
+	addCustomField(row, current_fields){
 		return(
 			<div className="form-group" key={"createform-div-row-"+row}>
 			  <label htmlFor={"createform-row-"+row}>Add custom field</label>
@@ -151,7 +152,7 @@ class ItemEditor extends Component {
 				<button type="button"
 					className="btn btn-outline-primary add-button"
 					key={"button-add-field"+row}
-					onClick={e => this.addField(this.refs.field.state.selectedField, this.refs.fieldvalue.value)}>
+					onClick={e => this.addField(this.refs.field.state.selectedField, this.refs.fieldvalue.value, current_fields)}>
 					ADD
 				</button>
 			</div>
@@ -161,39 +162,48 @@ class ItemEditor extends Component {
 
 	}
 
-	addField(custom_field, value){
+	addField(custom_field, value, current_fields){
 		var field_params = {
 			field: custom_field,
 			value: value
 		}
-		if(value){
+		var already_exists = false;
+		for(var i = 0; i < current_fields.length; i++){
+			if(current_fields[i].field === custom_field){
+				already_exists = true;
+			}
+		}
+		if(value && !already_exists){
 			this.props.api.post('/api/inventory/'+ this.props.itemId+ "/customFields/",  field_params)
 				.then(function(response) {
 						if (response.data.error) {
 							alert(response.data.error);
 						} else {
-							console.log(response);
+							this.props.callback();
 						}
 					}.bind(this))
 					.catch(function(error) {
 						console.log(error);
 					}.bind(this));
 		}
-		else {
-			alert("must have a value");
+		else if(value && already_exists) {
+			alert("item already has that custom field");
+		}
+		else{
+			alert("field must have a value");
 		}
 
 	}
 
-	deleteCustomField(row){
+	deleteCustomField(row, field){
 		var id = "createform-row-"+row;
 		this.state.formIds.splice(0,id);
-		console.log(this.state.data["Custom Fields"][0]);
-		this.props.api.delete('/api/inventory/'+ this.props.itemId+ "/customFields/" + this.state.data["Custom Fields"][0].field)
+		this.props.api.delete('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field)
 			.then(function(response) {
 					if (response.data.error) {
 						alert(response.data.error);
 					} else {
+						this.props.callback();
 
 					}
 				}.bind(this))
