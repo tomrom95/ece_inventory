@@ -506,8 +506,7 @@ params:
 	item_id: String,
 	item_name: String,
 	type: String, // ('ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
-		'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_APPROVED',
-		'REQUEST_DENIED')
+		'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED')
 	user_id: String,
 	start_date: String, // in format '2017-01-25' (YEAR-MONTH-DAY)
 	end_date: String // in format '2017-01-25' (YEAR-MONTH-DAY)
@@ -538,8 +537,7 @@ return:
 			}
 		],
   	type: String, // ('ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
-      'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_APPROVED',
-      'REQUEST_DENIED')
+      'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED')
     time_stamp: String,
 		description: String
   }

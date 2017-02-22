@@ -128,13 +128,13 @@ module.exports.putAPI = function(req,res){
     if(!request) return res.send({error: 'Request does not exist'});
     else if (request.status !== 'FULFILLED' && req.body.status === 'FULFILLED') {
       return res.send({error: 'You cannot fulfill a request through this endpoint. Use PATCH'});
-    } else if (req.user.role === 'STANDARD' && req.user._id != request.user) {
+    } else if (req.user.role === 'STANDARD' && String(req.user._id) !== String(request.user)) {
       return res.send({error: "You are not authorized to modify another user's request"});
     }
     else{
       var obj;
       var fieldsToEdit = new Set();
-      if (req.user._id == request.user) {
+      if (String(req.user._id) === String(request.user)) {
         fieldsToEdit.add('reason')
       }
       if (req.user.role === 'MANAGER') {

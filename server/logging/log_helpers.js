@@ -139,7 +139,7 @@ module.exports.logRequestEdit = function(oldRequest, changes, initiatingUser, ne
     var itemIds = oldRequest.items.map(i => i.item);
     var newLog = new Log({
       initiating_user: initiatingUser._id,
-      affected_user: affectedUser._id,
+      affected_user: affectedUser._id.equals(initiatingUser._id) ? null : affectedUser._id,
       items: itemIds,
       request: oldRequest._id,
       type: 'REQUEST_EDITED',

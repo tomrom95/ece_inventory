@@ -477,6 +477,28 @@ describe('Logging API Test', function () {
           });
       });
 
+      it('logs someone editing his/her own request', (done) => {
+        chai.request(server)
+          .put('/api/requests/' + testRequest._id)
+          .set('Authorization', standardToken)
+          .send({
+            reason: "different reason",
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.initiating_user.should.be.eql(standardUser._id);
+              should.not.exist(log.affected_user);
+              log.description.should.include("The user standard edited his/her own request by changing");
+              done();
+            });
+          });
+      });
+
       it('does not log editing a request if nothing changed', (done) => {
         chai.request(server)
           .put('/api/requests/' + testRequest._id)

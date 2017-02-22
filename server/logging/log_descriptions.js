@@ -78,7 +78,7 @@ var createChangesString = function(oldObject, changes) {
 
 module.exports.editedRequest = function(oldRequest, changes, initiatingUser, affectedUser) {
   var description = 'The user ' + getDisplayName(initiatingUser) + ' edited ';
-  if (initiatingUser._id === affectedUser._id) {
+  if (initiatingUser._id.equals(affectedUser._id)) {
     description += 'his/her own request by changing';
   } else {
     description += getDisplayName(affectedUser) + '\'s request by changing';
