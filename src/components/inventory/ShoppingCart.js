@@ -48,10 +48,17 @@ class ShoppingCart extends Component {
 	}
 
 	sendRequests() {
+		var reason = document.getElementById('cart-reason').value;
+		if ((reason.trim()).length === 0) {
+			alert("Reason field cannot be blank.");
+			return;
+		}
+
 		var params = {
 			action: "CHECKOUT",
-			reason: document.getElementById('cart-reason').value
+			reason: reason
 		}
+		
 		this.props.api.patch('api/cart/', params)
 		.then(function (response) {
 			if (response.data.error) {
