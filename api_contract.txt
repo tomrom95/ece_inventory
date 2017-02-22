@@ -571,6 +571,20 @@ return {
 	role: String ('ADMIN', 'MANAGER', 'STANDARD')
 }
 
+PUT {
+body {
+	username: String,
+	password: String,
+	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+}
+return {
+	_id: String,
+	username: String,
+	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+}
+
+}
+
 /auth/login
 POST
 body:
