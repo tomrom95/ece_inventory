@@ -66,13 +66,11 @@ module.exports.postAPI = function(req,res){
         User.findById(req.body.user, function(error, user) {
           if (error) return res.send({error: error});
           if (!user) return res.send({error: "There is no such user"});
-          request.user = req.body.user;
-          processAndPost(request, req, res);
+          processAndPost(request, req.user._id, req.body.user, req, res);
         });
       } else {
         // Post the user's requst as the admin user
-        request.user = req.user._id;
-        processAndPost(request, req, res);
+        processAndPost(request, req.user._id, req.user._id, req, res);
       }
     } else {
       // Standard user here
@@ -81,14 +79,14 @@ module.exports.postAPI = function(req,res){
         return res.send({error:"You are not authorized to modify another user's request"});
       }
       // Post the user's request as the standard user
-      request.user = req.user._id;
-      processAndPost(request, req, res);
+      processAndPost(request, req.user._id, req.user._id, req, res);
     }
 
   }
 };
 
-function processAndPost(request, req, res){
+function processAndPost(request, createdBy, createdFor, req, res){
+  request.user = createdFor;
   if(!req.body.items.length){
     return res.send({error: "Items not specified in request"});
   } else {
@@ -102,8 +100,11 @@ function processAndPost(request, req, res){
   request.save(function(err, request){
     if(err) return res.send({error:err});
     Request.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, request){
-      res.json(request);
-    })
+      LogHelpers.logRequestCreation(request, createdBy, createdFor, function(error) {
+        if (error) return res.send({error: error});
+        return res.json(request);
+      });
+    });
   });
 };
 
@@ -125,8 +126,14 @@ module.exports.putAPI = function(req,res){
   Request.findById(req.params.request_id, function(err,request){
     if(err) return res.send({error:err});
     if(!request) return res.send({error: 'Request does not exist'});
+    else if (request.status !== 'FULFILLED' && req.body.status === 'FULFILLED') {
+      return res.send({error: 'You cannot fulfill a request through this endpoint. Use PATCH'});
+    }
     else{
       var obj;
+      var logStatusChange = (req.body.status)
+        && (['APPROVED', 'DENIED']).includes(req.body.status)
+        && req.body.status !== request.status;
       if(req.user.role === 'STANDARD'){
         // if the current user's id is not equal to the user id in the request, or if the current user id is not equal
         // to the user id in the PUT body
@@ -137,7 +144,7 @@ module.exports.putAPI = function(req,res){
           // Standard user must keep its id in its own request.
           obj = Object.assign(request, req.body);
           obj.user = req.user._id;
-          saveObject(obj, res);
+          saveRequest(obj, res, req.user, logStatusChange);
         }
       } else {
         // Admin can take in username
@@ -147,20 +154,27 @@ module.exports.putAPI = function(req,res){
             if (error) return res.send({error: error});
             if (!user) return res.send({error: "There is no such user"});
             obj.user = req.body.user;
-            saveObject(obj, res);
+            saveRequest(obj, res, req.user, logStatusChange);
           });
         } else {
-          saveObject(obj, res);
+          saveRequest(obj, res, req.user, logStatusChange);
         }
       }
     }
   });
 };
 
-function saveObject(obj, res){
+function saveRequest(obj, res, user, logStatusChange){
   obj.save((err,request)=>{
     if(err) return res.send({error:err});
-    res.json(request);
+    if (logStatusChange) {
+      LogHelpers.logRequestApprovedOrDenied(request, user, request.status, function(error) {
+        if(error) return res.send({error: error});
+        return res.json(request);
+      });
+    } else {
+      return res.json(request);
+    }
   });
 }
 

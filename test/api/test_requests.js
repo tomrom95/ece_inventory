@@ -802,7 +802,7 @@ describe('Requests API Test', function () {
         .set('Authorization', token)
         .send({
           'reason': 'NONE',
-          'status': 'FULFILLED',
+          'status': 'APPROVED',
           'items': [
             {
               item: item2_id,
@@ -815,7 +815,7 @@ describe('Requests API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.reason.should.be.eql('NONE');
-          res.body.status.should.be.eql('FULFILLED');
+          res.body.status.should.be.eql('APPROVED');
           res.body.user.should.be.eql(user_id.toString());
           res.body._id.should.be.eql(request._id.toString());
           res.body.items[0].quantity.should.be.eql(2000);
@@ -846,7 +846,7 @@ describe('Requests API Test', function () {
         .set('Authorization', token)
         .send({
           'reason': 'NONE',
-          'status': 'FULFILLED',
+          'status': 'APPROVED',
           'user': user_id
         })
         .end((err, res) => {
@@ -854,7 +854,7 @@ describe('Requests API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.reason.should.be.eql('NONE');
-          res.body.status.should.be.eql('FULFILLED');
+          res.body.status.should.be.eql('APPROVED');
           res.body.user.should.be.eql(user_id.toString());
           res.body._id.should.be.eql(request._id.toString());
           done();
@@ -884,7 +884,7 @@ describe('Requests API Test', function () {
         .set('Authorization', token)
         .send({
           'reason': 'NONE',
-          'status': 'FULFILLED',
+          'status': 'APPROVED',
           'quantity': 3000,
           'user': '111111111111111111111111'
         })
@@ -923,7 +923,7 @@ describe('Requests API Test', function () {
           .set('Authorization', standard_token)
           .send({
             'reason': 'NONE',
-            'status': 'FULFILLED',
+            'status': 'APPROVED',
             'user': user_id
           })
           .end((err, res) => {
@@ -962,7 +962,7 @@ describe('Requests API Test', function () {
         .set('Authorization', standard_token)
         .send({
           'reason': 'NONE',
-          'status': 'FULFILLED',
+          'status': 'APPROVED',
           'quantity': 3000
         })
         .end((err, res) => {

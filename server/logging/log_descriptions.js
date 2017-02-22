@@ -19,24 +19,53 @@ var getDisplayName = function(user) {
   }
 }
 
+function createRequestItemString(requestItemMap, items) {
+  var itemString = "";
+  items.forEach(function(item, index) {
+    if (index !== 0 && items.length !== 2) {
+      itemString += ','
+    }
+    if (index === items.length - 1) {
+      itemString += ' and';
+    }
+    var quantity = requestItemMap[item._id];
+    var plural = quantity === 1 ? '' : 's';
+    itemString += ' ' + quantity + ' ' + item.name + plural;
+  });
+  return itemString;
+}
+
+module.exports.requestCreated = function(request, createdByUser, createdForUser) {
+  var description = 'The user ' + getDisplayName((createdByUser) ? createdByUser : createdForUser) + ' requested';
+  var requestItemMap = {};
+  request.items.forEach(function(item) {
+    requestItemMap[item.item] = item.quantity;
+  });
+  var itemNames = request.items.map(obj => obj.item);
+  description += createRequestItemString(requestItemMap, itemNames);
+  if (createdByUser) {
+    description += ' for the user ' + getDisplayName(createdForUser) + '.';
+  } else {
+    description += '.';
+  }
+  return description;
+}
+
 module.exports.disbursedItem = function(request, items, disbursedFrom, disbursedTo) {
   var description = 'The user ' + getDisplayName(disbursedFrom) + ' disbursed';
   var requestItemMap = {};
   request.items.forEach(function(item) {
     requestItemMap[item.item] = item.quantity;
   });
-  items.forEach(function(item, index) {
-    if (index !== 0 && items.length !== 2) {
-      description += ','
-    }
-    if (index === items.length - 1) {
-      description += ' and';
-    }
-    var quantity = requestItemMap[item._id];
-    var plural = quantity === 1 ? '' : 's';
-    description += ' ' + quantity + ' ' + item.name + plural;
-  });
+  description += createRequestItemString(requestItemMap, items);
   description += ' to the user ' + getDisplayName(disbursedTo) + '.';
+  return description;
+}
+
+module.exports.requestApprovedOrDenied = function(request, status, initiatingUser, affectedUser) {
+  var description = 'The user ' + getDisplayName(initiatingUser) + ' ';
+  description += (status === 'APPROVED') ? 'approved' : 'denied';
+  description += ' ' + getDisplayName(affectedUser) + '\'s request';
   return description;
 }
 
