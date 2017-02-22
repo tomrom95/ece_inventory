@@ -122,9 +122,7 @@ describe('Cart Items API Test', function () {
         res.body.items.length.should.be.eql(3);
         res.body.items.forEach(function(itemObj){
           itemObj.item.should.have.property("name");
-          itemObj.item.should.have.property("location");
           (["1k resistor", "2k resistor", "5k resistor"]).should.include(itemObj.item.name);
-          (["CIEMAS"]).should.include(itemObj.item.location);
         });
         res.body.user.should.be.eql(adminUser._id.toString());
         Cart.findOne({user: adminUser._id}, function(err, cart){
@@ -171,9 +169,7 @@ describe('Cart Items API Test', function () {
         res.body.items.length.should.be.eql(3);
         res.body.items.forEach(function(itemObj){
           itemObj.item.should.have.property("name");
-          itemObj.item.should.have.property("location");
           (["1k resistor", "2k resistor", "5k resistor"]).should.include(itemObj.item.name);
-          (["CIEMAS"]).should.include(itemObj.item.location);
         });
         res.body.user.should.be.eql(standardUser._id.toString());
         Cart.findOne({user: standardUser._id}, function(err, cart){
@@ -220,9 +216,7 @@ describe('Cart Items API Test', function () {
         res.body.items.length.should.be.eql(3);
         res.body.items.forEach(function(itemObj){
           itemObj.item.should.have.property("name");
-          itemObj.item.should.have.property("location");
           (["1k resistor", "2k resistor", "5k resistor"]).should.include(itemObj.item.name);
-          (["CIEMAS"]).should.include(itemObj.item.location);
         });
         res.body.user.should.be.eql(managerUser._id.toString());
         Cart.findOne({user: managerUser._id}, function(err, cart){
@@ -254,9 +248,7 @@ describe('Cart Items API Test', function () {
           res.body.items.length.should.be.eql(1);
           res.body.items.forEach(function(itemObj){
             itemObj.item.should.have.property("name");
-            itemObj.item.should.have.property("location");
             (["5k resistor"]).should.include(itemObj.item.name);
-            (["CIEMAS"]).should.include(itemObj.item.location);
           });
           res.body.user.should.be.eql(managerUser._id.toString());
           Cart.findOne({user: managerUser._id}, function(err, cart){
@@ -288,9 +280,7 @@ describe('Cart Items API Test', function () {
           res.body.items.length.should.be.eql(1);
           res.body.items.forEach(function(itemObj){
             itemObj.item.should.have.property("name");
-            itemObj.item.should.have.property("location");
             (["5k resistor"]).should.include(itemObj.item.name);
-            (["CIEMAS"]).should.include(itemObj.item.location);
           });
           res.body.user.should.be.eql(standardUser._id.toString());
           Cart.findOne({user: standardUser._id}, function(err, cart){
@@ -322,9 +312,7 @@ describe('Cart Items API Test', function () {
           res.body.items.length.should.be.eql(1);
           res.body.items.forEach(function(itemObj){
             itemObj.item.should.have.property("name");
-            itemObj.item.should.have.property("location");
             (["5k resistor"]).should.include(itemObj.item.name);
-            (["CIEMAS"]).should.include(itemObj.item.location);
           });
           res.body.user.should.be.eql(adminUser._id.toString());
           Cart.findOne({user: adminUser._id}, function(err, cart){

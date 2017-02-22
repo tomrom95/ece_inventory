@@ -354,7 +354,6 @@ describe('Instance API Test', function() {
     });
     it('Should POST instance with has_instance_objects from F -> T', (done) => {
       let item =   {
-        "location": "CIEMAS",
         "quantity": 1000,
         "name": "5M Wire",
         "has_instance_objects": false,
@@ -396,7 +395,6 @@ describe('Instance API Test', function() {
     });
     it('Should POST instance with existing instances, has_instance_objects stays T', (done) => {
       let item = new Item({
-        "location": "CIEMAS",
         "quantity": 1000,
         "name": "1k BJT",
         "has_instance_objects": true,
@@ -492,7 +490,6 @@ describe('Instance API Test', function() {
     });
     it('DELETE remaining instance with has_instance_objects from T -> F', (done) => {
       let item = {
-        "location": "CIEMAS",
         "quantity": 1000,
         "name": "1k BJT",
         "has_instance_objects": true,
@@ -541,7 +538,6 @@ describe('Instance API Test', function() {
     });
     it('DELETE instance with existing instances, has_instance_objects remains T', (done) => {
       let item = new Item({
-        "location": "CIEMAS",
         "quantity": 1000,
         "name": "1k BJT",
         "has_instance_objects": true,

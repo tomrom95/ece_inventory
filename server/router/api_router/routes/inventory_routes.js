@@ -44,7 +44,6 @@ module.exports.getAPI = function (req, res) {
     .searchBoolean('is_deleted', false)
     .searchInArray('tags', req.query.required_tags, req.query.excluded_tags)
     .searchCaseInsensitive('name', req.query.name)
-    .searchCaseInsensitive('location', req.query.location)
     .searchCaseInsensitive('vendor_info', req.query.vendor_info)
     .searchCaseInsensitive('model_number', req.query.model_number)
 
@@ -111,7 +110,6 @@ module.exports.postAPI = function(req, res){
   item.name = req.body.name;
   item.quantity = req.body.quantity;
   item.model_number = req.body.model_number;
-  item.location = req.body.location;
   item.vendor_info = req.body.vendor_info;
   item.description = req.body.description;
   item.tags = trimTags(req.body.tags);

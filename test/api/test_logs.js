@@ -114,7 +114,6 @@ describe('Logging API Test', function () {
           name: '1k thingy',
           quantity: 2000,
           tags: ["component", "electric","cheap", "thingy"],
-          location: 'CIEMAS'
         })
         .end((err, res) => {
           should.not.exist(err);

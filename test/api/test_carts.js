@@ -97,9 +97,7 @@ describe('Cart API Test', function () {
         res.body.items.length.should.be.eql(2);
         res.body.items.forEach(function(itemObj){
           itemObj.item.should.have.property("name");
-          itemObj.item.should.have.property("location");
           (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
-          (["CIEMAS"]).should.include(itemObj.item.location);
         });
         res.body.user.should.be.eql(adminUser._id.toString());
         done();
@@ -133,9 +131,7 @@ describe('Cart API Test', function () {
         res.body.items.length.should.be.eql(2);
         res.body.items.forEach(function(itemObj){
           itemObj.item.should.have.property("name");
-          itemObj.item.should.have.property("location");
           (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
-          (["CIEMAS"]).should.include(itemObj.item.location);
         });
         res.body.user.should.be.eql(managerUser._id.toString());
         done();
@@ -169,9 +165,7 @@ describe('Cart API Test', function () {
         res.body.items.length.should.be.eql(2);
         res.body.items.forEach(function(itemObj){
           itemObj.item.should.have.property("name");
-          itemObj.item.should.have.property("location");
           (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
-          (["CIEMAS"]).should.include(itemObj.item.location);
         });
         res.body.user.should.be.eql(standardUser._id.toString());
         done();
@@ -212,9 +206,7 @@ describe('Cart API Test', function () {
           res.body.user.should.be.eql(adminUser._id.toString());
           res.body.items.forEach(function(itemObj){
             itemObj.item.should.have.property("name");
-            itemObj.item.should.have.property("location");
             (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
-            (["CIEMAS"]).should.include(itemObj.item.location);
           });
           done();
         });
@@ -265,9 +257,7 @@ describe('Cart API Test', function () {
           res.body.items.should.be.a("array");
           res.body.items.forEach(function(itemObj){
             itemObj.item.should.have.property("name");
-            itemObj.item.should.have.property("location");
             (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
-            (["CIEMAS"]).should.include(itemObj.item.location);
           });
           res.body.description.should.be.eql("CHANGED");
           res.body.user.should.be.eql(managerUser._id.toString());
@@ -299,9 +289,7 @@ describe('Cart API Test', function () {
           res.body.items.should.be.a("array");
           res.body.items.forEach(function(itemObj){
             itemObj.item.should.have.property("name");
-            itemObj.item.should.have.property("location");
             (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
-            (["CIEMAS"]).should.include(itemObj.item.location);
           });
           Cart.findOne({user: standardUser._id}, function(err, cart){
             should.not.exist(err);
@@ -359,9 +347,7 @@ describe('Cart API Test', function () {
           res.body.items.length.should.be.eql(2);
           res.body.items.forEach(function(itemObj){
             itemObj.item.should.have.property("name");
-            itemObj.item.should.have.property("location");
             (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
-            (["CIEMAS"]).should.include(itemObj.item.location);
           });
           Cart.findOne({user: managerUser._id}, function(err, cart){
             should.not.exist(err);
@@ -419,9 +405,7 @@ describe('Cart API Test', function () {
           res.body.items.length.should.be.eql(2);
           res.body.items.forEach(function(itemObj){
             itemObj.item.should.have.property("name");
-            itemObj.item.should.have.property("location");
             (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
-            (["CIEMAS"]).should.include(itemObj.item.location);
           });
           res.body.user.should.be.eql(standardUser._id.toString());
           Cart.findOne({user: standardUser._id}, function(err, cart){
@@ -505,9 +489,7 @@ describe('Cart API Test', function () {
           res.body.items.length.should.be.eql(2);
           res.body.items.forEach(function(itemObj){
             itemObj.item.should.have.property("name");
-            itemObj.item.should.have.property("location");
             (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
-            (["CIEMAS"]).should.include(itemObj.item.location);
           });
           res.body.description.should.be.eql("CHANGED");
           res.body.user.should.be.eql(managerUser._id.toString());
@@ -568,9 +550,7 @@ describe('Cart API Test', function () {
           res.body.items.length.should.be.eql(2);
           res.body.items.forEach(function(itemObj){
             itemObj.item.should.have.property("name");
-            itemObj.item.should.have.property("location");
             (["1k resistor", "2k resistor"]).should.include(itemObj.item.name);
-            (["CIEMAS"]).should.include(itemObj.item.location);
           });
           Cart.findOne({user: standardUser._id}, function(err, cart){
             should.not.exist(err);

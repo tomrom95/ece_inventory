@@ -28,7 +28,6 @@ User.findOne({'username': 'admin'}, function(err, user) {
 var insertManyItems = function(quantity, callback){
   var itemArray = [];
   let item = {
-    "location": "HUDSON",
     "quantity": 1000,
     "has_instance_objects": false,
     "vendor_info": "Qualcomm",
