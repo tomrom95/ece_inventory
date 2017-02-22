@@ -6,7 +6,7 @@ class CustomFieldSelect extends Component {
     super(props);
     this.state = {
       allFields: [],
-      allFieldNames: [],
+      selectedFieldName: "",
       selectedField: null,
     }
   }
@@ -44,13 +44,9 @@ class CustomFieldSelect extends Component {
   }
 
   handleChange(value) {
-    for(var i = 0; i < this.state.allFields; i++){
-      if(this.state.allFields[i].name === value){
-        this.setState({
-          selectedField: this.state.allFields[i]
-        })
-      }
-    }
+    this.setState({
+      selectedField: value
+    })
   }
 
   render() {

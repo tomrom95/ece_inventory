@@ -2,6 +2,7 @@
 var Item = require('../../../model/items');
 var CustomField = require('../../../model/customFields');
 var QueryBuilder = require('../../../queries/querybuilder');
+var LogHelpers = require('../../../logging/log_helpers');
 
 var getPrivateFields = function(next) {
   CustomField.find({isPrivate: true}, function(error, fields) {
@@ -40,6 +41,7 @@ module.exports.getAPI = function (req, res) {
   // Remove required_tags and excluded_tags first
   var query = new QueryBuilder();
   query
+    .searchBoolean('is_deleted', false)
     .searchInArray('tags', req.query.required_tags, req.query.excluded_tags)
     .searchCaseInsensitive('name', req.query.name)
     .searchCaseInsensitive('location', req.query.location)
@@ -87,8 +89,13 @@ module.exports.getAPI = function (req, res) {
 module.exports.getAPIbyID = function(req,res){
   Item.findById(req.params.item_id, function (err, item){
     if(err) return res.send({error: err});
-    if (!item) return res.send({error: 'Item does not exist'});
+    if (!item) {
+      return res.send({error: 'Item does not exist'});
+    }
     if (req.user.role === 'STANDARD') {
+      if (item.is_deleted) {
+        return res.status(403).send({error: 'You do not have privileges to view this item'});
+      }
       getAndRemovePrivateFieldsFromItem(item, function(error, filteredItem) {
         if (error) return res.send({error: error});
         return res.json(filteredItem);
@@ -109,10 +116,13 @@ module.exports.postAPI = function(req, res){
   item.description = req.body.description;
   item.tags = trimTags(req.body.tags);
   item.has_instance_objects = req.body.has_instance_objects;
-  item.save(function(err){
+  item.save(function(err, newItem){
     if(err)
     return res.send({error: err});
-    res.json(item);
+    LogHelpers.logNewItem(newItem, req.user, function(error) {
+      if (error) return res.send({error: error});
+      return res.json(newItem);
+    });
   })
 };
 
@@ -129,32 +139,38 @@ function trimTags(tagArray){
 }
 
 module.exports.putAPI = function(req, res){
+  if (req.body.is_deleted !== null && req.body.is_deleted !== undefined) {
+    return res.send({error: 'You cannot update the delete field'})
+  }
   Item.findById(req.params.item_id, function (err, old_item){
     if(err) return res.send({error: err});
-    if(!old_item)
-      return res.send({error: 'Item does not exist'});
+    if(!old_item || old_item.is_deleted)
+      return res.send({error: 'Item does not exist or has been deleted'});
     else{
-      var old_quantity = old_item.quantity;
+      var oldItemCopy = new Item(old_item);
       var obj = Object.assign(old_item, req.body)
       obj.tags = trimTags(req.body.tags);
       obj.save((err,item) => {
         if(err) return res.send({error: err});
-        res.json(item);
+        LogHelpers.logEditing(oldItemCopy, req.body, req.user, function(err) {
+          if(err) return res.send({error: err});
+          res.json(item);
+        });
       });
     }
   });
 };
 
 module.exports.deleteAPI = function(req, res){
-  Item.findById(req.params.item_id, function(err, item){
-    if(err) return res.send({error: err});
-    if(!item)
-     return res.send({error: 'Item does not exist'});
-    else{
-      item.remove(function(err){
-        if(err) return res.send({error: err});
-        res.send({message: 'Delete successful'});
-    });
-  }
-  })
+  Item.findByIdAndUpdate(
+    req.params.item_id,
+    {$set: {is_deleted: true}},
+    function(err, item) {
+      if (err) return res.send(err);
+      LogHelpers.logDeletion(item, req.user, function(error) {
+        if (error) return res.send({error: error});
+        return res.json({message: "Delete successful"});
+      });
+    }
+  );
 }

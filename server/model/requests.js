@@ -9,20 +9,25 @@ var RequestSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  item: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: 'Item',
-  },
+  items: [
+    {
+      item: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Item',
+      },
+      quantity: {
+        type: Number,
+        min: 0,
+        required: true
+      }
+    }
+  ],
   reason: String,
   created: {
     type: Date,
     default: Date.now,
     required: true,
-  },
-  quantity: {
-    type: Number,
-    required: true
   },
   status: {
     type: String,

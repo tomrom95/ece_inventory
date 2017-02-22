@@ -3,10 +3,12 @@ import '../../App.css';
 import TableRow from './TableRow.js';
 import ItemWizard from './ItemWizard.js';
 import RequestPopup from './RequestPopup.js';
+import AddToCartButton from './AddToCartButton.js';
 import ItemEditor from './ItemEditor.js';
 import ItemDetailView from './ItemDetailView.js';
 import CustomFieldsPopup from './CustomFieldsPopup.js';
 
+import ShoppingCart from './ShoppingCart.js';
 
 var meta;
 
@@ -45,6 +47,7 @@ function getValues(data, keys) {
 }
 
 function getPrefill(data) {
+	console.log(data["Custom Fields"]);
 	return ({
 		"Name": data["Name"],
 		"Quantity": data["Quantity"],
@@ -111,14 +114,16 @@ class InventoryTable extends Component {
 			list.push(<th key={keys[i]+"-inventorycol"}> {keys[i]} </th>);
 		}
 
-		list.push(<th key={"buttonSpace-0"}></th>);
-		list.push(<th key={"buttonSpace-1"}></th>)
+
 
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
+			list.push(<th key={"buttonSpace-0"}></th>);
+
 			list.push(
 					<CustomFieldsPopup
 									key={"makefields-button"}/>
 							);
+			list.push(<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>);
 			list.push(
 					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
@@ -126,6 +131,10 @@ class InventoryTable extends Component {
 	          			callback={this.props.callback}/>
 	          	);
 
+		}
+		else {
+    		list.push(<th key={"buttonSpace-1"}></th>);
+			list.push(<ShoppingCart key={"shopping-cart-button"}/>);
 		}
 
 		return list;
@@ -155,7 +164,7 @@ class InventoryTable extends Component {
 		var list = [];
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
 			list.push(
-					<RequestPopup
+					<AddToCartButton
 						itemName={data.Name}
 						modelName={data.Model}
 						itemId={data.meta.id}

@@ -17,7 +17,10 @@ function getValues(data, keys) {
 }
 
 function validNumber(num) {
-	return !isNaN(num);
+	if (!isNaN(num)) {
+		return (num >= 0);
+	}
+	return false;
 }
 
 function isWholeNumber(num) {
@@ -46,6 +49,15 @@ class ItemEditor extends Component {
 		this.setState({
 			data: newProps.data,
 			formIds: getValues(newProps.data, getKeys(newProps.data))
+
+		});
+	}
+
+	handleFormChange(event, label) {
+		var data = this.state.data;
+		data[label] = event.target.value;
+		this.setState({
+			data: data
 		});
 	}
 
@@ -60,10 +72,10 @@ class ItemEditor extends Component {
 			else if (keys[i] === 'Custom Fields'){
 				if(vals[i].length > 0){
 					for(var j = 0; j < vals[i].length; j++){
-						list.push(this.makeCustomTextBox(i, vals[i][j].value ));
+						list.push(this.makeCustomTextBox(i, vals[i][j]));
 						list.push(
 							<button
-								key={"delete-field"+i}
+								key={i + "delete-field" + j}
 								onClick={()=>{this.deleteCustomField(i)}}
 								type="button"
 								className="btn btn-danger delete-button">
@@ -128,14 +140,20 @@ class ItemEditor extends Component {
 				<CustomFieldSelect
 					api={this.props.api}
 					key={"add-field-"+row}
-					ref="added-custom-field"
+					ref="field"
 				/>
 				<input type="text"
 					className="form-control"
-					ref="custom-field-value"
+					ref="fieldvalue"
 					key={"add-field-value"+row}
 					placeholder="Value">
 					</input>
+				<button type="button"
+					className="btn btn-outline-primary add-button"
+					key={"button-add-field"+row}
+					onClick={e => this.addField(this.refs.field.state.selectedField, this.refs.fieldvalue.value)}>
+					ADD
+				</button>
 			</div>
 
 		);
@@ -143,19 +161,26 @@ class ItemEditor extends Component {
 
 	}
 
-	addField(custom_field){
-
-		if(custom_field.value){
-			this.props.api.put('/api/inventory/'+ this.props.itemId+ "/customFields/" + custom_field._id)
+	addField(custom_field, value){
+		var field_params = {
+			field: custom_field,
+			value: value
+		}
+		if(value){
+			this.props.api.post('/api/inventory/'+ this.props.itemId+ "/customFields/",  field_params)
 				.then(function(response) {
 						if (response.data.error) {
 							alert(response.data.error);
 						} else {
+							console.log(response);
 						}
 					}.bind(this))
 					.catch(function(error) {
 						console.log(error);
 					}.bind(this));
+		}
+		else {
+			alert("must have a value");
 		}
 
 	}
@@ -163,9 +188,8 @@ class ItemEditor extends Component {
 	deleteCustomField(row){
 		var id = "createform-row-"+row;
 		this.state.formIds.splice(0,id);
-		console.log(this.state.data["Custom Fields"][0]._id);
-
-		this.props.api.delete('/api/inventory/'+ this.props.itemId+ "/customFields/" + this.state.data["Custom Fields"][0]._id)
+		console.log(this.state.data["Custom Fields"][0]);
+		this.props.api.delete('/api/inventory/'+ this.props.itemId+ "/customFields/" + this.state.data["Custom Fields"][0].field)
 			.then(function(response) {
 					if (response.data.error) {
 						alert(response.data.error);
@@ -179,6 +203,31 @@ class ItemEditor extends Component {
 
 	}
 
+	makeCustomTextBox(row, field){
+		var id = "createform-custom-row-"+row;
+		this.state.formIds.push(id);
+		var label = "";
+
+
+		var input = <input type="text"
+				className="form-control"
+				value={field.value}
+				ref={label}
+				key={id+field.field}
+				onChange={e => this.handleFormChange(e, label)}>
+				</input>
+
+
+		return (
+			<div className="form-group" key={"createform-div-custom-row-"+field.field}>
+			  <label htmlFor={"createform-row-"+row}>{label}</label>
+			  {input}
+			</div>
+		);
+
+	}
+
+
 	makeTextBox(row, type, label, defaultValue){
 		var id = "createform-row-"+row;
 		this.state.formIds.push(id);
@@ -189,16 +238,16 @@ class ItemEditor extends Component {
 				api={this.props.api}
 				id={id}
 				ref={label}
-        defaultTags={defaultValue}
-			/>
-	} else {
-		input = <input type={type}
-			className="form-control"
-			defaultValue={defaultValue}
-			ref={label}
-			key={id}>
-			</input>
-	}
+        		defaultTags={defaultValue} />
+		} else {
+			input = <input type={type}
+				className="form-control"
+				value={defaultValue}
+				ref={label}
+				key={id}
+				onChange={e => this.handleFormChange(e, label)}>
+				</input>
+		}
 
 		return (
 			<div className="form-group" key={"createform-div-row-"+row}>
@@ -243,15 +292,6 @@ class ItemEditor extends Component {
 	  		location: this.refs.Location.value,
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
-				custom_fields: [
-					{
-					_id: this.refs["Custom Fields Name"].value,
-					value: {
-						name: this.refs["Custom Fields Name"].value,
-						value: this.refs["Custom Fields Value"].value,
-						}
-					}
-				],
 	  		has_instance_objects: false
   		}
 
@@ -272,8 +312,43 @@ class ItemEditor extends Component {
 			        console.log(error);
 			      }.bind(this));
 		}
-  }
+    }
 
+  	render() {
+	    return (
+			<div>
+				<button type="button"
+					className="btn btn-outline-primary edit-button"
+					data-toggle="modal"
+					data-target={"#editModal-"+this.props.itemId}
+					data-backdrop="static">
+					<span className="fa fa-pencil"></span>
+				</button>
+
+				<div className="modal fade"
+					id={"editModal-"+this.props.itemId}
+					tabIndex="-1" role="dialog"
+					aria-labelledby="editLabel"
+					aria-hidden="true">
+				  <div className="modal-dialog" role="document">
+				    <div className="modal-content">
+				      <div className="modal-header">
+				        <h5 className="modal-title" id="editLabel">Edit Current Item</h5>
+				      </div>
+				      <div className="modal-body">
+				        {this.makeForm()}
+				      </div>
+				      <div className="modal-footer">
+				        <button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+				        <button onClick={() => this.onSubmission()} type="button" className="btn btn-primary">Apply</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+			</div>
+			);
+	}
 }
 
 export default ItemEditor

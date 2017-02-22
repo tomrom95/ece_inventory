@@ -317,6 +317,18 @@ return:
 	lastModified, String
 }
 
+PATCH
+body: {
+	action: "CHECKOUT"
+	reason: String
+}
+return {
+	message: "Request successful"
+	request: {
+		// same request body as before
+	}
+}
+
 /api/cart/items
 POST
 body:
@@ -352,20 +364,6 @@ return:
 	"success"
 }
 
-PATCH
-params:{
-	action: "CHECKOUT"
-}
-return {
-	items: [
-		{
-			// same item body as before
-		}
-	],
-	request: {
-		// same request body as before
-	}
-}
 /api/requests
 GET
 params:
@@ -499,7 +497,7 @@ params: {
 	action: "DISBURSE" // for now this is the only action
 }
 return {
-	item: [
+	items: [
 		{
 			// same item body as before
 		}
@@ -509,27 +507,46 @@ return {
 	}
 }
 
-/api/log
+/api/logs
 GET
 params:
-
+{
+	item_id: String,
+	item_name: String,
+	type: String,
+	user_id: String,
+	start_date: String, // in format '2017-01-25' (YEAR-MONTH-DAY)
+	end_date: String, // in format '2017-01-25' (YEAR-MONTH-DAY)
+	page: Int,
+	per_page: Int
+}
 return:
 [
   {
     _id: String,
-    created_by: {
+    initiating_user: {
 			_id: String,
-			username: String
+			username: String,
+			netid: String,
+			first_name: String,
+			last_name: String
 		},
-		item: [
+		affected_user: {
+			_id: String,
+			username: String,
+			netid: String,
+			first_name: String,
+			last_name: String
+		}
+		items: [
 			{
 				_id: String,
 				name: String,
 			}
 		],
-  	type: String,
-    quantity: Integer,
+  	type: String ('EDIT', 'NEW', 'DELETED', 'FULFILLED'),
     time_stamp: String,
+		description: String
   }
 ]
 

@@ -96,8 +96,7 @@ class PaginationContainer extends Component {
 	      }
 	    }
 	    // response not empty:
-	    else {
-
+	    else {		  
 	      this.setState({
 	        items: this.state.processData(response),
 	        page: page

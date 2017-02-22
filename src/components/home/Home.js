@@ -51,6 +51,8 @@ class Home extends Component {
     .then(res => {
 
       if(res.data.token){
+        console.log(res.data.token);
+
         localStorage.setItem('user', JSON.stringify(res.data.user));
         localStorage.setItem('token', res.data.token);
         this.setState({
