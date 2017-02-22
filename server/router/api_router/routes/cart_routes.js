@@ -98,6 +98,8 @@ function checkout (userID, reasonString, next) {
   if(!reasonString) return next('Reason not provided in checkout');
   Cart.findOne({user: userID}, function(err, cart){
     if (err) return next(err);
+    // Check if there are any items in cart
+    if(cart.items.length == 0) return next("There are no items in the cart to checkout");
      // Create Request
      var request = new Request({
        user: userID,
