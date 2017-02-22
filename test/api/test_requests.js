@@ -80,7 +80,6 @@ describe('Requests API Test', function () {
         res.body.should.all.have.property("items");
         res.body.forEach(function(request){
           request.items.forEach(function(element){
-            element.item.should.have.property("location");
             element.item.should.have.property("name");
             [1000, 2000].should.include(element.quantity);
             ["1k resistor", "2k resistor"].should.include(element.item.name);
@@ -119,7 +118,6 @@ describe('Requests API Test', function () {
             res.body.should.all.have.property("items");
             res.body.forEach(function(request){
               request.items.forEach(function(element){
-                element.item.should.have.property("location");
                 element.item.should.have.property("name");
                 [1000, 2000].should.include(element.quantity);
                 ["1k resistor", "2k resistor"].should.include(element.item.name);
@@ -159,7 +157,6 @@ describe('Requests API Test', function () {
             res.body.should.all.have.property("items");
             res.body.forEach(function(request){
               request.items.forEach(function(element){
-                element.item.should.have.property("location");
                 element.item.should.have.property("name");
                 [1000, 2000].should.include(element.quantity);
                 ["1k resistor","2k resistor"].should.include(element.item.name);
@@ -201,7 +198,6 @@ describe('Requests API Test', function () {
             res.body.should.all.have.property("items");
             res.body.forEach(function(request){
               request.items.forEach(function(element){
-                element.item.should.have.property("location");
                 element.item.should.have.property("name");
                 [1000].should.include(element.quantity);
                 ["5k resistor"].should.include(element.item.name);

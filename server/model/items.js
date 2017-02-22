@@ -16,7 +16,6 @@ var ItemSchema = new mongoose.Schema({
     min: 0
   },
   model_number: String,
-  location: String,
   description: String,
   vendor_info: String,
   tags: [String],

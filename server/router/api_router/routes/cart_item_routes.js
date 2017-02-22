@@ -2,7 +2,7 @@
 var Cart = require("../../../model/carts");
 var CartHelper = require("./cart_routes");
 var QueryBuilder = require('../../../queries/querybuilder');
-var itemFieldsToReturn = 'name model_number location description';
+var itemFieldsToReturn = 'name model_number description';
 
 module.exports.postAPI = function (req, res){
   CartHelper.createCartIfNotExistent(req.user._id, res, function() {
