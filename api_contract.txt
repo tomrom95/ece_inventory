@@ -571,10 +571,10 @@ return {
 	role: String ('ADMIN', 'MANAGER', 'STANDARD')
 }
 
-PUT {
+PUT { // Only admins can put
 body {
-	username: String,
-	password: String,
+	first_name: String,
+	last_name: String,
 	role: String ('ADMIN', 'MANAGER', 'STANDARD')
 }
 return {
