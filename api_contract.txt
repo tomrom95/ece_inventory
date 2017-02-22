@@ -541,7 +541,7 @@ return:
 ]
 
 /api/user
-GET
+GET // Only admins can get
 return {
 	_id: String,
 	username: String,
@@ -549,10 +549,11 @@ return {
 }
 
 POST
-body:
+body: // Only admins can post
 {
 	username: String,
-	password: String
+	password: String,
+	role: String ('ADMIN', 'MANAGER', 'STANDARD')
 }
 return {
 	user: {
@@ -560,6 +561,14 @@ return {
 		username: String,
 		role: String ('ADMIN', 'MANAGER', 'STANDARD')
 	}
+}
+
+/api/user/:user_id
+GET
+return {
+	_id: String,
+	username: String,
+	role: String ('ADMIN', 'MANAGER', 'STANDARD')
 }
 
 /auth/login
