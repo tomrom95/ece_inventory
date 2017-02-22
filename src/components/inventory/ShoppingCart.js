@@ -32,7 +32,6 @@ class ShoppingCart extends Component {
 
 	makeCartItems() {
 		var items = this.state.items;
-		console.log(items);
 		var list = []; var i;
 		for (i=0; i<items.length; i++) {
 			list.push(

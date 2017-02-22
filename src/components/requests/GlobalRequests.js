@@ -53,15 +53,12 @@ class GlobalRequests extends Component {
 
   processData(responseData) {
     var requests = responseData.data;
-    //console.log("Requests are:");
-    //console.log(requests);
     var i;
     var items = [];
     for (i=0; i<requests.length; i++) {
       var obj = requests[i];
       var userDisplay = this.getUserDisplay(obj.user);
       var user_id = obj.user ? obj.user._id : "";
-      //console.log(obj);
       var item = {
         "User": userDisplay,
         "Item": obj.item.name,
@@ -85,29 +82,22 @@ class GlobalRequests extends Component {
     var items = [];
     for (i=0; i<requests.length; i++) {
       var cart = requests[i];
-      //console.log(cart);
+
       var userDisplay = this.getUserDisplay(cart.user);
       var user_id = cart.user ? cart.user._id : "";
       var created = cart.created;
       var reason = cart.reason;
       var status = cart.status;
-
-
-      for (j=0; j<cart.items.length; j++) {
-        var cartItem = cart.items[j];
-        var item = {
+      var item = {
           "User": userDisplay,
-          "Item": cartItem.item.name,
           "Time Stamp": formatDate(new Date(created).toString()),
-          "Quantity": cartItem.quantity,
+          "Items": cart.items,
           "Reason": reason,
           "Status": status,
-          "_id": cart._id + "-" + cartItem.item._id,
-          "user_id": user_id,
-          "item_id": cartItem.item._id
-        };
-        items.push(item);
+          "_id": cart._id,
+          "user_id": user_id
       }
+      items.push(item);
     }
     return items;
   }
