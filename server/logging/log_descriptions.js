@@ -62,24 +62,35 @@ module.exports.disbursedItem = function(request, items, disbursedFrom, disbursed
   return description;
 }
 
-module.exports.requestApprovedOrDenied = function(request, status, initiatingUser, affectedUser) {
-  var description = 'The user ' + getDisplayName(initiatingUser) + ' ';
-  description += (status === 'APPROVED') ? 'approved' : 'denied';
-  description += ' ' + getDisplayName(affectedUser) + '\'s request';
+var createChangesString = function(oldObject, changes) {
+  var changesString = "";
+  Object.keys(changes).forEach(function(key, index, keyArray) {
+    if (index !== 0 && keyArray.length !== 2) {
+      changesString += ',';
+    }
+    if (index === keyArray.length -1) {
+      changesString += ' and';
+    }
+    changesString += ' ' + key + ' from ' + oldObject[key] + ' to ' + changes[key];
+  });
+  return changesString;
+}
+
+module.exports.editedRequest = function(oldRequest, changes, initiatingUser, affectedUser) {
+  var description = 'The user ' + getDisplayName(initiatingUser) + ' edited ';
+  if (initiatingUser._id === affectedUser._id) {
+    description += 'his/her own request by changing';
+  } else {
+    description += getDisplayName(affectedUser) + '\'s request by changing';
+  }
+  description += createChangesString(oldRequest, changes);
+  description += '.';
   return description;
 }
 
 module.exports.editedItem = function(oldItem, changes, user) {
   var description = 'The item ' + oldItem.name + ' was edited by changing';
-  Object.keys(changes).forEach(function(key, index, keyArray) {
-    if (index !== 0 && keyArray.length !== 2) {
-      description += ',';
-    }
-    if (index === keyArray.length -1) {
-      description += ' and';
-    }
-    description += ' ' + key + ' from ' + oldItem[key] + ' to ' + changes[key];
-  });
+  description += createChangesString(oldItem, changes);
   description += '.';
   return description;
 }

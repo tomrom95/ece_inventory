@@ -3,12 +3,61 @@ var Log = require('../model/logs');
 var User = require('../model/users');
 var LogDescriptions = require('./log_descriptions');
 
+var getFilteredChanges = function(oldObject, changes) {
+  var filteredKeys = Object.keys(changes)
+    .filter(function(key) {
+      // stringify values so that you can do equality with things like arrays
+      return JSON.stringify(oldObject[key]) != JSON.stringify(changes[key]);
+    })
+  var filteredChanges = {};
+  filteredKeys.forEach(key => filteredChanges[key] = changes[key]);
+  if (Object.keys(filteredChanges).length === 0) {
+    return null;
+  }
+  return filteredChanges;
+}
+
 module.exports.logNewItem = function(item, user, next) {
   var newLog = new Log({
     initiating_user: user._id,
     items: [item._id],
     type: 'ITEM_CREATED',
     description: LogDescriptions.newItem(item)
+  });
+  newLog.save(function(error) {
+    if (error) return next(error);
+    next();
+  });
+}
+
+module.exports.logEditing = function(oldItem, changes, user, next) {
+  // First filter changes to remove fields that haven't actually changed
+  var filteredChanges = getFilteredChanges(oldItem, changes);
+  // If nothing actually changed, don't log
+  if (!filteredChanges) {
+    return next();
+  }
+  var newLog = new Log({
+    initiating_user: user._id,
+    items: [oldItem._id],
+    type: 'ITEM_EDITED',
+    description: LogDescriptions.editedItem(oldItem, filteredChanges, user)
+  });
+  newLog.save(function(error) {
+    if (error) return next(error);
+    next();
+  });
+}
+
+module.exports.logItemCustomFieldEdit = function(item, field, oldValue, newValue, user, next) {
+  if (oldValue === newValue) {
+    return next();
+  }
+  var newLog = new Log({
+    initiating_user: user._id,
+    items: [item._id],
+    type: 'ITEM_EDITED',
+    description: LogDescriptions.editedItemCustomField(item, field, oldValue, newValue)
   });
   newLog.save(function(error) {
     if (error) return next(error);
@@ -48,26 +97,6 @@ module.exports.logDisbursement = function(request, items, disbursedFrom, next) {
   });
 }
 
-module.exports.logRequestApprovedOrDenied = function(request, initiatingUser, status, next) {
-  User.findById(request.user, function(error, initiatingUser) {
-    if (error) return next(error);
-    var logType = (status === 'APPROVED') ? 'REQUEST_APPROVED' : 'REQUEST_DENIED';
-    var itemIds = request.items.map(i => i.item);
-    var newLog = new Log({
-      initiating_user: initiatingUser._id,
-      affected_user: request.user,
-      items: itemIds,
-      request: request._id,
-      type: logType,
-      description: LogDescriptions.requestApprovedOrDenied(request, status, initiatingUser, request.user)
-    });
-    newLog.save(function(error) {
-      if (error) return next(error);
-      next();
-    });
-  })
-}
-
 var logRequestCreationHelper = function(request, createdByUser, createdForUser, next) {
   var itemIds = request.items.map(i => i.item._id);
   var newLog = new Log({
@@ -98,44 +127,27 @@ module.exports.logRequestCreation = function(request, createdBy, createdFor, nex
   });
 }
 
-module.exports.logEditing = function(oldItem, changes, user, next) {
-  // First filter changes to remove fields that haven't actually changed
-  var filteredKeys = Object.keys(changes)
-    .filter(function(key) {
-      // stringify values so that you can do equality with things like arrays
-      return JSON.stringify(oldItem[key]) != JSON.stringify(changes[key]);
-    })
-  var filteredChanges = {};
-  filteredKeys.forEach(key => filteredChanges[key] = changes[key]);
-
+module.exports.logRequestEdit = function(oldRequest, changes, initiatingUser, next) {
+  var filteredChanges = getFilteredChanges(oldRequest, changes);
   // If nothing actually changed, don't log
-  if (Object.keys(filteredChanges).length === 0) {
+  if (!filteredChanges) {
     return next();
   }
-  var newLog = new Log({
-    initiating_user: user._id,
-    items: [oldItem._id],
-    type: 'ITEM_EDITED',
-    description: LogDescriptions.editedItem(oldItem, filteredChanges, user)
-  });
-  newLog.save(function(error) {
-    if (error) return next(error);
-    next();
-  });
-}
 
-module.exports.logItemCustomFieldEdit = function(item, field, oldValue, newValue, user, next) {
-  if (oldValue === newValue) {
-    return next();
-  }
-  var newLog = new Log({
-    initiating_user: user._id,
-    items: [item._id],
-    type: 'ITEM_EDITED',
-    description: LogDescriptions.editedItemCustomField(item, field, oldValue, newValue)
-  });
-  newLog.save(function(error) {
+  User.findById(oldRequest.user, function(error, affectedUser) {
     if (error) return next(error);
-    next();
-  });
+    var itemIds = oldRequest.items.map(i => i.item);
+    var newLog = new Log({
+      initiating_user: initiatingUser._id,
+      affected_user: affectedUser._id,
+      items: itemIds,
+      request: oldRequest._id,
+      type: 'REQUEST_EDITED',
+      description: LogDescriptions.editedRequest(oldRequest, filteredChanges, initiatingUser, affectedUser)
+    });
+    newLog.save(function(error) {
+      if (error) return next(error);
+      next();
+    });
+  })
 }

@@ -128,53 +128,50 @@ module.exports.putAPI = function(req,res){
     if(!request) return res.send({error: 'Request does not exist'});
     else if (request.status !== 'FULFILLED' && req.body.status === 'FULFILLED') {
       return res.send({error: 'You cannot fulfill a request through this endpoint. Use PATCH'});
+    } else if (req.user.role === 'STANDARD' && req.user._id != request.user) {
+      return res.send({error: "You are not authorized to modify another user's request"});
     }
     else{
       var obj;
-      var logStatusChange = (req.body.status)
-        && (['APPROVED', 'DENIED']).includes(req.body.status)
-        && req.body.status !== request.status;
-      if(req.user.role === 'STANDARD'){
-        // if the current user's id is not equal to the user id in the request, or if the current user id is not equal
-        // to the user id in the PUT body
-        if(req.user._id != request.user || req.user._id != req.body.user){
-          // Standard user cannot modify the user_id
-          return res.send({error: "You are not authorized to modify another user's request"});
-        } else {
-          // Standard user must keep its id in its own request.
-          obj = Object.assign(request, req.body);
-          obj.user = req.user._id;
-          saveRequest(obj, res, req.user, logStatusChange);
+      var fieldsToEdit = new Set();
+      if (req.user._id == request.user) {
+        fieldsToEdit.add('reason')
+      }
+      if (req.user.role === 'MANAGER') {
+        fieldsToEdit.add('status')
+        fieldsToEdit.add('reviewer_comment');
+      }
+      if (req.user.role === 'ADMIN') {
+        ['reason', 'status', 'user', 'items', 'created', 'requestor_comment', 'reviewer_comment']
+          .forEach(field => fieldsToEdit.add(field));
+      }
+      // admins and managers can only edit reason if it's their own
+      var changes = {};
+      Array.from(fieldsToEdit).forEach(function(field) {
+        if (req.body.hasOwnProperty(field)) {
+          changes[field] = req.body[field];
         }
+      });
+      if (changes.user) {
+        User.findById(changes.user, function(error, user) {
+          if (error || !user) return res.send({error: 'There is no such user'});
+          saveRequest(request, changes, res, req.user);
+        });
       } else {
-        // Admin can take in username
-        obj = Object.assign(request, req.body);
-        if(req.body.user){
-          User.findById(req.body.user, function(error, user) {
-            if (error) return res.send({error: error});
-            if (!user) return res.send({error: "There is no such user"});
-            obj.user = req.body.user;
-            saveRequest(obj, res, req.user, logStatusChange);
-          });
-        } else {
-          saveRequest(obj, res, req.user, logStatusChange);
-        }
+        saveRequest(request, changes, res, req.user);
       }
     }
   });
 };
 
-function saveRequest(obj, res, user, logStatusChange){
+function saveRequest(oldRequest, changes, res, user){
+  var obj = Object.assign(oldRequest, changes);
   obj.save((err,request)=>{
     if(err) return res.send({error:err});
-    if (logStatusChange) {
-      LogHelpers.logRequestApprovedOrDenied(request, user, request.status, function(error) {
-        if(error) return res.send({error: error});
-        return res.json(request);
-      });
-    } else {
+    LogHelpers.logRequestEdit(oldRequest, changes, user, function(error) {
+      if(error) return res.send({error: error});
       return res.json(request);
-    }
+    });
   });
 }
 
