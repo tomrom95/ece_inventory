@@ -77,11 +77,9 @@ describe('Requests API Test', function () {
         res.body.should.be.a('array');
         res.body.length.should.be.eql(5);
         res.body.should.all.have.property("user");
-        res.body.should.all.have.property("quantity");
         res.body.should.all.have.property("items");
         res.body.forEach(function(request){
           request.items.forEach(function(element){
-            element.item.should.have.property("location");
             element.item.should.have.property("name");
             [1000, 2000].should.include(element.quantity);
             ["1k resistor", "2k resistor"].should.include(element.item.name);
@@ -120,7 +118,6 @@ describe('Requests API Test', function () {
             res.body.should.all.have.property("items");
             res.body.forEach(function(request){
               request.items.forEach(function(element){
-                element.item.should.have.property("location");
                 element.item.should.have.property("name");
                 [1000, 2000].should.include(element.quantity);
                 ["1k resistor", "2k resistor"].should.include(element.item.name);
@@ -157,11 +154,9 @@ describe('Requests API Test', function () {
             res.body.should.be.a('array');
             res.body.length.should.be.eql(6);
             res.body.should.all.have.property("user");
-            res.body.should.all.have.property("quantity");
             res.body.should.all.have.property("items");
             res.body.forEach(function(request){
               request.items.forEach(function(element){
-                element.item.should.have.property("location");
                 element.item.should.have.property("name");
                 [1000, 2000].should.include(element.quantity);
                 ["1k resistor","2k resistor"].should.include(element.item.name);
@@ -200,11 +195,9 @@ describe('Requests API Test', function () {
             res.body.should.be.a('array');
             res.body.length.should.be.eql(1);
             res.body.should.all.have.property("user");
-            res.body.should.all.have.property("quantity");
             res.body.should.all.have.property("items");
             res.body.forEach(function(request){
               request.items.forEach(function(element){
-                element.item.should.have.property("location");
                 element.item.should.have.property("name");
                 [1000].should.include(element.quantity);
                 ["5k resistor"].should.include(element.item.name);
@@ -238,7 +231,6 @@ describe('Requests API Test', function () {
         res.should.have.status(200);
         res.body.should.be.a('array');
         res.body.length.should.be.eql(3);
-        res.body.should.all.have.property("quantity", 2000);
         res.body.should.all.have.property("reviewer_comment", "Bye");
         res.body.should.all.have.property("requestor_comment", "Hello");
         done();
@@ -266,7 +258,6 @@ describe('Requests API Test', function () {
         res.body.should.be.a('array');
         res.body.length.should.be.eql(1);
         res.body.should.all.have.property("requestor_comment", "Urgent");
-        res.body.should.all.have.property("quantity", 2000);
         res.body.should.all.have.property("reviewer_comment", "Fine");
         res.body.should.all.have.property("status", "PENDING");
         done();
@@ -295,7 +286,6 @@ describe('Requests API Test', function () {
         res.body.length.should.be.eql(2);
         res.body.should.all.have.property("reason", "greed");
         res.body.should.all.have.property("requestor_comment", "Hello");
-        res.body.should.all.have.property("quantity", 2000);
         res.body.should.all.have.property("reviewer_comment", "Bye");
         done();
       });
@@ -303,31 +293,6 @@ describe('Requests API Test', function () {
     it('GETs NO requests by non-existent reason (case-insensitive)', (done) => {
       chai.request(server)
       .get('/api/requests?reason=wi3u4rhfkwes')
-      .set('Authorization', token)
-      .end((err, res) => {
-        should.not.exist(err);
-        res.should.have.status(200);
-        res.body.should.be.a('array');
-        res.body.length.should.be.eql(0);
-        done();
-      });
-    });
-    it('GETs requests by quantity', (done) => {
-      chai.request(server)
-      .get('/api/requests?quantity=2000')
-      .set('Authorization', token)
-      .end((err, res) => {
-        should.not.exist(err);
-        res.should.have.status(200);
-        res.body.should.be.a('array');
-        res.body.length.should.be.eql(5);
-        res.body.should.all.have.property("quantity", 2000);
-        done();
-      });
-    });
-    it('GETs requests by non-existent quantity', (done) => {
-      chai.request(server)
-      .get('/api/requests?quantity=123098')
       .set('Authorization', token)
       .end((err, res) => {
         should.not.exist(err);
@@ -505,7 +470,6 @@ describe('Requests API Test', function () {
             res.body.should.be.a('object');
             res.body.should.have.property("reviewer_comment", "NONADMIN");
             res.body.should.have.property("created", "2019-01-29T00:00:00.000Z");
-            res.body.should.have.property("quantity", 2000);
             res.body._id.should.be.eql(request._id.toString());
             res.body.items[0].item._id.should.be.eql(item2._id.toString());
             done();
@@ -755,7 +719,6 @@ describe('Requests API Test', function () {
             res.should.have.status(200);
             res.body.should.be.a('object');
             res.body.should.have.property("status", "PENDING");
-            res.body.should.have.property("quantity", 2000);
             res.body.should.have.property("user", user._id.toString());
             res.body.items[0].item._id.should.be.eql(item2._id.toString());
             res.body.items[0].item.name.should.be.eql("2k resistor");

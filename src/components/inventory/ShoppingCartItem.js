@@ -8,7 +8,7 @@ class ShoppingCartItem extends Component {
 		this.state = {
 			quantity: props.quantity,
 			itemName: props.itemData.name,
-			modelNumber: props.itemData.modelNumber,
+			modelNumber: props.itemData.model_number,
 			id: props.itemData._id
 		}
 	}
@@ -17,7 +17,7 @@ class ShoppingCartItem extends Component {
 		this.setState({
 			quantity: newProps.quantity,
 			itemName: newProps.itemData.name,
-			modelNumber: newProps.itemData.modelNumber,
+			modelNumber: newProps.itemData.model_number,
 			id: newProps.itemData._id
 		});
 	}

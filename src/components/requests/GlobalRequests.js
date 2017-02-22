@@ -53,15 +53,15 @@ class GlobalRequests extends Component {
 
   processData(responseData) {
     var requests = responseData.data;
-    console.log("Requests are:");
-    console.log(requests);
+    //console.log("Requests are:");
+    //console.log(requests);
     var i;
     var items = [];
     for (i=0; i<requests.length; i++) {
       var obj = requests[i];
       var userDisplay = this.getUserDisplay(obj.user);
       var user_id = obj.user ? obj.user._id : "";
-      console.log(obj);
+      //console.log(obj);
       var item = {
         "User": userDisplay,
         "Item": obj.item.name,
@@ -85,7 +85,7 @@ class GlobalRequests extends Component {
     var items = [];
     for (i=0; i<requests.length; i++) {
       var cart = requests[i];
-      console.log(cart);
+      //console.log(cart);
       var userDisplay = this.getUserDisplay(cart.user);
       var user_id = cart.user ? cart.user._id : "";
       var created = cart.created;

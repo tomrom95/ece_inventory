@@ -4,14 +4,14 @@ var Item = require('../../../model/items');
 var User = require('../../../model/users');
 var Cart = require('../../../model/carts');
 var mongoose = require('mongoose');
-var QueryBuilder = require('../../../queries/querybuilder')
+var QueryBuilder = require('../../../queries/querybuilder');
+var LogHelpers = require('../../../logging/log_helpers.js');
 // fields within the item to return
-var itemFieldsToReturn = 'name model_number location description';
+var itemFieldsToReturn = 'name model_number description';
 var userFieldsToReturn = 'username netid first_name last_name';
 module.exports.getAPI = function (req, res) {
-  // searchable by user, item_id, reason, created, quantity, status
+  // searchable by user, item_id, reason, created, status
   var reason = req.query.reason;
-  var quantity = req.query.quantity;
   var status = req.query.status;
   var requestor_comment = req.query.requestor_comment;
   var reviewer_comment = req.query.reviewer_comment;
@@ -27,7 +27,6 @@ module.exports.getAPI = function (req, res) {
   .searchInArrayForObjectId('items', 'item', req.query.item_id)
   .searchCaseInsensitive('reason', req.query.reason)
   .searchForDate('created', req.query.created)
-  .searchExact('quantity', req.query.quantity)
   .searchExact('status', req.query.status)
   .searchCaseInsensitive('requestor_comment', req.query.requestor_comment)
   .searchCaseInsensitive('reviewer_comment', req.query.reviewer_comment)
@@ -97,7 +96,6 @@ function processAndPost(request, req, res){
   }
   request.reason = req.body.reason;
   if(req.body.created) request.created = new Date(req.body.created);
-  request.quantity = req.body.quantity;
   request.status = req.body.status;
   request.requestor_comment = req.body.requestor_comment;
   request.reviewer_comment = req.body.reviewer_comment;
@@ -189,7 +187,9 @@ function disburse(requestID, next) {
   Request.findById(requestID, function(err, request) {
     if (err) return next(err);
     if (!request) return next('Request does not exist');
-
+    if (request.status === 'FULFILLED') {
+      return next('Request has already been disbursed to the user');
+    }
     var checkQuantityPromises = [];
     for (var i = 0; i < request.items.length; i++){
       // Pass down index i into the closure for async call
@@ -255,10 +255,14 @@ module.exports.patchAPI = function(req, res) {
     disburse(req.params.request_id, function(err, request, cart) {
       if (err) return res.send({error: err});
       Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
-        res.json({
-          message: 'Disbursement successful',
-          request: request,
-          items: cart
+        if (err) res.send({error: err});
+        LogHelpers.logDisbursement(request, cart, req.user, function(err) {
+          if (err) return res.send({error: err});
+          return res.json({
+            message: 'Disbursement successful',
+            request: request,
+            items: cart
+          });
         });
       })
     });

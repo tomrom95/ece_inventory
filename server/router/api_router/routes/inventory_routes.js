@@ -44,7 +44,6 @@ module.exports.getAPI = function (req, res) {
     .searchBoolean('is_deleted', false)
     .searchInArray('tags', req.query.required_tags, req.query.excluded_tags)
     .searchCaseInsensitive('name', req.query.name)
-    .searchCaseInsensitive('location', req.query.location)
     .searchCaseInsensitive('vendor_info', req.query.vendor_info)
     .searchCaseInsensitive('model_number', req.query.model_number)
 
@@ -111,7 +110,6 @@ module.exports.postAPI = function(req, res){
   item.name = req.body.name;
   item.quantity = req.body.quantity;
   item.model_number = req.body.model_number;
-  item.location = req.body.location;
   item.vendor_info = req.body.vendor_info;
   item.description = req.body.description;
   item.tags = trimTags(req.body.tags);
@@ -147,12 +145,15 @@ module.exports.putAPI = function(req, res){
     if(!old_item || old_item.is_deleted)
       return res.send({error: 'Item does not exist or has been deleted'});
     else{
-      var old_quantity = old_item.quantity;
+      var oldItemCopy = new Item(old_item);
       var obj = Object.assign(old_item, req.body)
       obj.tags = trimTags(req.body.tags);
       obj.save((err,item) => {
         if(err) return res.send({error: err});
-        res.json(item);
+        LogHelpers.logEditing(oldItemCopy, req.body, req.user, function(err) {
+          if(err) return res.send({error: err});
+          res.json(item);
+        });
       });
     }
   });

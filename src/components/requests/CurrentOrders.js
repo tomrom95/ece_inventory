@@ -87,7 +87,7 @@ class CurrentOrders extends Component {
     var items = [];
     for (i=0; i<requests.length; i++) {
       var cart = requests[i];
-      console.log(cart);
+      //console.log(cart);
       var userDisplay = this.getUserDisplay(cart.user);
       var user_id = cart.user ? cart.user._id : "";
       var created = cart.created;

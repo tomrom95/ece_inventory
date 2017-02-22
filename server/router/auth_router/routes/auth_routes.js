@@ -40,6 +40,7 @@ function loginWithOAuth(oauthToken, next) {
           netid: user.netid,
           first_name: user.first_name,
           last_name: user.last_name,
+          apikey: user.apikey,
           is_admin: user.role !== 'STANDARD', // keep until role migration complete
           role: user.role
         }
@@ -61,6 +62,7 @@ function loginWithOAuth(oauthToken, next) {
             netid: user.netid,
             first_name: user.first_name,
             last_name: user.last_name,
+            apikey: user.apikey,
             is_admin: user.role !== 'STANDARD', // keep until role migration complete
             role: user.role
           }
@@ -90,6 +92,7 @@ function loginWithUsername(username, password, next) {
             last_name: user.last_name,
             username: user.username,
             role: user.role,
+            apikey: user.apikey,
             is_admin: user.role !== 'STANDARD'
           });
         }
@@ -113,9 +116,25 @@ function loginHelper(token, username, password, next) {
 module.exports.login = function(req, res) {
   loginHelper(req.body.token, req.body.username, req.body.password, function(error, token, user) {
     if (error) return res.send({error: error});
-    return res.json({
-      token: token,
-      user: user
-    });
+    if (!user.apikey) {
+      User.findByIdAndUpdate(
+        user._id,
+        {$set: {apikey: helpers.createAPIKey()}},
+        {new: true},
+        function(error, updatedUser) {
+          if (error) return res.send({error: error});
+          user.apikey = updatedUser.apikey;
+          return res.json({
+            token: token,
+            user: user
+          });
+        }
+      );
+    } else {
+      return res.json({
+        token: token,
+        user: user
+      });
+    }
   });
 }

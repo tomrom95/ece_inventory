@@ -32,6 +32,7 @@ class ShoppingCart extends Component {
 
 	makeCartItems() {
 		var items = this.state.items;
+		console.log(items);
 		var list = []; var i;
 		for (i=0; i<items.length; i++) {
 			list.push(
@@ -58,7 +59,7 @@ class ShoppingCart extends Component {
 			action: "CHECKOUT",
 			reason: reason
 		}
-		
+
 		this.props.api.patch('api/cart/', params)
 		.then(function (response) {
 			if (response.data.error) {
