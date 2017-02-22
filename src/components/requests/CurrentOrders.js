@@ -34,51 +34,30 @@ class CurrentOrders extends Component {
       return user.username;
     }
  }
-
+ 
   processData(responseData) {
     var requests = responseData.data;
-    var i;
+    var i; var j;
     var items = [];
-    var item;
     for (i=0; i<requests.length; i++) {
-      var obj = requests[i];
-      var userDisplay = this.getUserDisplay(obj.user);
-      var user_id = obj.user ? obj.user._id : "";
-      if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER"){
-        if(obj.user._id == JSON.parse(localStorage.getItem('user'))._id){
-          item = {
-            "User": userDisplay,
-            "Item": obj.item.name,
-            "Time Stamp": formatDate(new Date(obj.created).toString()),
-            "Quantity": obj.quantity,
-            "Reason": obj.reason,
-            "Status": obj.status,
-            "Response": obj.reviewer_comment,
-            "_id": obj._id,
-            "user_id": user_id,
-            "item_id": obj.item._id,
-          };
-          items.push(item);
-        }
-      }
-      else{
-        item = {
+      var cart = requests[i];
+
+      var userDisplay = this.getUserDisplay(cart.user);
+      var user_id = cart.user ? cart.user._id : "";
+      var created = cart.created;
+      var reason = cart.reason;
+      var status = cart.status;
+      var item = {
           "User": userDisplay,
-          "Item": obj.item.name,
-          "Time Stamp": formatDate(new Date(obj.created).toString()),
-          "Quantity": obj.quantity,
-          "Reason": obj.reason,
-          "Status": obj.status,
-          "Response": obj.reviewer_comment,
-          "_id": obj._id,
-          "user_id": user_id,
-          "item_id": obj.item._id,
-        };
-        items.push(item);
+          "Time Stamp": formatDate(new Date(created).toString()),
+          "Items": cart.items,
+          "Reason": reason,
+          "Status": status,
+          "_id": cart._id,
+          "user_id": user_id
       }
-
+      items.push(item);
     }
-
     return items;
   }
 
@@ -93,7 +72,7 @@ class CurrentOrders extends Component {
     return (
           <PaginationContainer
           url={url}
-          processData={data=>this.processData(data)}
+          processData={data => this.processData(data)}
           renderComponent={table}
           showFilterBox={this.props.showFilterBox}
           showStatusFilterBox={this.props.showStatusFilterBox}

@@ -36,7 +36,7 @@ class AddToCartButton extends Component {
 					data-target={"#requestPopup-"+this.props.itemId}>
 						<div>
 						<span className="fa fa-shopping-cart add-to-cart-icon"></span>
-						<span >+</span>
+						<span>+</span>
 						</div>
 
 				</button>
