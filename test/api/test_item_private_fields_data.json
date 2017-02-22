@@ -27,7 +27,6 @@
   ],
   "items": [
     {
-      "location": "CIEMAS",
       "quantity": 1000,
       "name": "1k resistor",
       "has_instance_objects": true,
@@ -57,7 +56,6 @@
       ]
     },
     {
-      "location": "CIEMAS",
       "quantity": 1000,
       "name": "2k resistor",
       "has_instance_objects": true,
@@ -87,7 +85,6 @@
       ]
     },
     {
-      "location": "CIEMAS",
       "quantity": 1000,
       "name": "5k resistor",
       "has_instance_objects": true,
@@ -109,7 +106,6 @@
       ]
     },
     {
-      "location": "CIEMAS",
       "quantity": 1000,
       "name": "10k resistor",
       "has_instance_objects": true,

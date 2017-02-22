@@ -114,7 +114,6 @@ describe('Logging API Test', function () {
           name: '1k thingy',
           quantity: 2000,
           tags: ["component", "electric","cheap", "thingy"],
-          location: 'CIEMAS'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -403,7 +402,7 @@ describe('Logging API Test', function () {
         done();
       });
     })
-    it('returns all logs with no filters and no pagination', (done) => {
+    it('returns all logs with no filters', (done) => {
       chai.request(server)
         .get('/api/logs')
         .set('Authorization', adminToken)
@@ -434,7 +433,7 @@ describe('Logging API Test', function () {
     });
   });
 
-  describe('GET /logs filtering and pagination', () =>{
+  describe('GET /logs filtering', () =>{
     beforeEach((done) => {
       var testLogData = [
         {
@@ -643,85 +642,6 @@ describe('Logging API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(0);
-          done();
-        });
-    });
-
-    it('paginates and returns first page', (done) => {
-      chai.request(server)
-        .get('/api/logs?page=1&per_page=3')
-        .set('Authorization', adminToken)
-        .end((err, res) => {
-          should.not.exist(err);
-          res.should.have.status(200);
-          res.body.should.be.a('array');
-          res.body.length.should.be.eql(3);
-          var queryDate = new Date('2017-02-12');
-          res.body.forEach(function(log) {
-            log.time_stamp.should.satisfy(function(timeStamp) {
-              var logDate = new Date(timeStamp);
-              return logDate.getTime() >= queryDate.getTime();
-            });
-          });
-          done();
-        });
-    });
-
-    it('paginates and returns second page with less logs than per page', (done) => {
-      chai.request(server)
-        .get('/api/logs?page=2&per_page=3')
-        .set('Authorization', adminToken)
-        .end((err, res) => {
-          should.not.exist(err);
-          res.should.have.status(200);
-          res.body.should.be.a('array');
-          res.body.length.should.be.eql(2);
-          var startDate = new Date('2017-02-10');
-          var endDate = new Date('2017-02-11')
-          res.body.forEach(function(log) {
-            log.time_stamp.should.satisfy(function(timeStamp) {
-              var logDate = new Date(timeStamp);
-              return logDate.getTime() >= startDate.getTime()
-                && logDate.getTime() <= endDate.getTime()
-            });
-          });
-          done();
-        });
-    });
-
-    it('paginates and returns empty page when no logs left', (done) => {
-      chai.request(server)
-        .get('/api/logs?page=3&per_page=3')
-        .set('Authorization', adminToken)
-        .end((err, res) => {
-          should.not.exist(err);
-          res.should.have.status(200);
-          res.body.should.be.a('array');
-          should.not.exist(res.body.error);
-          res.body.length.should.be.eql(0);
-          done();
-        });
-    });
-
-    it('paginates and returns all logs with high per page', (done) => {
-      chai.request(server)
-        .get('/api/logs?page=1&per_page=10000')
-        .set('Authorization', adminToken)
-        .end((err, res) => {
-          should.not.exist(err);
-          res.should.have.status(200);
-          res.body.should.be.a('array');
-          res.body.length.should.be.eql(5);
-          done();
-        });
-    });
-    it('returns error with invalid page or per page', (done) => {
-      chai.request(server)
-        .get('/api/logs?page=-1&per_page=10000')
-        .set('Authorization', adminToken)
-        .end((err, res) => {
-          should.not.exist(err);
-          should.exist(res.body.error);
           done();
         });
     });

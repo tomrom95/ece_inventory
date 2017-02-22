@@ -68,7 +68,6 @@ describe('Inventory API Test', function () {
         res.body.length.should.be.eql(1);
         res.body.should.all.have.property("name","Oscilloscope");
         res.body.should.all.have.property("model_number","123");
-        res.body.should.all.have.property("location","HUDSON");
       done();
     });
     });
@@ -95,38 +94,12 @@ describe('Inventory API Test', function () {
           res.body.length.should.be.eql(1);
           res.body.should.all.have.property("name","Oscilloscope");
           res.body.should.all.have.property("model_number","123");
-          res.body.should.all.have.property("location","HUDSON");
         done();
       });
       });
       it('GETs all inventory with null model number', (done)=>{
         chai.request(server)
         .get('/api/inventory?model_number=')
-        .set('Authorization', token)
-        .end((err, res) => {
-          should.not.exist(err);
-          res.should.have.status(200);
-          res.body.should.be.a('array');
-          res.body.length.should.be.eql(12);
-        done();
-      });
-      });
-      it('GETs items with location', (done)=>{
-        chai.request(server)
-        .get('/api/inventory?location=HuDSoN')
-        .set('Authorization', token)
-        .end((err, res) => {
-          should.not.exist(err);
-          res.should.have.status(200);
-          res.body.should.be.a('array');
-          res.body.length.should.be.eql(3);
-          res.body.should.all.have.property("location","HUDSON");
-        done();
-      });
-      });
-      it('GETs all inventory with null location', (done)=>{
-        chai.request(server)
-        .get('/api/inventory?location=')
         .set('Authorization', token)
         .end((err, res) => {
           should.not.exist(err);
@@ -409,7 +382,6 @@ describe('Inventory API Test', function () {
   describe('GET /inventory/:item_id', ()=>{
     it('GETs inventory item by item id', (done) => {
       let item = new Item({
-        "location": "PERKINS",
         "quantity": 1000,
         "name": "Laptop",
         "has_instance_objects": true,
@@ -424,7 +396,6 @@ describe('Inventory API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.location.should.be.eql("PERKINS");
           res.body.name.should.be.eql("Laptop");
           res.body.quantity.should.be.eql(1000);
           res.body._id.should.be.eql(item.id);
@@ -436,7 +407,6 @@ describe('Inventory API Test', function () {
   describe('PUT /inventory/:item_id', ()=>{
     it('PUTs inventory item by item id with quantity change', (done) => {
       let item = new Item({
-        "location": "PERKINS",
         "quantity": 1000,
         "name": "Laptop",
         "has_instance_objects": true,
@@ -449,7 +419,6 @@ describe('Inventory API Test', function () {
         .set('Authorization', token)
         .send({
           'name': 'Coaxial',
-          'location': 'HUDSON',
           'vendor_info': 'Apple',
           'quantity': 3000
         })
@@ -457,7 +426,6 @@ describe('Inventory API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.location.should.be.eql("HUDSON");
           res.body.vendor_info.should.be.eql("Apple");
           res.body.name.should.be.eql("Coaxial");
           res.body.quantity.should.be.eql(3000);
@@ -468,7 +436,6 @@ describe('Inventory API Test', function () {
     });
     it('PUTs inventory item by item id without quantity change', (done) => {
       let item = new Item({
-        "location": "PERKINS",
         "quantity": 1000,
         "name": "Laptop",
         "has_instance_objects": true,
@@ -481,14 +448,12 @@ describe('Inventory API Test', function () {
         .set('Authorization', token)
         .send({
           'name': 'Coaxial',
-          'location': 'HUDSON',
           'vendor_info': 'Apple',
         })
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.location.should.be.eql("HUDSON");
           res.body.vendor_info.should.be.eql("Apple");
           res.body.name.should.be.eql("Coaxial");
           res.body.quantity.should.be.eql(1000);
@@ -538,7 +503,6 @@ describe('Inventory API Test', function () {
 
     it('disallows is_deleted from being updated', (done) => {
       let item = new Item({
-        "location": "PERKINS",
         "quantity": 1000,
         "name": "Laptop",
         "has_instance_objects": true,
@@ -570,7 +534,6 @@ describe('Inventory API Test', function () {
         name: "TEST_ITEM",
         quantity: 100,
         model_number:"1234",
-        location:"Perkins",
         tags:["One"],
         vendor_info: "Microsoft",
         has_instance_objects:false
@@ -700,7 +663,6 @@ describe('Inventory API Test', function () {
   describe('DELETE /inventory/:item_id', ()=>{
     it('DELETE inventory item by item id', (done) => {
       let item = new Item({
-        "location": "PERKINS",
         "quantity": 1000,
         "name": "Laptop",
         "has_instance_objects": true,
@@ -721,7 +683,6 @@ describe('Inventory API Test', function () {
 
     it('DELETE inventory item by item id, then GET should succeed for admin', (done) => {
       let item = new Item({
-        "location": "PERKINS",
         "quantity": 1000,
         "name": "Laptop",
         "has_instance_objects": true,
@@ -749,7 +710,6 @@ describe('Inventory API Test', function () {
 
     it('DELETE inventory item by item id, then GET should succeed for manager', (done) => {
       let item = new Item({
-        "location": "PERKINS",
         "quantity": 1000,
         "name": "Laptop",
         "has_instance_objects": true,
@@ -777,7 +737,6 @@ describe('Inventory API Test', function () {
 
     it('DELETE inventory item by item id, then GET should fail for a standard user', (done) => {
       let item = new Item({
-        "location": "PERKINS",
         "quantity": 1000,
         "name": "Laptop",
         "has_instance_objects": true,
@@ -802,7 +761,6 @@ describe('Inventory API Test', function () {
 
     it('DELETE inventory item by item id, then PUT should fail', (done) => {
       let item = new Item({
-        "location": "PERKINS",
         "quantity": 1000,
         "name": "Laptop",
         "has_instance_objects": true,
