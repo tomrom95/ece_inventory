@@ -311,6 +311,7 @@ return:
 
 PATCH
 body: {
+	user: String // user id
 	action: "CHECKOUT"
 	reason: String
 }

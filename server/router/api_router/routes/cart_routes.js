@@ -1,5 +1,6 @@
 'use strict';
 var Cart = require("../../../model/carts");
+var User = require("../../../model/users");
 var Request = require("../../../model/requests");
 var QueryBuilder = require('../../../queries/querybuilder');
 var itemFieldsToReturn = 'name model_number description';
@@ -82,7 +83,8 @@ module.exports.putAPI = function(req,res){
 
 module.exports.patchAPI = function(req, res){
   if (req.body.action == 'CHECKOUT') {
-    checkout(req.user._id, req.body.reason, function(err, request){
+
+    checkout(req.user, req.body.user, req.body.reason, function(err, request){
       if (err) return res.send({error: err});
       // populate cart items in cart object
         res.json({
@@ -94,38 +96,52 @@ module.exports.patchAPI = function(req, res){
     return res.send({error: "Action not recognized"});
   }
 }
-function checkout (userID, reasonString, next) {
+function checkout (initiatingUser, enteredUserID, reasonString, next) {
   if(!reasonString) return next('Reason not provided in checkout');
-  Cart.findOne({user: userID}, function(err, cart){
-    if (err) return next(err);
-    // Check if there are any items in cart
-    if(cart.items.length == 0) return next("There are no items in the cart to checkout");
-     // Create Request
-     var request = new Request({
-       user: userID,
-       reason: reasonString,
-       status: 'PENDING'
-     });
-     // Copy array of items
-     request.items = [];
-     cart.items.forEach(function(item){
-       var itemCopy = Object.assign(item, {_id: undefined}); // ID field not copied
-       request.items.push(itemCopy);
-     })
-     request.save(function(err, request){
-       if (err) return next(err);
-       // populate cart items in requests object
-       Cart.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
-         // Delete cart, and put in a new one
-         Cart.remove({user: userID}, function(err){
-           if(err) return next(err);
-           var newCart = new Cart({user: userID});
-           newCart.save(function(err){
+  var requestingUserID =  (initiatingUser.role === 'ADMIN' &&
+                          enteredUserID &&
+                          initiatingUser._id != enteredUserID) ?
+                          // If you are admin and the user field exists and is not you
+                          enteredUserID :
+                          // Everyone else uses their own user id
+                          initiatingUser._id;
+  User.findById(requestingUserID, function(err, user){
+    // Find if it exists
+    if (err||!user) return next("User does not exist");
+    // Admin may assign the request to the requestingUserID
+    Cart.findOne({user: initiatingUser._id}, function(err, cart){
+      if (err) return next(err);
+      // Check if there are any items in cart
+      if(cart.items.length == 0) return next("There are no items in the cart to checkout");
+       // Create Request
+       var request = new Request({
+         user: requestingUserID,
+         reason: reasonString,
+         status: 'PENDING'
+       });
+       // Copy array of items
+       request.items = [];
+       cart.items.forEach(function(item){
+         var itemCopy = Object.assign(item, {_id: undefined}); // ID field not copied
+         request.items.push(itemCopy);
+       })
+       request.save(function(err, request){
+         if (err) return next(err);
+         // populate cart items in requests object
+         Cart.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
+           // Delete cart, and put in a new one
+           Cart.remove({user: initiatingUser._id}, function(err){
              if(err) return next(err);
-             next(null, request);
+             var newCart = new Cart({user: initiatingUser._id});
+             newCart.save(function(err){
+               if(err) return next(err);
+               next(null, request);
+             })
            })
          })
        })
-     })
+    })
   })
+
+
 }
