@@ -1,0 +1,809 @@
+{
+	"variables": [],
+	"info": {
+		"name": "ECE458",
+		"_postman_id": "596792fe-c3dd-853a-6b0c-41da5d14732d",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth/Login",
+			"description": "",
+			"item": [
+				{
+					"name": "/auth/login",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/auth/login",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "password",
+									"value": "ece458duke",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/users",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/users",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "password",
+									"value": "ece458duke",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": "role: String ('ADMIN', 'MANAGER', 'STANDARD')"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/users",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"HelloMoto1\",\n\t\"password\": \"motorola\",\n\t\"role\": \"ADMIN\"\n}"
+						},
+						"description": "role: String ('ADMIN', 'MANAGER', 'STANDARD')"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/users/:user_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/users/58adbdd656b2040a44fcba6a",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"HelloMoto1\",\n\t\"password\": \"motorola\",\n\t\"role\": \"ADMIN\"\n}"
+						},
+						"description": "role: String ('ADMIN', 'MANAGER', 'STANDARD')"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/users/:user_id",
+					"request": {
+						"url": "https://colab-sbx-115.oit.duke.edu:3001/api/users/58ac99867cc99a16bb62d643",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiZ2V0dGVycyI6e30sIndhc1BvcHVsYXRlZCI6ZmFsc2UsImFjdGl2ZVBhdGhzIjp7InBhdGhzIjp7ImlzX2xvY2FsIjoiaW5pdCIsInJvbGUiOiJpbml0IiwiYXBpa2V5IjoiZGVmYXVsdCIsIl9fdiI6ImluaXQiLCJwYXNzd29yZF9oYXNoIjoiaW5pdCIsInVzZXJuYW1lIjoiaW5pdCIsIl9pZCI6ImluaXQifSwic3RhdGVzIjp7Imlnbm9yZSI6e30sImRlZmF1bHQiOnsiYXBpa2V5Ijp0cnVlfSwiaW5pdCI6eyJfX3YiOnRydWUsImlzX2xvY2FsIjp0cnVlLCJyb2xlIjp0cnVlLCJwYXNzd29yZF9oYXNoIjp0cnVlLCJ1c2VybmFtZSI6dHJ1ZSwiX2lkIjp0cnVlfSwibW9kaWZ5Ijp7fSwicmVxdWlyZSI6e319LCJzdGF0ZU5hbWVzIjpbInJlcXVpcmUiLCJtb2RpZnkiLCJpbml0IiwiZGVmYXVsdCIsImlnbm9yZSJdfSwiZW1pdHRlciI6eyJkb21haW4iOm51bGwsIl9ldmVudHMiOnt9LCJfZXZlbnRzQ291bnQiOjAsIl9tYXhMaXN0ZW5lcnMiOjB9fSwiaXNOZXciOmZhbHNlLCJfZG9jIjp7ImlzX2xvY2FsIjp0cnVlLCJyb2xlIjoiQURNSU4iLCJhcGlrZXkiOiIyYWU4NzQ5Yi04OWFlLTQzZGItOTY1Yi0xNDM5YmU5YWU2YzciLCJfX3YiOjAsInBhc3N3b3JkX2hhc2giOiIkMmEkMDUkL1FuU091QUxDMUFibUxEbmdRTzZHLmVQMkRZcWhRVDVpM3B1Nm9nWnR3UDY2blFKNjdHMVMiLCJ1c2VybmFtZSI6ImFkbWluIiwiX2lkIjoiNThhYzk5ODY3Y2M5OWExNmJiNjJkNjQzIn0sImlhdCI6MTQ4Nzc4MTc0NCwiZXhwIjoxNDg3ODY4MTQ0fQ.DqdwRBrmYEvDSN-IKHQ2auIjllLV20vZMHmQRTDb7S4",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"first_name\": \"admin1\",\n\t\"password\": \"motorola\",\n\t\"role\": \"ADMIN\"\n}"
+						},
+						"description": "role: String ('ADMIN', 'MANAGER', 'STANDARD')"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"description": "",
+			"item": [
+				{
+					"name": "/api/cart",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/cart",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/cart",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/cart",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"description\": \"Hello from the other side\"\n}"
+						},
+						"description": "Fields \"user\" and \"items\" may be modified by an admin privileged user only. They expect this:\n\n\tuser: String, // Admin only\n\titems: [{\n\t\titem: String,\n\t\tquantity: Integer\n\t}], // Admin only"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/cart",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/cart",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"action\": \"CHECKOUT\",\n\t\"reason\": \"I want to\"\n}"
+						},
+						"description": "Field \"action\" accepts only \"CHECKOUT\"."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart Items",
+			"description": "",
+			"item": [
+				{
+					"name": "/api/cart/items",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/cart/items",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"item\": \"58adb3b605bd0609ef8dd91a\",\n\t\"quantity\": 123\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/cart/items/:item_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/cart/items/58adb3b605bd0609ef8dd91a",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"quantity\": 10\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/cart/items/:item_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/cart/items/58adb3b605bd0609ef8dd91a",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"quantity\": 10\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Custom Fields",
+			"description": "",
+			"item": [
+				{
+					"name": "/api/customFields",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/customFields",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Stockroom Number\",\n\t\"isPrivate\": false,\n\t\"type\": \"SHORT_STRING\"\n}"
+						},
+						"description": "type: ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT']"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/customFields",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/customFields",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Stockroom Number\",\n\t\"isPrivate\": false,\n\t\"type\": \"SHORT_STRING\"\n}"
+						},
+						"description": "type: ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT']"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/customFields/:customFields_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/customFields/58ab548efbfad20aba3f09ec",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Stockroom Number\",\n\t\"isPrivate\": false,\n\t\"type\": \"SHORT_STRING\"\n}"
+						},
+						"description": "type: ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT']"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/customFields/:customFields_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/customFields/58ab548efbfad20aba3f09ec",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"restock_info\",\n\t\"isPrivate\": true,\n\t\"type\": \"SHORT_STRING\"\n}"
+						},
+						"description": "type: ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT']"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/customFields/:customFields_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/customFields/58ab548efbfad20aba3f09ec",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"restock_info\",\n\t\"isPrivate\": true,\n\t\"type\": \"SHORT_STRING\"\n}"
+						},
+						"description": "type: ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT']"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Custom Fields in Items",
+			"description": "",
+			"item": [
+				{
+					"name": "/api/inventory/:item_id/customFields",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/5899d1d1e110d37823d6ea9e/customFields",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"field\": \"58adaf05627dce046ff33e24\", \n\t\"value\": \"CIEMAS1111\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/inventory/:item_id/customFields",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/5899d1d1e110d37823d6ea9e/customFields/58adaf05627dce046ff33e24",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"value\": \"CIEMAS2222\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/inventory/:item_id/customFields",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/5899d1d1e110d37823d6ea9e/customFields/58adaf05627dce046ff33e24",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Instances",
+			"description": "",
+			"item": [
+				{
+					"name": "/api/inventory/:item_id/instances",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/58adb3b605bd0609ef8dd943/instances",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"2000k resistor\",\n    \"vendor_info\": \"IBM\",\n    \"custom_fields\": [],\n    \"has_instance_objects\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
+						},
+						"description": "Condition: GOOD, NEEDS_REPAIR\nStatus: AVAILABLE, IN_USE, LOST"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/inventory/:item_id/instances",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/58adb3b605bd0609ef8dd943/instances",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"serial_number\": \"12345\",\n\t\"condition\": \"NEEDS_REPAIR\",\n\t\"status\": \"AVAILABLE\"\n}"
+						},
+						"description": "Condition: GOOD, NEEDS_REPAIR\nStatus: AVAILABLE, IN_USE, LOST"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/inventory/:item_id/:instance_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/58adb3b605bd0609ef8dd943/58adb4af56b2040a44fcba5b",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"serial_number\": \"54321\",\n\t\"condition\": \"GOOD\",\n\t\"status\": \"AVAILABLE\"\n}"
+						},
+						"description": "Condition: GOOD, NEEDS_REPAIR\nStatus: AVAILABLE, IN_USE, LOST"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/inventory/:item_id/:instance_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/58adb3b605bd0609ef8dd943/58adb4af56b2040a44fcba5b",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"serial_number\": \"54321\",\n\t\"condition\": \"GOOD\",\n\t\"status\": \"AVAILABLE\"\n}"
+						},
+						"description": "Condition: GOOD, NEEDS_REPAIR\nStatus: AVAILABLE, IN_USE, LOST"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/inventory/:item_id/:instance_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/58adb3b605bd0609ef8dd943/58adb4af56b2040a44fcba5b",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"serial_number\": \"54321\",\n\t\"condition\": \"GOOD\",\n\t\"status\": \"AVAILABLE\"\n}"
+						},
+						"description": "Condition: GOOD, NEEDS_REPAIR\nStatus: AVAILABLE, IN_USE, LOST"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Inventory Items",
+			"description": "",
+			"item": [
+				{
+					"name": "/api/inventory",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "password",
+									"value": "ece458duke",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/inventory/:item_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/5899d1d1e110d37823d6ea73",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"2000k resistor\",\n    \"vendor_info\": \"IBM\",\n    \"custom_fields\": [],\n    \"has_instance_objects\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/inventory",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"199k resistor\",\n    \"vendor_info\": \"Microsoft\",\n    \"custom_fields\": [],\n    \"has_instance_objects\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/inventory/:item_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/5899d1d1e110d37823d6ea73",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"2000k resistor\",\n    \"vendor_info\": \"IBM\",\n    \"custom_fields\": [],\n    \"is_deleted\": true,\n    \"has_instance_objects\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/inventory/:item_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/5899d1d1e110d37823d6ea73",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -53,6 +53,7 @@ module.exports.getAPIbyID = function(req, res) {
   }
   User.findById(req.params.user_id, function(error, user) {
     if (error) return res.send({error: error});
+    if (user === undefined || user === null) return res.send({error: "User does not exist"});
     delete user.password_hash
     res.json(user);
   });
@@ -71,6 +72,7 @@ module.exports.putAPI = function(req, res) {
     {new: true},
     function(error, user) {
       if (error) return res.send({error: error});
+      if (user === undefined || user === null) return res.send({error: "User does not exist"});
       delete user.password_hash
       res.json(user);
     }
