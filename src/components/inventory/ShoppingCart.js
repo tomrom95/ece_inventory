@@ -7,7 +7,8 @@ class ShoppingCart extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			items: []
+			items: [],
+			checked: null
 		}
 	}
 
@@ -70,12 +71,18 @@ class ShoppingCart extends Component {
 		}.bind(this));
 	}
 
-	render() {
-		var reasonBox = (this.state.items.length===0) ? <div>Your cart is currently empty</div> 
+
+	
+	makeReasonBox() {
+		return ((this.state.items.length===0) ? <div>Your cart is currently empty</div> 
 						  : (<div className="form-group row">
-		                          <label htmlFor="cart-reason"><strong>Reason for Request</strong></label>
+		                          <label htmlFor="cart-reason">Reason for Request</label>
 		                          <input className="form-control" type="text" defaultValue="" id="cart-reason"/>
-		                    </div>);
+		                    </div>)
+	  	);
+	}
+
+	render() {
 		var submitDisabled = (this.state.items.length===0) ? "disabled" : "";
  		return (			
 			<th>	
@@ -102,8 +109,10 @@ class ShoppingCart extends Component {
 				      		{this.makeCartItems()}	        	
 			        	</div>
 			        	<div className="container">
-			        		{reasonBox}
+			        		{this.makeReasonBox()}
+			       
 	                    </div>
+
 				      </div>
 				      <div className="modal-footer">
 				      	<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
