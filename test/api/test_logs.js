@@ -5,6 +5,7 @@ let Item = require('../../server/model/items');
 let User = require('../../server/model/users');
 let Log = require('../../server/model/logs');
 let Request = require('../../server/model/requests');
+let Cart = require('../../server/model/carts');
 let CustomField = require('../../server/model/customFields');
 let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
@@ -127,9 +128,9 @@ describe('Logging API Test', function () {
             log.initiating_user.should.be.eql(adminUser._id);
             log.type.should.be.eql('ITEM_EDITED');
             should.not.exist(log.affected_user);
-            log.description.should.include('name from 1k resistor to 1k thingy');
+            log.description.should.include('name from "1k resistor" to "1k thingy"');
             log.description.should.include('quantity from 1000 to 2000');
-            log.description.should.include('tags from component,electric,cheap to component,electric,cheap,thingy');
+            log.description.should.include('tags from ["component","electric","cheap"] to ["component","electric","cheap","thingy"]');
             log.description.should.not.include('location');
             done();
           });
@@ -213,7 +214,6 @@ describe('Logging API Test', function () {
               value: 'new value'
             })
             .end((err, res) => {
-              console.log(err);
               should.not.exist(err);
               res.should.have.status(200);
               Log.find({}, function(err, logs) {
@@ -459,7 +459,103 @@ describe('Logging API Test', function () {
           });
       });
 
-      it('logs an editing a request', (done) => {
+      it('logs an admin user checking out a cart for himself', (done) => {
+        Cart.remove({}, function(error) {
+          var newCart = new Cart({
+            user: adminUser._id,
+            items: [
+              {
+                item: allItems["1k resistor"]._id,
+                quantity: 10,
+              },
+              {
+                item: allItems["Oscilloscope"]._id,
+                quantity: 1,
+              }
+            ]
+          });
+          newCart.save(function(error, cart) {
+            chai.request(server)
+              .patch('/api/cart')
+              .set('Authorization', adminToken)
+              .send({
+                action: 'CHECKOUT',
+                reason: 'I want them'
+              })
+              .end((err, res) => {
+                should.not.exist(err);
+                res.should.have.status(200);
+                Log.find({}, function(err, logs) {
+                  should.not.exist(err);
+                  logs.length.should.be.eql(1);
+                  var log = logs[0];
+                  log.items.forEach(function(item) {
+                    ([allItems['1k resistor']._id, allItems['Oscilloscope']._id])
+                      .should.include(item);
+                  });
+                  log.type.should.be.eql('REQUEST_CREATED');
+                  log.initiating_user.should.be.eql(adminUser._id);
+                  should.not.exist(log.affected_user);
+                  log.description.should.include("The user admin requested");
+                  log.description.should.include('10 1k resistors');
+                  log.description.should.include('1 Oscilloscope');
+                  done();
+                });
+              });
+          });
+        });
+      });
+
+      it('logs an admin user checking out a cart for someone else', (done) => {
+        Cart.remove({}, function(error) {
+          var newCart = new Cart({
+            user: adminUser._id,
+            items: [
+              {
+                item: allItems["1k resistor"]._id,
+                quantity: 10,
+              },
+              {
+                item: allItems["Oscilloscope"]._id,
+                quantity: 1,
+              }
+            ]
+          });
+          newCart.save(function(error, cart) {
+            chai.request(server)
+              .patch('/api/cart')
+              .set('Authorization', adminToken)
+              .send({
+                action: 'CHECKOUT',
+                reason: 'I want them',
+                user: standardUser._id
+              })
+              .end((err, res) => {
+                should.not.exist(err);
+                res.should.have.status(200);
+                Log.find({}, function(err, logs) {
+                  should.not.exist(err);
+                  logs.length.should.be.eql(1);
+                  var log = logs[0];
+                  log.items.forEach(function(item) {
+                    ([allItems['1k resistor']._id, allItems['Oscilloscope']._id])
+                      .should.include(item);
+                  });
+                  log.type.should.be.eql('REQUEST_CREATED');
+                  log.initiating_user.should.be.eql(adminUser._id);
+                  log.affected_user.should.be.eql(standardUser._id);
+                  log.description.should.include("The user admin requested");
+                  log.description.should.include('10 1k resistors');
+                  log.description.should.include('1 Oscilloscope');
+                  log.description.should.include('for the user standard.');
+                  done();
+                });
+              });
+          });
+        });
+      });
+
+      it('logs editing a request', (done) => {
         chai.request(server)
           .put('/api/requests/' + testRequest._id)
           .set('Authorization', adminToken)
@@ -482,8 +578,8 @@ describe('Logging API Test', function () {
               log.initiating_user.should.be.eql(adminUser._id);
               log.affected_user.should.be.eql(standardUser._id);
               log.description.should.include("The user admin edited standard's request by changing");
-              log.description.should.include("reason from cuz to different reason");
-              log.description.should.include("status from PENDING to APPROVED");
+              log.description.should.include('reason from "cuz" to "different reason"');
+              log.description.should.include('status from "PENDING" to "APPROVED"');
               done();
             });
           });

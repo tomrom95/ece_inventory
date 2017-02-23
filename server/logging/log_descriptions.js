@@ -72,6 +72,13 @@ module.exports.disbursedItem = function(request, items, disbursedFrom, disbursed
   return description;
 }
 
+var getValueString = function(value) {
+  if (value === null || value === undefined) {
+    return 'undefined';
+  }
+  return JSON.stringify(value);
+}
+
 var createChangesString = function(oldObject, changes) {
   var changesString = "";
   Object.keys(changes).forEach(function(key, index, keyArray) {
@@ -81,7 +88,8 @@ var createChangesString = function(oldObject, changes) {
     if (index === keyArray.length -1) {
       changesString += ' and';
     }
-    changesString += ' ' + key + ' from ' + oldObject[key] + ' to ' + changes[key];
+    changesString += ' ' + key + ' from ' + getValueString(oldObject[key])
+      + ' to ' + getValueString(changes[key]);
   });
   return changesString;
 }

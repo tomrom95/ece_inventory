@@ -27,12 +27,10 @@ var CartSchema = new mongoose.Schema({
   created: {
     type: Date,
     default: Date.now,
-    required: true
   },
   lastModified:{
     type: Date,
     default: Date.now,
-    required: true
   }
 })
 
