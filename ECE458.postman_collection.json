@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "ECE458",
-		"_postman_id": "596792fe-c3dd-853a-6b0c-41da5d14732d",
+		"_postman_id": "377cbf0c-2149-ac6c-a0a4-24ad6e54ea40",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -145,7 +145,7 @@
 							},
 							{
 								"key": "apikey",
-								"value": "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiZ2V0dGVycyI6e30sIndhc1BvcHVsYXRlZCI6ZmFsc2UsImFjdGl2ZVBhdGhzIjp7InBhdGhzIjp7ImlzX2xvY2FsIjoiaW5pdCIsInJvbGUiOiJpbml0IiwiYXBpa2V5IjoiZGVmYXVsdCIsIl9fdiI6ImluaXQiLCJwYXNzd29yZF9oYXNoIjoiaW5pdCIsInVzZXJuYW1lIjoiaW5pdCIsIl9pZCI6ImluaXQifSwic3RhdGVzIjp7Imlnbm9yZSI6e30sImRlZmF1bHQiOnsiYXBpa2V5Ijp0cnVlfSwiaW5pdCI6eyJfX3YiOnRydWUsImlzX2xvY2FsIjp0cnVlLCJyb2xlIjp0cnVlLCJwYXNzd29yZF9oYXNoIjp0cnVlLCJ1c2VybmFtZSI6dHJ1ZSwiX2lkIjp0cnVlfSwibW9kaWZ5Ijp7fSwicmVxdWlyZSI6e319LCJzdGF0ZU5hbWVzIjpbInJlcXVpcmUiLCJtb2RpZnkiLCJpbml0IiwiZGVmYXVsdCIsImlnbm9yZSJdfSwiZW1pdHRlciI6eyJkb21haW4iOm51bGwsIl9ldmVudHMiOnt9LCJfZXZlbnRzQ291bnQiOjAsIl9tYXhMaXN0ZW5lcnMiOjB9fSwiaXNOZXciOmZhbHNlLCJfZG9jIjp7ImlzX2xvY2FsIjp0cnVlLCJyb2xlIjoiQURNSU4iLCJhcGlrZXkiOiIyYWU4NzQ5Yi04OWFlLTQzZGItOTY1Yi0xNDM5YmU5YWU2YzciLCJfX3YiOjAsInBhc3N3b3JkX2hhc2giOiIkMmEkMDUkL1FuU091QUxDMUFibUxEbmdRTzZHLmVQMkRZcWhRVDVpM3B1Nm9nWnR3UDY2blFKNjdHMVMiLCJ1c2VybmFtZSI6ImFkbWluIiwiX2lkIjoiNThhYzk5ODY3Y2M5OWExNmJiNjJkNjQzIn0sImlhdCI6MTQ4Nzc4MTc0NCwiZXhwIjoxNDg3ODY4MTQ0fQ.DqdwRBrmYEvDSN-IKHQ2auIjllLV20vZMHmQRTDb7S4",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
 								"description": ""
 							}
 						],
@@ -180,7 +180,10 @@
 								"description": ""
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"description": ""
 					},
 					"response": []
@@ -479,7 +482,7 @@
 					"response": []
 				},
 				{
-					"name": "/api/inventory/:item_id/customFields",
+					"name": "/api/inventory/:item_id/customFields/:customfield_id",
 					"request": {
 						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/5899d1d1e110d37823d6ea9e/customFields/58adaf05627dce046ff33e24",
 						"method": "PUT",
@@ -504,7 +507,7 @@
 					"response": []
 				},
 				{
-					"name": "/api/inventory/:item_id/customFields",
+					"name": "/api/inventory/:item_id/customFields/:customfield_id",
 					"request": {
 						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/inventory/5899d1d1e110d37823d6ea9e/customFields/58adaf05627dce046ff33e24",
 						"method": "DELETE",
@@ -673,7 +676,7 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
+								"value": "application/json",
 								"description": ""
 							},
 							{
@@ -683,21 +686,8 @@
 							}
 						],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "username",
-									"value": "admin",
-									"type": "text",
-									"enabled": true
-								},
-								{
-									"key": "password",
-									"value": "ece458duke",
-									"type": "text",
-									"enabled": true
-								}
-							]
+							"mode": "raw",
+							"raw": "{\n\t\"items\": [],\n\t\"password\": \"motorola\",\n\t\"role\": \"ADMIN\"\n}"
 						},
 						"description": ""
 					},
@@ -798,6 +788,232 @@
 						"body": {
 							"mode": "raw",
 							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Logs",
+			"description": "",
+			"item": [
+				{
+					"name": "/api/logs",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/logs",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "password",
+									"value": "ece458duke",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": "You can query by field \"type\" with the following enums: 'ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED', 'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Requests",
+			"description": "",
+			"item": [
+				{
+					"name": "/api/requests",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/requests",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "password",
+									"value": "ece458duke",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/requests",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/requests",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"items\": [{\n\t\t\"item\": \"58adb3b605bd0609ef8dd919\",\n\t\t\"quantity\": 100\n\t}]\n}"
+						},
+						"description": "status: ['PENDING', 'APPROVED', 'DENIED', 'FULFILLED']"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/requests/:request_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/requests/5899d22ebeb0a578479977c2",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "password",
+									"value": "ece458duke",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/requests/:request_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/requests/5899d22ebeb0a578479977c2",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"reason\": \"I want to\",\n\t\"status\": \"FULFILLED\"\n}"
+						},
+						"description": "status: ['PENDING', 'APPROVED', 'DENIED', 'FULFILLED']"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/requests/:request_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/requests/5899d22ebeb0a578479977c2",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/requests/:request_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu:3001/api/requests/58af157bfc334415f44668d3",
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"action\": \"DISBURSE\"\n}"
 						},
 						"description": ""
 					},

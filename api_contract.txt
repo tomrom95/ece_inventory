@@ -544,7 +544,7 @@ return:
   }
 ]
 
-/api/user
+/api/users
 GET // Only admins can get
 return {
 	_id: String,
