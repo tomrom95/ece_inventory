@@ -24,12 +24,7 @@ class CustomFieldsPopup extends Component {
 		this.handleInputChange = this.handleInputChange.bind(this);
 	}
 
-	componentWillMount(){
-		this.instance = axios.create({
-		  baseURL: 'https://' + location.hostname + ':3001',
-		  headers: {'Authorization': localStorage.getItem('token')}
-		});
-	}
+
 
 	handleInputChange(event) {
 	    const value = event.target.checked;
@@ -81,7 +76,6 @@ class CustomFieldsPopup extends Component {
 
 
 	makeForm(){
-		console.log("test");
 		var name = <input type="text"
 			className="form-control"
 			ref="field_name"
@@ -120,7 +114,7 @@ class CustomFieldsPopup extends Component {
 			type: this.state.type,
 			isPrivate: this.state.isPrivate,
 		}
-		this.instance.post('/api/customFields/', custom_field)
+		this.props.api.post('/api/customFields/', custom_field)
 	  	.then(function(response) {
 	        if (response.data.error) {
         		console.log(response.data.error);

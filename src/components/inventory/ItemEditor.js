@@ -43,7 +43,7 @@ class ItemEditor extends Component {
 		super(props);
 		this.state = {
 			data: props.data,
-			allCustomFields: [],
+			allCustomFields: props.allCustomFields,
 			formIds: [],
 		}
 	}
@@ -51,22 +51,13 @@ class ItemEditor extends Component {
 	componentWillReceiveProps(newProps) {
 		this.setState({
 			data: newProps.data,
+			allCustomFields: newProps.allCustomFields,
 			formIds: getValues(newProps.data, getKeys(newProps.data))
 		});
 	}
 
-	componentWillMount(){
-		this.props.api.get('/api/customFields')
-      .then(function(response) {
-        if (response.error) {
-          console.log(response.error);
-        }
-        this.setState({allCustomFields: response.data});
-      }.bind(this))
-      .catch(function(error) {
-        console.log(error);
-      });
-	}
+
+
 
 
 	handleFormChange(event, label) {
@@ -81,12 +72,12 @@ class ItemEditor extends Component {
 		var keys = getKeys(this.state.data);
 		var vals = getValues(this.state.data, keys);
 		var list = []; var i;
+
 		for (i=0; i<keys.length; i++) {
 			if (keys[i] === 'Tags') {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
 			}
 			else if (keys[i] === 'Custom Fields'){
-
 				if(vals[i].length > 0){
 					for(var j = 0; j < vals[i].length; j++){
 						var field = vals[i][j];
@@ -114,41 +105,6 @@ class ItemEditor extends Component {
 		return list;
 	}
 
-	render() {
-
-    return (
-		<div>
-			<button type="button"
-				className="btn btn-outline-primary edit-button"
-				data-toggle="modal"
-				data-target={"#editModal-"+this.props.itemId}>
-				<span className="fa fa-pencil"></span>
-			</button>
-
-			<div className="modal fade"
-				id={"editModal-"+this.props.itemId}
-				tabIndex="-1" role="dialog"
-				aria-labelledby="editLabel"
-				aria-hidden="true">
-			  <div className="modal-dialog" role="document">
-			    <div className="modal-content">
-			      <div className="modal-header">
-			        <h5 className="modal-title" id="editLabel">Edit Current Item</h5>
-			      </div>
-			      <div className="modal-body">
-			        {this.makeForm()}
-			      </div>
-			      <div className="modal-footer">
-			        <button type="button" onClick={e=>this.makeForm()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-			        <button onClick={e => this.onSubmission()} type="button" data-dismiss="modal" className="btn btn-primary">Submit</button>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-		</div>
-		);
-	}
-
 
 
 	addCustomFieldButton(row, current_fields){
@@ -158,6 +114,7 @@ class ItemEditor extends Component {
 				<CustomFieldSelect
 					api={this.props.api}
 					callback={this.props.callback}
+					allCustomFields={this.state.allCustomFields}
 					key={"add-field-"+row}
 					ref="field"
 				/>
@@ -267,13 +224,14 @@ class ItemEditor extends Component {
 	}
 
 	makeCustomTextBox(row, field){
+		console.log(this.state.allCustomFields);
+		console.log(field);
 
 		var id = "createform-custom-row-"+row;
 		this.state.formIds.push(id);
 		var label = "";
-		//console.log(field);
 		for(var i = 0; i < this.state.allCustomFields.length; i ++){
-			if(this.state.allCustomFields[i]._id = field.feild){
+			if(this.state.allCustomFields[i].field === field.feild){
 				label = this.state.allCustomFields[i].name;
 			}
 		}
@@ -380,43 +338,43 @@ class ItemEditor extends Component {
 			      .catch(function(error) {
 			        console.log(error);
 			      }.bind(this));
-		}
-    }
+				}
+  }
 
-  	render() {
-	    return (
-			<div>
-				<button type="button"
-					className="btn btn-outline-primary edit-button"
-					data-toggle="modal"
-					data-target={"#editModal-"+this.props.itemId}
-					data-backdrop="static">
-					<span className="fa fa-pencil"></span>
-				</button>
+	render() {
+    return (
+		<div>
+			<button type="button"
+				className="btn btn-outline-primary edit-button"
+				data-toggle="modal"
+				data-target={"#editModal-"+this.props.itemId}
+				data-backdrop="static">
+				<span className="fa fa-pencil"></span>
+			</button>
 
-				<div className="modal fade"
-					id={"editModal-"+this.props.itemId}
-					tabIndex="-1" role="dialog"
-					aria-labelledby="editLabel"
-					aria-hidden="true">
-				  <div className="modal-dialog" role="document">
-				    <div className="modal-content">
-				      <div className="modal-header">
-				        <h5 className="modal-title" id="editLabel">Edit Current Item</h5>
-				      </div>
-				      <div className="modal-body">
-				        {this.makeForm()}
-				      </div>
-				      <div className="modal-footer">
-				        <button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-				        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-				        <button onClick={() => this.onSubmission()} type="button" className="btn btn-primary">Apply</button>
-				      </div>
-				    </div>
-				  </div>
-				</div>
+			<div className="modal fade"
+				id={"editModal-"+this.props.itemId}
+				tabIndex="-1" role="dialog"
+				aria-labelledby="editLabel"
+				aria-hidden="true">
+			  <div className="modal-dialog" role="document">
+			    <div className="modal-content">
+			      <div className="modal-header">
+			        <h5 className="modal-title" id="editLabel">Edit Current Item</h5>
+			      </div>
+			      <div className="modal-body">
+			        {this.makeForm()}
+			      </div>
+			      <div className="modal-footer">
+			        <button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+			        <button onClick={() => this.onSubmission()} type="button" className="btn btn-primary">Apply</button>
+			      </div>
+			    </div>
+			  </div>
 			</div>
-			);
+		</div>
+		);
 	}
 }
 

@@ -11,6 +11,7 @@ class CustomFieldSelect extends Component {
     }
   }
 
+
   getSelectedUserId() {
     return this.state.selectedField;
   }
@@ -35,6 +36,7 @@ class CustomFieldSelect extends Component {
         if (response.error) {
           console.log(response.error);
         }
+        //console.log(response);
         var data = this.mapFields(response.data);
         this.setState({allFields: data});
       }.bind(this))

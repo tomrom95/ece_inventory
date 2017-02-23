@@ -213,7 +213,7 @@ class CustomFieldListPopup extends Component {
 		this.props.api.put('/api/customFields/' + field_id, new_field)
 	  	.then(function(response) {
 	        if (response.data.error) {
-
+            console.log(response.data.error);
           } else {
 						this.props.callback();
             alert("changes applied to item");

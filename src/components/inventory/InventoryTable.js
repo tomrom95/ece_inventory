@@ -79,6 +79,7 @@ class InventoryTable extends Component {
 		this.state = {
 			columnKeys: getKeys(this.props.data),
 			rows: getValues(this.props.data, getKeys(this.props.data)),
+			allCustomFields: [],
 		}
 	}
 
@@ -89,6 +90,19 @@ class InventoryTable extends Component {
 		});
 	}
 
+	componentWillMount(){
+		this.props.api.get('/api/customFields')
+      .then(function(response) {
+        if (response.data.error) {
+          console.log(response.data.error);
+        }
+				console.log(response);
+        this.setState({allCustomFields: response.data});
+      }.bind(this))
+      .catch(function(error) {
+        console.log(error);
+      });
+	}
 
 
 	render() {
@@ -126,6 +140,7 @@ class InventoryTable extends Component {
 							);
 			list.push(
 					<CustomFieldsPopup
+									api={this.props.api}
 									key={"makefields-button"}
 									callback={this.props.callback}/>
 							);
@@ -134,7 +149,8 @@ class InventoryTable extends Component {
 					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
 	          			key={"makeitem-button"}
-	          			callback={this.props.callback}/>
+	          			callback={this.props.callback}
+									allCustomFields={this.state.allCustomFields}/>
 	          	);
 
 		}
@@ -183,7 +199,9 @@ class InventoryTable extends Component {
 			list.push(this.makeDeleteButton(id));
 
 			list.push(<td className="subtable-row" key={"detail-view-" + id}>
-						<ItemDetailView key={"detail-view-button-" + id} params={{itemID: id}}/>
+						<ItemDetailView key={"detail-view-button-" + id}
+								params={{itemID: id}}
+								allCustomFields={this.state.allCustomFields}/>
 					  </td>);
 
 			return list;
@@ -232,7 +250,8 @@ class InventoryTable extends Component {
 		          className="request-button"
 		          itemId={id}
 		          key={"editbutton-"+ id}
-		          ref={"edit-"+id} />
+		          ref={"edit-"+id}
+							allCustomFields={this.state.allCustomFields}/>
 	         </td>
         );
 	}

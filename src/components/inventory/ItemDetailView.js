@@ -55,7 +55,11 @@ class ItemDetailView extends React.Component {
     var html_list = []
     for(var i = 0; i < fields.length; i++){
       var label = "";
-
+      for(var j = 0; j < this.props.allCustomFields.length; j++){
+        if(this.props.allCustomFields[i].field === fields[i].feild){
+  				label = this.props.allCustomFields[i].name;
+  			}
+      }
       html_list.push(<div className="row" key={fields[i].name+i}>
                         <p><strong>{label}: </strong>
                           {fields[i].value}
