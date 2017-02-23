@@ -821,7 +821,6 @@ describe('Logging API Test', function () {
           .end((err, res) => {
             should.not.exist(err);
             res.should.have.status(200);
-            var fieldId = res.body._id
             Log.find({}, function(err, logs) {
               should.not.exist(err);
               logs.length.should.be.eql(1);
@@ -830,7 +829,7 @@ describe('Logging API Test', function () {
               log.type.should.be.eql('FIELD_DELETED');
               log.initiating_user.should.be.eql(adminUser._id);
               should.not.exist(log.affected_user);
-              String(log.custom_field).should.be.eql(fieldId);
+              log.custom_field.should.be.eql(testField._id);
               log.description.should.be.eql("The field test_field was deleted.");
               done();
             });
