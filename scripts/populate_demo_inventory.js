@@ -29,8 +29,8 @@ var insertManyItems = function(quantity, callback){
   var itemArray = [];
   let item = {
     "quantity": 1000,
-    "has_instance_objects": false,
-    "vendor_info": "Qualcomm",
+    "has_instance_objects": true,
+    "vendor_info": "",
     "tags": [
       "component",
       "electric",

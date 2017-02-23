@@ -10,7 +10,7 @@ params:
 	page: String [optional], // needs per_page if included
 	per_page: String [optional] // needs age if included
 }
-returns:
+returns: // does not return instance objects
 [{
     _id: String [unique],
     name: String [unique],
@@ -117,7 +117,7 @@ return:
 /api/inventory/:item_id/customFields
 POST
 // Will update custom field if it already exists
-params: {
+body: {
 	field: String (the id not the field name),
 	value: Mixed
 }
@@ -128,7 +128,7 @@ return: {
 /api/inventory/:item_id/customFields/:field_id
 PUT
 // will add custom field if it doesn't exist
-params: {
+body: {
 	value: Mixed
 }
 return: {
@@ -541,7 +541,7 @@ return:
 ]
 
 /api/user
-GET
+GET // Only admins can get
 return {
 	_id: String,
 	username: String,
@@ -549,10 +549,11 @@ return {
 }
 
 POST
-body:
+body: // Only admins can post
 {
 	username: String,
-	password: String
+	password: String,
+	role: String ('ADMIN', 'MANAGER', 'STANDARD')
 }
 return {
 	user: {
@@ -560,6 +561,28 @@ return {
 		username: String,
 		role: String ('ADMIN', 'MANAGER', 'STANDARD')
 	}
+}
+
+/api/user/:user_id
+GET
+return {
+	_id: String,
+	username: String,
+	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+}
+
+PUT { // Only admins can put
+body {
+	first_name: String,
+	last_name: String,
+	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+}
+return {
+	_id: String,
+	username: String,
+	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+}
+
 }
 
 /auth/login

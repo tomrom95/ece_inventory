@@ -192,6 +192,19 @@ describe('Inventory API Test', function () {
         });
     });
 
+    it('Fails if invalid user id is provided for admin for GET', (done) => {
+      chai.request(server)
+        .get('/api/users/' + "999c99867cc99a16bb62d641")
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.be.eql("User does not exist");
+          done();
+        });
+    });
+
     it('Allows manager to get info about himself', (done) => {
       chai.request(server)
         .get('/api/users/' + managerUser._id)
@@ -308,7 +321,19 @@ describe('Inventory API Test', function () {
           done();
         });
     });
-
+    it('Fails if invalid user id is provided for admin for PUT', (done) => {
+      chai.request(server)
+        .put('/api/users/' + "999c99867cc99a16bb62d641")
+        .set('Authorization', adminToken)
+        .send({role:'ADMIN'})
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.be.eql("User does not exist");
+          done();
+        });
+    });
     it('Allows an admin user to change first name, last name, role', (done) => {
       chai.request(server)
         .put('/api/users/' + standardUser._id)
