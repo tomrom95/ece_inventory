@@ -53,7 +53,10 @@ This will create a certificate (as cert.pem) and key (as privkey.pem), and will 
 
 Copy these files into your project's root directory. Make sure to use root access to do this (run `sudo su`). Also make sure you rename privKey.pem to key.pem when you copy it.
 
-9) Run in development using
+9) [Optional] Run our setup script. This will create an inventory admin and populate some example data.
+> node scripts/setupdb.js
+
+10) Run in development using
 > npm run start-dev
 
 Run in production using
