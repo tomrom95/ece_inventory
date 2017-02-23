@@ -131,7 +131,7 @@ class RequestTable extends Component {
   denyButton(index){
     return(
 			<td key={"delete-td-"+index} className="subtable-row">
-	      <button key={"deny"+index} className="btn btn-primary btn-sm" onClick={e => this.denyRequest(index)}>
+	      <button key={"deny"+index} className="btn btn-danger btn-sm" onClick={e => this.denyRequest(index)}>
 	        Deny
 	      </button>
 			</td>
