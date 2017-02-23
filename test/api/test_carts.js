@@ -726,6 +726,96 @@ describe('Cart API Test', function () {
       });
       });
     });
+    it('PATCH cart for admin cart and set request for standard User', (done) => {
+      Cart.findOne({user: adminUser._id}, function(err, cart){
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/cart')
+        .set('Authorization', adminToken)
+        .send({
+          action: 'CHECKOUT',
+          reason: 'Test request',
+          user: standardUser._id
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.message.should.eql("Request successful");
+          res.body.request.user.should.eql(standardUser._id.toString());
+          Request.findById(res.body.request._id, function(err, request){
+            should.not.exist(err);
+            request.user.should.eql(standardUser._id);
+            done();
+          });
+      });
+      });
+    });
+    it('PATCH cart for standard user with user field filled as admin, error thrown', (done) => {
+      Cart.findOne({user: standardUser._id}, function(err, cart){
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/cart')
+        .set('Authorization', standardToken)
+        .send({
+          action: 'CHECKOUT',
+          reason: 'Test request',
+          user: adminUser._id
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.eql("Standard user cannot request for another user");
+          done();
+      });
+      });
+    });
+    it('PATCH cart for manager user with user field filled as standard user', (done) => {
+      Cart.findOne({user: managerUser._id}, function(err, cart){
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/cart')
+        .set('Authorization', managerToken)
+        .send({
+          action: 'CHECKOUT',
+          reason: 'Test request',
+          user: standardUser._id
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.message.should.eql("Request successful");
+          res.body.request.user.should.eql(standardUser._id.toString());
+          Request.findById(res.body.request._id, function(err, request){
+            should.not.exist(err);
+            request.user.should.eql(standardUser._id);
+            done();
+          });
+      });
+      });
+    });
+    it('PATCH cart for admin cart and request made for self if user id invalid', (done) => {
+      Cart.findOne({user: adminUser._id}, function(err, cart){
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/cart')
+        .set('Authorization', adminToken)
+        .send({
+          action: 'CHECKOUT',
+          reason: 'Test request',
+          user: '99ae73d23d7d8010a8343a2f'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.eql("User does not exist");
+          done();
+      });
+      });
+    });
     it('PATCH cart for standard cart, then PATCH again should fail', (done) => {
       Cart.findOne({user: standardUser._id}, function(err, cart){
         should.not.exist(err);
