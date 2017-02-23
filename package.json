@@ -34,7 +34,8 @@
     "react-select": "^1.0.0-rc.3",
     "react-simple-list": "^2.2.0",
     "react-timer": "^1.0.2",
-    "uuid": "^3.0.1"
+    "uuid": "^3.0.1",
+    "validator": "^6.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
