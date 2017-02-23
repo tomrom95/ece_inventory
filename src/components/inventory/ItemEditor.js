@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import '../../App.css';
 import TagSelector from '../global/TagSelector.js';
 import CustomFieldSelect from './CustomFieldSelect.js';
+import validator from 'validator';
+
 
 function getKeys(data) {
 	return Object.keys(data);
@@ -41,6 +43,7 @@ class ItemEditor extends Component {
 		super(props);
 		this.state = {
 			data: props.data,
+			allCustomFields: [],
 			formIds: [],
 		}
 	}
@@ -49,9 +52,22 @@ class ItemEditor extends Component {
 		this.setState({
 			data: newProps.data,
 			formIds: getValues(newProps.data, getKeys(newProps.data))
-
 		});
 	}
+
+	componentWillMount(){
+		this.props.api.get('/api/customFields')
+      .then(function(response) {
+        if (response.error) {
+          console.log(response.error);
+        }
+        this.setState({allCustomFields: response.data});
+      }.bind(this))
+      .catch(function(error) {
+        console.log(error);
+      });
+	}
+
 
 	handleFormChange(event, label) {
 		var data = this.state.data;
@@ -70,6 +86,7 @@ class ItemEditor extends Component {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
 			}
 			else if (keys[i] === 'Custom Fields'){
+
 				if(vals[i].length > 0){
 					for(var j = 0; j < vals[i].length; j++){
 						var field = vals[i][j];
@@ -85,7 +102,7 @@ class ItemEditor extends Component {
 					}
 
 				}
-				list.push(this.addCustomField(i, vals[i]));
+				list.push(this.addCustomFieldButton(i, vals[i]));
 
 
 			}
@@ -134,12 +151,13 @@ class ItemEditor extends Component {
 
 
 
-	addCustomField(row, current_fields){
+	addCustomFieldButton(row, current_fields){
 		return(
 			<div className="form-group" key={"createform-div-row-"+row}>
 			  <label htmlFor={"createform-row-"+row}>Add custom field</label>
 				<CustomFieldSelect
 					api={this.props.api}
+					callback={this.props.callback}
 					key={"add-field-"+row}
 					ref="field"
 				/>
@@ -152,28 +170,61 @@ class ItemEditor extends Component {
 				<button type="button"
 					className="btn btn-outline-primary add-button"
 					key={"button-add-field"+row}
-					onClick={e => this.addField(this.refs.field.state.selectedField, this.refs.fieldvalue.value, current_fields)}>
+					onClick={e => this.checkFieldParams(this.refs.field.state.selectedField, this.refs.fieldvalue.value, current_fields)}>
 					ADD
 				</button>
 			</div>
-
 		);
-
-
 	}
 
-	addField(custom_field, value, current_fields){
-		var field_params = {
-			field: custom_field,
-			value: value
-		}
+	checkFieldParams(custom_field, value, current_fields){
 		var already_exists = false;
 		for(var i = 0; i < current_fields.length; i++){
 			if(current_fields[i].field === custom_field){
 				already_exists = true;
 			}
 		}
-		if(value && !already_exists){
+
+		var type = "";
+		var type_mismatch = false;
+		var name = "";
+		this.props.api.get('/api/customFields/'+custom_field)
+			.then(function(response) {
+					if (response.data.error) {
+						alert(response.data.error);
+					} else {
+						var field_params = {
+							field: custom_field,
+							value: value
+						}
+						type = response.data.type;
+						name = response.data.name;
+						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAlpha(value)){
+							type_mismatch = true;
+						}
+						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(value)){
+							type_mismatch = true;
+						}
+						else if((type === "INT" || type === "FLOAT") && validator.isNumeric(value)){
+							if(type === "INT" && value % 1 !== 0){
+								type_mismatch = true;
+							}
+							else if(type === "FLOAT" && value % 1 === 0){
+								type_mismatch = true;
+							}
+						}
+
+						this.addField(value, already_exists, type_mismatch, field_params);
+					}
+				}.bind(this))
+				.catch(function(error) {
+					console.log(error);
+				}.bind(this));
+
+	}
+
+	addField(value, already_exists, type_mismatch, field_params){
+		if(value && !already_exists && !type_mismatch){
 			this.props.api.post('/api/inventory/'+ this.props.itemId+ "/customFields/",  field_params)
 				.then(function(response) {
 						if (response.data.error) {
@@ -186,13 +237,15 @@ class ItemEditor extends Component {
 						console.log(error);
 					}.bind(this));
 		}
-		else if(value && already_exists) {
+		else if(already_exists) {
 			alert("item already has that custom field");
 		}
-		else{
+		else if(type_mismatch){
+			alert("Not correct type");
+		}
+		else if(!value){
 			alert("field must have a value");
 		}
-
 	}
 
 	deleteCustomField(row, field){
@@ -214,11 +267,16 @@ class ItemEditor extends Component {
 	}
 
 	makeCustomTextBox(row, field){
+
 		var id = "createform-custom-row-"+row;
 		this.state.formIds.push(id);
 		var label = "";
-
-
+		//console.log(field);
+		for(var i = 0; i < this.state.allCustomFields.length; i ++){
+			if(this.state.allCustomFields[i]._id = field.feild){
+				label = this.state.allCustomFields[i].name;
+			}
+		}
 		var input = <input type="text"
 				className="form-control"
 				value={field.value}
@@ -226,16 +284,17 @@ class ItemEditor extends Component {
 				key={id+field.field}
 				onChange={e => this.handleFormChange(e, label)}>
 				</input>
-
-
 		return (
 			<div className="form-group" key={"createform-div-custom-row-"+field.field}>
-			  <label htmlFor={"createform-row-"+row}>{label}</label>
-			  {input}
+				<label htmlFor={"createform-row-"+row}>{label}</label>
+				{input}
 			</div>
 		);
 
+
+
 	}
+
 
 
 	makeTextBox(row, type, label, defaultValue){

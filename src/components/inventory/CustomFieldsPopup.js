@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import TagSelector from '../global/TagSelector.js';
 import axios from 'axios';
 import Select from 'react-select';
 
@@ -52,12 +51,12 @@ class CustomFieldsPopup extends Component {
 			<button type="button"
 				className="btn btn-outline-primary add-button"
 				data-toggle="modal"
-				data-target={"#fieldModal"}>
-				CF
+				data-target={"#makeCustomFieldModal"}>
+				Make CF
 			</button>
 
 			<div className="modal fade"
-				id={"fieldModal"}
+				id={"makeCustomFieldModal"}
 				tabIndex="-1"
 				role="dialog"
 				aria-labelledby="createLabel"
@@ -82,7 +81,7 @@ class CustomFieldsPopup extends Component {
 
 
 	makeForm(){
-
+		console.log("test");
 		var name = <input type="text"
 			className="form-control"
 			ref="field_name"
@@ -124,9 +123,10 @@ class CustomFieldsPopup extends Component {
 		this.instance.post('/api/customFields/', custom_field)
 	  	.then(function(response) {
 	        if (response.data.error) {
-        		console.log(response);
+        		console.log(response.data.error);
 	        } else {
-
+						console.log(response);
+						this.props.callback();
 	        }
 	      }.bind(this))
 	      .catch(function(error) {

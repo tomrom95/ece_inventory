@@ -7,6 +7,7 @@ import AddToCartButton from './AddToCartButton.js';
 import ItemEditor from './ItemEditor.js';
 import ItemDetailView from './ItemDetailView.js';
 import CustomFieldsPopup from './CustomFieldsPopup.js';
+import CustomFieldListPopup from './CustomFieldListPopup.js';
 
 import ShoppingCart from './ShoppingCart.js';
 
@@ -78,7 +79,7 @@ class InventoryTable extends Component {
 		super(props);
 		this.state = {
 			columnKeys: getKeys(this.props.data),
-			rows: getValues(this.props.data, getKeys(this.props.data))
+			rows: getValues(this.props.data, getKeys(this.props.data)),
 		}
 	}
 
@@ -88,6 +89,8 @@ class InventoryTable extends Component {
 			rows: getValues(newProps.data, getKeys(newProps.data))
 		});
 	}
+
+
 
 	render() {
 		return (
@@ -116,11 +119,16 @@ class InventoryTable extends Component {
 
 
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
-			list.push(<th key={"buttonSpace-0"}></th>);
-
+			list.push(
+					<CustomFieldListPopup
+									api={this.props.api}
+									key={"editfields-button"}
+									callback={this.props.callback}/>
+							);
 			list.push(
 					<CustomFieldsPopup
-									key={"makefields-button"}/>
+									key={"makefields-button"}
+									callback={this.props.callback}/>
 							);
 			list.push(<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>);
 			list.push(
