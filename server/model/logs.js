@@ -16,6 +16,10 @@ var LogSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Item'
   }],
+  custom_field: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'CustomField'
+  },
   request: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Request'
@@ -24,7 +28,7 @@ var LogSchema = new mongoose.Schema({
     type: String,
     enum: ['ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
       'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED',
-      'REQUEST_DELETED'],
+      'REQUEST_DELETED', 'FIELD_CREATED', 'FIELD_EDITED', 'FIELD_DELETED'],
     required: true,
   },
   time_stamp: {
