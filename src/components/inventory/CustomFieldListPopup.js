@@ -65,12 +65,22 @@ class CustomFieldListPopup extends Component {
           key={field_id+"-TYPE"}
           onChange={e=>this.handleTypeChange(e, field_id)}
         />
+    var is_private = <input type="checkbox"
+    			className="form-control"
+    			onChange={e=>this.handlePrivacyChange(e, field_id)}
+          ref={field_id+"-PRIVACY"}
+    			key={field_id+"-PRIVACY"}>
+    			</input>
 
 
     return (
       <div className="form-group" key={"createform-div-row-"+row}>
+        <label key={"name-row-"+row+"-"+field_id} htmlFor={"createform-row-"+row}>Name</label>
         {name_input}
+        <label key={"type-row-"+row+"-"+field_id} htmlFor={"createform-row-"+row}>Type</label>
         {type_input}
+        <label key={"privacy-row-"+row+"-"+field_id} htmlFor={"createform-row-"+row}>Privacy</label>
+        {is_private}
         <button type="button"
 					className="btn btn-outline-primary add-button"
 					key={"button-add-field"+row}
@@ -98,7 +108,6 @@ class CustomFieldListPopup extends Component {
 	}
 
   handleTypeChange(event, id) {
-    console.log(event);
     var new_type = event;
     var data = this.state.data;
     var allFields = this.state.allFields;
@@ -114,6 +123,19 @@ class CustomFieldListPopup extends Component {
 		});
 	}
 
+  handlePrivacyChange(event, id) {
+    var check_state = event;
+    var allFields = this.state.allFields;
+		for(var i = 0; i < this.state.allFields.length; i ++){
+      if(this.state.allFields[i]._id === id){
+        allFields[i].isPrivate = check_state;
+      }
+    }
+		this.setState({
+			allFields: allFields,
+		});
+	}
+
 
 	render() {
 		return (
@@ -122,7 +144,7 @@ class CustomFieldListPopup extends Component {
 				className="btn btn-outline-primary add-button"
 				data-toggle="modal"
 				data-target={"#editCustomFieldModal"}>
-				Show CFs
+				Edit Fields
 			</button>
 
 			<div className="modal fade"
@@ -160,10 +182,12 @@ class CustomFieldListPopup extends Component {
 	onSubmission(field_id) {
     var name_ref = field_id+"-NAME";
     var type_ref = field_id+"-TYPE";
+    var private_ref = field_id+"-PRIVACY";
+    console.log(this.refs[private_ref]);
 		var new_field = {
       name: this.refs[name_ref].value,
       type: this.refs[type_ref]._focusedOption.value,
-      isPrivate: false,
+      isPrivate: this.refs[private_ref].value,
     }
     console.log(this.refs[type_ref])
 		this.props.api.put('/api/customFields/' + field_id, new_field)

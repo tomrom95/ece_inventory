@@ -52,7 +52,7 @@ class CustomFieldsPopup extends Component {
 				className="btn btn-outline-primary add-button"
 				data-toggle="modal"
 				data-target={"#makeCustomFieldModal"}>
-				Make CF
+				Make Field
 			</button>
 
 			<div className="modal fade"
