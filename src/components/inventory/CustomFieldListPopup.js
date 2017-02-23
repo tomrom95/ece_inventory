@@ -162,16 +162,17 @@ class CustomFieldListPopup extends Component {
     var type_ref = field_id+"-TYPE";
 		var new_field = {
       name: this.refs[name_ref].value,
-      type: this.refs[type_ref].value,
+      type: this.refs[type_ref]._focusedOption.value,
       isPrivate: false,
     }
+    console.log(this.refs[type_ref])
 		this.props.api.put('/api/customFields/' + field_id, new_field)
 	  	.then(function(response) {
 	        if (response.data.error) {
         		console.log(response.data.error);
 	        } else {
 						console.log(response);
-						this.props.callback();
+						//this.props.callback();
 	        }
 	      }.bind(this))
 	      .catch(function(error) {
