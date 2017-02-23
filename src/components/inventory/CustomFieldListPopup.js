@@ -85,8 +85,15 @@ class CustomFieldListPopup extends Component {
 					className="btn btn-outline-primary add-button"
 					key={"button-add-field"+row}
 					onClick={e => this.onSubmission(field_id)}>
-					EDIT
+					Apply Changes
 				</button>
+        <button
+          key={"delete-field"+row}
+          onClick={()=>{this.deleteCustomField(field_id)}}
+          type="button"
+          className="btn btn-danger delete-button">
+          X
+        </button>
       </div>
     );
   }
@@ -137,6 +144,21 @@ class CustomFieldListPopup extends Component {
 	}
 
 
+  deleteCustomField(field_id){
+    this.props.api.delete('/api/customFields/' + field_id)
+      .then(function(response) {
+          if (response.data.error) {
+            alert(response.data.error);
+          } else {
+            this.props.callback();
+            alert("item deleted");
+
+          }
+        }.bind(this))
+        .catch(function(error) {
+          console.log(error);
+        }.bind(this));
+  }
 	render() {
 		return (
 		<th>
@@ -183,20 +205,18 @@ class CustomFieldListPopup extends Component {
     var name_ref = field_id+"-NAME";
     var type_ref = field_id+"-TYPE";
     var private_ref = field_id+"-PRIVACY";
-    console.log(this.refs[private_ref]);
 		var new_field = {
       name: this.refs[name_ref].value,
       type: this.refs[type_ref]._focusedOption.value,
       isPrivate: this.refs[private_ref].value,
     }
-    console.log(this.refs[type_ref])
 		this.props.api.put('/api/customFields/' + field_id, new_field)
 	  	.then(function(response) {
 	        if (response.data.error) {
-        		console.log(response.data.error);
-	        } else {
-						console.log(response);
-						//this.props.callback();
+
+          } else {
+						this.props.callback();
+            alert("changes applied to item");
 	        }
 	      }.bind(this))
 	      .catch(function(error) {
