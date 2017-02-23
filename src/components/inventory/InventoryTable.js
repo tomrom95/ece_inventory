@@ -123,7 +123,7 @@ class InventoryTable extends Component {
 		}
 		else {
     		list.push(<th key={"buttonSpace-1"}></th>);
-			list.push(<ShoppingCart key={"shopping-cart-button"}/>);
+			list.push(<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>);
 		}
 
 		return list;
@@ -164,7 +164,9 @@ class InventoryTable extends Component {
 			);
 			list.push(this.makeEditButton(data,id));
 			list.push(this.makeDeleteButton(id));
-			list.push(<td className="subtable-row" key={"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
+			list.push(<td className="subtable-row" key={"detail-view-" + id}> 
+						<ItemDetailView key={"detail-view-button-" + id} params={{itemID: id}}/> 
+					  </td>);
 
 			return list;
 		}
@@ -181,7 +183,7 @@ class InventoryTable extends Component {
 				key={"request-popup-id-"+ id}/>);
 				list.push(
 					<td className="subtable-row" key={"detail-view-" + id}> 
-						<ItemDetailView params={{itemID: id}}/> 
+						<ItemDetailView key={"detail-view-button-"+id} params={{itemID: id}}/> 
 					</td>);
 				return list;
 			}

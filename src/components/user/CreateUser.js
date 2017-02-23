@@ -82,53 +82,52 @@ class CreateUser extends React.Component {
     }
     return (
       <div className="row">
-        <div className="offset-md-4 col-md-4">
-          <div className="row">
+        <div className="offset-md-4 col-md-4 container">
+          <div>
             <div className="center-text">
-              <h4>Add a new user</h4>
+              <h4>Create a New User</h4>
             </div>
           </div>
           <div className="form-fields">
-            <div>
-              <label>Username *</label>
+            <div className="row form-group">
+              <label htmlFor={"username-field"}>Username *</label>
               <input
                 className="form-control"
                 type="text"
                 ref="username"
                 defaultValue=""
-              />
+                id={"username-field"}/>
             </div>
-            <div>
-              <label>Password *</label>
+            <div className="row form-group">
+              <label htmlFor={"pw-field"}>Password *</label>
               <input
                 className="form-control"
                 type="password"
                 ref="password"
                 defaultValue=""
-              />
+                id={"pw-field"}/>
             </div>
-            <div>
-              <label>Confirm Password *</label>
+            <div className="row form-group">
+              <label htmlFor={"confirm-field"}>Confirm Password *</label>
               <input
                 className="form-control"
                 type="password"
                 ref="passwordConfirm"
                 defaultValue=""
-              />
+                id={"confirm-field"}/>
             </div>
-            <div>
-              <label>Role *</label>
-              <select className="form-control" ref="role">
+            <div className="row form-group">
+              <label htmlFor={"role-field"}>Role *</label>
+              <select id={"role-field"} className="form-control" ref="role">
                 <option>STANDARD</option>
                 <option>MANAGER</option>
                 <option>ADMIN</option>
               </select>
             </div>
-            <div className="text-right">
+            <div className="text-right row">
               <button
                 className="btn btn-primary"
-                onClick={this.submitForm.bind(this)}
-              >
+                onClick={this.submitForm.bind(this)}>
                 Submit
               </button>
             </div>
