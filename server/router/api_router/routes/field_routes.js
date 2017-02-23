@@ -52,15 +52,15 @@ module.exports.putAPI = function(req, res){
   CustomField.findById(req.params.field_id, function(error, customField) {
     if (error) return res.send({error: error});
     if (!customField) return res.send({error: 'Could not find field to update'});
-    CustomField.update(
-      {_id: customField._id},
+    CustomField.findByIdAndUpdate(
+      customField._id,
       {$set: update},
       {new: true},
       function(error, newCustomField) {
         if (error) return res.send({error: error});
         LogHelpers.logCustomFieldEdit(customField, update, req.user, function(error) {
           if (error) return res.send({error: error});
-          res.json(customField);
+          res.json(newCustomField);
         });
       }
     );
