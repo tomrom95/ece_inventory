@@ -75,7 +75,7 @@ describe('Logging API Test', function () {
             logs[0].items.length.should.be.eql(1);
             String(logs[0].items[0]).should.be.eql(itemId);
             logs[0].initiating_user.should.be.eql(adminUser._id);
-            logs[0].type.should.be.eql('NEW');
+            logs[0].type.should.be.eql('ITEM_CREATED');
             should.not.exist(logs[0].affected_user);
             logs[0].description.should.be.eql('A new item called ' + res.body.name + ' was created.');
             done();
@@ -97,7 +97,7 @@ describe('Logging API Test', function () {
               logs[0].items.length.should.be.eql(1);
               logs[0].items[0].should.be.eql(item._id);
               logs[0].initiating_user.should.be.eql(adminUser._id);
-              logs[0].type.should.be.eql('DELETED');
+              logs[0].type.should.be.eql('ITEM_DELETED');
               should.not.exist(logs[0].affected_user);
               logs[0].description.should.be.eql('The item ' + item.name + ' was deleted from the inventory.');
               done();
@@ -125,7 +125,7 @@ describe('Logging API Test', function () {
             log.items.length.should.be.eql(1);
             log.items[0].should.be.eql(allItems['1k resistor']._id);
             log.initiating_user.should.be.eql(adminUser._id);
-            log.type.should.be.eql('EDIT');
+            log.type.should.be.eql('ITEM_EDITED');
             should.not.exist(log.affected_user);
             log.description.should.include('name from 1k resistor to 1k thingy');
             log.description.should.include('quantity from 1000 to 2000');
@@ -189,7 +189,7 @@ describe('Logging API Test', function () {
                 log.items.length.should.be.eql(1);
                 log.items[0].should.be.eql(item._id);
                 log.initiating_user.should.be.eql(adminUser._id);
-                log.type.should.be.eql('EDIT');
+                log.type.should.be.eql('ITEM_EDITED');
                 should.not.exist(log.affected_user);
                 log.description.should.be.eql('The item test_item was edited by changing the custom field '
                   + 'test_field from first value to new value.');
@@ -223,7 +223,7 @@ describe('Logging API Test', function () {
                 log.items.length.should.be.eql(1);
                 log.items[0].should.be.eql(item._id);
                 log.initiating_user.should.be.eql(adminUser._id);
-                log.type.should.be.eql('EDIT');
+                log.type.should.be.eql('ITEM_EDITED');
                 should.not.exist(log.affected_user);
                 log.description.should.be.eql('The item test_item was edited by changing the custom field '
                   + 'test_field from null to new value.');
@@ -253,7 +253,7 @@ describe('Logging API Test', function () {
                 log.items.length.should.be.eql(1);
                 log.items[0].should.be.eql(item._id);
                 log.initiating_user.should.be.eql(adminUser._id);
-                log.type.should.be.eql('EDIT');
+                log.type.should.be.eql('ITEM_EDITED');
                 should.not.exist(log.affected_user);
                 log.description.should.be.eql('The item test_item was edited by changing the custom field '
                   + 'test_field from first value to null.');
@@ -290,83 +290,315 @@ describe('Logging API Test', function () {
 
     });
 
-    it('logs disbursing an item', (done) => {
-      Request.remove({}, (err) => {
-        var newRequest = new Request({
-          user: standardUser._id,
-          items: [
-            {
-              item: allItems["1k resistor"]._id,
-              quantity: 2
-            },
-            {
-              item: allItems["2k resistor"]._id,
-              quantity: 5
-            },
-            {
-              item: allItems["Oscilloscope"]._id,
-              quantity: 1
-            }
-          ],
-          reason: "cuz"
-        });
-        newRequest.save(function(error, request) {
-          chai.request(server)
-            .patch('/api/requests/' + request._id)
-            .set('Authorization', adminToken)
-            .send({action: "DISBURSE"})
-            .end((err, res) => {
-              should.not.exist(err);
-              res.should.have.status(200);
-              Log.find({}, function(err, logs) {
-                should.not.exist(err);
-                logs.length.should.be.eql(1);
-                var log = logs[0];
-                log.items.length.should.be.eql(3);
-                log.items.forEach(function(item) {
-                  ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
-                    .should.include(item);
-                })
-                log.type.should.be.eql('DISBURSED');
-                log.initiating_user.should.be.eql(adminUser._id);
-                log.affected_user.should.be.eql(standardUser._id);
-                log.description.should.include('2 1k resistors');
-                log.description.should.include('5 2k resistors');
-                log.description.should.include('1 Oscilloscope');
-                log.description.should.include('The user admin disbursed');
-                log.description.should.include('to the user standard');
-                done();
-              });
-            });
+    describe('Logging requests', () =>{
+      var testRequest;
+      beforeEach((done) => {
+        Request.remove({}, (err) => {
+          should.not.exist(err);
+          var newRequest = new Request({
+            user: standardUser._id,
+            items: [
+              {
+                item: allItems["1k resistor"]._id,
+                quantity: 2
+              },
+              {
+                item: allItems["2k resistor"]._id,
+                quantity: 5
+              },
+              {
+                item: allItems["Oscilloscope"]._id,
+                quantity: 1
+              }
+            ],
+            reason: "cuz"
+          });
+          newRequest.save(function(error, request) {
+            should.not.exist(error);
+            testRequest = request;
+            done();
+          });
         });
       });
-    });
 
-    it('should not log if disbursement fails', (done) => {
-      Request.remove({}, (err) => {
-        var newRequest = new Request({
-          user: standardUser._id,
-          items: [{
-            item: allItems["1k resistor"]._id,
-            quantity: 2000
-          }],
-          reason: "cuz"
-        });
-        newRequest.save(function(error, request) {
-          chai.request(server)
-            .patch('/api/requests/' + request._id)
-            .set('Authorization', adminToken)
-            .send({action: "DISBURSE"})
-            .end((err, res) => {
+      it('logs disbursing an item', (done) => {
+        chai.request(server)
+          .patch('/api/requests/' + testRequest._id)
+          .set('Authorization', adminToken)
+          .send({action: "DISBURSE"})
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
               should.not.exist(err);
-              res.should.have.status(200);
-              Log.find({}, function(err, logs) {
-                should.not.exist(err);
-                logs.length.should.be.eql(0);
-                done();
-              });
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.length.should.be.eql(3);
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              })
+              log.type.should.be.eql('REQUEST_DISBURSED');
+              log.initiating_user.should.be.eql(adminUser._id);
+              log.affected_user.should.be.eql(standardUser._id);
+              log.description.should.include('2 1k resistors');
+              log.description.should.include('5 2k resistors');
+              log.description.should.include('1 Oscilloscope');
+              log.description.should.include('The user admin disbursed');
+              log.description.should.include('to the user standard');
+              done();
             });
+          });
+      });
+
+      it('should not log if disbursement fails', (done) => {
+        Request.remove({}, (err) => {
+          var newRequest = new Request({
+            user: standardUser._id,
+            items: [{
+              item: allItems["1k resistor"]._id,
+              quantity: 2000
+            }],
+            reason: "cuz"
+          });
+          newRequest.save(function(error, request) {
+            chai.request(server)
+              .patch('/api/requests/' + request._id)
+              .set('Authorization', adminToken)
+              .send({action: "DISBURSE"})
+              .end((err, res) => {
+                should.not.exist(err);
+                res.should.have.status(200);
+                Log.find({}, function(err, logs) {
+                  should.not.exist(err);
+                  logs.length.should.be.eql(0);
+                  done();
+                });
+              });
+          });
         });
+      });
+
+      it('logs a standard user creating a request for himself', (done) => {
+        chai.request(server)
+          .post('/api/requests/')
+          .set('Authorization', standardToken)
+          .send({
+            user: standardUser._id,
+            items: [
+              {
+                item: allItems["1k resistor"]._id,
+                quantity: 10,
+              },
+              {
+                item: allItems["Oscilloscope"]._id,
+                quantity: 1,
+              }
+            ],
+            reason: "cuz"
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.length.should.be.eql(2);
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              });
+              log.type.should.be.eql('REQUEST_CREATED');
+              log.initiating_user.should.be.eql(standardUser._id);
+              should.not.exist(log.affectedUser);
+              log.description.should.include('10 1k resistors');
+              log.description.should.include('1 Oscilloscope');
+              log.description.should.include('The user standard requested');
+              done();
+            });
+          });
+      });
+
+      it('logs an admin user creating a request for someone else', (done) => {
+        chai.request(server)
+          .post('/api/requests/')
+          .set('Authorization', adminToken)
+          .send({
+            user: standardUser._id,
+            items: [
+              {
+                item: allItems["1k resistor"]._id,
+                quantity: 10,
+              },
+              {
+                item: allItems["Oscilloscope"]._id,
+                quantity: 1,
+              }
+            ],
+            reason: "cuz"
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              });
+              log.type.should.be.eql('REQUEST_CREATED');
+              log.initiating_user.should.be.eql(adminUser._id);
+              log.affected_user.should.be.eql(standardUser._id);
+              log.description.should.include("The user admin requested");
+              log.description.should.include("for the user standard.");
+              done();
+            });
+          });
+      });
+
+      it('logs an editing a request', (done) => {
+        chai.request(server)
+          .put('/api/requests/' + testRequest._id)
+          .set('Authorization', adminToken)
+          .send({
+            reason: "different reason",
+            status: "APPROVED"
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              })
+              log.type.should.be.eql('REQUEST_EDITED');
+              log.initiating_user.should.be.eql(adminUser._id);
+              log.affected_user.should.be.eql(standardUser._id);
+              log.description.should.include("The user admin edited standard's request by changing");
+              log.description.should.include("reason from cuz to different reason");
+              log.description.should.include("status from PENDING to APPROVED");
+              done();
+            });
+          });
+      });
+
+      it('logs someone editing his/her own request', (done) => {
+        chai.request(server)
+          .put('/api/requests/' + testRequest._id)
+          .set('Authorization', standardToken)
+          .send({
+            reason: "different reason",
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.initiating_user.should.be.eql(standardUser._id);
+              should.not.exist(log.affected_user);
+              log.description.should.include("The user standard edited his/her own request by changing");
+              done();
+            });
+          });
+      });
+
+      it('does not log editing a request if nothing changed', (done) => {
+        chai.request(server)
+          .put('/api/requests/' + testRequest._id)
+          .set('Authorization', adminToken)
+          .send({
+            reason: "cuz"
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(0);
+              done();
+            });
+          });
+      });
+
+      it('logs someone cancelling their own request', (done) => {
+        chai.request(server)
+          .delete('/api/requests/' + testRequest._id)
+          .set('Authorization', standardToken)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              })
+              log.type.should.be.eql('REQUEST_DELETED');
+              log.initiating_user.should.be.eql(standardUser._id);
+              should.not.exist(log.affected_user);
+              log.description.should.be.eql("The user standard cancelled his/her own request.");
+              done();
+            });
+          });
+      });
+
+      it('logs an admin cancelling another persons request', (done) => {
+        chai.request(server)
+          .delete('/api/requests/' + testRequest._id)
+          .set('Authorization', adminToken)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              })
+              log.type.should.be.eql('REQUEST_DELETED');
+              log.initiating_user.should.be.eql(adminUser._id);
+              log.affected_user.should.be.eql(standardUser._id);
+              log.description.should.be.eql("The user admin cancelled standard's request.");
+              done();
+            });
+          });
+      });
+
+      it('logs a manager cancelling another persons request', (done) => {
+        chai.request(server)
+          .delete('/api/requests/' + testRequest._id)
+          .set('Authorization', managerToken)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              })
+              log.type.should.be.eql('REQUEST_DELETED');
+              log.initiating_user.should.be.eql(managerUser._id);
+              log.affected_user.should.be.eql(standardUser._id);
+              log.description.should.be.eql("The user manager cancelled standard's request.");
+              done();
+            });
+          });
       });
     });
 
@@ -380,19 +612,19 @@ describe('Logging API Test', function () {
         {
           initiating_user: adminUser._id,
           items: [allItems["1k resistor"]._id],
-          type: 'NEW',
+          type: 'ITEM_CREATED',
           description: 'added 1k resistor'
         },
         {
           initiating_user: managerUser._id,
           items: [allItems["2k resistor"]._id],
-          type: 'DELETED',
+          type: 'ITEM_DELETED',
           description: 'deleted 2k resistor'
         },
         {
           initiating_user: adminUser._id,
           items: [allItems["5k resistor"]._id],
-          type: 'NEW',
+          type: 'ITEM_CREATED',
           description: 'added 4k resistor'
         }
       ];
@@ -439,21 +671,21 @@ describe('Logging API Test', function () {
         {
           initiating_user: adminUser._id,
           items: [allItems["1k resistor"]._id],
-          type: 'NEW',
+          type: 'ITEM_CREATED',
           description: 'added 1k resistor',
           time_stamp: new Date('2017-02-10')
         },
         {
           initiating_user: managerUser._id,
           items: [allItems["2k resistor"]._id],
-          type: 'DELETED',
+          type: 'ITEM_DELETED',
           description: 'deleted 2k resistor',
           time_stamp: new Date('2017-02-11')
         },
         {
           initiating_user: adminUser._id,
           items: [allItems["5k resistor"]._id],
-          type: 'NEW',
+          type: 'ITEM_CREATED',
           description: 'added 4k resistor',
           time_stamp: new Date('2017-02-12')
         },
@@ -461,7 +693,7 @@ describe('Logging API Test', function () {
           initiating_user: managerUser._id,
           affected_user: standardUser._id,
           items: [allItems["Oscilloscope"]._id, allItems["120V"]._id],
-          type: 'DISBURSED',
+          type: 'REQUEST_DISBURSED',
           description: 'Disbursed oscilloscope and 120V',
           time_stamp: new Date('2017-02-13'),
         },
@@ -469,7 +701,7 @@ describe('Logging API Test', function () {
           initiating_user: adminUser._id,
           affected_user: managerUser._id,
           items: [allItems["Oscilloscope"]._id, allItems["100k resistor"]._id],
-          type: 'DISBURSED',
+          type: 'REQUEST_DISBURSED',
           description: 'Disbursed oscilloscope and 100k resistor',
           time_stamp: new Date('2017-02-14'),
         },
@@ -516,7 +748,7 @@ describe('Logging API Test', function () {
 
     it('filters by type', (done) => {
       chai.request(server)
-        .get('/api/logs?type=' + 'NEW')
+        .get('/api/logs?type=' + 'ITEM_CREATED')
         .set('Authorization', adminToken)
         .end((err, res) => {
           should.not.exist(err);
@@ -524,7 +756,7 @@ describe('Logging API Test', function () {
           res.body.should.be.a('array');
           res.body.length.should.be.eql(2);
           res.body.forEach(function(log) {
-            log.type.should.be.eql('NEW');
+            log.type.should.be.eql('ITEM_CREATED');
           });
           done();
         });

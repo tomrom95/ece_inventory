@@ -505,7 +505,8 @@ params:
 {
 	item_id: String,
 	item_name: String,
-	type: String,
+	type: String, // ('ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
+		'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED')
 	user_id: String,
 	start_date: String, // in format '2017-01-25' (YEAR-MONTH-DAY)
 	end_date: String // in format '2017-01-25' (YEAR-MONTH-DAY)
@@ -527,14 +528,16 @@ return:
 			netid: String,
 			first_name: String,
 			last_name: String
-		}
+		},
+		request: String,
 		items: [
 			{
 				_id: String,
 				name: String,
 			}
 		],
-  	type: String ('EDIT', 'NEW', 'DELETED', 'FULFILLED'),
+  	type: String, // ('ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
+      'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED')
     time_stamp: String,
 		description: String
   }

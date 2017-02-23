@@ -35,7 +35,11 @@ var RequestSchema = new mongoose.Schema({
     default: 'PENDING'
   },
   requestor_comment: String,
-  reviewer_comment: String
+  reviewer_comment: String,
+  is_cancelled: {
+    type: Boolean,
+    default: false
+  }
 })
 RequestSchema.plugin(mongoosePaginate);
 
