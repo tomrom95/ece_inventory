@@ -160,8 +160,6 @@ class CustomFieldListPopup extends Component {
 	onSubmission(field_id) {
     var name_ref = field_id+"-NAME";
     var type_ref = field_id+"-TYPE";
-    console.log(this.refs[name_ref].value);
-    console.log(name_ref);
 		var new_field = {
       name: this.refs[name_ref].value,
       type: this.refs[type_ref].value,

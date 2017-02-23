@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import '../../App.css';
 import TableRow from './TableRow.js';
 import ItemWizard from './ItemWizard.js';
-import RequestPopup from './RequestPopup.js';
 import AddToCartButton from './AddToCartButton.js';
 import ItemEditor from './ItemEditor.js';
 import ItemDetailView from './ItemDetailView.js';
@@ -141,7 +140,7 @@ class InventoryTable extends Component {
 		}
 		else {
     		list.push(<th key={"buttonSpace-1"}></th>);
-			list.push(<ShoppingCart key={"shopping-cart-button"}/>);
+			list.push(<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>);
 		}
 
 		return list;
@@ -182,13 +181,17 @@ class InventoryTable extends Component {
 			);
 			list.push(this.makeEditButton(data,id));
 			list.push(this.makeDeleteButton(id));
-			list.push(<td className="subtable-row" key={"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
+
+			list.push(<td className="subtable-row" key={"detail-view-" + id}>
+						<ItemDetailView key={"detail-view-button-" + id} params={{itemID: id}}/>
+					  </td>);
+
 			return list;
 		}
 
 		else  {
 			list.push(
-			<RequestPopup
+			<AddToCartButton
 				itemName={data.Name}
 				modelName={data.Model}
 				itemId={data.meta.id}
@@ -196,7 +199,10 @@ class InventoryTable extends Component {
 				ref={data.meta.id}
 				role={JSON.parse(localStorage.getItem('user')).role}
 				key={"request-popup-id-"+ id}/>);
-				list.push(<td className="subtable-row" key={"detail-view-" + id}> <ItemDetailView params={{itemID: id}}/> </td>);
+				list.push(
+					<td className="subtable-row" key={"detail-view-" + id}>
+						<ItemDetailView key={"detail-view-button-"+id} params={{itemID: id}}/>
+					</td>);
 				return list;
 			}
 	}
