@@ -751,7 +751,7 @@ describe('Cart API Test', function () {
       });
       });
     });
-    it('PATCH cart for standard user with user field filled as admin, request still for standard User', (done) => {
+    it('PATCH cart for standard user with user field filled as admin, error thrown', (done) => {
       Cart.findOne({user: standardUser._id}, function(err, cart){
         should.not.exist(err);
         chai.request(server)
@@ -766,17 +766,12 @@ describe('Cart API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.message.should.eql("Request successful");
-          res.body.request.user.should.eql(standardUser._id.toString());
-          Request.findById(res.body.request._id, function(err, request){
-            should.not.exist(err);
-            request.user.should.eql(standardUser._id);
-            done();
-          });
+          res.body.error.should.eql("Standard user cannot request for another user");
+          done();
       });
       });
     });
-    it('PATCH cart for manager user with user field filled as admin, request still for manager User', (done) => {
+    it('PATCH cart for manager user with user field filled as standard user', (done) => {
       Cart.findOne({user: managerUser._id}, function(err, cart){
         should.not.exist(err);
         chai.request(server)
@@ -785,17 +780,17 @@ describe('Cart API Test', function () {
         .send({
           action: 'CHECKOUT',
           reason: 'Test request',
-          user: adminUser._id
+          user: standardUser._id
         })
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.message.should.eql("Request successful");
-          res.body.request.user.should.eql(managerUser._id.toString());
+          res.body.request.user.should.eql(standardUser._id.toString());
           Request.findById(res.body.request._id, function(err, request){
             should.not.exist(err);
-            request.user.should.eql(managerUser._id);
+            request.user.should.eql(standardUser._id);
             done();
           });
       });

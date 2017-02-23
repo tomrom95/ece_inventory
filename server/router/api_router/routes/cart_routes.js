@@ -98,7 +98,8 @@ module.exports.patchAPI = function(req, res){
 }
 function checkout (initiatingUser, enteredUserID, reasonString, next) {
   if(!reasonString) return next('Reason not provided in checkout');
-  var requestingUserID =  (initiatingUser.role === 'ADMIN' &&
+  if(initiatingUser.role === 'STANDARD' && enteredUserID) return next('Standard user cannot request for another user');
+  var requestingUserID =  (initiatingUser.role !== 'STANDARD' &&
                           enteredUserID &&
                           initiatingUser._id != enteredUserID) ?
                           // If you are admin and the user field exists and is not you
