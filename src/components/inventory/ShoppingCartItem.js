@@ -128,10 +128,7 @@ class ShoppingCartItem extends Component {
 			<div className="container">
 			    <div className="row">
 			    	{"Model: " + getString(this.state.modelNumber)}
-			    </div>
-			    <div className="row">
-			    	{"Requested For: "}
-			    </div>			    
+			    </div>		    
 			    <div className="row" key={"qty-textbox-"+this.state.id}>
 			  		<label className="cart-quantity-label" htmlFor={"qty-"+this.state.id}>{"Quantity:"}</label>
 			  		<input type={"number"} 
