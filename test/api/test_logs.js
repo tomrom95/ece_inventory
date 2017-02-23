@@ -137,6 +137,27 @@ describe('Logging API Test', function () {
         });
     });
 
+    it('logs editing an item with a previously undefined field', (done) => {
+      chai.request(server)
+        .put('/api/inventory/' + allItems['1k resistor']._id)
+        .set('Authorization', adminToken)
+        .send({
+          model_number: '1KR',
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Log.find({}, function(err, logs) {
+            should.not.exist(err);
+            logs.length.should.be.eql(1);
+            var log = logs[0];
+            log.items.length.should.be.eql(1);
+            log.description.should.include('model_number from undefined to "1KR"');
+            done();
+          });
+        });
+    });
+
     it('should not log edit if nothing was actually changed', (done) => {
       chai.request(server)
         .put('/api/inventory/' + allItems['1k resistor']._id)
