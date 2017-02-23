@@ -294,6 +294,7 @@ describe('Logging API Test', function () {
       var testRequest;
       beforeEach((done) => {
         Request.remove({}, (err) => {
+          should.not.exist(err);
           var newRequest = new Request({
             user: standardUser._id,
             items: [
@@ -313,6 +314,7 @@ describe('Logging API Test', function () {
             reason: "cuz"
           });
           newRequest.save(function(error, request) {
+            should.not.exist(error);
             testRequest = request;
             done();
           });
@@ -551,7 +553,7 @@ describe('Logging API Test', function () {
           });
       });
 
-      it('logs someone cancelling another persons request', (done) => {
+      it('logs an admin cancelling another persons request', (done) => {
         chai.request(server)
           .delete('/api/requests/' + testRequest._id)
           .set('Authorization', adminToken)
@@ -570,6 +572,30 @@ describe('Logging API Test', function () {
               log.initiating_user.should.be.eql(adminUser._id);
               log.affected_user.should.be.eql(standardUser._id);
               log.description.should.be.eql("The user admin cancelled standard's request.");
+              done();
+            });
+          });
+      });
+
+      it('logs a manager cancelling another persons request', (done) => {
+        chai.request(server)
+          .delete('/api/requests/' + testRequest._id)
+          .set('Authorization', managerToken)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.forEach(function(item) {
+                ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
+                  .should.include(item);
+              })
+              log.type.should.be.eql('REQUEST_DELETED');
+              log.initiating_user.should.be.eql(managerUser._id);
+              log.affected_user.should.be.eql(standardUser._id);
+              log.description.should.be.eql("The user manager cancelled standard's request.");
               done();
             });
           });
