@@ -10,7 +10,7 @@ describe('Logs', function() {
     var log = new Log({
       initiating_user: '1234',
       items: ['53cb6b9b4f4ddef1ad47f943'],
-      type: 'DELETED',
+      type: 'ITEM_DELETED',
       description: ""
     });
     log.validate(function (err) {
@@ -33,7 +33,7 @@ describe('Logs', function() {
     var log = new Log({
       initiating_user: '53cb6b9b4f4ddef1ad47f943',
       items: ['53cb6b9b4f4ddef1ad47f943'],
-      type: 'EDIT',
+      type: 'ITEM_EDITED',
       description: 'Changed quantity from 3 to 4'
     });
     log.validate(function (err) {

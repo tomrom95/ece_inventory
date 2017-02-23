@@ -160,15 +160,18 @@ module.exports.putAPI = function(req, res){
 };
 
 module.exports.deleteAPI = function(req, res){
-  Item.findByIdAndUpdate(
-    req.params.item_id,
-    {$set: {is_deleted: true}},
-    function(err, item) {
-      if (err) return res.send(err);
-      LogHelpers.logDeletion(item, req.user, function(error) {
+  Item.findById(req.params.item_id, function(error, item) {
+    if (error) return res.send({error: error});
+    if (item.is_deleted) {
+      res.send({error: 'Item has already been marked as deleted'})
+    }
+    item.is_deleted = true;
+    item.save(function(error, newItem) {
+      if (error) return res.send(error);
+      LogHelpers.logDeletion(newItem, req.user, function(error) {
         if (error) return res.send({error: error});
         return res.json({message: "Delete successful"});
       });
-    }
-  );
+    })
+  });
 }
