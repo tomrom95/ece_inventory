@@ -56,11 +56,9 @@ class ItemEditor extends Component {
 		});
 	}
 
-
-
-
-
 	handleFormChange(event, label) {
+		console.log(this.state.data);
+		console.log(label);
 		var data = this.state.data;
 		data[label] = event.target.value;
 		this.setState({
@@ -81,6 +79,7 @@ class ItemEditor extends Component {
 				if(vals[i].length > 0){
 					for(var j = 0; j < vals[i].length; j++){
 						var field = vals[i][j];
+						console.log(field);
 						list.push(this.makeCustomTextBox(i, field));
 						list.push(
 							<button
@@ -156,6 +155,9 @@ class ItemEditor extends Component {
 						}
 						type = response.data.type;
 						name = response.data.name;
+						console.log(custom_field);
+						console.log(response.data._id);
+						console.log(response.data.name);
 						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAlpha(value)){
 							type_mismatch = true;
 						}
@@ -181,6 +183,7 @@ class ItemEditor extends Component {
 	}
 
 	addField(value, already_exists, type_mismatch, field_params){
+		console.log(field_params);
 		if(value && !already_exists && !type_mismatch){
 			this.props.api.post('/api/inventory/'+ this.props.itemId+ "/customFields/",  field_params)
 				.then(function(response) {
@@ -224,15 +227,14 @@ class ItemEditor extends Component {
 	}
 
 	makeCustomTextBox(row, field){
-		console.log(this.state.allCustomFields);
-		console.log(field);
-
 		var id = "createform-custom-row-"+row;
 		this.state.formIds.push(id);
 		var label = "";
+
 		for(var i = 0; i < this.state.allCustomFields.length; i ++){
-			if(this.state.allCustomFields[i].field === field.feild){
-				label = this.state.allCustomFields[i].name;
+			if(this.state.allCustomFields[i]._id === field.field){
+
+				label = this.state.allCustomFields[i].name + " " + "(" + this.state.allCustomFields[i].type + ")";
 			}
 		}
 		var input = <input type="text"

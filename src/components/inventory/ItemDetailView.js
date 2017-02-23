@@ -46,7 +46,7 @@ class ItemDetailView extends React.Component {
     var fields = this.state.item.custom_fields;
     if(fields.length === 0){
       return(
-        <div>
+        <div className="row">
           <p>No custom fields</p>
 
         </div>
@@ -60,8 +60,8 @@ class ItemDetailView extends React.Component {
   				label = this.props.allCustomFields[i].name;
   			}
       }
-      html_list.push(<div className="row" key={fields[i].name+i}>
-                        <p><strong>{label}: </strong>
+      html_list.push(<div className="row" key={fields[i].field+i}>
+                        <p key={"row-"+fields[i].field+i}><strong key={"strong-"+fields[i].field+i}>{label}: </strong>
                           {fields[i].value}
                         </p>
                       </div>);
