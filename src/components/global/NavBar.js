@@ -36,6 +36,9 @@ class NavBar extends Component {
                 <Link to="/CreateUser" className="nav-link">CREATE USER</Link>
               </li>
               <li className="nav-item">
+                <Link to="/EditUsers" className="nav-link">EDIT USERS</Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/Transactions" className="nav-link">TRANSACTIONS</Link>
               </li>
               <li className="nav-item btn-nav signout-button">
