@@ -86,7 +86,6 @@ class EditUsers extends Component {
 		this.instance.get('api/users/'+id)
 		.then (function (response) {
 			if (response.data.error) {
-				console.log(response.data.error);
 				alert(response.data.error);
 				return;
 			}
@@ -126,7 +125,6 @@ class EditUsers extends Component {
 		this.instance.get('api/users/'+id)
 		.then (function (response) {
 			if (response.data.error) {
-				console.log(response.data.error);
 				alert(response.data.error);
 				return;
 			}
@@ -153,6 +151,10 @@ class EditUsers extends Component {
 	}
 
 	render() {
+		if (JSON.parse(localStorage.getItem('user')).role !== "ADMIN") {
+			return <div className="text-center">You are not allowed to access this page.</div>
+		}
+
 		return ( 
 			<div className="container">
 				<div className="row form-group">

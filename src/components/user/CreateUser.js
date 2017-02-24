@@ -75,7 +75,7 @@ class CreateUser extends React.Component {
     }
     if (this.state.currUser.role === "STANDARD") {
       return (
-        <div>
+        <div className="text-center">
           You are not allowed to access this page
         </div>
       );

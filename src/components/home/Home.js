@@ -3,6 +3,7 @@ import NavBar from '../global/NavBar.js';
 import '../../App.css';
 import axios from 'axios';
 import querystring from 'querystring';
+import {browserHistory} from 'react-router';
 
 class Home extends Component {
   constructor(props) {
@@ -44,6 +45,7 @@ class Home extends Component {
   }
 
   login() {
+    browserHistory.push('/Inventory');
     axios.post('https:' + '//' + location.hostname + ':3001' + '/auth/login', {
       username: this.state.name,
       password: this.state.passwrd,
@@ -57,6 +59,7 @@ class Home extends Component {
           user: res.data.user,
           token: res.data.token,
         });
+
       }
       else{
         console.log(res.data.error);
@@ -65,7 +68,6 @@ class Home extends Component {
     .catch(function (error) {
       console.log(error);
     });
-
   }
 
   checkForOAuth() {

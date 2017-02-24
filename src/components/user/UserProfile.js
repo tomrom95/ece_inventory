@@ -6,7 +6,7 @@ class UserProfile extends Component {
   /*
     Props are:
       username (string)
-      isAdmin (boolean) --> this needs to be changed to an enum
+      role (string)
   */
 
   constructor(props) {
