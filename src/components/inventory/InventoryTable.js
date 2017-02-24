@@ -128,8 +128,6 @@ class InventoryTable extends Component {
 			list.push(<th key={keys[i]+"-inventorycol"}> {keys[i]} </th>);
 		}
 
-
-
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
 			list.push(
 					<CustomFieldListPopup
