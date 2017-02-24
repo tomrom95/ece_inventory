@@ -86,35 +86,20 @@ class ItemDetailView extends React.Component {
   }
 
   render() {
-    var button = null;
     if (this.state.error) {
       return (<div>{this.state.error}</div>);
     } else if (this.state.item == null) {
       return (<div></div>);
     }
-
-    if (this.props.isButton === true) {
-      button = (<button type="button"
-                  className="btn btn-outline-primary info-button"
-                  data-toggle="modal"
-                  data-target={"#infoModal-"+this.props.params.itemID}
-                  onClick={() => this.loadData()}>
-                    <span className="fa fa-info"></span>
-                </button>);
-    }
-    else if (this.props.isButton === false) {
-      button = <a href={"#"}
-                  data-toggle="modal"
-                  data-target={"#infoModal-"+this.props.params.itemID}
-                  onClick={() => this.loadData()}>
-                    {this.state.item.name}
-                </a>
-    }
-
     return (
       <div>
-
-        {button}
+        <button type="button"
+          className="btn btn-outline-primary info-button"
+          data-toggle="modal"
+          data-target={"#infoModal-"+this.props.params.itemID}
+          onClick={() => this.loadData()}>
+            <span className="fa fa-info"></span>
+        </button>
 
         <div className="modal fade"
               id={"infoModal-"+this.props.params.itemID}
@@ -180,6 +165,7 @@ class ItemDetailView extends React.Component {
       );
     }
     else{
+      console.log("test");
       return(
         <div className="row request-subtable">
           <CurrentOrders
