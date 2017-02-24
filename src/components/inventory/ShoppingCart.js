@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ShoppingCartItem from './ShoppingCartItem.js';
+import UserSelect from '../user/UserSelect.js';
 import '../../App.css';
 
 class ShoppingCart extends Component {
@@ -23,9 +24,9 @@ class ShoppingCart extends Component {
 				console.log(response.data.error);
 			}
 			else {
-				// DUMMY ITEM
 				this.setState({
-					items: response.data.items
+					items: response.data.items,
+					checked: false
 				});
 			}
 		}.bind(this));
@@ -60,18 +61,22 @@ class ShoppingCart extends Component {
 			reason: reason
 		}
 
+		var role = JSON.parse(localStorage.getItem('user')).role;
+		if (role === "ADMIN" || role==="MANAGER") {
+			if (this.state.checked === true)
+				params.user = this.refs.userSelect.getSelectedUserId();
+		}
+
 		this.props.api.patch('api/cart/', params)
 		.then(function (response) {
 			if (response.data.error) {
 				alert(response.data.error);
 			}
 			else {
-				alert(response.data.message);
+				//alert(response.data.message);
 			}
 		}.bind(this));
 	}
-
-
 	
 	makeReasonBox() {
 		return ((this.state.items.length===0) ? <div>Your cart is currently empty</div> 
@@ -80,6 +85,64 @@ class ShoppingCart extends Component {
 		                          <input className="form-control" type="text" defaultValue="" id="cart-reason"/>
 		                    </div>)
 	  	);
+	}
+	
+	handleCheckboxChange(event) {
+	    var value = event.target.checked;
+	    this.setState({
+	      checked: value
+	    });
+	}
+
+	makeCheckBox(){
+		var role = JSON.parse(localStorage.getItem('user')).role;
+		if (role === "ADMIN" || role === "MANAGER") {
+			return (
+				<div className="row request-quantity" key={"request-on-behalf-row"}>
+				  <div className="col-xs-10">
+				  	<label htmlFor={"request-on-behalf-box"}>Assign to User</label>
+				  </div>
+				  <div className="col-xs-2 cart-checkbox">
+				  	<input type={"checkbox"} 
+				  			id={"request-on-behalf-row"} 
+				  			onChange={e => this.handleCheckboxChange(e)}
+				  			checked={this.state.checked}>
+				  	</input>
+				  </div>
+				</div>
+			);
+		}
+		else return null;
+	}
+
+	requestOnBehalf() {
+		if (this.state.checked === true) {
+			return (		
+				<div className="row request-quantity">
+					<UserSelect ref="userSelect" api={this.props.api}/>
+				</div>
+			);
+		}
+		else return null;
+	}
+
+	makeDirectRequestRegion() {
+		if (this.state.items.length === 0) {
+			return null;
+		}
+	 	else if (this.state.items.length > 0)
+	 		return (
+		        <div className="form-group row">
+		        	{this.makeCheckBox()}
+		        	{this.requestOnBehalf()}	                 
+		        </div>
+	  		);
+	}
+
+	clearCheckbox() {
+		this.setState({
+			checked: false
+		});
 	}
 
 	render() {
@@ -110,12 +173,17 @@ class ShoppingCart extends Component {
 			        	</div>
 			        	<div className="container">
 			        		{this.makeReasonBox()}
-			       
+			       			{this.makeDirectRequestRegion()}
 	                    </div>
 
 				      </div>
 				      <div className="modal-footer">
-				      	<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+				      	<button type="button" 
+				      			className="btn btn-secondary" 
+				      			data-dismiss="modal"
+				      			onClick={() => this.clearCheckbox()}>
+				      		Close
+				      	</button>
 				        <button onClick={() => this.sendRequests()} 
 				        		type="button" 
 				        		data-dismiss="modal" 

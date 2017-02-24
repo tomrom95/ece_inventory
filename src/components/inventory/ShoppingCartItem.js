@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
+import LogItem from '../logging/LogItem.js';
 
 function getString(str) {
 	if (str === undefined || str === null || str.trim().length === 0) {

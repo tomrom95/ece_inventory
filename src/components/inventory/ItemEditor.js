@@ -4,7 +4,6 @@ import TagSelector from '../global/TagSelector.js';
 import CustomFieldSelect from './CustomFieldSelect.js';
 import validator from 'validator';
 
-
 function getKeys(data) {
 	return Object.keys(data);
 }
