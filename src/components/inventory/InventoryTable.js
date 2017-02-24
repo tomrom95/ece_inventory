@@ -5,6 +5,9 @@ import ItemWizard from './ItemWizard.js';
 import AddToCartButton from './AddToCartButton.js';
 import ItemEditor from './ItemEditor.js';
 import ItemDetailView from './ItemDetailView.js';
+import CustomFieldsPopup from './CustomFieldsPopup.js';
+import CustomFieldListPopup from './CustomFieldListPopup.js';
+
 import ShoppingCart from './ShoppingCart.js';
 
 var meta;
@@ -51,7 +54,8 @@ function getPrefill(data) {
 		"Description": data["Description"],
 		"Location": data["Location"],
 		"Vendor Info": data["Vendor"],
-		"Tags": data["Tags"]
+		"Tags": data["Tags"],
+		"Custom Fields": data["Custom Fields"],
 	});
 }
 
@@ -63,7 +67,8 @@ function getEmptyPrefill() {
 		"Description": "",
 		"Location": "",
 		"Vendor Info": "",
-		"Tags": ""
+		"Tags": "",
+		"Custom Fields": "",
 	});
 }
 
@@ -73,7 +78,8 @@ class InventoryTable extends Component {
 		super(props);
 		this.state = {
 			columnKeys: getKeys(this.props.data),
-			rows: getValues(this.props.data, getKeys(this.props.data))
+			rows: getValues(this.props.data, getKeys(this.props.data)),
+			allCustomFields: [],
 		}
 	}
 
@@ -83,6 +89,20 @@ class InventoryTable extends Component {
 			rows: getValues(newProps.data, getKeys(newProps.data))
 		});
 	}
+
+	componentWillMount(){
+		this.props.api.get('/api/customFields')
+      .then(function(response) {
+        if (response.data.error) {
+          console.log(response.data.error);
+        }
+        this.setState({allCustomFields: response.data});
+      }.bind(this))
+      .catch(function(error) {
+        console.log(error);
+      });
+	}
+
 
 	render() {
 		return (
@@ -111,15 +131,27 @@ class InventoryTable extends Component {
 
 
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
-			list.push(<th key={"buttonSpace-0"}></th>);
-    		list.push(<th key={"buttonSpace-1"}></th>);
+			list.push(
+					<CustomFieldListPopup
+									api={this.props.api}
+									key={"editfields-button"}
+									callback={this.props.callback}/>
+							);
+			list.push(
+					<CustomFieldsPopup
+									api={this.props.api}
+									key={"makefields-button"}
+									callback={this.props.callback}/>
+							);
 			list.push(<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>);
 			list.push(
 					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
 	          			key={"makeitem-button"}
-	          			callback={this.props.callback}/>
+	          			callback={this.props.callback}
+									allCustomFields={this.state.allCustomFields}/>
 	          	);
+
 		}
 		else {
     		list.push(<th key={"buttonSpace-1"}></th>);
@@ -164,8 +196,11 @@ class InventoryTable extends Component {
 			);
 			list.push(this.makeEditButton(data,id));
 			list.push(this.makeDeleteButton(id));
-			list.push(<td className="subtable-row" key={"detail-view-" + id}> 
-						<ItemDetailView key={"detail-view-button-" + id} params={{itemID: id}}/> 
+
+			list.push(<td className="subtable-row" key={"detail-view-" + id}>
+						<ItemDetailView key={"detail-view-button-" + id}
+								params={{itemID: id}}
+								allCustomFields={this.state.allCustomFields}/>
 					  </td>);
 
 			return list;
@@ -182,8 +217,8 @@ class InventoryTable extends Component {
 				role={JSON.parse(localStorage.getItem('user')).role}
 				key={"request-popup-id-"+ id}/>);
 				list.push(
-					<td className="subtable-row" key={"detail-view-" + id}> 
-						<ItemDetailView key={"detail-view-button-"+id} params={{itemID: id}}/> 
+					<td className="subtable-row" key={"detail-view-" + id}>
+						<ItemDetailView key={"detail-view-button-"+id} params={{itemID: id}}/>
 					</td>);
 				return list;
 			}
@@ -214,7 +249,8 @@ class InventoryTable extends Component {
 		          className="request-button"
 		          itemId={id}
 		          key={"editbutton-"+ id}
-		          ref={"edit-"+id} />
+		          ref={"edit-"+id}
+							allCustomFields={this.state.allCustomFields}/>
 	         </td>
         );
 	}
