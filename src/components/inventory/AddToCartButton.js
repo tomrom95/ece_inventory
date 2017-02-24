@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import UserSelect from '../user/UserSelect.js';
 import '../../App.css';
 
 function validNumber(num) {
@@ -30,13 +29,6 @@ function getString(str) {
 
 class AddToCartButton extends Component {
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			checked: false
-		}
-	}
-
 	makeTextBox(id, type, label, defaultText){
 		return (
 			<div className="form-group row request-quantity" key={id}>
@@ -44,54 +36,6 @@ class AddToCartButton extends Component {
 			  <input type={type} className="form-control" defaultValue={defaultText} id={id}></input>
 			</div>
 		);
-	}
-
-	handleCheckboxChange(event) {
-	    const value = event.target.checked;
-	    this.setState({
-	      checked: value
-	    });
-	}
-
-	makeCheckBox(){
-		var role = JSON.parse(localStorage.getItem('user')).role;
-		if (role === "ADMIN" || role === "MANAGER") {
-			return (
-				<div className="request-quantity row" key={"request-on-behalf-row"}>
-				  <div className="col-xs-10">
-				  	<label htmlFor={"request-on-behalf-box"}>Assign to User:</label>
-				  </div>
-				  <div className="col-xs-2 cart-checkbox">
-				  	<input type={"checkbox"} 
-				  			id={"request-on-behalf-row"} 
-				  			onChange={e => this.handleCheckboxChange(e)}
-				  			checked={this.state.checked}>
-				  	</input>
-				  </div>
-				</div>
-			);
-		}
-		else return null;
-	}
-
-	requestOnBehalf() {
-		if (this.state.checked === true) {
-			return (		
-				<div className="row request-quantity user-select-box">
-					<UserSelect ref="userSelect" api={this.props.api}/>
-				</div>
-			);
-		}
-		else return null;
-	}
-
-	makeDirectRequestRegion() {
-	 return (
-	        <div>
-	        	{this.makeCheckBox("disburse-textbox-" + this.props.itemId, "checkbox", "Disburse to User", "")}
-	        	{this.requestOnBehalf()}	                 
-	        </div>
-	  );
 	}
 
 	sendRequest() {
@@ -108,11 +52,13 @@ class AddToCartButton extends Component {
 			quantity: Number(qty)
 		}
 
+		/*
 		var role = JSON.parse(localStorage.getItem('user')).role;
 		if (role === "ADMIN" || role==="MANAGER") {
 			if (this.state.checked === true)
 				cartItem.user = this.refs.userSelect.getSelectedUserId();
 		}
+		*/
 
 		this.props.api.post('/api/cart/items', cartItem)
 		.then(function(response) {
@@ -128,9 +74,6 @@ class AddToCartButton extends Component {
 
 	clearView() {
 		document.getElementById("qty-textbox-" + this.props.itemId).value = "";
-		this.setState({
-			checked: false
-		});
 	}
 
 	render() {
@@ -160,7 +103,6 @@ class AddToCartButton extends Component {
 
 				      <div className="modal-body">
 						{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity", "")}
-						{this.makeDirectRequestRegion()}
 					  </div>
 
 				      <div className="modal-footer">

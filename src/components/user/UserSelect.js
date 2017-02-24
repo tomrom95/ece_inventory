@@ -53,6 +53,9 @@ class UserSelect extends Component {
 
   handleChange(value) {
     this.setState({selectedUserId: value});
+    if (this.props.callback)
+      this.props.callback(value);
+
   }
 
   render() {

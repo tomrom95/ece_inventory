@@ -123,7 +123,6 @@ class PaginationContainer extends Component {
 
 		filterNames.forEach(function(filterName) {
 		  if (this.state.filters[filterName]) {
-				console.log(this.state.filters[filterName]);
 		    url += "&" + filterName + "=" + this.state.filters[filterName];
 		  }
 		}.bind(this));

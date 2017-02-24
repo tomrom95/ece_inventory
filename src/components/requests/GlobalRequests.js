@@ -98,6 +98,7 @@ class GlobalRequests extends Component {
           renderComponent={table}
           showFilterBox={this.props.showFilterBox}
           showStatusFilterBox={this.props.showStatusFilterBox}
+          rowsPerPage={this.props.showStatusFilterBox ? 10 : 5}
           id={"global-request-"+this.props.id}
           hasOtherParams={this.props.hasOtherParams}
           extraProps={

@@ -64,7 +64,10 @@ class RequestTable extends Component {
 		for (i=0; i<keys.length; i++) {
 			list.push(<th key={keys[i]+"-requestcol"}> {keys[i]} </th>);
 		}
-		list.push(<th key={"buttonSpace" + 1}> </th>);
+		list.push(<th key={"buttonSpace-" + 1}> </th>);
+    list.push(<th key={"buttonSpace-" + 2}> </th>);
+    list.push(<th key={"buttonSpace-" + 3}> </th>);
+    list.push(<th key={"buttonSpace-" + 4}> </th>);
 
 		return list;
 	}
@@ -108,13 +111,6 @@ class RequestTable extends Component {
 
       button_list.push(itemsInfoButton);
 
-      /*
-      console.log("Look here");
-      console.log(id);
-      console.log(this.props.data[i]["_id"]+"-row");
-      console.log(rowData[i]);
-      console.log(this.props.data[i]);
-      */
 			var elem = (<TableRow
 					columnKeys={this.props.columnKeys}
 					data={rowData[i]}
@@ -290,7 +286,7 @@ class RequestTable extends Component {
 
   render() {
 		return (
-			<table className="table subtable-body requesttable">
+			<table className="table table-sm subtable-body requesttable">
 			  <thead className="thread">
 			    <tr>
 		    	  {this.makeColumnKeyElements(this.state.columnKeys)}

@@ -16,9 +16,15 @@ var LogSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Item'
   }],
+  request: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Request'
+  },
   type: {
     type: String,
-    enum: ['EDIT', 'NEW', 'DELETED', 'DISBURSED'],
+    enum: ['ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
+      'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED',
+      'REQUEST_DELETED'],
     required: true,
   },
   time_stamp: {
