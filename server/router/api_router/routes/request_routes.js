@@ -24,6 +24,7 @@ module.exports.getAPI = function (req, res) {
   }
 
   query
+  .searchBoolean('is_cancelled', false)
   .searchInArrayForObjectId('items', 'item', req.query.item_id)
   .searchCaseInsensitive('reason', req.query.reason)
   .searchForDate('created', req.query.created)
@@ -66,13 +67,11 @@ module.exports.postAPI = function(req,res){
         User.findById(req.body.user, function(error, user) {
           if (error) return res.send({error: error});
           if (!user) return res.send({error: "There is no such user"});
-          request.user = req.body.user;
-          processAndPost(request, req, res);
+          processAndPost(request, req.user._id, req.body.user, req, res);
         });
       } else {
         // Post the user's requst as the admin user
-        request.user = req.user._id;
-        processAndPost(request, req, res);
+        processAndPost(request, req.user._id, req.user._id, req, res);
       }
     } else {
       // Standard user here
@@ -81,14 +80,14 @@ module.exports.postAPI = function(req,res){
         return res.send({error:"You are not authorized to modify another user's request"});
       }
       // Post the user's request as the standard user
-      request.user = req.user._id;
-      processAndPost(request, req, res);
+      processAndPost(request, req.user._id, req.user._id, req, res);
     }
 
   }
 };
 
-function processAndPost(request, req, res){
+function processAndPost(request, createdBy, createdFor, req, res){
+  request.user = createdFor;
   if(!req.body.items.length){
     return res.send({error: "Items not specified in request"});
   } else {
@@ -102,8 +101,11 @@ function processAndPost(request, req, res){
   request.save(function(err, request){
     if(err) return res.send({error:err});
     Request.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, request){
-      res.json(request);
-    })
+      LogHelpers.logRequestCreation(request, createdBy, createdFor, function(error) {
+        if (error) return res.send({error: error});
+        return res.json(request);
+      });
+    });
   });
 };
 
@@ -115,6 +117,9 @@ module.exports.getAPIbyID = function(req, res){
   .exec(function(err,request){
     if(err) return res.send({error:err});
     if(!request) return res.send({error: 'Request does not exist'});
+    else if (req.user.role === 'STANDARD' && !request.user.equals(req.user._id)) {
+      return res.send({error: "You cannot view another user's request"});
+    }
     else{
       res.json(request);
     }
@@ -125,42 +130,55 @@ module.exports.putAPI = function(req,res){
   Request.findById(req.params.request_id, function(err,request){
     if(err) return res.send({error:err});
     if(!request) return res.send({error: 'Request does not exist'});
+    else if (request.status !== 'FULFILLED' && req.body.status === 'FULFILLED') {
+      return res.send({error: 'You cannot fulfill a request through this endpoint. Use PATCH'});
+    } else if (req.user.role === 'STANDARD' && String(req.user._id) !== String(request.user)) {
+      return res.send({error: "You are not authorized to modify another user's request"});
+    } else if (request.is_cancelled) {
+      return res.send({error: "You cannot edit a cancelled request"});
+    }
     else{
       var obj;
-      if(req.user.role === 'STANDARD'){
-        // if the current user's id is not equal to the user id in the request, or if the current user id is not equal
-        // to the user id in the PUT body
-        if(req.user._id != request.user || req.user._id != req.body.user){
-          // Standard user cannot modify the user_id
-          return res.send({error: "You are not authorized to modify another user's request"});
-        } else {
-          // Standard user must keep its id in its own request.
-          obj = Object.assign(request, req.body);
-          obj.user = req.user._id;
-          saveObject(obj, res);
+      var fieldsToEdit = new Set();
+      if (String(req.user._id) === String(request.user)) {
+        fieldsToEdit.add('reason')
+      }
+      if (req.user.role === 'MANAGER') {
+        fieldsToEdit.add('status')
+        fieldsToEdit.add('reviewer_comment');
+      }
+      if (req.user.role === 'ADMIN') {
+        ['reason', 'status', 'user', 'items', 'created', 'requestor_comment', 'reviewer_comment']
+          .forEach(field => fieldsToEdit.add(field));
+      }
+      // admins and managers can only edit reason if it's their own
+      var changes = {};
+      Array.from(fieldsToEdit).forEach(function(field) {
+        if (req.body.hasOwnProperty(field)) {
+          changes[field] = req.body[field];
         }
+      });
+      if (changes.user) {
+        User.findById(changes.user, function(error, user) {
+          if (error || !user) return res.send({error: 'There is no such user'});
+          saveRequest(request, changes, res, req.user);
+        });
       } else {
-        // Admin can take in username
-        obj = Object.assign(request, req.body);
-        if(req.body.user){
-          User.findById(req.body.user, function(error, user) {
-            if (error) return res.send({error: error});
-            if (!user) return res.send({error: "There is no such user"});
-            obj.user = req.body.user;
-            saveObject(obj, res);
-          });
-        } else {
-          saveObject(obj, res);
-        }
+        saveRequest(request, changes, res, req.user);
       }
     }
   });
 };
 
-function saveObject(obj, res){
+function saveRequest(oldRequest, changes, res, user){
+  var oldRequestCopy = new Request(oldRequest);
+  var obj = Object.assign(oldRequest, changes);
   obj.save((err,request)=>{
     if(err) return res.send({error:err});
-    res.json(request);
+    LogHelpers.logRequestEdit(oldRequestCopy, changes, user, function(error) {
+      if(error) return res.send({error: error});
+      return res.json(request);
+    });
   });
 }
 
@@ -172,9 +190,16 @@ module.exports.deleteAPI = function(req,res){
     else{
       // If id of current user matches the one in the request, or user is an admin
       if(req.user._id.toString() == request.user.toString() || req.user.role === 'ADMIN' || req.user.role == 'MANAGER'){
-        request.remove(function(err){
-          if(err) return res.send({error:err});
-          res.json({message: 'Delete successful'});
+        if (request.is_cancelled) {
+          return res.send({error: "Request has already been cancelled"})
+        }
+        request.is_cancelled = true;
+        request.save(function(error, updatedRequest) {
+          if(error) return res.send({error: error});
+          LogHelpers.logCancelledRequest(updatedRequest, req.user, function(error) {
+            if(error) return res.send({error: error});
+            res.json({message: 'Delete successful'});
+          });
         });
       } else {
         res.json({error: "You are not authorized to remove this request"});
@@ -189,6 +214,9 @@ function disburse(requestID, next) {
     if (!request) return next('Request does not exist');
     if (request.status === 'FULFILLED') {
       return next('Request has already been disbursed to the user');
+    }
+    if (request.is_cancelled) {
+      return next('You cannot fulfill a cancelled request');
     }
     var checkQuantityPromises = [];
     for (var i = 0; i < request.items.length; i++){
