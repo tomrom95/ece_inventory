@@ -229,7 +229,7 @@ class InventoryTable extends Component {
 			<td key={"delete-td-"+id} className="subtable-row">
 				<button data-toggle="modal" data-target={"#delete-"+id} key={"delete-button-"+id}
 					type="button"
-					className="btn btn-danger delete-button">
+					className="btn btn-sm btn-danger">
 						<span className="fa fa-trash"></span>
 				</button>
 				{this.makeConfirmationPopup(

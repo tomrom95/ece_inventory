@@ -140,8 +140,7 @@
 .request-button {
   font-weight: bold;
   font-size: 13px;
-  height: 40px;
-  width: 45px;
+  max-width: 30px;
   margin-left: 23px;
 }
 
@@ -162,6 +161,7 @@
 
 .info-button {
   margin-top: 1px;
+  width: 27px;
 }
 
 .add-button {
@@ -343,8 +343,9 @@
 }
 
 .add-to-cart-icon {
-  margin-left: -60%;
-  margin-right: 50%;
+  margin-left: -40%;
+  margin-right: 20%;
+  height: 15px;
 }
 
 .perpage-button {

@@ -79,7 +79,7 @@ class ItemDetailView extends React.Component {
 
     if (this.props.isButton === true) {
       button = (<button type="button"
-                  className="btn btn-outline-primary info-button"
+                  className="btn btn-sm btn-outline-primary info-button"
                   data-toggle="modal"
                   data-target={"#infoModal-"+this.props.params.itemID}
                   onClick={() => this.loadData()}>
