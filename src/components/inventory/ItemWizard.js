@@ -188,6 +188,7 @@ class ItemWizard extends Component {
 				if (key === "Tags") {
 					this.refs[key].clearTags();
 				} else {
+					// this throws an error when key = "Custom Fields"
 					this.refs[key].value = "";
 				}
 			}.bind(this));
