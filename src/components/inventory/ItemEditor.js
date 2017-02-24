@@ -56,11 +56,16 @@ class ItemEditor extends Component {
 		});
 	}
 
-	handleFormChange(event, label) {
-		console.log(this.state.data);
-		console.log(label);
+	handleFormChange(event, label, index) {
 		var data = this.state.data;
-		data[label] = event.target.value;
+		console.log(this.state.data.custom_fields);
+		console.log(index);
+		if(label == "custom_fields"){
+			data.custom_fields[index].value = event.target.value;
+		}
+		else{
+			data[label] = event.target.value;
+		}
 		this.setState({
 			data: data
 		});
@@ -75,20 +80,40 @@ class ItemEditor extends Component {
 			if (keys[i] === 'Tags') {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
 			}
-			else if (keys[i] === 'Custom Fields'){
+			else if (keys[i] === 'custom_fields'){
 				if(vals[i].length > 0){
+
 					for(var j = 0; j < vals[i].length; j++){
 						var field = vals[i][j];
-						console.log(field);
-						list.push(this.makeCustomTextBox(i, field));
-						list.push(
-							<button
-								key={i + "delete-field" + j}
-								onClick={()=>{this.deleteCustomField(i, field)}}
-								type="button"
-								className="btn btn-danger delete-button">
-								X
+						var label = "";
+						for(var n = 0; n < this.state.allCustomFields.length; n ++){
+							if(this.state.allCustomFields[n]._id === field.field){
+								label = this.state.allCustomFields[n].name + " " + "(" + this.state.allCustomFields[n].type + ")";
+							}
+						}
+						if(label !== ""){
+							console.log(j);
+							list.push(this.makeCustomTextBox(i, j, field, label));
+							list.push(
+								<button
+									key={i + "delete-field" + j}
+									onClick={()=>{this.deleteCustomField(i, field)}}
+									type="button"
+									className="btn btn-danger delete-button">
+									X
+									</button>);
+									console.log(j);
+
+							list.push(
+								<button
+									key={i + "edit-field-button" + j}
+									onClick={()=>{this.editCustomField(i, j-1, field)}}
+									type="button"
+									className="btn btn-outline-primary add-button">
+									Edit
 								</button>);
+							}
+
 					}
 
 				}
@@ -155,9 +180,7 @@ class ItemEditor extends Component {
 						}
 						type = response.data.type;
 						name = response.data.name;
-						console.log(custom_field);
-						console.log(response.data._id);
-						console.log(response.data.name);
+
 						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAlpha(value)){
 							type_mismatch = true;
 						}
@@ -211,6 +234,7 @@ class ItemEditor extends Component {
 	deleteCustomField(row, field){
 		var id = "createform-row-"+row;
 		this.state.formIds.splice(0,id);
+		console.log(field);
 		this.props.api.delete('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field)
 			.then(function(response) {
 					if (response.data.error) {
@@ -226,23 +250,36 @@ class ItemEditor extends Component {
 
 	}
 
-	makeCustomTextBox(row, field){
+	editCustomField(row, index, field){
+		console.log(field);
+		var body = {
+			field: field.field,
+			value: this.state.data.custom_fields[index].value,
+		}
+		this.props.api.put('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field, body)
+			.then(function(response) {
+					if (response.data.error) {
+						alert(response.data.error);
+					} else {
+						this.props.callback();
+
+					}
+				}.bind(this))
+				.catch(function(error) {
+					console.log(error);
+				}.bind(this));
+	}
+
+	makeCustomTextBox(row, index, field, label){
 		var id = "createform-custom-row-"+row;
 		this.state.formIds.push(id);
-		var label = "";
-
-		for(var i = 0; i < this.state.allCustomFields.length; i ++){
-			if(this.state.allCustomFields[i]._id === field.field){
-
-				label = this.state.allCustomFields[i].name + " " + "(" + this.state.allCustomFields[i].type + ")";
-			}
-		}
+		var ref = "custom_fields";
 		var input = <input type="text"
 				className="form-control"
 				value={field.value}
-				ref={label}
+				ref={ref}
 				key={id+field.field}
-				onChange={e => this.handleFormChange(e, label)}>
+				onChange={e => this.handleFormChange(e, ref, index)}>
 				</input>
 		return (
 			<div className="form-group" key={"createform-div-custom-row-"+field.field}>
@@ -250,6 +287,8 @@ class ItemEditor extends Component {
 				{input}
 			</div>
 		);
+
+
 
 
 
@@ -274,7 +313,7 @@ class ItemEditor extends Component {
 				value={defaultValue}
 				ref={label}
 				key={id}
-				onChange={e => this.handleFormChange(e, label)}>
+				onChange={e => this.handleFormChange(e, label, row)}>
 				</input>
 		}
 

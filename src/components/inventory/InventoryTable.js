@@ -55,7 +55,7 @@ function getPrefill(data) {
 		"Location": data["Location"],
 		"Vendor Info": data["Vendor"],
 		"Tags": data["Tags"],
-		"Custom Fields": data["Custom Fields"],
+		"custom_fields": data["custom_fields"],
 	});
 }
 
@@ -68,7 +68,7 @@ function getEmptyPrefill() {
 		"Location": "",
 		"Vendor Info": "",
 		"Tags": "",
-		"Custom Fields": "",
+		"custom_fields": "",
 	});
 }
 
