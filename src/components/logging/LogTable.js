@@ -64,7 +64,7 @@ class LogTable extends Component {
 
 	render() {
 		return (
-			<div>
+			<div className="container">
 				<table className="table table-sm table-striped log-table">
 				  <thead>
 				    <tr>				    
