@@ -576,6 +576,55 @@ describe('Logging API Test', function () {
         });
       });
 
+      it('logs an manager checking out a cart for someone else', (done) => {
+        Cart.remove({}, function(error) {
+          var newCart = new Cart({
+            user: adminUser._id,
+            items: [
+              {
+                item: allItems["1k resistor"]._id,
+                quantity: 10,
+              },
+              {
+                item: allItems["Oscilloscope"]._id,
+                quantity: 1,
+              }
+            ]
+          });
+          newCart.save(function(error, cart) {
+            chai.request(server)
+              .patch('/api/cart')
+              .set('Authorization', managerToken)
+              .send({
+                action: 'CHECKOUT',
+                reason: 'I want them',
+                user: adminUser._id
+              })
+              .end((err, res) => {
+                should.not.exist(err);
+                res.should.have.status(200);
+                Log.find({}, function(err, logs) {
+                  should.not.exist(err);
+                  logs.length.should.be.eql(1);
+                  var log = logs[0];
+                  log.items.forEach(function(item) {
+                    ([allItems['1k resistor']._id, allItems['Oscilloscope']._id])
+                      .should.include(item);
+                  });
+                  log.type.should.be.eql('REQUEST_CREATED');
+                  log.initiating_user.should.be.eql(adminUser._id);
+                  log.affected_user.should.be.eql(standardUser._id);
+                  log.description.should.include("The user manager requested");
+                  log.description.should.include('10 1k resistors');
+                  log.description.should.include('1 Oscilloscope');
+                  log.description.should.include('for the user admin.');
+                  done();
+                });
+              });
+          });
+        });
+      });
+
       it('logs editing a request', (done) => {
         chai.request(server)
           .put('/api/requests/' + testRequest._id)
