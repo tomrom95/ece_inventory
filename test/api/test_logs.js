@@ -362,9 +362,9 @@ describe('Logging API Test', function () {
               log.type.should.be.eql('REQUEST_DISBURSED');
               log.initiating_user.should.be.eql(adminUser._id);
               log.affected_user.should.be.eql(standardUser._id);
-              log.description.should.include('2 1k resistors');
-              log.description.should.include('5 2k resistors');
-              log.description.should.include('1 Oscilloscope');
+              log.description.should.include('(2) 1k resistors');
+              log.description.should.include('(5) 2k resistors');
+              log.description.should.include('(1) Oscilloscope');
               log.description.should.include('The user admin disbursed');
               log.description.should.include('to the user standard');
               done();
@@ -433,8 +433,8 @@ describe('Logging API Test', function () {
               log.type.should.be.eql('REQUEST_CREATED');
               log.initiating_user.should.be.eql(standardUser._id);
               should.not.exist(log.affectedUser);
-              log.description.should.include('10 1k resistors');
-              log.description.should.include('1 Oscilloscope');
+              log.description.should.include('(10) 1k resistors');
+              log.description.should.include('(1) Oscilloscope');
               log.description.should.include('The user standard requested');
               done();
             });
@@ -518,8 +518,8 @@ describe('Logging API Test', function () {
                   log.initiating_user.should.be.eql(adminUser._id);
                   should.not.exist(log.affected_user);
                   log.description.should.include("The user admin requested");
-                  log.description.should.include('10 1k resistors');
-                  log.description.should.include('1 Oscilloscope');
+                  log.description.should.include('(10) 1k resistors');
+                  log.description.should.include('(1) Oscilloscope');
                   done();
                 });
               });
@@ -566,8 +566,8 @@ describe('Logging API Test', function () {
                   log.initiating_user.should.be.eql(adminUser._id);
                   log.affected_user.should.be.eql(standardUser._id);
                   log.description.should.include("The user admin requested");
-                  log.description.should.include('10 1k resistors');
-                  log.description.should.include('1 Oscilloscope');
+                  log.description.should.include('(10) 1k resistors');
+                  log.description.should.include('(1) Oscilloscope');
                   log.description.should.include('for the user standard.');
                   done();
                 });
@@ -615,8 +615,8 @@ describe('Logging API Test', function () {
                   log.initiating_user.should.be.eql(managerUser._id);
                   log.affected_user.should.be.eql(adminUser._id);
                   log.description.should.include("The user manager requested");
-                  log.description.should.include('10 1k resistors');
-                  log.description.should.include('1 Oscilloscope');
+                  log.description.should.include('(10) 1k resistors');
+                  log.description.should.include('(1) Oscilloscope');
                   log.description.should.include('for the user admin.');
                   done();
                 });

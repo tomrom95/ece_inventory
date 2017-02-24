@@ -88,7 +88,7 @@ module.exports.postAPI = function(req,res){
 
 function processAndPost(request, createdBy, createdFor, req, res){
   request.user = createdFor;
-  if(!req.body.items.length){
+  if(!req.body.items || req.body.items.length === 0){
     return res.send({error: "Items not specified in request"});
   } else {
     request.items = req.body.items;
