@@ -19,6 +19,7 @@ class Inventory extends Component {
         "Quantity": obj.quantity,
         "Vendor": obj.vendor_info,
         "Tags": obj.tags,
+        "Custom Fields": obj.custom_fields,
         "meta": {
           "id": obj._id,
           "hasInstanceObjects": obj.has_instance_objects

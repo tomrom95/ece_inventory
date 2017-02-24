@@ -5,7 +5,7 @@ import FilterBox from './FilterBox.js';
 import ErrorMessage from './ErrorMessage.js';
 import StatusFilterBox from '../requests/StatusFilterBox.js';
 
-var filterNames = ["name", "model_number", "required_tags", "excluded_tags", "status"];
+var filterNames = ["name", "model_number", "required_tags", "excluded_tags", "status", "user"];
 
 class PaginationContainer extends Component {
 
@@ -35,6 +35,7 @@ class PaginationContainer extends Component {
         excluded_tags: "",
         required_tags: "",
 				status: "",
+				user: props.user,
   		},
   		url: props.url,
   		processData: props.processData,
@@ -95,7 +96,7 @@ class PaginationContainer extends Component {
 	      }
 	    }
 	    // response not empty:
-	    else {		  
+	    else {
 	      this.setState({
 	        items: this.state.processData(response),
 	        page: page
@@ -122,6 +123,7 @@ class PaginationContainer extends Component {
 
 		filterNames.forEach(function(filterName) {
 		  if (this.state.filters[filterName]) {
+				console.log(this.state.filters[filterName]);
 		    url += "&" + filterName + "=" + this.state.filters[filterName];
 		  }
 		}.bind(this));
