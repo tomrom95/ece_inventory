@@ -22,7 +22,11 @@ class LogItem extends Component {
 		var description = this.props.description;
 
 		if (!description) {
-			return "No description available";
+			return (
+				<div className="description">
+					No description available
+				</div>
+			);
 		}
 		
 

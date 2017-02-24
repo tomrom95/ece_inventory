@@ -79,6 +79,7 @@
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
+  color: gray;
 }
 
 .white-space-cell {
@@ -372,6 +373,7 @@
 .description {
   float: left;
   padding-left: 0.3%;
+  color: black;
 }
 
 .table > tbody > tr > td {
