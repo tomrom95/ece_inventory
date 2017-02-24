@@ -579,7 +579,7 @@ describe('Logging API Test', function () {
       it('logs an manager checking out a cart for someone else', (done) => {
         Cart.remove({}, function(error) {
           var newCart = new Cart({
-            user: adminUser._id,
+            user: managerUser._id,
             items: [
               {
                 item: allItems["1k resistor"]._id,
@@ -612,8 +612,8 @@ describe('Logging API Test', function () {
                       .should.include(item);
                   });
                   log.type.should.be.eql('REQUEST_CREATED');
-                  log.initiating_user.should.be.eql(adminUser._id);
-                  log.affected_user.should.be.eql(standardUser._id);
+                  log.initiating_user.should.be.eql(managerUser._id);
+                  log.affected_user.should.be.eql(adminUser._id);
                   log.description.should.include("The user manager requested");
                   log.description.should.include('10 1k resistors');
                   log.description.should.include('1 Oscilloscope');
