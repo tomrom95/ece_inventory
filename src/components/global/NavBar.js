@@ -36,7 +36,7 @@ class NavBar extends Component {
                 <Link to="/EditUsers" className="nav-link">EDIT USERS</Link>
               </li>
               <li className="nav-item">
-                <Link to="/Transactions" className="nav-link">TRANSACTIONS</Link>
+                <Link to="/Log" className="nav-link">LOG</Link>
               </li>
               <li className="nav-item btn-nav signout-button">
                 <button className="btn btn-outline-primary" onClick={this.props.onClick}>

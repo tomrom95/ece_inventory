@@ -8,6 +8,7 @@ import CreateUser from '../components/user/CreateUser.js';
 import EditUsers from '../components/user/EditUsers.js';
 import Transactions from '../components/transactions/Transactions.js';
 import ItemDetailView from '../components/inventory/ItemDetailView.js';
+import LogTable from '../components/logging/LogTable.js';
 import { Route} from 'react-router';
 import querystring from 'querystring';
 import axios from 'axios';
@@ -68,6 +69,7 @@ export default (
     <Route path="CreateUser" component={CreateUserWrapper}></Route>
     <Route path="EditUsers" component={EditUsers}></Route>
     <Route path="Transactions" component={TransactionsWrapper}></Route>
+    <Route path="Log" component={LogTable}></Route>
     <Route path="Detail/:itemID" component={ItemDetailViewWrapper} />
   </Route>
 );

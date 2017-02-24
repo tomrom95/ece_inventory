@@ -74,6 +74,13 @@
   border-color: rgba(0,150,255,1);
 }
 
+.log-table {
+  background-color: white;
+  border-left: solid;
+  border-width: 4px;
+  border-color: rgba(0,150,255,1);
+}
+
 .white-space-cell {
   display: none;
 }
@@ -360,6 +367,11 @@
 .user-select-box {
   margin-bottom: 2.5%;
   margin-top: 0.5%;
+}
+
+.description {
+  float: left;
+  padding-left: 0.3%;
 }
 
 .table > tbody > tr > td {

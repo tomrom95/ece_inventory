@@ -25,7 +25,8 @@ class ShoppingCart extends Component {
 			}
 			else {
 				this.setState({
-					items: response.data.items
+					items: response.data.items,
+					checked: false
 				});
 			}
 		}.bind(this));
@@ -72,8 +73,7 @@ class ShoppingCart extends Component {
 				alert(response.data.error);
 			}
 			else {
-				console.log(response.data.message)
-				alert(response.data.message);
+				//alert(response.data.message);
 			}
 		}.bind(this));
 	}
