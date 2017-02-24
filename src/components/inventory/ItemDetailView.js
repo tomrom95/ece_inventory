@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import GlobalRequests from '../requests/GlobalRequests';
 import CurrentOrders from '../requests/CurrentOrders.js';
+import CustomFieldsPopup from './CustomFieldsPopup.js';
 
 function getString(str) {
   if (str === undefined || str === null || str.length === 0) {
@@ -38,6 +39,34 @@ class ItemDetailView extends React.Component {
       console.log(error);
       this.setState({error: 'Could not load item'});
     }.bind(this));
+  }
+
+
+  makeCustomFields(){
+    var fields = this.state.item.custom_fields;
+    if(fields.length === 0){
+      return(
+        <div className="row">
+          <p>No custom fields</p>
+
+        </div>
+      );
+    }
+    var html_list = []
+    for(var i = 0; i < fields.length; i++){
+      var label = "";
+      for(var j = 0; j < this.props.allCustomFields.length; j++){
+        if(this.props.allCustomFields[i].field === fields[i].feild){
+  				label = this.props.allCustomFields[i].name;
+  			}
+      }
+      html_list.push(<div className="row" key={fields[i].field+i}>
+                        <p key={"row-"+fields[i].field+i}><strong key={"strong-"+fields[i].field+i}>{label}: </strong>
+                          {fields[i].value}
+                        </p>
+                      </div>);
+    }
+    return(html_list);
   }
 
   render() {
@@ -90,7 +119,9 @@ class ItemDetailView extends React.Component {
                       <div className="row">
                         <p><strong>Tags: </strong>{getString(this.state.item.tags.join(', '))}</p>
                       </div>
+                      {this.makeCustomFields()}
                     </div>
+
                   </div>
                   {this.addPadding()}
                 </div>

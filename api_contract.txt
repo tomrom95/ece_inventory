@@ -531,6 +531,10 @@ return:
 			last_name: String
 		},
 		request: String,
+		custom_field: {
+			_id: String,
+			name: String
+		},
 		items: [
 			{
 				_id: String,
@@ -544,7 +548,7 @@ return:
   }
 ]
 
-/api/user
+/api/users
 GET // Only admins can get
 return {
 	_id: String,

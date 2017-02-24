@@ -34,12 +34,13 @@ class CurrentOrders extends Component {
       return user.username;
     }
  }
- 
+
   processData(responseData) {
     var requests = responseData.data;
     var i; var j;
     var items = [];
     for (i=0; i<requests.length; i++) {
+
       var cart = requests[i];
 
       var userDisplay = this.getUserDisplay(cart.user);
@@ -76,6 +77,7 @@ class CurrentOrders extends Component {
           renderComponent={table}
           showFilterBox={this.props.showFilterBox}
           showStatusFilterBox={this.props.showStatusFilterBox}
+          user={JSON.parse(localStorage.getItem('user'))._id}
           id={"user-requests-"+this.props.id}
           hasOtherParams={this.props.hasOtherParams}
           extraProps={

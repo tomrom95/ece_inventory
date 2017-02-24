@@ -51,7 +51,8 @@ class ItemWizard extends Component {
 		for (i=0; i<keys.length; i++) {
 			if (keys[i] === 'Tags') {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
-			} else {
+			}
+			else if(keys[i] !== 'Custom Fields'){
 				list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
 			}
 		}
