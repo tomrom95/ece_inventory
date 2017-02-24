@@ -28,7 +28,7 @@ class LogItem extends Component {
 				</div>
 			);
 		}
-		
+
 
 		var i;
 		var text = [];
@@ -36,14 +36,15 @@ class LogItem extends Component {
 		var lastIndex = 0;
 		for (i=0; i<this.props.itemNames.length; i++) {
 			var index = description.indexOf(this.props.itemNames[i], lastIndex);
-			if (index === -1) 
+			if (index === -1)
 				index = description.length;
-			else 
+			else
 				links.push(
-					<ItemDetailView 
+					<ItemDetailView
 						key={"log-detailview-" + this.props.itemIds[i]+ "-" + this.props.logItemId}
 						params={{itemID: this.props.itemIds[i]}}
-						isButton={false} />);
+						isButton={false}
+						allCustomFields={this.props.allCustomFields}/>);
 
 			text.push(description.substring(lastIndex, index));
 			lastIndex = index + this.props.itemNames[i].length;
@@ -57,8 +58,8 @@ class LogItem extends Component {
 
 		for (i=0; i<text.length; i++) {
 			ret.push(
-				<div className="description" key={"text-"+this.props.logItemId+"-"+this.props.itemIds[i]}> 
-					{text[i]} 
+				<div className="description" key={"text-"+this.props.logItemId+"-"+this.props.itemIds[i]}>
+					{text[i]}
 				</div>
 			);
 			if (i<links.length)

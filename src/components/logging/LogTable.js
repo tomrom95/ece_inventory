@@ -22,7 +22,8 @@ class LogTable extends Component {
 		  headers: {'Authorization': localStorage.getItem('token')}
 		});
 		this.state = {
-			items: []
+			items: [],
+      allCustomFields: [],
 		};
 	}
 
@@ -33,6 +34,18 @@ class LogTable extends Component {
 				items: response.data
 			});
 		}.bind(this));
+
+		this.instance.get('/api/customFields')
+      .then(function(response) {
+        if (response.data.error) {
+          console.log(response.data.error);
+        }
+        this.setState({allCustomFields: response.data});
+      }.bind(this))
+      .catch(function(error) {
+        console.log(error);
+      });
+
 	}
 
 	makeLogItems(data) {
@@ -56,7 +69,8 @@ class LogTable extends Component {
 					description={description}
 					itemIds={itemIds}
 					itemNames={itemNames}
-					logItemId={logItem._id}/>
+					logItemId={logItem._id}
+          allCustomFields={this.state.allCustomFields}/>
 			);
 		}
 		return list;
@@ -67,7 +81,7 @@ class LogTable extends Component {
 			<div className="container">
 				<table className="table table-sm table-striped log-table">
 				  <thead>
-				    <tr>				    
+				    <tr>
 				      <th>Timestamp</th>
 				      <th>Description</th>
 				    </tr>
