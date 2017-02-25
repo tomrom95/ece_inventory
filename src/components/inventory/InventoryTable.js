@@ -127,8 +127,6 @@ class InventoryTable extends Component {
 			list.push(<th key={keys[i]+"-inventorycol"}> {keys[i]} </th>);
 		}
 
-
-
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
 			list.push(
 					<CustomFieldListPopup
@@ -199,6 +197,7 @@ class InventoryTable extends Component {
 			list.push(<td className="subtable-row" key={"detail-view-" + id}>
 						<ItemDetailView key={"detail-view-button-" + id}
 								params={{itemID: id}}
+								isButton={true}
 								allCustomFields={this.state.allCustomFields}/>
 					  </td>);
 
@@ -232,7 +231,7 @@ class InventoryTable extends Component {
 			<td key={"delete-td-"+id} className="subtable-row">
 				<button data-toggle="modal" data-target={"#delete-"+id} key={"delete-button-"+id}
 					type="button"
-					className="btn btn-danger delete-button">
+					className="btn btn-sm btn-danger">
 						<span className="fa fa-trash"></span>
 				</button>
 				{this.makeConfirmationPopup(
