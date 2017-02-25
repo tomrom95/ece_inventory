@@ -139,8 +139,7 @@ class ItemEditor extends Component {
 					callback={this.props.callback}
 					allCustomFields={this.state.allCustomFields}
 					key={"add-field-"+row}
-					ref="field"
-				/>
+					ref="field"/>
 				<input type="text"
 					className="form-control"
 					ref="fieldvalue"
@@ -385,7 +384,7 @@ class ItemEditor extends Component {
     return (
 		<div>
 			<button type="button"
-				className="btn btn-outline-primary edit-button"
+				className="btn btn-sm btn-outline-primary"
 				data-toggle="modal"
 				data-target={"#editModal-"+this.props.itemId}
 				data-backdrop="static">

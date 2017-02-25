@@ -68,10 +68,19 @@
 
 .maintable-body {
   background-color: white;
-  max-width: 1000px;
+  margin-left: 12px;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
+}
+
+.maintable-container {
+  width: 95%;
+  margin-left: 17px;
+}
+
+.page-control-bar {
+  margin-left: 0px;
 }
 
 .log-table {
@@ -82,13 +91,19 @@
   color: gray;
 }
 
+.logtable-container {
+}
+
+.log-detailview-links {
+  overflow: hidden;
+  white-space:normal;
+  max-width: 200px;
+  text-overflow: ellipsis;
+  display: block;
+}
+
 .white-space-cell {
   display: none;
-}
-.maintable-container {
-  width: 100%;
-  margin-left: 15px;
-  overflow-y: scroll;
 }
 
 .table-container {
@@ -129,23 +144,20 @@
 }
 
 .info-modal {
+  min-width: 120%;
   margin-top: -50px;
 }
 
 .request-button {
   font-weight: bold;
   font-size: 13px;
-  height: 40px;
-  width: 45px;
+  max-width: 30px;
   margin-left: 23px;
 }
 
 .delete-button {
   font-family: 'Open Sans';
   font-weight: bold;
-  height: 40px;
-  width: 45px;
-  margin-left: 9px;
 }
 
 .edit-button {
@@ -156,7 +168,7 @@
 }
 
 .info-button {
-  margin-top: 1px;
+  width: 27px;
 }
 
 .add-button {
@@ -294,7 +306,7 @@
 }
 
 .filterbox {
-  width: 310px;
+  width: 95%;
   margin-left: 20px;
   margin-right: 0;
   margin-bottom: 30px;
@@ -338,8 +350,9 @@
 }
 
 .add-to-cart-icon {
-  margin-left: -60%;
-  margin-right: 50%;
+  margin-left: -40%;
+  margin-right: 20%;
+  height: 15px;
 }
 
 .perpage-button {

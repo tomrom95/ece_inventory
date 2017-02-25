@@ -66,8 +66,12 @@ class RequestTable extends Component {
 		}
 		list.push(<th key={"buttonSpace-" + 1}> </th>);
     list.push(<th key={"buttonSpace-" + 2}> </th>);
-    list.push(<th key={"buttonSpace-" + 3}> </th>);
-    list.push(<th key={"buttonSpace-" + 4}> </th>);
+
+    // in global requests page, we have more buttons
+    if (this.state.global === true) {
+      list.push(<th key={"buttonSpace-" + 3}> </th>);
+      list.push(<th key={"buttonSpace-" + 4}> </th>);
+    }
 
 		return list;
 	}
@@ -80,7 +84,6 @@ class RequestTable extends Component {
 
       var button_list = [];
       if(this.state.global ){
-
         if(rowData[i][3] === 'PENDING'){
           button_list=[this.denyButton(i), this.approveButton(i), this.commentButton(i)];
         }
@@ -104,11 +107,13 @@ class RequestTable extends Component {
 
       }
 
-			var id = this.props.data[i]._id;
+      if (button_list.length === 0) {
+        button_list.push(this.blankSpace(i, 1));
+      }
 
+			var id = this.props.data[i]._id;
       var itemData = this.props.data[i]["Items"];
       var itemsInfoButton = <RequestItemsPopup key={"request-detail-view-"+id} id={id} items={itemData} />;
-
       button_list.push(itemsInfoButton);
 
 			var elem = (<TableRow
@@ -157,7 +162,7 @@ class RequestTable extends Component {
   deleteButton(index){
     return(
 			<td key={"delete-td-"+index} className="subtable-row">
-      	<button key={"delete"+index} onClick={()=>{this.deleteRequest(index)}} type="button" className="btn btn-danger delete-button">X</button>
+      	<button key={"delete"+index} onClick={()=>{this.deleteRequest(index)}} type="button" className="btn btn-sm btn-danger delete-button">×</button>
 			</td>
 		)
   }

@@ -36,6 +36,10 @@ class Home extends Component {
     this.checkForOAuth();
   }
 
+  componentDidMount() {
+     browserHistory.push('/Inventory');
+  }
+
   handleNameChange(event) {
     this.setState({name: event.target.value});
   }
@@ -158,11 +162,8 @@ class Home extends Component {
             {children}
           </div>
         </div>
-
       );
     } else
-
-
         return(
           <div className="login-form container">
             <div className="form-group">

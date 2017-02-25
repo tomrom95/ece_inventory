@@ -30,7 +30,10 @@ class EditUsers extends Component {
 
 	makeUserSelectDropdown() {
 		return (
-			<UserSelect callback={id => this.handleUserChange(id)} ref="userSelectBox" api={this.instance}/>
+			<div className="form-group row">
+				<label>Choose User</label>
+				<UserSelect callback={id => this.handleUserChange(id)} ref="userSelectBox" api={this.instance}/>
+			</div>
 		);
 	}
 
@@ -39,15 +42,18 @@ class EditUsers extends Component {
 			return null;
 		}
 		else return (
-	      <select onChange={e=>this.handleRoleChange(e)} 
-	      		value={this.state.roleSelected} 
-	      		id={"role-field"} 
-	      		className="form-control" 
-	      		ref="role">
-	        <option>STANDARD</option>
-	        <option>MANAGER</option>
-	        <option>ADMIN</option>
-	      </select>
+		  <div className="form-group row">
+			  <label>Choose Privilege Level</label>
+		      <select onChange={e=>this.handleRoleChange(e)} 
+		      		value={this.state.roleSelected} 
+		      		id={"role-field"} 
+		      		className="form-control" 
+		      		ref="role">
+		        <option>STANDARD</option>
+		        <option>MANAGER</option>
+		        <option>ADMIN</option>
+		      </select>
+	      </div>
 	    );
   	}
 
@@ -83,6 +89,15 @@ class EditUsers extends Component {
   	}
 
 	handleUserChange(id) {
+		if (id === null) {
+			this.setState({
+				userIdSelected: null,
+				usernameSelected: null
+			});
+			this.hideButtons();
+			return;
+		}
+
 		this.instance.get('api/users/'+id)
 		.then (function (response) {
 			if (response.data.error) {
@@ -162,13 +177,10 @@ class EditUsers extends Component {
 				</div>
 				<div className="row">
 					<div className="col-md-8">
-						<div className="row">
-							{this.makeUserSelectDropdown()}
-						</div>
-						<div className="row">
-							{this.makeRoleSelectDropdown()}
-						</div>
-						<div className="row">
+						{this.makeUserSelectDropdown()}
+						{this.makeRoleSelectDropdown()}
+						
+						<div className="row form-group">
 							<div className="col-xs-6">
 								{this.makeApplyButton()}
 							</div>
