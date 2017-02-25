@@ -140,6 +140,9 @@ class ItemDetailView extends React.Component {
                         <p><strong>Quantity: </strong>{this.state.item.quantity}</p>
                       </div>
                       <div className="row">
+                        <p><strong>Location: </strong>{getString(this.state.item.location)}</p>
+                      </div>
+                      <div className="row">
                         <p><strong>Description: </strong>{getString(this.state.item.description)}</p>
                       </div>
                       <div className="row">

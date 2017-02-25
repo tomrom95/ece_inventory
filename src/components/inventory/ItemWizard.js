@@ -157,6 +157,7 @@ class ItemWizard extends Component {
 	  		quantity: this.refs.Quantity.value,
 	 		model_number: this.refs["Model Number"].value,
 	  		description: this.refs.Description.value,
+	  		location: this.refs.Location.value,
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
 	  		has_instance_objects: false
