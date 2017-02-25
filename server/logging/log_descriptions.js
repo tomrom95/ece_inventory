@@ -117,3 +117,17 @@ module.exports.editedItemCustomField = function(item, field, oldValue, newValue)
   return 'The item ' + item.name + ' was edited by changing the custom field '
     + field.name + ' from ' + oldValue + ' to ' + newValue + '.';
 }
+
+module.exports.fieldCreated = function(field) {
+  return 'A new field called ' + field.name + ' was created.';
+}
+
+module.exports.fieldEdited = function(field, changes) {
+  var description = 'The field ' + field.name + ' was edited by changing';
+  description += createChangesString(field, changes) + '.';
+  return description;
+}
+
+module.exports.fieldDeleted = function(field) {
+  return 'The field ' + field.name + ' was deleted.';
+}

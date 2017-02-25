@@ -768,6 +768,124 @@ describe('Logging API Test', function () {
       });
     });
 
+    describe('Logging custom fields', () =>{
+      var testField;
+      beforeEach((done) => {
+        CustomField.remove({}, (err) => {
+          should.not.exist(err);
+          var newfield = new CustomField({
+            name: 'test_field',
+            type: 'LONG_STRING',
+            isPrivate: false,
+          });
+          newfield.save(function(error, field) {
+            should.not.exist(error);
+            testField = field;
+            done();
+          });
+        });
+      });
+
+      it('logs creating a new custom field', (done) => {
+        chai.request(server)
+          .post('/api/customFields/')
+          .set('Authorization', adminToken)
+          .send({
+            name: 'new_field',
+            type: 'SHORT_STRING',
+            isPrivate: true
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            var fieldId = res.body._id
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.length.should.be.eql(0);
+              log.type.should.be.eql('FIELD_CREATED');
+              log.initiating_user.should.be.eql(adminUser._id);
+              should.not.exist(log.affected_user);
+              String(log.custom_field).should.be.eql(fieldId);
+              log.description.should.be.eql("A new field called new_field was created.");
+              done();
+            });
+          });
+      });
+
+      it('logs editing a custom field', (done) => {
+        chai.request(server)
+          .put('/api/customFields/' + testField._id)
+          .set('Authorization', adminToken)
+          .send({
+            name: 'different_name',
+            type: 'SHORT_STRING',
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            var fieldId = res.body._id
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.length.should.be.eql(0);
+              log.type.should.be.eql('FIELD_EDITED');
+              log.initiating_user.should.be.eql(adminUser._id);
+              should.not.exist(log.affected_user);
+              String(log.custom_field).should.be.eql(fieldId);
+              log.description.should.include("The field test_field was edited by changing");
+              log.description.should.include('name from "test_field" to "different_name"');
+              log.description.should.include('type from "LONG_STRING" to "SHORT_STRING"');
+              done();
+            });
+          });
+      });
+
+      it('does not log editing a custom field if nothing changed', (done) => {
+        chai.request(server)
+          .put('/api/customFields/' + testField._id)
+          .set('Authorization', adminToken)
+          .send({
+            name: 'test_field',
+            type: 'LONG_STRING',
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            var fieldId = res.body._id
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(0);
+              done();
+            });
+          });
+      });
+
+      it('logs deleting a custom field', (done) => {
+        chai.request(server)
+          .delete('/api/customFields/' + testField._id)
+          .set('Authorization', adminToken)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.length.should.be.eql(0);
+              log.type.should.be.eql('FIELD_DELETED');
+              log.initiating_user.should.be.eql(adminUser._id);
+              should.not.exist(log.affected_user);
+              log.custom_field.should.be.eql(testField._id);
+              log.description.should.be.eql("The field test_field was deleted.");
+              done();
+            });
+          });
+      });
+
+    });
   });
 
 
