@@ -12,10 +12,6 @@ var buildPath = path.resolve(__dirname, 'build');
 
 app.use(express.static(buildPath));
 
-app.use('/apiContract',function(request, response){
-  response.sendFile('api_contract.txt', {root: path.resolve(__dirname, 'guides')});
-});
-
 app.use('/guides', express.static(path.resolve(__dirname, 'guides')));
 
 app.get('/*', function (request, response){
