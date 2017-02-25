@@ -91,6 +91,9 @@
   color: gray;
 }
 
+.logtable-container {
+}
+
 .log-detailview-links {
   overflow: hidden;
   white-space:normal;

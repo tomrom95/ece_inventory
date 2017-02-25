@@ -28,12 +28,43 @@ class LogTable extends Component {
 	}
 
 	componentWillMount() {
-		this.instance.get('api/logs')
+		this.loadData();
+	}
+
+	loadData() {
+		var url = 'api/logs';
+		if (this.state.filters) {
+			url += '?';
+			if (this.state.filters.user_id)
+				url += ("user_id=" + this.state.filters.user_id);
+			if (this.state.filters.type)
+				url += ("&type=" + this.state.filters.type);
+			if (this.state.filters.item_name)
+				url += ("&item_name=" + this.state.filters.item_name);
+		}
+
+		this.instance.get(url)
 		.then(function (response) {
 			this.setState({
 				items: response.data
 			});
-		}.bind(this));
+		}.bind(this));		
+	}
+
+	setFilters(actionType, userId, itemName) {
+		var filter = {};
+		if (actionType)
+			filter.type = actionType;
+		if (userId)
+			filter.user_id = userId;
+		if (itemName && itemName.length !== 0)
+			filter.item_name = itemName;
+
+		this.setState({
+			filters: filter
+		}, function() {
+			this.loadData();
+		});
 	}
 
 	makeLogItems(data) {
@@ -67,21 +98,23 @@ class LogTable extends Component {
 		return (		
 			<div className="row">
 				<div className="col-md-3">
-					<LogFilterBox filterRequests={e => console.log(e)}/>
+					<LogFilterBox api={this.instance} filterRequests={(type, id, itemName) => this.setFilters(type, id, itemName)}/>
 				</div>
 				<div className="col-md-9">
-					<table className="table table-sm table-striped log-table">
-					  <thead>
-					    <tr>				    
-					      <th>Timestamp</th>
-					      <th>Description</th>
-					      <th>Details</th>
-					    </tr>
-					  </thead>
-					  <tbody>
-					  	{this.makeLogItems(this.state.items)}
-					  </tbody>
-					</table>
+					<div className="logtable-container">
+						<table className="table table-sm table-striped log-table">
+						  <thead>
+						    <tr>				    
+						      <th>Timestamp</th>
+						      <th>Description</th>
+						      <th>Details</th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						  	{this.makeLogItems(this.state.items)}
+						  </tbody>
+						</table>
+					</div>
 				</div>
 			</div>
 		);

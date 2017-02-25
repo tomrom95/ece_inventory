@@ -12,12 +12,7 @@ class LogItem extends Component {
 			- list of itemNames (equal in length to list of itemIds)
 			- log item ID
 	*/
-
-	constructor(props) {
-		super(props);
-		console.log(props);
-	}
-
+	
 	render() {
 		var timestamp = this.props.timestamp;
 		var description = this.props.description;
