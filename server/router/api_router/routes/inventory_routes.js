@@ -144,6 +144,12 @@ module.exports.putAPI = function(req, res){
     if(err) return res.send({error: err});
     if(!old_item || old_item.is_deleted)
       return res.send({error: 'Item does not exist or has been deleted'});
+    else if (req.body.quantity &&
+             req.body.quantity != old_item.quantity &&
+            (req.body.quantity_reason === null ||
+             req.body.quantity_reason == undefined)){
+      return res.send({error:'Reason for quantity change not provided'})
+    }
     else{
       var oldItemCopy = new Item(old_item);
       var obj = Object.assign(old_item, req.body)
