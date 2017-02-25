@@ -91,6 +91,14 @@
   color: gray;
 }
 
+.log-detailview-links {
+  overflow: hidden;
+  white-space:normal;
+  max-width: 200px;
+  text-overflow: ellipsis;
+  display: block;
+}
+
 .white-space-cell {
   display: none;
 }
@@ -147,9 +155,6 @@
 .delete-button {
   font-family: 'Open Sans';
   font-weight: bold;
-  height: 40px;
-  width: 45px;
-  margin-left: 9px;
 }
 
 .edit-button {

@@ -88,6 +88,7 @@ class ItemDetailView extends React.Component {
     }
     else if (this.props.isButton === false) {
       button = <a href={"#"}
+                  className="log-detailview-links"
                   data-toggle="modal"
                   data-target={"#infoModal-"+this.props.params.itemID}
                   onClick={() => this.loadData()}>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../../App.css';
 import axios from 'axios';
 import LogItem from './LogItem.js';
+import LogFilterBox from './LogFilterBox.js';
 
 function formatDate(dateString) {
   var i;
@@ -63,19 +64,25 @@ class LogTable extends Component {
 	}
 
 	render() {
-		return (
-			<div className="container">
-				<table className="table table-sm table-striped log-table">
-				  <thead>
-				    <tr>				    
-				      <th>Timestamp</th>
-				      <th>Description</th>
-				    </tr>
-				  </thead>
-				  <tbody>
-				  	{this.makeLogItems(this.state.items)}
-				  </tbody>
-				</table>
+		return (		
+			<div className="row">
+				<div className="col-md-3">
+					<LogFilterBox filterRequests={e => console.log(e)}/>
+				</div>
+				<div className="col-md-9">
+					<table className="table table-sm table-striped log-table">
+					  <thead>
+					    <tr>				    
+					      <th>Timestamp</th>
+					      <th>Description</th>
+					      <th>Details</th>
+					    </tr>
+					  </thead>
+					  <tbody>
+					  	{this.makeLogItems(this.state.items)}
+					  </tbody>
+					</table>
+				</div>
 			</div>
 		);
 	}

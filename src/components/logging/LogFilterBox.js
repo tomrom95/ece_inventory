@@ -7,7 +7,7 @@ const statuses = [
     { value: 'FULFILLED', label: 'FULFILLED' },
     { value: 'DENIED', label: 'DENIED' }];
 
-class StatusFilterBox extends Component {
+class LogFilterBox extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -70,4 +70,4 @@ class StatusFilterBox extends Component {
 
 }
 
-export default StatusFilterBox;
+export default LogFilterBox;
