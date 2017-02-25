@@ -55,7 +55,7 @@ function getPrefill(data) {
 		"Location": data["Location"],
 		"Vendor Info": data["Vendor"],
 		"Tags": data["Tags"],
-		"Custom Fields": data["Custom Fields"],
+		"custom_fields": data["custom_fields"],
 	});
 }
 
@@ -68,7 +68,7 @@ function getEmptyPrefill() {
 		"Location": "",
 		"Vendor Info": "",
 		"Tags": "",
-		"Custom Fields": "",
+		"custom_fields": "",
 	});
 }
 
@@ -96,6 +96,7 @@ class InventoryTable extends Component {
         if (response.data.error) {
           console.log(response.data.error);
         }
+				console.log(response);
         this.setState({allCustomFields: response.data});
       }.bind(this))
       .catch(function(error) {
@@ -198,11 +199,9 @@ class InventoryTable extends Component {
 			list.push(this.makeDeleteButton(id));
 
 			list.push(<td className="subtable-row" key={"detail-view-" + id}>
-						<ItemDetailView 
-								key={"detail-view-button-" + id}
+						<ItemDetailView key={"detail-view-button-" + id}
 								params={{itemID: id}}
-								allCustomFields={this.state.allCustomFields}
-								isButton={true}/>
+								allCustomFields={this.state.allCustomFields}/>
 					  </td>);
 
 			return list;
@@ -220,7 +219,11 @@ class InventoryTable extends Component {
 				key={"request-popup-id-"+ id}/>);
 				list.push(
 					<td className="subtable-row" key={"detail-view-" + id}>
-						<ItemDetailView key={"detail-view-button-"+id} params={{itemID: id}}/>
+					<ItemDetailView key={"detail-view-button-" + id}
+							params={{itemID: id}}
+							allCustomFields={this.state.allCustomFields}/>
+
+
 					</td>);
 				return list;
 			}

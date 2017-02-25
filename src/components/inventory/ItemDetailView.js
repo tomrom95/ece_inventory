@@ -52,53 +52,54 @@ class ItemDetailView extends React.Component {
         </div>
       );
     }
-    var html_list = []
+    var html_list = [];
+
     for(var i = 0; i < fields.length; i++){
       var label = "";
-      for(var j = 0; j < this.props.allCustomFields.length; j++){
-        if(this.props.allCustomFields[i].field === fields[i].feild){
-  				label = this.props.allCustomFields[i].name;
-  			}
-      }
-      html_list.push(<div className="row" key={fields[i].field+i}>
-                        <p key={"row-"+fields[i].field+i}><strong key={"strong-"+fields[i].field+i}>{label}: </strong>
-                          {fields[i].value}
-                        </p>
-                      </div>);
+
+        for(var k = 0; k < this.props.allCustomFields.length; k++){
+          if(this.props.allCustomFields[k]._id === fields[i].field){
+    				label = this.props.allCustomFields[k].name;
+    			}
+        }
+
+        if(label !== ""){
+          html_list.push(<div className="row" key={fields[i].field+i}>
+                            <p key={"row-"+fields[i].field+i}><strong key={"strong-"+fields[i].field+i}>{label}: </strong>
+                              {fields[i].value}
+                            </p>
+                          </div>);
+        }
+
     }
-    return(html_list);
+    if(html_list.length === 0){
+      return(
+        <div className="row">
+          <p>No custom fields</p>
+
+        </div>
+      );
+    }
+    else{
+      return(html_list);
+    }
   }
 
   render() {
-    var button = null;
     if (this.state.error) {
       return (<div>{this.state.error}</div>);
     } else if (this.state.item == null) {
       return (<div></div>);
     }
-
-    if (this.props.isButton === true) {
-      button = (<button type="button"
-                  className="btn btn-outline-primary info-button"
-                  data-toggle="modal"
-                  data-target={"#infoModal-"+this.props.params.itemID}
-                  onClick={() => this.loadData()}>
-                    <span className="fa fa-info"></span>
-                </button>);
-    }
-    else if (this.props.isButton === false) {
-      button = <a href={"#"}
-                  data-toggle="modal"
-                  data-target={"#infoModal-"+this.props.params.itemID}
-                  onClick={() => this.loadData()}>
-                    {this.state.item.name}
-                </a>
-    }
-
     return (
       <div>
-
-        {button}
+        <button type="button"
+          className="btn btn-outline-primary info-button"
+          data-toggle="modal"
+          data-target={"#infoModal-"+this.props.params.itemID}
+          onClick={() => this.loadData()}>
+            <span className="fa fa-info"></span>
+        </button>
 
         <div className="modal fade"
               id={"infoModal-"+this.props.params.itemID}
@@ -164,6 +165,7 @@ class ItemDetailView extends React.Component {
       );
     }
     else{
+      console.log("test");
       return(
         <div className="row request-subtable">
           <CurrentOrders
