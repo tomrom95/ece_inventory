@@ -3,6 +3,7 @@ var Item = require('../../../model/items');
 var CustomField = require('../../../model/customFields');
 var LogHelpers = require('../../../logging/log_helpers');
 var mongoose = require('mongoose');
+var validator = require('validator');
 
 module.exports.postAPI = function(req, res){
   createOrUpdateField(
@@ -30,10 +31,28 @@ module.exports.putAPI = function(req, res){
   );
 };
 
+var isInvalid = function(value, type) {
+  value = String(value);
+  switch(type) {
+    case 'LONG_STRING':
+    case 'SHORT_STRING':
+      return false;
+    case 'FLOAT':
+      return !validator.isFloat(value);
+    case 'INT':
+      return !validator.isInt(value);
+    default:
+      return true;
+  }
+}
+
 var createOrUpdateField = function(itemId, fieldId, value, user, next) {
   CustomField.findById(fieldId, function(error, field) {
     if (error) return next(error);
     if (!field) return next('Invalid field id');
+    if (isInvalid(value, field.type)) {
+      return next('Invalid value for field type');
+    }
     Item.findById(itemId, function(error, item) {
       if (error) return next(error);
       if (!item) return next('Item does not exist');
