@@ -2,6 +2,7 @@
 var Cart = require("../../../model/carts");
 var User = require("../../../model/users");
 var Request = require("../../../model/requests");
+var LogHelpers = require('../../../logging/log_helpers');
 var QueryBuilder = require('../../../queries/querybuilder');
 var itemFieldsToReturn = 'name model_number description';
 
@@ -125,24 +126,25 @@ function checkout (initiatingUser, enteredUserID, reasonString, next) {
        cart.items.forEach(function(item){
          var itemCopy = Object.assign(item, {_id: undefined}); // ID field not copied
          request.items.push(itemCopy);
-       })
+       });
        request.save(function(err, request){
          if (err) return next(err);
          // populate cart items in requests object
          Cart.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
-           // Delete cart, and put in a new one
-           Cart.remove({user: initiatingUser._id}, function(err){
-             if(err) return next(err);
-             var newCart = new Cart({user: initiatingUser._id});
-             newCart.save(function(err){
+           // Log request creation using populated items
+           LogHelpers.logRequestCreation(request, initiatingUser._id, requestingUserID, function(error) {
+             // Delete cart, and put in a new one
+             Cart.remove({user: initiatingUser._id}, function(err){
                if(err) return next(err);
-               next(null, request);
-             })
-           })
-         })
-       })
-    })
-  })
-
-
+               var newCart = new Cart({user: initiatingUser._id});
+               newCart.save(function(err){
+                 if(err) return next(err);
+                 next(null, request);
+               });
+             });
+           });
+         });
+       });
+    });
+  });
 }

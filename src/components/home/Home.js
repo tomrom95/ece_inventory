@@ -3,6 +3,7 @@ import NavBar from '../global/NavBar.js';
 import '../../App.css';
 import axios from 'axios';
 import querystring from 'querystring';
+import {browserHistory} from 'react-router';
 
 class Home extends Component {
   constructor(props) {
@@ -44,6 +45,7 @@ class Home extends Component {
   }
 
   login() {
+    browserHistory.push('/Inventory');
     axios.post('https:' + '//' + location.hostname + ':3001' + '/auth/login', {
       username: this.state.name,
       password: this.state.passwrd,
@@ -57,6 +59,7 @@ class Home extends Component {
           user: res.data.user,
           token: res.data.token,
         });
+
       }
       else{
         console.log(res.data.error);
@@ -65,7 +68,6 @@ class Home extends Component {
     .catch(function (error) {
       console.log(error);
     });
-
   }
 
   checkForOAuth() {
@@ -163,32 +165,41 @@ class Home extends Component {
 
         return(
           <div className="login-form container">
-            <h3 className="row">Log In Locally</h3>
-            <form className="row">
-              <div className="form-group">
-                <label htmlFor="username-field">Username</label>
-                <input type="text"
-                    value={this.state.name}
+            <div className="form-group">
+              <h3 className="row">Log In Locally</h3>
+              <form className="row">
+                <div className="form-group">
+                  <label htmlFor="username-field">Username</label>
+                  <input type="text"
+                      value={this.state.name}
+                      className="form-control"
+                      id="username-field"
+                      placeholder="Username"
+                      onChange={this.handleNameChange}/>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="password-field">Password</label>
+                  <input type="password"
+                    value={this.state.passwrd}
                     className="form-control"
-                    id="username-field"
-                    placeholder="Username"
-                    onChange={this.handleNameChange}/>
+                    id="password-field"
+                    placeholder="Password"
+                    onChange={this.handlePasswrdChange}/>
+                </div>
+              </form>
+              <div className="form-group row">
+                <button className="btn btn-primary" onClick={this.login}>
+                    Local Log In
+                </button>
               </div>
-              <div className="form-group">
-                <label htmlFor="password-field">Password</label>
-                <input type="password"
-                  value={this.state.passwrd}
-                  className="form-control"
-                  id="password-field"
-                  placeholder="Password"
-                  onChange={this.handlePasswrdChange}/>
+            </div>
+
+            <div className="form-group">
+              <h3 className="row">Log In with your NetID</h3>
+              <div className="row">
+                <a href={this.createNetIDLoginLink()} className="btn btn-primary" role="button">NetID Login</a>
               </div>
-            </form>
-            <button className="btn btn-primary" onClick={this.login}>
-                Local Log In
-            </button>
-            <h3 className="row">Log In with your NetID</h3>
-            <a href={this.createNetIDLoginLink()} className="btn btn-primary" role="button">NetID Login</a>
+            </div>
           </div>
           );
   }

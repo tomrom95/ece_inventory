@@ -44,12 +44,13 @@ If you use LetsEncrypt, first install the package:
 > sudo apt-get install letsencrypt
 
 Create a certificate
-> letsencrypt certonly --standalone -d YOUR_VM_URL
+> sudo letsencrypt certonly --standalone -d YOUR_VM_URL
 
 For example, this for our production vm is
-> letsencrypt certonly --standalone -d colab-sbx-186.oit.duke.edu
+> sudo letsencrypt certonly --standalone -d colab-sbx-186.oit.duke.edu
 
 This will create a certificate (as cert.pem) and key (as privkey.pem), and will output the directory where they're saved.
+Usually this directory is /etc/letsencrypt/live/YOUR_VM_URL/
 
 Copy these files into your project's root directory. Make sure to use root access to do this (run `sudo su`). Also make sure you rename privKey.pem to key.pem when you copy it.
 

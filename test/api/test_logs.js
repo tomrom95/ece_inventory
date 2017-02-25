@@ -5,6 +5,7 @@ let Item = require('../../server/model/items');
 let User = require('../../server/model/users');
 let Log = require('../../server/model/logs');
 let Request = require('../../server/model/requests');
+let Cart = require('../../server/model/carts');
 let CustomField = require('../../server/model/customFields');
 let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
@@ -127,10 +128,31 @@ describe('Logging API Test', function () {
             log.initiating_user.should.be.eql(adminUser._id);
             log.type.should.be.eql('ITEM_EDITED');
             should.not.exist(log.affected_user);
-            log.description.should.include('name from 1k resistor to 1k thingy');
+            log.description.should.include('name from "1k resistor" to "1k thingy"');
             log.description.should.include('quantity from 1000 to 2000');
-            log.description.should.include('tags from component,electric,cheap to component,electric,cheap,thingy');
+            log.description.should.include('tags from ["component","electric","cheap"] to ["component","electric","cheap","thingy"]');
             log.description.should.not.include('location');
+            done();
+          });
+        });
+    });
+
+    it('logs editing an item with a previously undefined field', (done) => {
+      chai.request(server)
+        .put('/api/inventory/' + allItems['1k resistor']._id)
+        .set('Authorization', adminToken)
+        .send({
+          model_number: '1KR',
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Log.find({}, function(err, logs) {
+            should.not.exist(err);
+            logs.length.should.be.eql(1);
+            var log = logs[0];
+            log.items.length.should.be.eql(1);
+            log.description.should.include('model_number from undefined to "1KR"');
             done();
           });
         });
@@ -213,7 +235,6 @@ describe('Logging API Test', function () {
               value: 'new value'
             })
             .end((err, res) => {
-              console.log(err);
               should.not.exist(err);
               res.should.have.status(200);
               Log.find({}, function(err, logs) {
@@ -341,9 +362,9 @@ describe('Logging API Test', function () {
               log.type.should.be.eql('REQUEST_DISBURSED');
               log.initiating_user.should.be.eql(adminUser._id);
               log.affected_user.should.be.eql(standardUser._id);
-              log.description.should.include('2 1k resistors');
-              log.description.should.include('5 2k resistors');
-              log.description.should.include('1 Oscilloscope');
+              log.description.should.include('(2) 1k resistors');
+              log.description.should.include('(5) 2k resistors');
+              log.description.should.include('(1) Oscilloscope');
               log.description.should.include('The user admin disbursed');
               log.description.should.include('to the user standard');
               done();
@@ -412,8 +433,8 @@ describe('Logging API Test', function () {
               log.type.should.be.eql('REQUEST_CREATED');
               log.initiating_user.should.be.eql(standardUser._id);
               should.not.exist(log.affectedUser);
-              log.description.should.include('10 1k resistors');
-              log.description.should.include('1 Oscilloscope');
+              log.description.should.include('(10) 1k resistors');
+              log.description.should.include('(1) Oscilloscope');
               log.description.should.include('The user standard requested');
               done();
             });
@@ -459,7 +480,152 @@ describe('Logging API Test', function () {
           });
       });
 
-      it('logs an editing a request', (done) => {
+      it('logs an admin user checking out a cart for himself', (done) => {
+        Cart.remove({}, function(error) {
+          var newCart = new Cart({
+            user: adminUser._id,
+            items: [
+              {
+                item: allItems["1k resistor"]._id,
+                quantity: 10,
+              },
+              {
+                item: allItems["Oscilloscope"]._id,
+                quantity: 1,
+              }
+            ]
+          });
+          newCart.save(function(error, cart) {
+            chai.request(server)
+              .patch('/api/cart')
+              .set('Authorization', adminToken)
+              .send({
+                action: 'CHECKOUT',
+                reason: 'I want them'
+              })
+              .end((err, res) => {
+                should.not.exist(err);
+                res.should.have.status(200);
+                Log.find({}, function(err, logs) {
+                  should.not.exist(err);
+                  logs.length.should.be.eql(1);
+                  var log = logs[0];
+                  log.items.forEach(function(item) {
+                    ([allItems['1k resistor']._id, allItems['Oscilloscope']._id])
+                      .should.include(item);
+                  });
+                  log.type.should.be.eql('REQUEST_CREATED');
+                  log.initiating_user.should.be.eql(adminUser._id);
+                  should.not.exist(log.affected_user);
+                  log.description.should.include("The user admin requested");
+                  log.description.should.include('(10) 1k resistors');
+                  log.description.should.include('(1) Oscilloscope');
+                  done();
+                });
+              });
+          });
+        });
+      });
+
+      it('logs an admin user checking out a cart for someone else', (done) => {
+        Cart.remove({}, function(error) {
+          var newCart = new Cart({
+            user: adminUser._id,
+            items: [
+              {
+                item: allItems["1k resistor"]._id,
+                quantity: 10,
+              },
+              {
+                item: allItems["Oscilloscope"]._id,
+                quantity: 1,
+              }
+            ]
+          });
+          newCart.save(function(error, cart) {
+            chai.request(server)
+              .patch('/api/cart')
+              .set('Authorization', adminToken)
+              .send({
+                action: 'CHECKOUT',
+                reason: 'I want them',
+                user: standardUser._id
+              })
+              .end((err, res) => {
+                should.not.exist(err);
+                res.should.have.status(200);
+                Log.find({}, function(err, logs) {
+                  should.not.exist(err);
+                  logs.length.should.be.eql(1);
+                  var log = logs[0];
+                  log.items.forEach(function(item) {
+                    ([allItems['1k resistor']._id, allItems['Oscilloscope']._id])
+                      .should.include(item);
+                  });
+                  log.type.should.be.eql('REQUEST_CREATED');
+                  log.initiating_user.should.be.eql(adminUser._id);
+                  log.affected_user.should.be.eql(standardUser._id);
+                  log.description.should.include("The user admin requested");
+                  log.description.should.include('(10) 1k resistors');
+                  log.description.should.include('(1) Oscilloscope');
+                  log.description.should.include('for the user standard.');
+                  done();
+                });
+              });
+          });
+        });
+      });
+
+      it('logs an manager checking out a cart for someone else', (done) => {
+        Cart.remove({}, function(error) {
+          var newCart = new Cart({
+            user: managerUser._id,
+            items: [
+              {
+                item: allItems["1k resistor"]._id,
+                quantity: 10,
+              },
+              {
+                item: allItems["Oscilloscope"]._id,
+                quantity: 1,
+              }
+            ]
+          });
+          newCart.save(function(error, cart) {
+            chai.request(server)
+              .patch('/api/cart')
+              .set('Authorization', managerToken)
+              .send({
+                action: 'CHECKOUT',
+                reason: 'I want them',
+                user: adminUser._id
+              })
+              .end((err, res) => {
+                should.not.exist(err);
+                res.should.have.status(200);
+                Log.find({}, function(err, logs) {
+                  should.not.exist(err);
+                  logs.length.should.be.eql(1);
+                  var log = logs[0];
+                  log.items.forEach(function(item) {
+                    ([allItems['1k resistor']._id, allItems['Oscilloscope']._id])
+                      .should.include(item);
+                  });
+                  log.type.should.be.eql('REQUEST_CREATED');
+                  log.initiating_user.should.be.eql(managerUser._id);
+                  log.affected_user.should.be.eql(adminUser._id);
+                  log.description.should.include("The user manager requested");
+                  log.description.should.include('(10) 1k resistors');
+                  log.description.should.include('(1) Oscilloscope');
+                  log.description.should.include('for the user admin.');
+                  done();
+                });
+              });
+          });
+        });
+      });
+
+      it('logs editing a request', (done) => {
         chai.request(server)
           .put('/api/requests/' + testRequest._id)
           .set('Authorization', adminToken)
@@ -482,8 +648,8 @@ describe('Logging API Test', function () {
               log.initiating_user.should.be.eql(adminUser._id);
               log.affected_user.should.be.eql(standardUser._id);
               log.description.should.include("The user admin edited standard's request by changing");
-              log.description.should.include("reason from cuz to different reason");
-              log.description.should.include("status from PENDING to APPROVED");
+              log.description.should.include('reason from "cuz" to "different reason"');
+              log.description.should.include('status from "PENDING" to "APPROVED"');
               done();
             });
           });
@@ -602,6 +768,124 @@ describe('Logging API Test', function () {
       });
     });
 
+    describe('Logging custom fields', () =>{
+      var testField;
+      beforeEach((done) => {
+        CustomField.remove({}, (err) => {
+          should.not.exist(err);
+          var newfield = new CustomField({
+            name: 'test_field',
+            type: 'LONG_STRING',
+            isPrivate: false,
+          });
+          newfield.save(function(error, field) {
+            should.not.exist(error);
+            testField = field;
+            done();
+          });
+        });
+      });
+
+      it('logs creating a new custom field', (done) => {
+        chai.request(server)
+          .post('/api/customFields/')
+          .set('Authorization', adminToken)
+          .send({
+            name: 'new_field',
+            type: 'SHORT_STRING',
+            isPrivate: true
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            var fieldId = res.body._id
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.length.should.be.eql(0);
+              log.type.should.be.eql('FIELD_CREATED');
+              log.initiating_user.should.be.eql(adminUser._id);
+              should.not.exist(log.affected_user);
+              String(log.custom_field).should.be.eql(fieldId);
+              log.description.should.be.eql("A new field called new_field was created.");
+              done();
+            });
+          });
+      });
+
+      it('logs editing a custom field', (done) => {
+        chai.request(server)
+          .put('/api/customFields/' + testField._id)
+          .set('Authorization', adminToken)
+          .send({
+            name: 'different_name',
+            type: 'SHORT_STRING',
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            var fieldId = res.body._id
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.length.should.be.eql(0);
+              log.type.should.be.eql('FIELD_EDITED');
+              log.initiating_user.should.be.eql(adminUser._id);
+              should.not.exist(log.affected_user);
+              String(log.custom_field).should.be.eql(fieldId);
+              log.description.should.include("The field test_field was edited by changing");
+              log.description.should.include('name from "test_field" to "different_name"');
+              log.description.should.include('type from "LONG_STRING" to "SHORT_STRING"');
+              done();
+            });
+          });
+      });
+
+      it('does not log editing a custom field if nothing changed', (done) => {
+        chai.request(server)
+          .put('/api/customFields/' + testField._id)
+          .set('Authorization', adminToken)
+          .send({
+            name: 'test_field',
+            type: 'LONG_STRING',
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            var fieldId = res.body._id
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(0);
+              done();
+            });
+          });
+      });
+
+      it('logs deleting a custom field', (done) => {
+        chai.request(server)
+          .delete('/api/customFields/' + testField._id)
+          .set('Authorization', adminToken)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Log.find({}, function(err, logs) {
+              should.not.exist(err);
+              logs.length.should.be.eql(1);
+              var log = logs[0];
+              log.items.length.should.be.eql(0);
+              log.type.should.be.eql('FIELD_DELETED');
+              log.initiating_user.should.be.eql(adminUser._id);
+              should.not.exist(log.affected_user);
+              log.custom_field.should.be.eql(testField._id);
+              log.description.should.be.eql("The field test_field was deleted.");
+              done();
+            });
+          });
+      });
+
+    });
   });
 
 

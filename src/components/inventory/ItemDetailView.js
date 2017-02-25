@@ -52,21 +52,37 @@ class ItemDetailView extends React.Component {
         </div>
       );
     }
-    var html_list = []
+    var html_list = [];
+
     for(var i = 0; i < fields.length; i++){
       var label = "";
-      for(var j = 0; j < this.props.allCustomFields.length; j++){
-        if(this.props.allCustomFields[i].field === fields[i].feild){
-  				label = this.props.allCustomFields[i].name;
-  			}
-      }
-      html_list.push(<div className="row" key={fields[i].field+i}>
-                        <p key={"row-"+fields[i].field+i}><strong key={"strong-"+fields[i].field+i}>{label}: </strong>
-                          {fields[i].value}
-                        </p>
-                      </div>);
+
+        for(var k = 0; k < this.props.allCustomFields.length; k++){
+          if(this.props.allCustomFields[k]._id === fields[i].field){
+    				label = this.props.allCustomFields[k].name;
+    			}
+        }
+
+        if(label !== ""){
+          html_list.push(<div className="row" key={fields[i].field+i}>
+                            <p key={"row-"+fields[i].field+i}><strong key={"strong-"+fields[i].field+i}>{label}: </strong>
+                              {fields[i].value}
+                            </p>
+                          </div>);
+        }
+
     }
-    return(html_list);
+    if(html_list.length === 0){
+      return(
+        <div className="row">
+          <p>No custom fields</p>
+
+        </div>
+      );
+    }
+    else{
+      return(html_list);
+    }
   }
 
   render() {
@@ -149,6 +165,7 @@ class ItemDetailView extends React.Component {
       );
     }
     else{
+      console.log("test");
       return(
         <div className="row request-subtable">
           <CurrentOrders

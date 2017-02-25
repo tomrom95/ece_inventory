@@ -77,6 +77,7 @@ class CurrentOrders extends Component {
           renderComponent={table}
           showFilterBox={this.props.showFilterBox}
           showStatusFilterBox={this.props.showStatusFilterBox}
+          rowsPerPage={this.props.showStatusFilterBox ? 10 : 5}
           user={JSON.parse(localStorage.getItem('user'))._id}
           id={"user-requests-"+this.props.id}
           hasOtherParams={this.props.hasOtherParams}

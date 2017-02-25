@@ -25,12 +25,12 @@ function createRequestItemString(requestItemMap, items) {
     if (index !== 0 && items.length !== 2) {
       itemString += ','
     }
-    if (index === items.length - 1) {
+    if (index === items.length - 1 && index !== 0) {
       itemString += ' and';
     }
     var quantity = requestItemMap[item._id];
     var plural = quantity === 1 ? '' : 's';
-    itemString += ' ' + quantity + ' ' + item.name + plural;
+    itemString += ' (' + quantity + ') ' + item.name + plural;
   });
   return itemString;
 }
@@ -72,16 +72,24 @@ module.exports.disbursedItem = function(request, items, disbursedFrom, disbursed
   return description;
 }
 
+var getValueString = function(value) {
+  if (value === null || value === undefined) {
+    return 'undefined';
+  }
+  return JSON.stringify(value);
+}
+
 var createChangesString = function(oldObject, changes) {
   var changesString = "";
   Object.keys(changes).forEach(function(key, index, keyArray) {
     if (index !== 0 && keyArray.length !== 2) {
       changesString += ',';
     }
-    if (index === keyArray.length -1) {
+    if (index === keyArray.length -1 && index !== 0) {
       changesString += ' and';
     }
-    changesString += ' ' + key + ' from ' + oldObject[key] + ' to ' + changes[key];
+    changesString += ' ' + key + ' from ' + getValueString(oldObject[key])
+      + ' to ' + getValueString(changes[key]);
   });
   return changesString;
 }
@@ -108,4 +116,18 @@ module.exports.editedItem = function(oldItem, changes, user) {
 module.exports.editedItemCustomField = function(item, field, oldValue, newValue) {
   return 'The item ' + item.name + ' was edited by changing the custom field '
     + field.name + ' from ' + oldValue + ' to ' + newValue + '.';
+}
+
+module.exports.fieldCreated = function(field) {
+  return 'A new field called ' + field.name + ' was created.';
+}
+
+module.exports.fieldEdited = function(field, changes) {
+  var description = 'The field ' + field.name + ' was edited by changing';
+  description += createChangesString(field, changes) + '.';
+  return description;
+}
+
+module.exports.fieldDeleted = function(field) {
+  return 'The field ' + field.name + ' was deleted.';
 }

@@ -18,9 +18,6 @@ class NavBar extends Component {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <Link to="/" className="nav-link">HOME</Link>
-              </li>
-              <li className="nav-item">
                 <Link to="/UserProfile" className="nav-link">PROFILE</Link>
               </li>
               <li className="nav-item">
@@ -36,7 +33,10 @@ class NavBar extends Component {
                 <Link to="/CreateUser" className="nav-link">CREATE USER</Link>
               </li>
               <li className="nav-item">
-                <Link to="/Transactions" className="nav-link">TRANSACTIONS</Link>
+                <Link to="/EditUsers" className="nav-link">EDIT USERS</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/Log" className="nav-link">LOG</Link>
               </li>
               <li className="nav-item btn-nav signout-button">
                 <button className="btn btn-outline-primary" onClick={this.props.onClick}>
@@ -58,9 +58,6 @@ class NavBar extends Component {
           <a className="navbar-brand" href="#">ECE INVENTORY</a>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <Link to="/" className="nav-link">HOME</Link>
-              </li>
               <li className="nav-item">
                 <Link to="/UserProfile" className="nav-link">PROFILE</Link>
               </li>
