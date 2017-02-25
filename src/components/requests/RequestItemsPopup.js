@@ -50,7 +50,7 @@ class RequestItemsPopup extends Component {
 	    return (
 	      <td>
 	        <button type="button"
-	          className="btn btn-outline-primary info-button"
+	          className="btn btn-sm btn-outline-primary info-button"
 	          data-toggle="modal"
 	          data-target={"#requestInfoModal-"+this.state.id} >
 	            <span className="fa fa-info"></span>

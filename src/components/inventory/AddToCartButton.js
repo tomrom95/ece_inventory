@@ -79,7 +79,7 @@ class AddToCartButton extends Component {
 	render() {
 		return (
 			<td className="subtable-row">
-				<button type="button" className="btn btn-outline-primary request-button" data-toggle="modal"
+				<button type="button" className="btn btn-sm btn-outline-primary request-button" data-toggle="modal"
 					data-target={"#requestPopup-"+this.props.itemId}>
 						<div>
 						<span className="fa fa-shopping-cart add-to-cart-icon"></span>

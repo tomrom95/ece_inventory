@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 
-
 const statuses = [
     { value: 'PENDING', label: 'PENDING' },
     { value: 'APPROVED', label: 'APPROVED' },
@@ -16,7 +15,6 @@ class StatusFilterBox extends Component {
     }
   }
 
-  
   filterButton() {
     var status = this.state.status;
     this.props.filterRequests(status);
@@ -25,7 +23,6 @@ class StatusFilterBox extends Component {
   handleChange(value) {
     this.setState({status: value});
   }
-
 
   render() {
     return(
