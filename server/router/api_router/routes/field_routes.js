@@ -1,6 +1,7 @@
 'use strict';
 var CustomField = require('../../../model/customFields');
 var QueryBuilder = require('../../../queries/querybuilder');
+var LogHelpers = require('../../../logging/log_helpers');
 
 module.exports.getAPI = function (req, res) {
   var query = new QueryBuilder();
@@ -36,25 +37,34 @@ module.exports.postAPI = function(req, res){
   });
   customField.save(function(error, savedField){
     if(error) return res.send({error: error});
-    res.json(savedField);
+    LogHelpers.logCustomFieldCreation(savedField, req.user, function(error) {
+      if(error) return res.send({error: error});
+      res.json(savedField);
+    });
   });
 };
 
 module.exports.putAPI = function(req, res){
   var update = {};
   ['name', 'type', 'isPrivate'].forEach(function(field) {
-    if (req.body[field]) update[field] = req.body[field];
+    if (req.body.hasOwnProperty(field)) update[field] = req.body[field];
   });
-  CustomField.findByIdAndUpdate(
-    req.params.field_id,
-    {$set: update},
-    {new: true},
-    function(error, customField) {
-      if (error) return res.send({error: error});
-      if (!customField) return res.send({error: 'Could not find field to update'});
-      res.json(customField);
-    }
-  );
+  CustomField.findById(req.params.field_id, function(error, customField) {
+    if (error) return res.send({error: error});
+    if (!customField) return res.send({error: 'Could not find field to update'});
+    CustomField.findByIdAndUpdate(
+      customField._id,
+      {$set: update},
+      {new: true},
+      function(error, newCustomField) {
+        if (error) return res.send({error: error});
+        LogHelpers.logCustomFieldEdit(customField, update, req.user, function(error) {
+          if (error) return res.send({error: error});
+          res.json(newCustomField);
+        });
+      }
+    );
+  });
 };
 
 module.exports.deleteAPI = function(req, res){
@@ -63,7 +73,10 @@ module.exports.deleteAPI = function(req, res){
     function(error, deletedField) {
       if (error) return res.send({error: error});
       if (!deletedField) return res.send({error: 'Could not find field to delete'});
-      res.json({message: "Delete successful"});
+      LogHelpers.logCustomFieldDeletion(deletedField, req.user, function(error) {
+        if (error) return res.send({error: error});
+        res.json({message: "Delete successful"});
+      });
     }
-  )
+  );
 }

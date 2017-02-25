@@ -5,6 +5,7 @@ var Item = require('../../../model/items');
 
 const ITEM_FIELDS = 'name';
 const USER_FIELDS = 'username netid first_name last_name';
+const FIELD_FIELDS = 'name';
 
 module.exports.getAPI = function(req, res) {
   var query = new QueryBuilder();
@@ -76,6 +77,7 @@ function queryLog(
     .populate('items', ITEM_FIELDS)
     .populate('initiating_user', USER_FIELDS)
     .populate('affected_user', USER_FIELDS)
+    .populate('custom_field', FIELD_FIELDS)
     .sort({time_stamp: 'desc'});
 
   if (page && perPage && !isNaN(perPage)) {
