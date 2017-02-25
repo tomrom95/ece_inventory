@@ -25,12 +25,12 @@ function createRequestItemString(requestItemMap, items) {
     if (index !== 0 && items.length !== 2) {
       itemString += ','
     }
-    if (index === items.length - 1) {
+    if (index === items.length - 1 && index !== 0) {
       itemString += ' and';
     }
     var quantity = requestItemMap[item._id];
     var plural = quantity === 1 ? '' : 's';
-    itemString += ' ' + quantity + ' ' + item.name + plural;
+    itemString += ' (' + quantity + ') ' + item.name + plural;
   });
   return itemString;
 }
@@ -85,7 +85,7 @@ var createChangesString = function(oldObject, changes) {
     if (index !== 0 && keyArray.length !== 2) {
       changesString += ',';
     }
-    if (index === keyArray.length -1) {
+    if (index === keyArray.length -1 && index !== 0) {
       changesString += ' and';
     }
     changesString += ' ' + key + ' from ' + getValueString(oldObject[key])
