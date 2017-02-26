@@ -416,7 +416,6 @@ class ItemWizard extends Component {
 	  		has_instance_objects: false,
 				custom_fields: fields
   		}
-			console.log(object);
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
 
@@ -425,7 +424,6 @@ class ItemWizard extends Component {
 			        if (response.data.error) {
 		        		alert(response.data.error.errmsg);
 			        } else {
-								console.log(response);
 			        	this.props.callback();
 			        	this.clearForm();
 			        	alert("Successfully created new item: " + response.data.name);
