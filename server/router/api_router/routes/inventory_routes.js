@@ -154,6 +154,16 @@ var isQuantityReason = function(enteredString){
   return quantityReasonStrings.includes(enteredString);
 }
 
+var filterFieldsByArray = function(obj, array){
+  var result = {};
+  array.forEach(function(field){
+    if(obj.hasOwnProperty(field)){
+      result[field] = obj[field];
+    }
+  })
+  return result;
+}
+
 module.exports.putAPI = function(req, res){
   if (req.body.is_deleted !== null && req.body.is_deleted !== undefined) {
     return res.send({error: 'You cannot update the delete field'})
@@ -163,18 +173,22 @@ module.exports.putAPI = function(req, res){
     if(!old_item || old_item.is_deleted)
       return res.send({error: 'Item does not exist or has been deleted'});
     else if (isQuantityProvidedWithoutReason(req.body.quantity, old_item.quantity, req.body.quantity_reason)){
-      return res.send({error:'Reason for quantity change not provided'})
+      return res.send({error:'Reason for quantity change not provided'});
     } else if (isQuantityReasonProvidedWithoutQuantity(req.body.quantity, req.body.quantity_reason)){
-      return res.send({error:'Quantity not provided with reason'})
-    } else if(!isQuantityReason(req.body.quantity_reason)){
-      return res.send({error:'Invalid reason provided for quantity change'})
+      return res.send({error:'Quantity not provided with reason'});
+    } else if(req.body.quantity_reason && !isQuantityReason(req.body.quantity_reason)){
+      return res.send({error:'Invalid reason provided for quantity change'});
     } else {
       var oldItemCopy = new Item(old_item);
-      var obj = Object.assign(old_item, req.body)
+      // Filter out invalid body fields
+      var changes = filterFieldsByArray(req.body, Object.keys(Item.schema.paths));
+      // Pass forward the quantity reason
+      changes.quantity_reason = req.body.quantity_reason;
+      var obj = Object.assign(old_item, changes);
       obj.tags = trimTags(req.body.tags);
       obj.save((err,item) => {
         if(err) return res.send({error: err});
-        LogHelpers.logEditing(oldItemCopy, req.body, req.user, function(err) {
+          LogHelpers.logEditing(oldItemCopy, changes, req.user, function(err) {
           if(err) return res.send({error: err});
           res.json(item);
         });

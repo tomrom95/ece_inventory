@@ -103,8 +103,9 @@ var processQuantityChange = function(changeEnum){
 
 var createChangesString = function(oldObject, changes) {
   var changesString = "";
+  let quantity_reason = changes.quantity_reason;
+  delete changes.quantity_reason;
   Object.keys(changes).forEach(function(key, index, keyArray) {
-    if(key == "quantity_reason") return;
     if (index !== 0 && keyArray.length !== 2) {
       changesString += ',';
     }
@@ -113,7 +114,7 @@ var createChangesString = function(oldObject, changes) {
     }
     changesString += ' ' + key + ' from ' + getValueString(oldObject[key])
       + ' to ' + getValueString(changes[key]);
-    if(key == "quantity") changesString += processQuantityChange(changes.quantity_reason);
+    if(key == "quantity") changesString += processQuantityChange(quantity_reason);
   });
   return changesString;
 }
