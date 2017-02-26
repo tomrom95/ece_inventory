@@ -96,7 +96,6 @@ class InventoryTable extends Component {
         if (response.data.error) {
           console.log(response.data.error);
         }
-				console.log(response);
         this.setState({allCustomFields: response.data});
       }.bind(this))
       .catch(function(error) {

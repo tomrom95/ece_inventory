@@ -57,8 +57,7 @@ class ItemEditor extends Component {
 
 	handleFormChange(event, label, index) {
 		var data = this.state.data;
-		console.log(this.state.data.custom_fields);
-		console.log(index);
+
 		if(label == "custom_fields"){
 			data.custom_fields[index].value = event.target.value;
 		}
@@ -81,7 +80,9 @@ class ItemEditor extends Component {
 			}
 			else if (keys[i] === 'custom_fields'){
 				if(vals[i].length > 0){
-
+					list.push(<div className="form-group" key={"createform-div-customfields-labelrow-"+i}>
+								Custom Fields
+								</div>)
 					for(var j = 0; j < vals[i].length; j++){
 						var field = vals[i][j];
 						var label = "";
@@ -91,7 +92,6 @@ class ItemEditor extends Component {
 							}
 						}
 						if(label !== ""){
-							console.log(j);
 							list.push(this.makeCustomTextBox(i, j, field, label));
 							list.push(
 								<button
@@ -101,12 +101,11 @@ class ItemEditor extends Component {
 									className="btn btn-danger delete-button">
 									X
 									</button>);
-									console.log(j);
 
 							list.push(
 								<button
 									key={i + "edit-field-button" + j}
-									onClick={()=>{this.editCustomField(i, j-1, field)}}
+									onClick={()=>{this.checkEditField(i, j-1, field)}}
 									type="button"
 									className="btn btn-outline-primary add-button">
 									Edit
@@ -204,7 +203,6 @@ class ItemEditor extends Component {
 	}
 
 	addField(value, already_exists, type_mismatch, field_params){
-		console.log(field_params);
 		if(value && !already_exists && !type_mismatch){
 			this.props.api.post('/api/inventory/'+ this.props.itemId+ "/customFields/",  field_params)
 				.then(function(response) {
@@ -232,7 +230,6 @@ class ItemEditor extends Component {
 	deleteCustomField(row, field){
 		var id = "createform-row-"+row;
 		this.state.formIds.splice(0,id);
-		console.log(field);
 		this.props.api.delete('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field)
 			.then(function(response) {
 					if (response.data.error) {
@@ -248,25 +245,63 @@ class ItemEditor extends Component {
 
 	}
 
-	editCustomField(row, index, field){
-		console.log(field);
+	checkEditField(row, index, field){
+		var new_value = this.state.data.custom_fields[index].value
 		var body = {
 			field: field.field,
-			value: this.state.data.custom_fields[index].value,
+			value: new_value,
 		}
-		this.props.api.put('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field, body)
+		var type = "";
+		var type_mismatch = false;
+		this.props.api.get('/api/customFields/'+field.field)
 			.then(function(response) {
 					if (response.data.error) {
 						alert(response.data.error);
 					} else {
-						this.props.callback();
+						type = response.data.type;
+						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAlpha(new_value)){
+							type_mismatch = true;
+						}
+						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(new_value)){
+							type_mismatch = true;
+						}
+						else if((type === "INT" || type === "FLOAT") && validator.isNumeric(new_value)){
+							if(type === "INT" && new_value % 1 !== 0){
+								type_mismatch = true;
+							}
+							else if(type === "FLOAT" && new_value % 1 === 0){
+								type_mismatch = true;
+							}
+						}
 
+						this.submitFieldEdit(type_mismatch, body, field);
 					}
 				}.bind(this))
 				.catch(function(error) {
 					console.log(error);
 				}.bind(this));
+
 	}
+
+	submitFieldEdit(type_mismatch, body, field){
+		if(!type_mismatch){
+			this.props.api.put('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field, body)
+				.then(function(response) {
+						if (response.data.error) {
+							alert(response.data.error);
+						} else {
+							this.props.callback();
+						}
+					}.bind(this))
+					.catch(function(error) {
+						console.log(error);
+					}.bind(this));
+		}
+		else{
+			alert("new value is incorrect type");
+		}
+	}
+
 
 	makeCustomTextBox(row, index, field, label){
 		var id = "createform-custom-row-"+row;
@@ -286,13 +321,7 @@ class ItemEditor extends Component {
 			</div>
 		);
 
-
-
-
-
 	}
-
-
 
 	makeTextBox(row, type, label, defaultValue){
 		var id = "createform-row-"+row;

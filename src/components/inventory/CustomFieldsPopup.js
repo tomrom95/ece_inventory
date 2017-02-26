@@ -119,7 +119,6 @@ class CustomFieldsPopup extends Component {
 	        if (response.data.error) {
         		console.log(response.data.error);
 	        } else {
-						console.log(response);
 						this.props.callback();
 	        }
 	      }.bind(this))
