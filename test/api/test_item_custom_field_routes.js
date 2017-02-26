@@ -165,6 +165,54 @@ describe('Inventory Custom Fields API Test', function () {
       });
     });
 
+    it('returns an error if the field value is invalid for FLOAT', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .post('/api/inventory/' + item._id + '/customFields')
+          .set('Authorization', adminToken)
+          .send({
+            field: defaultFields.float_number,
+            value: 'Blah.0'
+          })
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.error.should.be.eql('Invalid value for field type');
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields.length.should.be.eql(0);
+              done();
+            });
+          });
+      });
+    });
+
+    it('returns an error if the field value is invalid for INT', (done) => {
+      var itemToCreate = Item({
+        "quantity": 1000,
+        "name": "test_item",
+      });
+      itemToCreate.save(function(err, item) {
+        chai.request(server)
+          .post('/api/inventory/' + item._id + '/customFields')
+          .set('Authorization', adminToken)
+          .send({
+            field: defaultFields.int_number,
+            value: 1.5
+          })
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.error.should.be.eql('Invalid value for field type');
+            Item.findById(item._id, function(error, foundItem) {
+              foundItem.custom_fields.length.should.be.eql(0);
+              done();
+            });
+          });
+      });
+    });
+
     it('does not allow managers to add new field', (done) => {
       var itemToCreate = Item({
         "quantity": 1000,
