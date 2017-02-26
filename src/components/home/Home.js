@@ -4,6 +4,7 @@ import '../../App.css';
 import axios from 'axios';
 import querystring from 'querystring';
 import {browserHistory} from 'react-router';
+import jwtDecode from 'jwt-decode'
 
 class Home extends Component {
   constructor(props) {
@@ -11,19 +12,28 @@ class Home extends Component {
     if(localStorage.getItem('user')){
       var user_stored = JSON.parse(localStorage.getItem('user'));
       var token_stored = localStorage.getItem('token');
-      this.state = {user: user_stored,
-                    token: token_stored,
-                    name: '',
-                    passwrd: '',
-                  };
-
+      if (jwtDecode(token_stored).exp < Date.now() / 1000) {
+        localStorage.clear();
+        this.state = {
+          user: null,
+          token: null,
+          name: '',
+          passwrd: ''
+        };
+      } else {
+        this.state = {user: user_stored,
+                      token: token_stored,
+                      name: '',
+                      passwrd: '',
+                    };
+      }
     }
     else {
       this.state = {
         user: null,
         token: null,
         name: '',
-        passwrd: '',
+        passwrd: ''
       };
     }
     this.handleNameChange = this.handleNameChange.bind(this);
@@ -141,7 +151,6 @@ class Home extends Component {
   }
 
   render() {
-
     if (this.state.loggingIn) {
       return (<div></div>);
     }
