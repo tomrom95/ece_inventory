@@ -178,7 +178,7 @@ class ItemEditor extends Component {
 						type = response.data.type;
 						name = response.data.name;
 
-						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAlpha(value)){
+						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(value)){
 							type_mismatch = true;
 						}
 						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(value)){
@@ -259,7 +259,7 @@ class ItemEditor extends Component {
 						alert(response.data.error);
 					} else {
 						type = response.data.type;
-						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAlpha(new_value)){
+						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(new_value)){
 							type_mismatch = true;
 						}
 						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(new_value)){

@@ -69,8 +69,6 @@ class ItemWizard extends Component {
 							Custom Fields
 							</div>)
 				for(var j = 0; j < vals[i].length; j++){
-					console.log(this.state.allCustomFields);
-
 					var field = vals[i][j];
 					var label = "";
 					for(var n = 0; n < this.state.allCustomFields.length; n ++){
@@ -261,9 +259,7 @@ class ItemWizard extends Component {
 		var id = "createform-row-"+row;
 		this.state.formIds.splice(0,id);
 		var data = this.state.data;
-		console.log(data.custom_fields);
 		data.custom_fields.splice(0, row);
-		console.log(data.custom_fields);
 		this.setState({
 			data: data
 		})
@@ -274,7 +270,9 @@ class ItemWizard extends Component {
 		if(value && !already_exists && !type_mismatch){
 			var data = this.state.data;
 			var custom_fields = [];
-			custom_fields.push(data.custom_fields)
+			if(data.custom_fields){
+				custom_fields.push(data.custom_fields)
+			}
 			custom_fields.push(field_params);
 			data.custom_fields = custom_fields;
 			this.setState({
@@ -399,18 +397,26 @@ class ItemWizard extends Component {
 
 	onSubmission() {
 		var tags = this.refs.Tags.getSelectedTags();
+		var fields = [];
+		for(var i = 0; i < this.state.data.custom_fields.length; i++){
+		 	var obj = {
+				_id: this.state.data.custom_fields[i].field,
+				value: this.state.data.custom_fields[i].value
+			}
+			fields.push(obj);
+		}
 		var object = {
-			name: this.refs.Name.value,
+				name: this.refs.Name.value,
 	  		quantity: this.refs.Quantity.value,
-	 		model_number: this.refs["Model Number"].value,
+	 			model_number: this.refs["Model Number"].value,
 	  		description: this.refs.Description.value,
 	  		location: this.refs.Location.value,
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
 	  		has_instance_objects: false,
-				custom_fields: this.state.custom_fields
+				custom_fields: fields
   		}
-
+			console.log(object);
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
 
@@ -419,6 +425,7 @@ class ItemWizard extends Component {
 			        if (response.data.error) {
 		        		alert(response.data.error.errmsg);
 			        } else {
+								console.log(response);
 			        	this.props.callback();
 			        	this.clearForm();
 			        	alert("Successfully created new item: " + response.data.name);
