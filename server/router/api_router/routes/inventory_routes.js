@@ -3,6 +3,7 @@ var Item = require('../../../model/items');
 var CustomField = require('../../../model/customFields');
 var QueryBuilder = require('../../../queries/querybuilder');
 var LogHelpers = require('../../../logging/log_helpers');
+const quantityReasonStrings = ["LOSS", "MANUAL", "DESTRUCTION", "ACQUISITION"];
 
 var getPrivateFields = function(next) {
   CustomField.find({isPrivate: true}, function(error, fields) {
@@ -136,6 +137,23 @@ function trimTags(tagArray){
   return fieldObj;
 }
 
+var isQuantityProvidedWithoutReason = function(newQuantity, oldQuantity, quantity_reason){
+  return newQuantity &&
+         newQuantity != oldQuantity &&
+        (quantity_reason === null ||
+         quantity_reason === undefined);
+}
+
+var isQuantityReasonProvidedWithoutQuantity = function(newQuantity, quantity_reason){
+  return quantity_reason &&
+        (newQuantity === null ||
+         newQuantity === undefined);
+}
+
+var isQuantityReason = function(enteredString){
+  return quantityReasonStrings.includes(enteredString);
+}
+
 module.exports.putAPI = function(req, res){
   if (req.body.is_deleted !== null && req.body.is_deleted !== undefined) {
     return res.send({error: 'You cannot update the delete field'})
@@ -144,13 +162,13 @@ module.exports.putAPI = function(req, res){
     if(err) return res.send({error: err});
     if(!old_item || old_item.is_deleted)
       return res.send({error: 'Item does not exist or has been deleted'});
-    else if (req.body.quantity &&
-             req.body.quantity != old_item.quantity &&
-            (req.body.quantity_reason === null ||
-             req.body.quantity_reason == undefined)){
+    else if (isQuantityProvidedWithoutReason(req.body.quantity, old_item.quantity, req.body.quantity_reason)){
       return res.send({error:'Reason for quantity change not provided'})
-    }
-    else{
+    } else if (isQuantityReasonProvidedWithoutQuantity(req.body.quantity, req.body.quantity_reason)){
+      return res.send({error:'Quantity not provided with reason'})
+    } else if(!isQuantityReason(req.body.quantity_reason)){
+      return res.send({error:'Invalid reason provided for quantity change'})
+    } else {
       var oldItemCopy = new Item(old_item);
       var obj = Object.assign(old_item, req.body)
       obj.tags = trimTags(req.body.tags);

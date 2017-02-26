@@ -79,6 +79,28 @@ var getValueString = function(value) {
   return JSON.stringify(value);
 }
 
+var processQuantityChange = function(changeEnum){
+  var snippet = " due to ";
+  switch(changeEnum){
+    case "MANUAL":
+      snippet += "manual override";
+      break;
+    case "LOSS":
+      snippet += "loss of item";
+      break;
+    case "ACQUISITION":
+      snippet += "acquisition of item";
+      break;
+    case "DESTRUCTION":
+      snippet += "destruction of item";
+      break;
+    default:
+      snippet += "undefined reason";
+      break;
+  }
+  return snippet;
+}
+
 var createChangesString = function(oldObject, changes) {
   var changesString = "";
   Object.keys(changes).forEach(function(key, index, keyArray) {
