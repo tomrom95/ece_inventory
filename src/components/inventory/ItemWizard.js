@@ -415,7 +415,6 @@ class ItemWizard extends Component {
 	  		has_instance_objects: false,
 				custom_fields: fields
   		}
-			console.log(object);
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
 
