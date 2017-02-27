@@ -114,7 +114,7 @@ var createChangesString = function(oldObject, changes) {
     }
     changesString += ' ' + key + ' from ' + getValueString(oldObject[key])
       + ' to ' + getValueString(changes[key]);
-    if(key == "quantity") changesString += processQuantityChange(quantity_reason);
+    if(key === "quantity") changesString += processQuantityChange(quantity_reason);
   });
   return changesString;
 }
