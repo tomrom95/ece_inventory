@@ -166,7 +166,7 @@ class ItemDetailView extends React.Component {
   addRequests(){
     if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER"){
       return(
-        <div className="row request-subtable">
+        <div className="item-detail-view-requests">
           <GlobalRequests
           itemID={this.props.params.itemID}
           rowsPerPage={2}
@@ -180,7 +180,7 @@ class ItemDetailView extends React.Component {
     }
     else{
       return(
-        <div className="row request-subtable">
+        <div className="">
           <CurrentOrders
           itemID={this.props.params.itemID}
           rowsPerPage={2}
@@ -198,7 +198,7 @@ class ItemDetailView extends React.Component {
       item_id: this.props.params.itemID
     }
     return (
-      <div className="row request-subtable">
+      <div className="item-detail-view-logs">
         <LogPage filters={filters} 
                   showButtons={false} 
                   showFilterBox={false}
@@ -213,9 +213,9 @@ class ItemDetailView extends React.Component {
       <div className="card">
         <div className="card-header" role="tab" id="headingOne">
           <h7 className="mb-0">
-            <div data-toggle="collapse" data-parent="#accordion" href={"#requestsCollapse-"+this.props.params.itemID} aria-expanded="true">
+            <a data-toggle="collapse" data-parent="#accordion" href={"#requestsCollapse-"+this.props.params.itemID} aria-expanded="true">
               <strong>REQUESTS CONTAINING THIS ITEM</strong>
-            </div>
+            </a>
           </h7>
         </div>
 
@@ -228,9 +228,9 @@ class ItemDetailView extends React.Component {
       <div className="card">
         <div className="card-header" role="tab" id="headingTwo">
           <h7 className="mb-0">
-            <div className="collapsed" data-toggle="collapse" data-parent="#accordion" href={"#logsCollapse-"+this.props.params.itemID} aria-expanded="false">
+            <a className="collapsed" data-toggle="collapse" data-parent="#accordion" href={"#logsCollapse-"+this.props.params.itemID} aria-expanded="false">
               <strong>LOG ENTRIES CONTAINING THIS ITEM</strong>
-            </div>
+            </a>
           </h7>
         </div>
         <div id={"logsCollapse-"+this.props.params.itemID} className="collapse" role="tabpanel" aria-labelledby="headingTwo">

@@ -330,7 +330,7 @@ class PaginationContainer extends Component {
 		        <div className="row">
 
 				  {statusFilterBox}
-				  
+
 				  <div className="col-md-9">
 			          {this.makePageControlBar()}
 			          <div className="row">
@@ -343,8 +343,7 @@ class PaginationContainer extends Component {
 		}
 		else{
 			return (
-					<div className="col-xs-12">
-
+					<div>
 						{this.makePageControlBar()}
 
 						<div className="row">

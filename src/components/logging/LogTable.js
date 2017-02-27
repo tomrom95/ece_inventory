@@ -63,7 +63,6 @@ class LogTable extends Component {
 	render() {
 		var rows = this.makeLogItems(this.state.items.data);
 		return (		
-			<div className="row">
 				<div className="logtable-container">
 					<table className="table table-sm table-striped log-table">
 					  <thead>
@@ -78,7 +77,6 @@ class LogTable extends Component {
 					  </tbody>
 					</table>
 				</div>
-			</div>
 		);
 	}
 }
