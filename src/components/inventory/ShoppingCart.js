@@ -76,6 +76,7 @@ class ShoppingCart extends Component {
 				//alert(response.data.message);
 			}
 		}.bind(this));
+		document.getElementById('cart-reason').value = '';
 	}
 	
 	makeReasonBox() {

@@ -42,6 +42,10 @@ class LogTable extends Component {
 				url += ("&type=" + this.state.filters.type);
 			if (this.state.filters.item_name)
 				url += ("&item_name=" + this.state.filters.item_name);
+			if (this.state.filters.start_date)
+				url += '&start_date=' + this.state.filters.start_date;
+			if (this.state.filters.end_date)
+				url += '&end_date=' + this.state.filters.end_date;
 		}
 
 		this.instance.get(url)
@@ -64,7 +68,7 @@ class LogTable extends Component {
 
 	}
 
-	setFilters(actionType, userId, itemName) {
+	setFilters(actionType, userId, itemName, startDate, endDate) {
 		var filter = {};
 		if (actionType)
 			filter.type = actionType;
@@ -72,6 +76,12 @@ class LogTable extends Component {
 			filter.user_id = userId;
 		if (itemName && itemName.length !== 0)
 			filter.item_name = itemName;
+		if (startDate && startDate !== "Invalid date")
+			filter.start_date = startDate;
+		if (endDate && endDate !== "Invalid date")
+			filter.end_date = endDate;
+
+		console.log(startDate);
 
 		this.setState({
 			filters: filter
@@ -112,7 +122,8 @@ class LogTable extends Component {
 		return (		
 			<div className="row">
 				<div className="col-md-3">
-					<LogFilterBox api={this.instance} filterRequests={(type, id, itemName) => this.setFilters(type, id, itemName)}/>
+					<LogFilterBox api={this.instance} 
+					filterRequests={(type, id, itemName, startDate, endDate) => this.setFilters(type, id, itemName, startDate, endDate)}/>
 				</div>
 				<div className="col-md-9">
 					<div className="logtable-container">

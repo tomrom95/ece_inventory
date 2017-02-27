@@ -102,6 +102,10 @@
   display: block;
 }
 
+.react-datepicker__input-container {
+  width: 100%;
+}
+
 .white-space-cell {
   display: none;
 }

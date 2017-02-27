@@ -13,7 +13,6 @@ function getKeys(data) {
 function getValues(data) {
 	var i; var j;
 	var keys = getKeys(data);
-	console.log(keys);
 	var vals = [];
 	for (i=0; i<data.length; i++) {
 		var row = [];
@@ -48,7 +47,6 @@ class RequestTable extends Component {
     var list = [];
     var rowData = getValues(this.state.requests);
     for (i=0; i<rowData.length; i++) {
-      console.log(rowData[i]);
       var elem;
       elem = (<SubtableRow
           data={rowData[i]}
