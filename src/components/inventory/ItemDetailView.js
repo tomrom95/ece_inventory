@@ -153,7 +153,7 @@ class ItemDetailView extends React.Component {
                     </div>
 
                   </div>
-                  {this.makeCollapsibleItem()}
+                  {this.makeCollapsibleItems()}
                 </div>
               </div>
             </div>
@@ -180,7 +180,7 @@ class ItemDetailView extends React.Component {
     }
     else{
       return(
-        <div className="">
+        <div className="item-detail-view-requests">
           <CurrentOrders
           itemID={this.props.params.itemID}
           rowsPerPage={2}
@@ -207,7 +207,7 @@ class ItemDetailView extends React.Component {
     );
   }
 
-  makeCollapsibleItem() {
+  makeCollapsibleItems() {
     return (
     <div id="accordion" role="tablist" aria-multiselectable="true">
       <div className="card">
@@ -225,7 +225,8 @@ class ItemDetailView extends React.Component {
           </div>
         </div>
       </div>
-      <div className="card">
+      {JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER" ?
+      (<div className="card">
         <div className="card-header" role="tab" id="headingTwo">
           <h7 className="mb-0">
             <a className="collapsed" data-toggle="collapse" data-parent="#accordion" href={"#logsCollapse-"+this.props.params.itemID} aria-expanded="false">
@@ -238,7 +239,8 @@ class ItemDetailView extends React.Component {
             {this.makeLogView()}
           </div>
         </div>
-      </div>
+      </div>) : null }
+
     </div>
     );
   }
