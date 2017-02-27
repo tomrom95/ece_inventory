@@ -12,7 +12,6 @@ const customStyles = {
   }
 };
 
-
 class LeaveCommentPopup extends Component {
   constructor(props) {
     super(props);
@@ -49,15 +48,14 @@ class LeaveCommentPopup extends Component {
   render() {
     return (
       <div>
-          <button className="btn btn-primary btn-sm" onClick={this.openModal}>Respond</button>
+          <button className="btn btn-primary btn-sm" onClick={this.openModal}>Reply</button>
           <Modal
             isOpen={this.state.modalIsOpen}
             onAfterOpen={this.afterOpenModal}
             onRequestClose={this.closeModal}
 
             style={customStyles}
-            contentLabel="Example Modal"
-          >
+            contentLabel="Example Modal">
 
             <h5 className="modal-title" id="editLabel">Please leave a brief message</h5>
 
@@ -69,33 +67,23 @@ class LeaveCommentPopup extends Component {
           </Modal>
 
       </div>
-
-
-
     );
   }
 
 
   commentRequest() {
     this.props.api.put('/api/requests/' + this.props.request,
-      {
-        reviewer_comment: this.state.value,
-      }
-    )
+                        {reviewer_comment: this.state.value})
     .then(function(response) {
       if(response.data.error){
         console.log("error denying request");
-      }
-      else{
-
-        console.log(response);
       }
     }.bind(this))
     .catch(function(error) {
       console.log(error);
     }.bind(this));
+  }
 
-  }
-  }
+}
 
 export default LeaveCommentPopup
