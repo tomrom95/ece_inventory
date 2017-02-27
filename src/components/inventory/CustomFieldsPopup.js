@@ -101,8 +101,9 @@ class CustomFieldsPopup extends Component {
 			  {name}
 				<label htmlFor={"createform-row-"}>Type</label>
 				{type}
-				<label htmlFor={"createform-row-"}>Private</label>
-				{is_private}
+				<label htmlFor={"createform-row-"}>Private
+          {is_private}
+        </label>				
 			</div>
 		);
 	}
