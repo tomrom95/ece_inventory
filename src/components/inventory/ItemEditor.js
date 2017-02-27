@@ -41,6 +41,8 @@ class ItemEditor extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			originalQuantity: props.data.Quantity,
+			showQuantityReason: false,
 			data: props.data,
 			allCustomFields: props.allCustomFields,
 			formIds: [],
@@ -49,6 +51,8 @@ class ItemEditor extends Component {
 
 	componentWillReceiveProps(newProps) {
 		this.setState({
+			showQuantityReason: false,
+			originalQuantity: newProps.data.Quantity,
 			data: newProps.data,
 			allCustomFields: newProps.allCustomFields,
 			formIds: getValues(newProps.data, getKeys(newProps.data))
@@ -57,15 +61,19 @@ class ItemEditor extends Component {
 
 	handleFormChange(event, label, index) {
 		var data = this.state.data;
-		if(label == "custom_fields"){
+		if(label === "custom_fields"){
 			data.custom_fields[index].value = event.target.value;
-		}
-		else{
+			this.setState({date: data});
+		} else if (label === 'Quantity'){
+			data.Quantity = event.target.value;
+			this.setState({
+				data: data,
+				showQuantityReason: Number(this.state.originalQuantity) !== Number(data.Quantity),
+			});
+		} else{
 			data[label] = event.target.value;
+			this.setState({date: data});
 		}
-		this.setState({
-			data: data
-		});
 	}
 
 	makeForm() {
@@ -276,14 +284,32 @@ class ItemEditor extends Component {
 				{input}
 			</div>
 		);
-
-
-
-
-
 	}
 
-
+	makeQuantityReasonField() {
+		var role = JSON.parse(localStorage.getItem("user")).role;
+		var options = [];
+		if (Number(this.state.data.Quantity) < Number(this.state.originalQuantity)) {
+			options.push('LOSS');
+			options.push('DESTRUCTION');
+		} else {
+			options.push('ACQUISITION')
+		}
+		if (role === 'ADMIN') {
+			options.push('MANUAL');
+		}
+		options = options.map(function(text){
+			return (<option key={text}>{text}</option>);
+		});
+		return (
+			<div className="form-group" key={"reason-field-row"}>
+				<label htmlFor={"reason-field"}>Reason for Quantity Change</label>
+				<select id={"reason-field"} className="form-control" ref="reasonField">
+					{options}
+				</select>
+			</div>
+		);
+	}
 
 	makeTextBox(row, type, label, defaultValue){
 		var id = "createform-row-"+row;
@@ -305,11 +331,16 @@ class ItemEditor extends Component {
 				onChange={e => this.handleFormChange(e, label, row)}>
 				</input>
 		}
+		var reasonField = null;
+		if (this.state.showQuantityReason && label === 'Quantity') {
+			reasonField = this.makeQuantityReasonField();
+		}
 
 		return (
 			<div className="form-group" key={"createform-div-row-"+row}>
 			  <label htmlFor={"createform-row-"+row}>{label}</label>
 			  {input}
+				{reasonField}
 			</div>
 		);
 	}
@@ -355,6 +386,10 @@ class ItemEditor extends Component {
 
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
+
+				if (this.refs.reasonField) {
+					object.quantity_reason = this.refs.reasonField.value;
+				}
 
         this.props.api.put('/api/inventory/'+ this.props.itemId, object)
 			  	.then(function(response) {
