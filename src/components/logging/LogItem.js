@@ -12,7 +12,20 @@ class LogItem extends Component {
 			- list of itemNames (equal in length to list of itemIds)
 			- log item ID
 	*/
-	
+
+	constructor(props) {
+		super(props);
+		this.state = {
+      allCustomFields: this.props.allCustomFields,
+		};
+	}
+
+	componentWillReceiveProps(newProps) {
+		this.setState({
+			allCustomFields: newProps.allCustomFields
+		})
+	}
+
 	render() {
 		var timestamp = this.props.timestamp;
 		var description = this.props.description;
@@ -21,10 +34,13 @@ class LogItem extends Component {
 		var buttons = []; var i;
 		for (i=0; i<this.props.itemIds.length; i++) {
 			buttons.push(
-			<ItemDetailView 
+			<ItemDetailView
 				key={"log-detailview-" + this.props.itemIds[i]+ "-" + this.props.logItemId}
 				params={{itemID: this.props.itemIds[i]}}
-				isButton={false} />);
+				isButton={false}
+				allCustomFields={this.state.allCustomFields}
+			/>
+			);
 		}
 		return (
 			<tr>

@@ -8,12 +8,14 @@ var secrets = require('./server/secrets');
 
 var app = express();
 
-var publicPath = path.resolve(__dirname, 'build');
+var buildPath = path.resolve(__dirname, 'build');
 
-app.use(express.static(publicPath))
+app.use(express.static(buildPath));
+
+app.use('/guides', express.static(path.resolve(__dirname, 'guides')));
 
 app.get('/*', function (request, response){
-  response.sendFile('index.html', {root: publicPath});
+  response.sendFile('index.html', {root: buildPath});
 })
 
 https.createServer({
