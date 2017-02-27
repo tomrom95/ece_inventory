@@ -24,7 +24,9 @@ class LogTable extends Component {
 		});
 		this.state = {
 			items: [],
-      allCustomFields: [],
+      		allCustomFields: [],
+      		showFilterBox: props.showFilterBox,
+      		showButtons: props.showButtons
 		};
 	}
 
@@ -112,7 +114,8 @@ class LogTable extends Component {
 					itemIds={itemIds}
 					itemNames={itemNames}
 					logItemId={logItem._id}
-          allCustomFields={this.state.allCustomFields}/>
+          			allCustomFields={this.state.allCustomFields}
+          			showButtons={this.state.showButtons}/>
 			);
 		}
 		return list;
@@ -122,10 +125,15 @@ class LogTable extends Component {
 		return (		
 			<div className="row">
 				<div className="col-md-3">
-					<LogFilterBox api={this.instance} 
-					filterRequests={(type, id, itemName, startDate, endDate) => this.setFilters(type, id, itemName, startDate, endDate)}/>
+				{
+					this.state.showFilterBox ? 
+					(<LogFilterBox api={this.instance} 
+					filterRequests={(type, id, itemName, startDate, endDate) => this.setFilters(type, id, itemName, startDate, endDate)}/>)
+					: null
+				}
 				</div>
 				<div className="col-md-9">
+				{this.state.items.length === 0 ? <div className="center-text">No items found.</div> :
 					<div className="logtable-container">
 						<table className="table table-sm table-striped log-table">
 						  <thead>
@@ -140,6 +148,7 @@ class LogTable extends Component {
 						  </tbody>
 						</table>
 					</div>
+				}
 				</div>
 			</div>
 		);

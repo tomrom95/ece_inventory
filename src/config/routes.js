@@ -54,6 +54,12 @@ class TransactionsWrapper extends Component {
     }
 }
 
+class LogTableWrapper extends Component {
+    render() {
+        return (<LogTable showButtons={true} showFilterBox={true} />);
+    }
+}
+
 class ItemDetailViewWrapper extends Component {
     render() {
         return <ItemDetailView api={"something"}/>;
@@ -69,7 +75,7 @@ export default (
     <Route path="CreateUser" component={CreateUserWrapper}></Route>
     <Route path="EditUsers" component={EditUsers}></Route>
     <Route path="Transactions" component={TransactionsWrapper}></Route>
-    <Route path="Log" component={LogTable}></Route>
+    <Route path="Log" component={LogTableWrapper}></Route>
     <Route path="Detail/:itemID" component={ItemDetailViewWrapper} />
   </Route>
 );

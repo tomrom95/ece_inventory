@@ -11,12 +11,14 @@ class LogItem extends Component {
 			- list of itemIds
 			- list of itemNames (equal in length to list of itemIds)
 			- log item ID
+			- showButtons boolean
 	*/
 
 	constructor(props) {
 		super(props);
 		this.state = {
-      allCustomFields: this.props.allCustomFields,
+     	 allCustomFields: this.props.allCustomFields,
+     	 showButtons: props.showButtons
 		};
 	}
 
@@ -31,22 +33,30 @@ class LogItem extends Component {
 		var description = this.props.description;
 		if (!description)
 			description = "Description not available.";
+
 		var buttons = []; var i;
-		for (i=0; i<this.props.itemIds.length; i++) {
-			buttons.push(
-			<ItemDetailView
-				key={"log-detailview-" + this.props.itemIds[i]+ "-" + this.props.logItemId}
-				params={{itemID: this.props.itemIds[i]}}
-				isButton={false}
-				allCustomFields={this.state.allCustomFields}
-			/>
-			);
+
+		if (this.state.showButtons) {
+			for (i=0; i<this.props.itemIds.length; i++) {
+				buttons.push(
+				<ItemDetailView
+					key={"log-detailview-" + this.props.itemIds[i]+ "-" + this.props.logItemId}
+					params={{itemID: this.props.itemIds[i]}}
+					isButton={false}
+					allCustomFields={this.state.allCustomFields}/>
+				);
+			}
 		}
 		return (
 			<tr>
 		      <td>{timestamp}</td>
 		      <td>{description}</td>
-		      <td className="log-detailview-links">{buttons}</td>
+
+		      {
+		      	this.state.showButtons ?
+		      	<td className="log-detailview-links">{buttons}</td>
+		      	: null
+		      }
 		    </tr>
 	    );
 	}
