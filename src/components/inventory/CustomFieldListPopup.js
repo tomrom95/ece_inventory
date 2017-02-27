@@ -132,7 +132,6 @@ class CustomFieldListPopup extends Component {
 	}
 
   handlePrivacyChange(event, id) {
-    console.log("test");
     var check_state = event;
     var allFields = this.state.allFields;
     var data = this.state.data;
@@ -217,7 +216,6 @@ class CustomFieldListPopup extends Component {
         isPrivate = this.state.data[j].isPrivate;
       }
     }
-    console.log(isPrivate);
 		var new_field = {
       name: this.refs[name_ref].value,
       type: this.refs[type_ref]._focusedOption.value,
