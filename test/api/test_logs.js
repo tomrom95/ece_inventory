@@ -114,6 +114,7 @@ describe('Logging API Test', function () {
         .send({
           name: '1k thingy',
           quantity: 2000,
+          quantity_reason: "ACQUISITION",
           tags: ["component", "electric","cheap", "thingy"],
         })
         .end((err, res) => {
@@ -129,9 +130,104 @@ describe('Logging API Test', function () {
             log.type.should.be.eql('ITEM_EDITED');
             should.not.exist(log.affected_user);
             log.description.should.include('name from "1k resistor" to "1k thingy"');
-            log.description.should.include('quantity from 1000 to 2000');
+            log.description.should.include('quantity from 1000 to 2000 due to acquisition of item');
             log.description.should.include('tags from ["component","electric","cheap"] to ["component","electric","cheap","thingy"]');
             log.description.should.not.include('location');
+            done();
+          });
+        });
+    });
+    it('logs editing an item with LOSS in quantity', (done) => {
+      chai.request(server)
+        .put('/api/inventory/' + allItems['1k resistor']._id)
+        .set('Authorization', adminToken)
+        .send({
+          quantity: 500,
+          quantity_reason: "LOSS",
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Log.find({}, function(err, logs) {
+            should.not.exist(err);
+            logs.length.should.be.eql(1);
+            var log = logs[0];
+            log.items.length.should.be.eql(1);
+            log.items[0].should.be.eql(allItems['1k resistor']._id);
+            log.initiating_user.should.be.eql(adminUser._id);
+            log.type.should.be.eql('ITEM_EDITED');
+            should.not.exist(log.affected_user);
+            log.description.should.include('quantity from 1000 to 500 due to loss of item');
+            log.description.should.not.include('location');
+            done();
+          });
+        });
+    });
+    it('logs editing an item with DESTRUCTION in quantity', (done) => {
+      chai.request(server)
+        .put('/api/inventory/' + allItems['1k resistor']._id)
+        .set('Authorization', adminToken)
+        .send({
+          quantity: 500,
+          quantity_reason: "DESTRUCTION",
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Log.find({}, function(err, logs) {
+            should.not.exist(err);
+            logs.length.should.be.eql(1);
+            var log = logs[0];
+            log.items.length.should.be.eql(1);
+            log.items[0].should.be.eql(allItems['1k resistor']._id);
+            log.initiating_user.should.be.eql(adminUser._id);
+            log.type.should.be.eql('ITEM_EDITED');
+            should.not.exist(log.affected_user);
+            log.description.should.include('quantity from 1000 to 500 due to destruction of item');
+            log.description.should.not.include('location');
+            done();
+          });
+        });
+    });
+    it('logs editing an item with MANUAL change in quantity', (done) => {
+      chai.request(server)
+        .put('/api/inventory/' + allItems['1k resistor']._id)
+        .set('Authorization', adminToken)
+        .send({
+          quantity: 1500,
+          quantity_reason: "MANUAL",
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Log.find({}, function(err, logs) {
+            should.not.exist(err);
+            logs.length.should.be.eql(1);
+            var log = logs[0];
+            log.items.length.should.be.eql(1);
+            log.items[0].should.be.eql(allItems['1k resistor']._id);
+            log.initiating_user.should.be.eql(adminUser._id);
+            log.type.should.be.eql('ITEM_EDITED');
+            should.not.exist(log.affected_user);
+            log.description.should.include('quantity from 1000 to 1500 due to manual override');
+            log.description.should.not.include('location');
+            done();
+          });
+        });
+    });
+    it('Does not log editing an item with invalid field', (done) => {
+      chai.request(server)
+        .put('/api/inventory/' + allItems['1k resistor']._id)
+        .set('Authorization', adminToken)
+        .send({
+          "helld":"adsf"
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Log.find({}, function(err, logs) {
+            should.not.exist(err);
+            logs.length.should.be.eql(0);
             done();
           });
         });

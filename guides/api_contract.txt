@@ -81,6 +81,7 @@ body:
 {
 	name: String [optional],
   quantity: Integer [optional],
+	quantity_field: String // enum: "MANUAL", "LOSS", "ACQUISITION", "DESTRUCTION"
   model_number: String [optional],
   description: String [optional],
   tags: String array [optional],

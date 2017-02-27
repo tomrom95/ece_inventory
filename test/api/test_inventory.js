@@ -405,7 +405,37 @@ describe('Inventory API Test', function () {
     });
   });
   describe('PUT /inventory/:item_id', ()=>{
-    it('PUTs inventory item by item id with quantity change', (done) => {
+    it('PUTs inventory item by item id with quantity change and reason', (done) => {
+      let item = new Item({
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+        "vendor_info" : "Microsoft"
+      });
+      item.save((err, item) =>{
+        should.not.exist(err);
+        chai.request(server)
+        .put('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .send({
+          'name': 'Coaxial',
+          'vendor_info': 'Apple',
+          'quantity_reason': "ACQUISITION",
+          'quantity': 3000
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.vendor_info.should.be.eql("Apple");
+          res.body.name.should.be.eql("Coaxial");
+          res.body.quantity.should.be.eql(3000);
+          res.body._id.should.be.eql(item.id);
+        done();
+        });
+      });
+    });
+    it('Does not PUT inventory item by item id with quantity change and no reason', (done) => {
       let item = new Item({
         "quantity": 1000,
         "name": "Laptop",
@@ -426,15 +456,65 @@ describe('Inventory API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.vendor_info.should.be.eql("Apple");
-          res.body.name.should.be.eql("Coaxial");
-          res.body.quantity.should.be.eql(3000);
-          res.body._id.should.be.eql(item.id);
-        done();
+          res.body.error.should.be.eql("Reason for quantity change not provided");
+          done();
         });
       });
     });
-    it('PUTs inventory item by item id without quantity change', (done) => {
+    it('Does not PUT inventory item by item id with no quantity change and a reason', (done) => {
+      let item = new Item({
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+        "vendor_info" : "Microsoft"
+      });
+      item.save((err, item) =>{
+        should.not.exist(err);
+        chai.request(server)
+        .put('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .send({
+          'name': 'Coaxial',
+          'vendor_info': 'Apple',
+          'quantity_reason': "LOSS"
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.be.eql("Quantity not provided with reason");
+          done();
+        });
+      });
+    });
+    it('Does not PUT inventory item by item id with quantity change and invalid reason', (done) => {
+      let item = new Item({
+        "quantity": 1000,
+        "name": "Laptop",
+        "has_instance_objects": true,
+        "vendor_info" : "Microsoft"
+      });
+      item.save((err, item) =>{
+        should.not.exist(err);
+        chai.request(server)
+        .put('/api/inventory/'+item.id)
+        .set('Authorization', token)
+        .send({
+          'name': 'Coaxial',
+          'vendor_info': 'Apple',
+          'quantity': 1500,
+          'quantity_reason': "LOSSSY"
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.be.eql("Invalid reason provided for quantity change");
+          done();
+        });
+      });
+    });
+    it('PUTs inventory item by item id without quantity change or reason', (done) => {
       let item = new Item({
         "quantity": 1000,
         "name": "Laptop",
