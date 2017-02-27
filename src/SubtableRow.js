@@ -8,7 +8,6 @@ function getPrefill(data) {
 		"Quantity": data[1],
 		"Model Number": data[2],
 		"Description": data[3],
-		"Location": data[4],
 		"Tags": data[5]
 	});
 }
