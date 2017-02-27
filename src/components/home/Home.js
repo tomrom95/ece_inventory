@@ -4,26 +4,36 @@ import '../../App.css';
 import axios from 'axios';
 import querystring from 'querystring';
 import {browserHistory} from 'react-router';
+import jwtDecode from 'jwt-decode'
 
 class Home extends Component {
   constructor(props) {
     super(props);
-    if(localStorage.getItem('user')){
+    if (localStorage.getItem('user')) {
       var user_stored = JSON.parse(localStorage.getItem('user'));
       var token_stored = localStorage.getItem('token');
-      this.state = {user: user_stored,
-                    token: token_stored,
-                    name: '',
-                    passwrd: '',
-                  };
-
+      if (jwtDecode(token_stored).exp < Date.now() / 1000) {
+        localStorage.clear();
+        this.state = {
+          user: null,
+          token: null,
+          name: '',
+          passwrd: ''
+        };
+      } else {
+        this.state = {user: user_stored,
+                      token: token_stored,
+                      name: '',
+                      passwrd: '',
+                    };
+      }
     }
     else {
       this.state = {
         user: null,
         token: null,
         name: '',
-        passwrd: '',
+        passwrd: ''
       };
     }
     this.handleNameChange = this.handleNameChange.bind(this);
@@ -141,7 +151,6 @@ class Home extends Component {
   }
 
   render() {
-
     if (this.state.loggingIn) {
       return (<div></div>);
     }
@@ -157,7 +166,7 @@ class Home extends Component {
       }
       return (
         <div className="App">
-	         <NavBar onClick={this.signOut} role={this.state.user.role}/>
+	         <NavBar onClick={this.signOut} role={this.state.user.role} username={this.state.user.username} first_name = {this.state.user.first_name}/>
           <div className="main-container">
             {children}
           </div>
