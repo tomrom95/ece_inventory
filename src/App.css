@@ -282,6 +282,14 @@
   margin-bottom: 2px;
 }
 
+.nav-link.active {
+  background-color: rgba(255,255,255,0);
+  border:solid;
+  border-width: 1px;
+  border-radius: 2px;
+  border-color: rgba(0,150,255,1);
+}
+
 .navbar {
   border-left: solid;
   border-width: 4px;
