@@ -280,6 +280,8 @@
 .navbar-right-panel > .welcome-message {
   display:inline-block;
   padding-right: 20px;
+  color: gray;
+  font-size: 90%;
 }
 
 .navbar-brand {
