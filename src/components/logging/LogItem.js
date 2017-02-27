@@ -17,15 +17,16 @@ class LogItem extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-     	 allCustomFields: this.props.allCustomFields,
+     	 allCustomFields: props.allCustomFields,
      	 showButtons: props.showButtons
 		};
 	}
 
 	componentWillReceiveProps(newProps) {
 		this.setState({
-			allCustomFields: newProps.allCustomFields
-		})
+			allCustomFields: newProps.allCustomFields,
+			showButtons: newProps.showButtons
+		});
 	}
 
 	render() {
@@ -50,7 +51,7 @@ class LogItem extends Component {
 		return (
 			<tr>
 		      <td>{timestamp}</td>
-		      <td>{description}</td>
+		      <td className="log-description">{description}</td>
 
 		      {
 		      	this.state.showButtons ?

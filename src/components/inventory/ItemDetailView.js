@@ -3,7 +3,7 @@ import axios from 'axios';
 import GlobalRequests from '../requests/GlobalRequests';
 import CurrentOrders from '../requests/CurrentOrders.js';
 import CustomFieldsPopup from './CustomFieldsPopup.js';
-import LogTable from '../logging/LogTable.js';
+import LogPage from '../logging/LogPage.js';
 
 function getString(str) {
   if (str === undefined || str === null || str.length === 0) {
@@ -200,9 +200,10 @@ class ItemDetailView extends React.Component {
     }
     return (
       <div className="row request-subtable">
-        <LogTable filters={filters} 
-                      showButtons={false} 
-                      showFilterBox={false} />
+        <LogPage filters={filters} 
+                  showButtons={false} 
+                  showFilterBox={false}
+                  rowsPerPage={5}/>
       </div>
     );
   }

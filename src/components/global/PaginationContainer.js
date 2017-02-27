@@ -51,7 +51,7 @@ class PaginationContainer extends Component {
 			this.state.rowsPerPage = props.rowsPerPage
 	}
 
-	componentWillReceiveNewProps(newProps) {
+	componentWillReceiveProps(newProps) {
 		this.setState({
 			url: newProps.url,
 			processData: newProps.processData,
@@ -59,6 +59,8 @@ class PaginationContainer extends Component {
 			showFilterBox: newProps.showFilterBox,
 			id: newProps.id,
 			hasOtherParams: newProps.hasOtherParams
+		}, function() {
+			this.loadData(this.state.page, false);
 		});
 	}
 
@@ -142,7 +144,7 @@ class PaginationContainer extends Component {
 	    }, function () {
 	      this.loadData(1, false);
 	    });
-  }
+  	}
 
 	filterRequests(status){
 		this.setState({
@@ -159,10 +161,9 @@ class PaginationContainer extends Component {
 		});
 	}
 
-
 	setRowCount(numRows) {
-  	this.state.rowsPerPage = numRows;
-  	this.loadData(1, false);
+	  	this.state.rowsPerPage = numRows;
+	  	this.loadData(1, false);
 	}
 
 	makePageBox() {
@@ -239,6 +240,8 @@ class PaginationContainer extends Component {
 				<div className="col-md-4">
 	                <nav aria-label="page-buttons">
 	                  <ul className="pagination">
+	                  	<li className="page-item">
+	                  	</li>
 	                    <li className="page-item">
 	                      <a onClick={e=> this.previousPage()} className="page-link" href="#">
 	                        <span className="fa fa-chevron-left"></span>
@@ -259,7 +262,7 @@ class PaginationContainer extends Component {
 	                {this.makePerPageController()}
 	            </div>
 
-	            <div className="col-md-5 error-box" id="error-region">
+	            <div className="col-md-5" id="error-region">
 	                <ErrorMessage
 	                  key={"errormessage"}
 	                  title={this.state.error.title}
@@ -299,7 +302,7 @@ class PaginationContainer extends Component {
       table = (<TableComp
         data={this.state.items}
         api={this.instance}
-        callback={e => this.loadData(this.state.page, e)}
+        callback={justDeleted => this.loadData(this.state.page, justDeleted)}
         {...this.props.extraProps} />);
     }
 
@@ -326,8 +329,7 @@ class PaginationContainer extends Component {
 				return (
 		        <div className="col-xs-12">
 
-							{statusFilterBox}
-
+				  {statusFilterBox}
 		          {this.makePageControlBar()}
 
 		          <div className="row">
