@@ -1,13 +1,14 @@
 'use strict'
 var Log = require('../model/logs');
 var User = require('../model/users');
+var Item = require('../model/items');
 var LogDescriptions = require('./log_descriptions');
 
 var getFilteredChanges = function(oldObject, changes) {
   var filteredKeys = Object.keys(changes)
     .filter(function(key) {
       // stringify values so that you can do equality with things like arrays
-      return JSON.stringify(oldObject[key]) != JSON.stringify(changes[key]);
+      return String(oldObject[key]) != String(changes[key]);
     })
   var filteredChanges = {};
   filteredKeys.forEach(key => filteredChanges[key] = changes[key]);
@@ -30,11 +31,20 @@ module.exports.logNewItem = function(item, user, next) {
   });
 }
 
+var noFilteredChanges = function(changes){
+  // Allows quantity_reason to be passed, while checking whether
+  // original fields are changed.
+  for(var change in changes){
+    if(Object.keys(Item.schema.paths).includes(change)) return false;
+  }
+  return true;
+}
+
 module.exports.logEditing = function(oldItem, changes, user, next) {
   // First filter changes to remove fields that haven't actually changed
   var filteredChanges = getFilteredChanges(oldItem, changes);
   // If nothing actually changed, don't log
-  if (!filteredChanges) {
+  if (noFilteredChanges(filteredChanges)) {
     return next();
   }
   var newLog = new Log({
@@ -169,7 +179,6 @@ module.exports.logCancelledRequest = function(request, initiatingUser, next) {
     });
   });
 }
-
 module.exports.logCustomFieldCreation = function(field, initiatingUser, next) {
   var newLog = new Log({
     initiating_user: initiatingUser._id,

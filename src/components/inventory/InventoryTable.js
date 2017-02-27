@@ -52,7 +52,6 @@ function getPrefill(data) {
 		"Quantity": data["Quantity"],
 		"Model Number": data["Model"],
 		"Description": data["Description"],
-		"Location": data["Location"],
 		"Vendor Info": data["Vendor"],
 		"Tags": data["Tags"],
 		"custom_fields": data["custom_fields"],
@@ -65,7 +64,6 @@ function getEmptyPrefill() {
 		"Quantity": "",
 		"Model Number": "",
 		"Description": "",
-		"Location": "",
 		"Vendor Info": "",
 		"Tags": "",
 		"custom_fields": "",
@@ -193,7 +191,9 @@ class InventoryTable extends Component {
 						key={"request-popup-button-"+id}/>
 			);
 			list.push(this.makeEditButton(data,id));
-			list.push(this.makeDeleteButton(id));
+			if (JSON.parse(localStorage.getItem('user')).role === "ADMIN") {
+				list.push(this.makeDeleteButton(id));
+			}
 
 			list.push(<td className="subtable-row" key={"detail-view-" + id}>
 						<ItemDetailView key={"detail-view-button-" + id}
@@ -219,6 +219,7 @@ class InventoryTable extends Component {
 					<td className="subtable-row" key={"detail-view-" + id}>
 					<ItemDetailView key={"detail-view-button-" + id}
 							params={{itemID: id}}
+							isButton={true}
 							allCustomFields={this.state.allCustomFields}/>
 
 

@@ -25,7 +25,7 @@ class CustomFieldListPopup extends Component {
 
   mapFields(fields) {
     return fields.map(function(field) {
-      return {name: field.name, type: field.type};
+      return {name: field.name, type: field.type, isPrivate: field.isPrivate};
     });
   }
 
@@ -67,6 +67,7 @@ class CustomFieldListPopup extends Component {
         />
     var is_private = <input type="checkbox"
     			className="form-control"
+          checked={field.isPrivate}
     			onChange={e=>this.handlePrivacyChange(e, field_id)}
           ref={field_id+"-PRIVACY"}
     			key={field_id+"-PRIVACY"}>
@@ -131,15 +132,20 @@ class CustomFieldListPopup extends Component {
 	}
 
   handlePrivacyChange(event, id) {
+    console.log("test");
     var check_state = event;
     var allFields = this.state.allFields;
+    var data = this.state.data;
+    var ref = id+"-PRIVACY";
 		for(var i = 0; i < this.state.allFields.length; i ++){
       if(this.state.allFields[i]._id === id){
-        allFields[i].isPrivate = check_state;
+        allFields[i].isPrivate = !this.state.allFields[i].isPrivate;
+        data[i].isPrivate = !this.state.data[i].isPrivate;
       }
     }
 		this.setState({
 			allFields: allFields,
+      data: data,
 		});
 	}
 
@@ -205,10 +211,17 @@ class CustomFieldListPopup extends Component {
     var name_ref = field_id+"-NAME";
     var type_ref = field_id+"-TYPE";
     var private_ref = field_id+"-PRIVACY";
+    var isPrivate = false;
+    for(var j = 0; j < this.state.data.length; j++){
+      if(this.state.allFields[j]._id === field_id){
+        isPrivate = this.state.data[j].isPrivate;
+      }
+    }
+    console.log(isPrivate);
 		var new_field = {
       name: this.refs[name_ref].value,
       type: this.refs[type_ref]._focusedOption.value,
-      isPrivate: this.refs[private_ref].value,
+      isPrivate: isPrivate,
     }
 		this.props.api.put('/api/customFields/' + field_id, new_field)
 	  	.then(function(response) {

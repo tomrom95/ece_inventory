@@ -21,6 +21,8 @@ module.exports.getAPI = function (req, res) {
   // An admin can GET all requests, but users can only get their requests
   if(req.user.role === 'STANDARD') {
     query.searchForObjectId('user', req.user._id);
+  } else {
+    query.searchForObjectId('user', req.query.user);
   }
 
   query

@@ -7,8 +7,8 @@ class NavBar extends Component {
     super(props);
   }
   render() {
-    
-    if(this.props.role === "ADMIN" || this.props.role === "MANAGER"){
+
+    if(this.props.role === "ADMIN" ){
       return (
         <nav className="navbar fixed-top navbar-toggleable-md navbar-light bg-faded">
           <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,41 @@ class NavBar extends Component {
               </li>
               <li className="nav-item">
                 <Link to="/EditUsers" className="nav-link">EDIT USERS</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/Log" className="nav-link">LOG</Link>
+              </li>
+              <li className="nav-item btn-nav signout-button">
+                <button className="btn btn-outline-primary" onClick={this.props.onClick}>
+                  Sign Out
+                </button>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      );
+
+    }
+    else if(this.props.role === "MANAGER"){
+      return (
+        <nav className="navbar fixed-top navbar-toggleable-md navbar-light bg-faded">
+          <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <a className="navbar-brand" href="#">ECE INVENTORY</a>
+          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item">
+                <Link to="/UserProfile" className="nav-link">PROFILE</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/Inventory" className="nav-link">INVENTORY</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/GlobalRequests" className="nav-link">USER REQUESTS</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/CurrentOrders" className="nav-link">MY REQUESTS</Link>
               </li>
               <li className="nav-item">
                 <Link to="/Log" className="nav-link">LOG</Link>

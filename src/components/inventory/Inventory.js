@@ -14,7 +14,6 @@ class Inventory extends Component {
       var item = {
         "Name": obj.name,
         "Model": obj.model_number,
-        "Location": obj.location,
         "Description": obj.description,
         "Quantity": obj.quantity,
         "Vendor": obj.vendor_info,

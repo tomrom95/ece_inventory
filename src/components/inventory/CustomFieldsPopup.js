@@ -114,6 +114,7 @@ class CustomFieldsPopup extends Component {
 			type: this.state.type,
 			isPrivate: this.state.isPrivate,
 		}
+    console.log(custom_field);
 		this.props.api.post('/api/customFields/', custom_field)
 	  	.then(function(response) {
 	        if (response.data.error) {

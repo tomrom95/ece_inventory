@@ -19,7 +19,7 @@ class ItemDetailView extends React.Component {
       error: null,
       requests: []
     }
-    this.addPadding = this.addPadding.bind(this);
+    this.addRequests = this.addRequests.bind(this);
   }
 
   componentDidMount() {
@@ -140,9 +140,6 @@ class ItemDetailView extends React.Component {
                         <p><strong>Quantity: </strong>{this.state.item.quantity}</p>
                       </div>
                       <div className="row">
-                        <p><strong>Location: </strong>{getString(this.state.item.location)}</p>
-                      </div>
-                      <div className="row">
                         <p><strong>Description: </strong>{getString(this.state.item.description)}</p>
                       </div>
                       <div className="row">
@@ -155,7 +152,7 @@ class ItemDetailView extends React.Component {
                     </div>
 
                   </div>
-                  {this.addPadding()}
+                  {this.addRequests()}
                 </div>
               </div>
             </div>
@@ -165,7 +162,7 @@ class ItemDetailView extends React.Component {
   }
 
 
-  addPadding(){
+  addRequests(){
     if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER"){
       return(
         <div className="row request-subtable">
