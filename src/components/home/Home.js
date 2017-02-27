@@ -9,7 +9,7 @@ import jwtDecode from 'jwt-decode'
 class Home extends Component {
   constructor(props) {
     super(props);
-    if(localStorage.getItem('user')){
+    if (localStorage.getItem('user')) {
       var user_stored = JSON.parse(localStorage.getItem('user'));
       var token_stored = localStorage.getItem('token');
       if (jwtDecode(token_stored).exp < Date.now() / 1000) {

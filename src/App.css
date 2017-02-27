@@ -54,8 +54,9 @@
 }
 
 .requesttable {
-  margin-left: 16px;
-  max-width: 100%;
+  margin-left: 2.7%;
+  max-width: 95%;
+  min-width: 95%;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
@@ -83,23 +84,57 @@
   margin-left: 0px;
 }
 
+.row {
+  margin-right: 0;
+}
+
+.card-title.row {
+  margin-right: -15%;
+}
+
 .log-table {
   background-color: white;
+  margin-left: 2.9%;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
   color: gray;
 }
 
-.logtable-container {
-}
-
 .log-detailview-links {
   overflow: hidden;
   white-space:normal;
   max-width: 200px;
+  min-width: 200px;
   text-overflow: ellipsis;
   display: block;
+}
+
+.log-description {
+  max-width: 600px;
+  min-width: 600px;
+  overflow: hidden;
+  white-space:normal;
+  text-overflow: ellipsis;
+  
+}
+
+.item-detail-view-logs {
+  margin-left: -3.4%;
+  min-width: 105%;
+}
+
+.item-detail-view-requests {
+  margin-left: -6.5%;
+  min-width: 115%;
+}
+
+
+.error-box {
+  font-size: 12px;
+  height: 80%;
+  margin-bottom: 0;
+  margin-right: 5%;
 }
 
 .react-datepicker__input-container {
@@ -201,6 +236,7 @@
   height: 300px;
   max-width: 200px;
   margin-left: 20px;
+  margin-top: 15px;
   border: none;
   border-left: solid;
   border-color: rgba(0,150,255,1);
@@ -321,7 +357,6 @@
 }
 
 .inventory-page {
-  margin-top:10px;
   margin-right: 20px;
 }
 
@@ -361,6 +396,7 @@
 
 .perpage-button {
   width: 170px;
+  margin-left: 3.3%!important;
 }
 
 .cart-checkbox {
