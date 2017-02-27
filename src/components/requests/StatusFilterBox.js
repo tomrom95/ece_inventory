@@ -47,9 +47,9 @@ class StatusFilterBox extends Component {
                           value={this.state.status}
                           placeholder="Choose status"
                           options={statuses}
-                          onChange={this.handleChange.bind(this)}
-                        />
+                          onChange={this.handleChange.bind(this)}/>
                       </div>
+
 
                       <div className="row">
                         <button

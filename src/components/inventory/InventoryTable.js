@@ -94,7 +94,6 @@ class InventoryTable extends Component {
         if (response.data.error) {
           console.log(response.data.error);
         }
-				console.log(response);
         this.setState({allCustomFields: response.data});
       }.bind(this))
       .catch(function(error) {
@@ -218,6 +217,7 @@ class InventoryTable extends Component {
 					<td className="subtable-row" key={"detail-view-" + id}>
 					<ItemDetailView key={"detail-view-button-" + id}
 							params={{itemID: id}}
+							isButton={true}
 							allCustomFields={this.state.allCustomFields}/>
 
 
