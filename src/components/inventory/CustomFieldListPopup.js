@@ -79,8 +79,10 @@ class CustomFieldListPopup extends Component {
         {name_input}
         <label key={"type-row-"+row+"-"+field_id} htmlFor={"createform-row-"+row}>Type</label>
         {type_input}
-        <label key={"privacy-row-"+row+"-"+field_id} htmlFor={"createform-row-"+row}>Privacy</label>
-        {is_private}
+        <label key={"privacy-row-"+row+"-"+field_id} htmlFor={"createform-row-"+row}>Private
+          {is_private}
+        </label>
+        <div className="custom-field-buttons">
         <button type="button"
 					className="btn btn-outline-primary add-button"
 					key={"button-add-field"+row}
@@ -92,8 +94,9 @@ class CustomFieldListPopup extends Component {
           onClick={()=>{this.deleteCustomField(field_id)}}
           type="button"
           className="btn btn-danger delete-button">
-          X
+          Delete
         </button>
+        </div>
       </div>
     );
   }
@@ -151,7 +154,7 @@ class CustomFieldListPopup extends Component {
             alert(response.data.error);
           } else {
             this.props.callback();
-            alert("item deleted");
+            alert("CUstom Field deleted successfully.");
 
           }
         }.bind(this))
