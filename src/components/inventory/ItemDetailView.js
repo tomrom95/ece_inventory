@@ -153,8 +153,7 @@ class ItemDetailView extends React.Component {
                     </div>
 
                   </div>
-                  {this.addRequests()}
-                  {this.makeLogView()}
+                  {this.makeCollapsibleItem()}
                 </div>
               </div>
             </div>
@@ -205,6 +204,42 @@ class ItemDetailView extends React.Component {
                   showFilterBox={false}
                   rowsPerPage={5}/>
       </div>
+    );
+  }
+
+  makeCollapsibleItem() {
+    return (
+    <div id="accordion" role="tablist" aria-multiselectable="true">
+      <div className="card">
+        <div className="card-header" role="tab" id="headingOne">
+          <h7 className="mb-0">
+            <div data-toggle="collapse" data-parent="#accordion" href="#requestsCollapse" aria-expanded="true" aria-controls="requestsCollapse">
+              <strong>REQUESTS CONTAINING THIS ITEM</strong>
+            </div>
+          </h7>
+        </div>
+
+        <div id="requestsCollapse" className="collapse show" role="tabpanel" aria-labelledby="headingOne">
+          <div className="card-block">
+            {this.addRequests()}
+          </div>
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-header" role="tab" id="headingTwo">
+          <h7 className="mb-0">
+            <div className="collapsed" data-toggle="collapse" data-parent="#accordion" href="#logsCollapse" aria-expanded="false" aria-controls="logsCollapse">
+              <strong>LOG ENTRIES CONTAINING THIS ITEM</strong>
+            </div>
+          </h7>
+        </div>
+        <div id="logsCollapse" className="collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div className="card-block">
+            {this.makeLogView()}
+          </div>
+        </div>
+      </div>
+    </div>
     );
   }
 }
