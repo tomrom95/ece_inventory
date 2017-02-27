@@ -14,7 +14,6 @@ class Inventory extends Component {
       var item = {
         "Name": obj.name,
         "Model": obj.model_number,
-        "Location": obj.location,
         "Description": obj.description,
         "Quantity": obj.quantity,
         "Vendor": obj.vendor_info,
@@ -42,7 +41,7 @@ class Inventory extends Component {
             showStatusFilterBox={false}
             hasOtherParams={false}
             id={'inventory-page'}
-            rowsPerPage={10} />);
+            rowsPerPage={15} />);
 
   }
 }

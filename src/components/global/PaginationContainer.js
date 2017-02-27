@@ -51,7 +51,8 @@ class PaginationContainer extends Component {
 			this.state.rowsPerPage = props.rowsPerPage
 	}
 
-	componentWillReceiveNewProps(newProps) {
+	componentWillReceiveProps(newProps) {
+		var oldUrl = this.state.url;
 		this.setState({
 			url: newProps.url,
 			processData: newProps.processData,
@@ -59,6 +60,14 @@ class PaginationContainer extends Component {
 			showFilterBox: newProps.showFilterBox,
 			id: newProps.id,
 			hasOtherParams: newProps.hasOtherParams
+		}, function() {
+			 /*
+				 Only case, it seems, where new props would lead to a rerender.
+				 I have to re-evaluate that statement. But for now this fixes
+				 a big bug.
+			 */
+			if (oldUrl !== newProps.url)
+				this.loadData(this.state.page, false);
 		});
 	}
 
@@ -142,7 +151,7 @@ class PaginationContainer extends Component {
 	    }, function () {
 	      this.loadData(1, false);
 	    });
-  }
+  	}
 
 	filterRequests(status){
 		this.setState({
@@ -159,10 +168,9 @@ class PaginationContainer extends Component {
 		});
 	}
 
-
 	setRowCount(numRows) {
-  	this.state.rowsPerPage = numRows;
-  	this.loadData(1, false);
+	  	this.state.rowsPerPage = numRows;
+	  	this.loadData(1, false);
 	}
 
 	makePageBox() {
@@ -236,9 +244,11 @@ class PaginationContainer extends Component {
 	makePageControlBar() {
 		var pageControlBar =  this.state.items.length === 0 ? null :
 			(<div className="row page-control-bar">
-				<div className="col-md-4">
+				<div className="col-md-6">
 	                <nav aria-label="page-buttons">
 	                  <ul className="pagination">
+	                  	<li className="page-item">
+	                  	</li>
 	                    <li className="page-item">
 	                      <a onClick={e=> this.previousPage()} className="page-link" href="#">
 	                        <span className="fa fa-chevron-left"></span>
@@ -251,15 +261,12 @@ class PaginationContainer extends Component {
 	                    </li>
 	                    <li className="page-item">{this.makePageBox()}</li>
 	                    <li className="page-item">{this.makePageGoButton()}</li>
+	                    <li className="page-item">{this.makePerPageController()}</li>
 	                  </ul>
 	                </nav>
 	            </div>
 
-	            <div className="col-md-3">
-	                {this.makePerPageController()}
-	            </div>
-
-	            <div className="col-md-5 error-box" id="error-region">
+	            <div className="col-md-6" id="error-region">
 	                <ErrorMessage
 	                  key={"errormessage"}
 	                  title={this.state.error.title}
@@ -299,7 +306,7 @@ class PaginationContainer extends Component {
       table = (<TableComp
         data={this.state.items}
         api={this.instance}
-        callback={e => this.loadData(this.state.page, e)}
+        callback={justDeleted => this.loadData(this.state.page, justDeleted)}
         {...this.props.extraProps} />);
     }
 
@@ -324,14 +331,15 @@ class PaginationContainer extends Component {
 		else if(statusFilterBox != null){
 
 				return (
-		        <div className="col-xs-12">
+		        <div className="row">
 
-							{statusFilterBox}
+				  {statusFilterBox}
 
-		          {this.makePageControlBar()}
-
-		          <div className="row">
-		            {table}
+				  <div className="col-md-9">
+			          {this.makePageControlBar()}
+			          <div className="row">
+			            {table}
+			          </div>
 		          </div>
 		        </div>
 				);
@@ -339,8 +347,7 @@ class PaginationContainer extends Component {
 		}
 		else{
 			return (
-					<div className="col-xs-12">
-
+					<div>
 						{this.makePageControlBar()}
 
 						<div className="row">

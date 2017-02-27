@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 import UserSelect from '../user/UserSelect.js';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment';
+import '../../App.css';
 
 const statuses = [
     { value: 'ITEM_EDITED', label: 'Item Edits' },
@@ -18,16 +22,22 @@ class LogFilterBox extends Component {
       user: null,
       itemName: null,
       timespan: null,
-      type: null
+      type: null,
+      dateFocused: false,
+      startDate: null,
+      endDate: null
     }
   }
 
-  filterButton() {
+  applyFilter() {
     var userId = this.state.user;
     var itemName = this.refs.itemName.value;
     var actionType = this.state.type;
 
-    this.props.filterRequests(actionType, userId, itemName);
+    var startDate = moment(this.state.startDate).format('YYYY-MM-DD');
+    var endDate = moment(this.state.endDate).format('YYYY-MM-DD');
+
+    this.props.filterRequests(actionType, userId, itemName, startDate, endDate);
   }
 
   handleTypeChange(value) {
@@ -39,6 +49,19 @@ class LogFilterBox extends Component {
   handleUserChange(id) {
     this.setState({
       user: id
+    });
+  }
+
+  handleStartDateChange(dateObj) {
+    this.setState({
+      startDate: dateObj
+    });
+  }
+
+
+  handleEndDateChange(dateObj) {
+    this.setState({
+      endDate: dateObj
     });
   }
 
@@ -76,10 +99,28 @@ class LogFilterBox extends Component {
                           <input className="form-control" type="text" defaultValue="" ref="itemName"/>
                       </div>
 
+                      <div className="form-group row">
+                        <label>Start Date</label>
+                        <DatePicker
+                            className="form-control"
+                            selected={this.state.startDate}
+                            onChange={date => this.handleStartDateChange(date)} />
+                      </div>
+
+                      <div className="form-group row">
+                        <label>End Date</label>
+                          <DatePicker
+                            className="form-control"
+                            selected={this.state.endDate}
+                            onChange={date => this.handleEndDateChange(date)} />
+                        
+                      </div>
+
+
                       <div className="row">
                         <button
                           className="btn btn-primary"
-                          onClick={this.filterButton.bind(this)}>
+                          onClick={() => this.applyFilter()}>
                             Filter
                         </button>
                       </div>

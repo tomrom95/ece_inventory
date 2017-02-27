@@ -57,7 +57,11 @@ Copy these files into your project's root directory. Make sure to use root acces
 9) [Optional] Run our setup script. This will create an inventory admin and populate some example data.
 > node scripts/setupdb.js
 
-10) Run in development using
+10) [Optional] If you would like the app to work with NetID login, you need to register the app at the [colab app manager site](https://appmanager.colab.duke.edu/). Because we have been developing this system on many devices, we use a naming convention to match the server to the corresponding app ID. With the Duke Virtual Machines, since they all have the pattern colab-sbx-###, we give our apps the app ID ece-inventory-colab-sbx-### and the url being the base HTTP url. Since production is run on SSL, you also need to add another app with the HTTPS address and the app ID ece-inventory-colab-sbx-###-https.
+
+Note that we can match the app id with any url you choose. If your site is www.DOMAIN.duke.edu or www.DOMAIN.com then your app ID should be ece-inventory-DOMAIN or ece-inventory-DOMAIN-https.
+
+11) Run in development using
 > npm run start-dev
 
 Run in production using

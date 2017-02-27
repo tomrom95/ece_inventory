@@ -7,7 +7,6 @@ import ItemEditor from './ItemEditor.js';
 import ItemDetailView from './ItemDetailView.js';
 import CustomFieldsPopup from './CustomFieldsPopup.js';
 import CustomFieldListPopup from './CustomFieldListPopup.js';
-
 import ShoppingCart from './ShoppingCart.js';
 
 var meta;
@@ -52,7 +51,6 @@ function getPrefill(data) {
 		"Quantity": data["Quantity"],
 		"Model Number": data["Model"],
 		"Description": data["Description"],
-		"Location": data["Location"],
 		"Vendor Info": data["Vendor"],
 		"Tags": data["Tags"],
 		"custom_fields": data["custom_fields"],
@@ -65,7 +63,6 @@ function getEmptyPrefill() {
 		"Quantity": "",
 		"Model Number": "",
 		"Description": "",
-		"Location": "",
 		"Vendor Info": "",
 		"Tags": "",
 		"custom_fields": "",
@@ -96,7 +93,6 @@ class InventoryTable extends Component {
         if (response.data.error) {
           console.log(response.data.error);
         }
-				console.log(response);
         this.setState({allCustomFields: response.data});
       }.bind(this))
       .catch(function(error) {
@@ -220,6 +216,7 @@ class InventoryTable extends Component {
 					<td className="subtable-row" key={"detail-view-" + id}>
 					<ItemDetailView key={"detail-view-button-" + id}
 							params={{itemID: id}}
+							isButton={true}
 							allCustomFields={this.state.allCustomFields}/>
 
 

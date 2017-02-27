@@ -116,7 +116,11 @@
   overflow: hidden;
   white-space:normal;
   text-overflow: ellipsis;
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 2027e5190a7bec707df7c2e89e82d5f2fd718853
 }
 
 .item-detail-view-logs {

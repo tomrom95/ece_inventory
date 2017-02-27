@@ -29,13 +29,13 @@ class NavBar extends Component {
                 <Link to="/CurrentOrders" className="nav-link">MY REQUESTS</Link>
               </li>
               <li className="nav-item">
+                <Link to="/Log" className="nav-link">LOG</Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/CreateUser" className="nav-link">CREATE USER</Link>
               </li>
               <li className="nav-item">
                 <Link to="/EditUsers" className="nav-link">EDIT USERS</Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/Log" className="nav-link">LOG</Link>
               </li>
               <div className="navbar-right-panel">
               <li className="nav-item welcome-message">

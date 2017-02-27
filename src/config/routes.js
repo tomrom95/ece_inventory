@@ -9,6 +9,7 @@ import EditUsers from '../components/user/EditUsers.js';
 import Transactions from '../components/transactions/Transactions.js';
 import ItemDetailView from '../components/inventory/ItemDetailView.js';
 import LogTable from '../components/logging/LogTable.js';
+import LogPage from '../components/logging/LogPage.js';
 import { Route} from 'react-router';
 import querystring from 'querystring';
 import axios from 'axios';
@@ -29,8 +30,6 @@ class CurrentOrdersWrapper extends Component {
         api={"something"}/>;
     }
 }
-
-
 
 class GlobalRequestsWrapper extends Component {
     render() {
@@ -54,6 +53,18 @@ class TransactionsWrapper extends Component {
     }
 }
 
+class LogTableWrapper extends Component {
+    render() {
+        return (<LogTable showButtons={true} showFilterBox={true} />);
+    }
+}
+
+class LogPageWrapper extends Component {
+    render() {
+        return (<LogPage showFilterBox={true} showButtons={true} id="log-page" />);
+    }
+}
+
 class ItemDetailViewWrapper extends Component {
     render() {
         return <ItemDetailView api={"something"}/>;
@@ -69,7 +80,7 @@ export default (
     <Route path="CreateUser" component={CreateUserWrapper}></Route>
     <Route path="EditUsers" component={EditUsers}></Route>
     <Route path="Transactions" component={TransactionsWrapper}></Route>
-    <Route path="Log" component={LogTable}></Route>
+    <Route path="Log" component={LogPageWrapper}></Route>
     <Route path="Detail/:itemID" component={ItemDetailViewWrapper} />
   </Route>
 );
