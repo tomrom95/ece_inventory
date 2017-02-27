@@ -213,13 +213,13 @@ class ItemDetailView extends React.Component {
       <div className="card">
         <div className="card-header" role="tab" id="headingOne">
           <h7 className="mb-0">
-            <div data-toggle="collapse" data-parent="#accordion" href="#requestsCollapse" aria-expanded="true" aria-controls="requestsCollapse">
+            <div data-toggle="collapse" data-parent="#accordion" href={"#requestsCollapse-"+this.props.params.itemID} aria-expanded="true">
               <strong>REQUESTS CONTAINING THIS ITEM</strong>
             </div>
           </h7>
         </div>
 
-        <div id="requestsCollapse" className="collapse show" role="tabpanel" aria-labelledby="headingOne">
+        <div id={"requestsCollapse-"+this.props.params.itemID} className="collapse" role="tabpanel">
           <div className="card-block">
             {this.addRequests()}
           </div>
@@ -228,12 +228,12 @@ class ItemDetailView extends React.Component {
       <div className="card">
         <div className="card-header" role="tab" id="headingTwo">
           <h7 className="mb-0">
-            <div className="collapsed" data-toggle="collapse" data-parent="#accordion" href="#logsCollapse" aria-expanded="false" aria-controls="logsCollapse">
+            <div className="collapsed" data-toggle="collapse" data-parent="#accordion" href={"#logsCollapse-"+this.props.params.itemID} aria-expanded="false">
               <strong>LOG ENTRIES CONTAINING THIS ITEM</strong>
             </div>
           </h7>
         </div>
-        <div id="logsCollapse" className="collapse" role="tabpanel" aria-labelledby="headingTwo">
+        <div id={"logsCollapse-"+this.props.params.itemID} className="collapse" role="tabpanel" aria-labelledby="headingTwo">
           <div className="card-block">
             {this.makeLogView()}
           </div>
