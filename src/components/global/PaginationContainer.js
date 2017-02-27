@@ -244,7 +244,7 @@ class PaginationContainer extends Component {
 	makePageControlBar() {
 		var pageControlBar =  this.state.items.length === 0 ? null :
 			(<div className="row page-control-bar">
-				<div className="col-md-4">
+				<div className="col-md-6">
 	                <nav aria-label="page-buttons">
 	                  <ul className="pagination">
 	                  	<li className="page-item">
@@ -261,15 +261,12 @@ class PaginationContainer extends Component {
 	                    </li>
 	                    <li className="page-item">{this.makePageBox()}</li>
 	                    <li className="page-item">{this.makePageGoButton()}</li>
+	                    <li className="page-item">{this.makePerPageController()}</li>
 	                  </ul>
 	                </nav>
 	            </div>
 
-	            <div className="col-md-3">
-	                {this.makePerPageController()}
-	            </div>
-
-	            <div className="col-md-5" id="error-region">
+	            <div className="col-md-6" id="error-region">
 	                <ErrorMessage
 	                  key={"errormessage"}
 	                  title={this.state.error.title}
