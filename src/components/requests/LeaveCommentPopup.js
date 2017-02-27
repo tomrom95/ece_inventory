@@ -86,10 +86,6 @@ class LeaveCommentPopup extends Component {
       if(response.data.error){
         console.log("error denying request");
       }
-      else{
-
-        console.log(response);
-      }
     }.bind(this))
     .catch(function(error) {
       console.log(error);

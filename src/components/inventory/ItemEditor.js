@@ -57,8 +57,6 @@ class ItemEditor extends Component {
 
 	handleFormChange(event, label, index) {
 		var data = this.state.data;
-		console.log(this.state.data.custom_fields);
-		console.log(index);
 		if(label == "custom_fields"){
 			data.custom_fields[index].value = event.target.value;
 		}
@@ -91,7 +89,6 @@ class ItemEditor extends Component {
 							}
 						}
 						if(label !== ""){
-							console.log(j);
 							list.push(this.makeCustomTextBox(i, j, field, label));
 							list.push(
 								<button
@@ -101,7 +98,6 @@ class ItemEditor extends Component {
 									className="btn btn-danger delete-button">
 									X
 									</button>);
-									console.log(j);
 
 							list.push(
 								<button
@@ -204,7 +200,6 @@ class ItemEditor extends Component {
 	}
 
 	addField(value, already_exists, type_mismatch, field_params){
-		console.log(field_params);
 		if(value && !already_exists && !type_mismatch){
 			this.props.api.post('/api/inventory/'+ this.props.itemId+ "/customFields/",  field_params)
 				.then(function(response) {
@@ -232,7 +227,6 @@ class ItemEditor extends Component {
 	deleteCustomField(row, field){
 		var id = "createform-row-"+row;
 		this.state.formIds.splice(0,id);
-		console.log(field);
 		this.props.api.delete('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field)
 			.then(function(response) {
 					if (response.data.error) {
@@ -249,7 +243,6 @@ class ItemEditor extends Component {
 	}
 
 	editCustomField(row, index, field){
-		console.log(field);
 		var body = {
 			field: field.field,
 			value: this.state.data.custom_fields[index].value,
@@ -355,7 +348,6 @@ class ItemEditor extends Component {
 	  		quantity: this.refs.Quantity.value,
 	 			model_number: this.refs["Model Number"].value,
 	  		description: this.refs.Description.value,
-	  		location: this.refs.Location.value,
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
 	  		has_instance_objects: false
