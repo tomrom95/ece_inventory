@@ -62,6 +62,15 @@
   border-color: rgba(0,150,255,1);
 }
 
+.single-request-item {
+  margin-left: 1.8%;
+}
+
+.single-request-pageview {
+  min-width: 140%;
+  max-width: 140%;
+}
+
 .col-xs-12 {
   margin-left: 20px;
   margin-right: 50px;
@@ -99,7 +108,7 @@
   border-width: 4px;
   border-color: rgba(0,150,255,1);
   color: gray;
-  font-size: 75%;
+  font-size: 85%;
 }
 
 .log-detailview-links {
@@ -185,6 +194,7 @@
 .info-modal {
   min-width: 120%;
   margin-top: -50px;
+  font-weight: normal;
 }
 
 .request-button {

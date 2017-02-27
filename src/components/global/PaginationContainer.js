@@ -276,7 +276,7 @@ class PaginationContainer extends Component {
 	            </div>
             </div>);
 
-		return (
+		return (this.props.hidePageControlBar ? null :
           	  pageControlBar
 	    );
 	}

@@ -31,7 +31,7 @@ class AddToCartButton extends Component {
 
 	makeTextBox(id, type, label, defaultText){
 		return (
-			<div className="form-group row request-quantity" key={id}>
+			<div className="request-quantity" key={id}>
 			  <label htmlFor={id}>{label}</label>
 			  <input type={type} className="form-control" defaultValue={defaultText} id={id}></input>
 			</div>

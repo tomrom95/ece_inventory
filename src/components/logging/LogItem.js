@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../../App.css';
 import ItemDetailView from '../inventory/ItemDetailView.js';
+import SingleRequestView from '../requests/SingleRequestView.js';
 
 class LogItem extends Component {
 
@@ -18,14 +19,20 @@ class LogItem extends Component {
 		super(props);
 		this.state = {
      	 allCustomFields: props.allCustomFields,
-     	 showButtons: props.showButtons
+     	 showButtons: props.showButtons,
+     	 requestId: props.requestId,
+     	 logItemId: props.logItemId,
+     	 itemIds: props.itemIds
 		};
 	}
 
 	componentWillReceiveProps(newProps) {
 		this.setState({
 			allCustomFields: newProps.allCustomFields,
-			showButtons: newProps.showButtons
+			showButtons: newProps.showButtons,
+			requestId: newProps.requestId,
+     		logItemId: newProps.logItemId,
+	     	itemIds: newProps.itemIds
 		});
 	}
 
@@ -38,14 +45,22 @@ class LogItem extends Component {
 		var buttons = []; var i;
 
 		if (this.state.showButtons) {
-			for (i=0; i<this.props.itemIds.length; i++) {
+			for (i=0; i<this.state.itemIds.length; i++) {
 				buttons.push(
 				<ItemDetailView
-					key={"log-detailview-" + this.props.itemIds[i]+ "-" + this.props.logItemId}
-					params={{itemID: this.props.itemIds[i]}}
+					key={"log-detailview-" + this.state.itemIds[i]+ "-" + this.state.logItemId}
+					params={{itemID: this.state.itemIds[i]}}
 					isButton={false}
 					allCustomFields={this.state.allCustomFields}/>
 				);
+			}
+
+			if (this.state.requestId) {
+				var uniqueKey = "log-request-detail-view-"+this.state.requestId+"-"+this.state.logItemId;
+				buttons.push(<SingleRequestView 
+								key={uniqueKey}
+								requestId={this.state.requestId}
+								id={uniqueKey}/>);
 			}
 		}
 		return (
