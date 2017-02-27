@@ -88,6 +88,10 @@
   margin-right: 0;
 }
 
+.card-title.row {
+  margin-right: -15%;
+}
+
 .log-table {
   background-color: white;
   margin-left: 2.9%;
