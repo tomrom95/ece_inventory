@@ -241,7 +241,6 @@ class ItemEditor extends Component {
 	}
 
 	editCustomField(index, field){
-		console.log(field);
 		var body = {
 			field: field.field,
 			value: this.state.data.custom_fields[index].value,
