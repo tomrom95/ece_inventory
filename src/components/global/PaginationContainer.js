@@ -52,6 +52,7 @@ class PaginationContainer extends Component {
 	}
 
 	componentWillReceiveProps(newProps) {
+		var oldUrl = this.state.url;
 		this.setState({
 			url: newProps.url,
 			processData: newProps.processData,
@@ -60,7 +61,13 @@ class PaginationContainer extends Component {
 			id: newProps.id,
 			hasOtherParams: newProps.hasOtherParams
 		}, function() {
-			this.loadData(this.state.page, false);
+			 /*
+				 Only case, it seems, where new props would lead to a rerender.
+				 I have to re-evaluate that statement. But for now this fixes
+				 a big bug.
+			 */
+			if (oldUrl !== newProps.url)
+				this.loadData(this.state.page, false);
 		});
 	}
 
