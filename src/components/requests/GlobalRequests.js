@@ -50,8 +50,7 @@ class GlobalRequests extends Component {
       return user.username;
     }
   }
-
-
+  
   processData(responseData) {
     var requests = responseData.data;
     var i; var j;

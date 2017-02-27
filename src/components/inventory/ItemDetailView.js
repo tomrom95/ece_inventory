@@ -3,6 +3,7 @@ import axios from 'axios';
 import GlobalRequests from '../requests/GlobalRequests';
 import CurrentOrders from '../requests/CurrentOrders.js';
 import CustomFieldsPopup from './CustomFieldsPopup.js';
+import LogTable from '../logging/LogTable.js';
 
 function getString(str) {
   if (str === undefined || str === null || str.length === 0) {
@@ -153,6 +154,7 @@ class ItemDetailView extends React.Component {
 
                   </div>
                   {this.addRequests()}
+                  {this.makeLogView()}
                 </div>
               </div>
             </div>
@@ -190,6 +192,19 @@ class ItemDetailView extends React.Component {
           id={"detail-view-"+this.props.params.itemID}/>
         </div>);
     }
+  }
+
+  makeLogView() {
+    var filters = {
+      item_id: this.props.params.itemID
+    }
+    return (
+      <div className="row request-subtable">
+        <LogTable filters={filters} 
+                      showButtons={false} 
+                      showFilterBox={false} />
+      </div>
+    );
   }
 }
 

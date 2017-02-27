@@ -26,7 +26,8 @@ class LogTable extends Component {
 			items: [],
       		allCustomFields: [],
       		showFilterBox: props.showFilterBox,
-      		showButtons: props.showButtons
+      		showButtons: props.showButtons,
+      		filters: this.props.filters
 		};
 	}
 
@@ -48,6 +49,8 @@ class LogTable extends Component {
 				url += '&start_date=' + this.state.filters.start_date;
 			if (this.state.filters.end_date)
 				url += '&end_date=' + this.state.filters.end_date;
+			if (this.state.filters.item_id)
+				url += '&item_id=' + this.state.filters.item_id;
 		}
 
 		this.instance.get(url)
@@ -82,8 +85,6 @@ class LogTable extends Component {
 			filter.start_date = startDate;
 		if (endDate && endDate !== "Invalid date")
 			filter.end_date = endDate;
-
-		console.log(startDate);
 
 		this.setState({
 			filters: filter
@@ -124,15 +125,14 @@ class LogTable extends Component {
 	render() {
 		return (		
 			<div className="row">
-				<div className="col-md-3">
-				{
-					this.state.showFilterBox ? 
-					(<LogFilterBox api={this.instance} 
-					filterRequests={(type, id, itemName, startDate, endDate) => this.setFilters(type, id, itemName, startDate, endDate)}/>)
-					: null
-				}
-				</div>
-				<div className="col-md-9">
+				{ this.state.showFilterBox ?
+					(<div className="col-md-3">
+						<LogFilterBox api={this.instance} 
+									  filterRequests={(type, id, itemName, startDate, endDate) =>
+									 	this.setFilters(type, id, itemName, startDate, endDate)}/>
+					  </div>)
+				: null }	
+				<div className={this.state.showFilterBox ? "col-md-9" : ""}>
 				{this.state.items.length === 0 ? <div className="center-text">No items found.</div> :
 					<div className="logtable-container">
 						<table className="table table-sm table-striped log-table">
@@ -140,7 +140,7 @@ class LogTable extends Component {
 						    <tr>				    
 						      <th>Timestamp</th>
 						      <th>Description</th>
-						      <th>Details</th>
+						      {this.state.showButtons ? <th>Details</th> : null}
 						    </tr>
 						  </thead>
 						  <tbody>
