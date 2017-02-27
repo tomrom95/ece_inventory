@@ -93,7 +93,7 @@ class ItemEditor extends Component {
 							list.push(
 								<button
 									key={i + "delete-field" + j}
-									onClick={()=>{this.deleteCustomField(i, field)}}
+									onClick={this.deleteCustomField.bind(this, field)}
 									type="button"
 									className="btn btn-danger delete-button">
 									X
@@ -102,7 +102,7 @@ class ItemEditor extends Component {
 							list.push(
 								<button
 									key={i + "edit-field-button" + j}
-									onClick={()=>{this.editCustomField(i, j-1, field)}}
+									onClick={this.editCustomField.bind(this, j, field)}
 									type="button"
 									className="btn btn-outline-primary add-button">
 									Edit
@@ -224,9 +224,7 @@ class ItemEditor extends Component {
 		}
 	}
 
-	deleteCustomField(row, field){
-		var id = "createform-row-"+row;
-		this.state.formIds.splice(0,id);
+	deleteCustomField(field){
 		this.props.api.delete('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field)
 			.then(function(response) {
 					if (response.data.error) {
@@ -242,7 +240,7 @@ class ItemEditor extends Component {
 
 	}
 
-	editCustomField(row, index, field){
+	editCustomField(index, field){
 		var body = {
 			field: field.field,
 			value: this.state.data.custom_fields[index].value,
