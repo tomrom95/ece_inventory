@@ -55,7 +55,8 @@
 
 .requesttable {
   margin-left: 16px;
-  max-width: 100%;
+  max-width: 95%;
+  min-width: 95%;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
@@ -85,14 +86,11 @@
 
 .log-table {
   background-color: white;
+  margin-left: 1.5%;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
   color: gray;
-}
-
-.logtable-container {
-
 }
 
 .log-detailview-links {
@@ -340,7 +338,6 @@
 }
 
 .inventory-page {
-  margin-top:10px;
   margin-right: 20px;
 }
 

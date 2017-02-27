@@ -327,13 +327,15 @@ class PaginationContainer extends Component {
 		else if(statusFilterBox != null){
 
 				return (
-		        <div className="col-xs-12">
+		        <div className="row">
 
 				  {statusFilterBox}
-		          {this.makePageControlBar()}
-
-		          <div className="row">
-		            {table}
+				  
+				  <div className="col-md-9">
+			          {this.makePageControlBar()}
+			          <div className="row">
+			            {table}
+			          </div>
 		          </div>
 		        </div>
 				);
