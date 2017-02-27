@@ -115,6 +115,7 @@ module.exports.postAPI = function(req, res){
   item.description = req.body.description;
   item.tags = trimTags(req.body.tags);
   item.has_instance_objects = req.body.has_instance_objects;
+  item.custom_fields = req.body.custom_fields;
   item.save(function(err, newItem){
     if(err)
     return res.send({error: err});
