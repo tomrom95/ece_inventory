@@ -166,7 +166,7 @@ class Home extends Component {
       }
       return (
         <div className="App">
-	         <NavBar onClick={this.signOut} role={this.state.user.role}/>
+	         <NavBar onClick={this.signOut} role={this.state.user.role} username={this.state.user.username} first_name = {this.state.user.first_name}/>
           <div className="main-container">
             {children}
           </div>
