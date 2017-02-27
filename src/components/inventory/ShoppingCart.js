@@ -38,10 +38,10 @@ class ShoppingCart extends Component {
 		for (i=0; i<items.length; i++) {
 			list.push(
 				(<div key={"div-"+i} className="row">
-					<ShoppingCartItem 
-					api={this.props.api} 
-					key={"cart-item-"+i} 
-					itemData={items[i].item} 
+					<ShoppingCartItem
+					api={this.props.api}
+					key={"cart-item-"+i}
+					itemData={items[i].item}
 					quantity={items[i].quantity}
 					callback={() => this.loadData()} />
 				</div>));
@@ -77,16 +77,16 @@ class ShoppingCart extends Component {
 			}
 		}.bind(this));
 	}
-	
+
 	makeReasonBox() {
-		return ((this.state.items.length===0) ? <div>Your cart is currently empty</div> 
+		return ((this.state.items.length===0) ? <div>Your cart is currently empty</div>
 						  : (<div className="form-group row">
 		                          <label htmlFor="cart-reason">Reason for Request</label>
 		                          <input className="form-control" type="text" defaultValue="" id="cart-reason"/>
 		                    </div>)
 	  	);
 	}
-	
+
 	handleCheckboxChange(event) {
 	    var value = event.target.checked;
 	    this.setState({
@@ -103,8 +103,8 @@ class ShoppingCart extends Component {
 				  	<label htmlFor={"request-on-behalf-box"}>Assign to User</label>
 				  </div>
 				  <div className="col-xs-2 cart-checkbox">
-				  	<input type={"checkbox"} 
-				  			id={"request-on-behalf-row"} 
+				  	<input type={"checkbox"}
+				  			id={"request-on-behalf-row"}
 				  			onChange={e => this.handleCheckboxChange(e)}
 				  			checked={this.state.checked}>
 				  	</input>
@@ -117,7 +117,7 @@ class ShoppingCart extends Component {
 
 	requestOnBehalf() {
 		if (this.state.checked === true) {
-			return (		
+			return (
 				<div className="row request-quantity">
 					<UserSelect ref="userSelect" api={this.props.api}/>
 				</div>
@@ -134,7 +134,7 @@ class ShoppingCart extends Component {
 	 		return (
 		        <div className="form-group row">
 		        	{this.makeCheckBox()}
-		        	{this.requestOnBehalf()}	                 
+		        	{this.requestOnBehalf()}
 		        </div>
 	  		);
 	}
@@ -147,29 +147,29 @@ class ShoppingCart extends Component {
 
 	render() {
 		var submitDisabled = (this.state.items.length===0) ? "disabled" : "";
- 		return (			
-			<th>	
-				<button data-toggle="modal" 
+ 		return (
+			<th>
+				<button data-toggle="modal"
 						data-target={"#cart-button"}
 						type="button"
 						className="btn btn-secondary"
 						onClick={() => this.loadData()}>
-							<span className="fa fa-shopping-cart"></span>
+							My Cart <span className="fa fa-shopping-cart"></span>
 				</button>
 				<div className="modal fade" id="cart-button">
 				  <div className="modal-dialog" role="document">
 				    <div className="modal-content cart-modal">
 				      <div className="modal-header">
 				        <h5 className="modal-title">
-				        {"Shopping Cart (" + 
-				        	this.state.items.length + 
+				        {"Shopping Cart (" +
+				        	this.state.items.length +
 				        	((this.state.items.length===1) ? " item)" : " items)"
 				        	)}
 				        </h5>
 				      </div>
 				      <div className="modal-body">
 				      	<div className="cart-body container">
-				      		{this.makeCartItems()}	        	
+				      		{this.makeCartItems()}
 			        	</div>
 			        	<div className="container">
 			        		{this.makeReasonBox()}
@@ -178,15 +178,15 @@ class ShoppingCart extends Component {
 
 				      </div>
 				      <div className="modal-footer">
-				      	<button type="button" 
-				      			className="btn btn-secondary" 
+				      	<button type="button"
+				      			className="btn btn-secondary"
 				      			data-dismiss="modal"
 				      			onClick={() => this.clearCheckbox()}>
 				      		Close
 				      	</button>
-				        <button onClick={() => this.sendRequests()} 
-				        		type="button" 
-				        		data-dismiss="modal" 
+				        <button onClick={() => this.sendRequests()}
+				        		type="button"
+				        		data-dismiss="modal"
 				        		className={"btn btn-primary " + submitDisabled}>
 				        		Request These Items
 				        </button>

@@ -7,7 +7,7 @@ class NavBar extends Component {
     super(props);
   }
   render() {
-    
+
     if(this.props.role === "ADMIN" || this.props.role === "MANAGER"){
       return (
         <nav className="navbar fixed-top navbar-toggleable-md navbar-light bg-faded">
