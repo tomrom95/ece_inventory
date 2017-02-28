@@ -435,12 +435,7 @@
 
 .cart-checkbox {
   margin-left: 2%;
-  margin-top: 2.2%;
-}
-
-.cart-request-checkbox {
-  margin-left: 7%;
-  margin-top: 1.5%;
+  margin-top: 0;
 }
 
 .cart-quantity-box {
