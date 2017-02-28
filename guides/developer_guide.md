@@ -33,6 +33,8 @@ The main parts of the application are divided into folders, such as inventory, r
 
 Components that are utilized throughout the entire project are located inside "src/components/global". These components include PaginationContainer and NavBar, which are reused extensively. While other components exist that are as widely used in our project, we opted to place them intuitively in directories that would make for easier access. For instance, the UserSelect component, which is used in multiple other components, is located in "src/components/user" due to the similarity in naming between the component and that directory.
 
+The components of interest in this application are GlobalRequests, CurrentOrders, Inventory, and LogPage, which all use PaginationContainer to render their respective table components, RequestTable, InventoryTable, and LogTable respectively. The former components create an instance of PaginationContainer within them, which is passed a processData() method among other props.
+
 ### Database Schema
 Here is a UML for our database:
 
