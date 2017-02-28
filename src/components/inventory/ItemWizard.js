@@ -266,7 +266,7 @@ class ItemWizard extends Component {
 
 	}
 
-	addField(value, already_exists, type_mismatch, field_params){
+	addField(value, already_exists, type_mismatch, field_params, invalid_length){
 		if(value && !already_exists && !type_mismatch){
 			var data = this.state.data;
 			var custom_fields = [];
@@ -285,6 +285,9 @@ class ItemWizard extends Component {
 		else if(type_mismatch){
 			alert("Not correct type");
 		}
+		else if(invalid_length){
+			alert("String is too long for type SHORT_STRING");
+		}
 		else if(!value){
 			alert("field must have a value");
 		}
@@ -300,6 +303,7 @@ class ItemWizard extends Component {
 
 		var type = "";
 		var type_mismatch = false;
+		var invalid_length = false;
 		var name = "";
 		this.props.api.get('/api/customFields/'+custom_field)
 			.then(function(response) {
@@ -327,8 +331,11 @@ class ItemWizard extends Component {
 								type_mismatch = true;
 							}
 						}
+						else if (type === "SHORT_STRING" && value.length > 200) {
+							invalid_length = true;
+						}
 
-						this.addField(value, already_exists, type_mismatch, field_params);
+						this.addField(value, already_exists, type_mismatch, field_params, invalid_length);
 					}
 				}.bind(this))
 				.catch(function(error) {
