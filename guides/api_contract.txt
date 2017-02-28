@@ -511,8 +511,8 @@ params:
 		'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED',
 		'REQUEST_DELETED', 'FIELD_CREATED', 'FIELD_EDITED', 'FIELD_DELETED')
 	user_id: String,
-	start_date: String, // in format '2017-01-25' (YEAR-MONTH-DAY)
-	end_date: String // in format '2017-01-25' (YEAR-MONTH-DAY)
+	start_date: String, // in full date format '2017-02-27T00:00:00-05:00' (encoded)
+	end_date: String // in full date format '2017-02-27T00:00:00-05:00' (encoded)
 }
 return:
 [
