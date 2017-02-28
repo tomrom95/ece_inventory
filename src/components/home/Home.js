@@ -47,7 +47,6 @@ class Home extends Component {
   }
 
   componentDidMount() {
-     browserHistory.push('/Inventory');
   }
 
   handleNameChange(event) {

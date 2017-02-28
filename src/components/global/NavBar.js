@@ -6,7 +6,7 @@ class NavBar extends Component {
   constructor(props){
     super(props);
     this.state = {
-      activeTab: 'INVENTORY'
+      activeTab: window.location.pathname
     }
   }
 
@@ -28,50 +28,50 @@ class NavBar extends Component {
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
                 <Link to="/UserProfile" 
-                      className={"nav-link" + (this.state.activeTab === "PROFILE" ? " active" : "")}
-                      onClick={() => this.setActiveTab("PROFILE")}>
+                      className={"nav-link" + (this.state.activeTab === "/UserProfile" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/UserProfile")}>
                       PROFILE
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/Inventory" 
-                      className={"nav-link" + (this.state.activeTab === "INVENTORY" ? " active" : "")}
-                      onClick={() => this.setActiveTab("INVENTORY")}>
+                      className={"nav-link" + (this.state.activeTab === "/Inventory" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/Inventory")}>
                       INVENTORY
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/GlobalRequests" 
-                      className={"nav-link" + (this.state.activeTab === "USER REQUESTS" ? " active" : "")}
-                      onClick={() => this.setActiveTab("USER REQUESTS")}>
+                      className={"nav-link" + (this.state.activeTab === "/GlobalRequests" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/GlobalRequests")}>
                       USER REQUESTS
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/CurrentOrders" 
-                      className={"nav-link" + (this.state.activeTab === "MY REQUESTS" ? " active" : "")}
-                      onClick={() => this.setActiveTab("MY REQUESTS")}>
+                      className={"nav-link" + (this.state.activeTab === "/CurrentOrders" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/CurrentOrders")}>
                       MY REQUESTS
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/Log" 
-                      className={"nav-link" + (this.state.activeTab === "LOG" ? " active" : "")}
-                      onClick={() => this.setActiveTab("LOG")}>
+                      className={"nav-link" + (this.state.activeTab === "/Log" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/Log")}>
                       LOG
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/CreateUser" 
-                      className={"nav-link" + (this.state.activeTab === "CREATE USER" ? " active" : "")}
-                      onClick={() => this.setActiveTab("CREATE USER")}>
+                      className={"nav-link" + (this.state.activeTab === "/CreateUser" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/CreateUser")}>
                       CREATE USER
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/EditUsers" 
-                      className={"nav-link" + (this.state.activeTab === "EDIT USERS" ? " active" : "")}
-                      onClick={() => this.setActiveTab("EDIT USERS")}>
+                      className={"nav-link" + (this.state.activeTab === "/EditUsers" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/EditUsers")}>
                       EDIT USERS
                 </Link>
               </li>
@@ -102,22 +102,22 @@ class NavBar extends Component {
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
                 <Link to="/UserProfile" 
-                      className={"nav-link" + (this.state.activeTab === "PROFILE" ? " active" : "")}
-                      onClick={() => this.setActiveTab("PROFILE")}>
+                      className={"nav-link" + (this.state.activeTab === "/UserProfile" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/UserProfile")}>
                       PROFILE
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/Inventory" 
-                      className={"nav-link" + (this.state.activeTab === "INVENTORY" ? " active" : "")}
-                      onClick={() => this.setActiveTab("INVENTORY")}>
+                      className={"nav-link" + (this.state.activeTab === "/Inventory" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/Inventory")}>
                       INVENTORY
                 </Link>
               </li>
               <li className="nav-item">
                 <Link to="/CurrentOrders" 
-                      className={"nav-link" + (this.state.activeTab === "MY REQUESTS" ? " active" : "")}
-                      onClick={() => this.setActiveTab("MY REQUESTS")}>
+                      className={"nav-link" + (this.state.activeTab === "/CurrentOrders" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/CurrentOrders")}>
                       MY REQUESTS
                 </Link>
               </li>
