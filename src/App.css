@@ -257,7 +257,7 @@
 .login-form {
   margin: 50px;
   margin-left: 90px;
-  width: 300px;
+  max-width: 30%;
   font-family: 'Open Sans';
 }
 
