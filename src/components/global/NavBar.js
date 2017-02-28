@@ -124,14 +124,27 @@ class NavBar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/GlobalRequests" className="nav-link">USER REQUESTS</Link>
+                <Link to="/GlobalRequests"
+                      className={"nav-link" + (this.state.activeTab === "/GlobalRequests" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/GlobalRequests")}>
+                      USER REQUESTS
+                </Link>
               </li>
               <li className="nav-item">
-                <Link to="/CurrentOrders" className="nav-link">MY REQUESTS</Link>
+                <Link to="/CurrentOrders"
+                      className={"nav-link" + (this.state.activeTab === "/CurrentOrders" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/CurrentOrders")}>
+                      MY REQUESTS
+                </Link>
               </li>
               <li className="nav-item">
-                <Link to="/Log" className="nav-link">LOG</Link>
+                <Link to="/Log"
+                      className={"nav-link" + (this.state.activeTab === "/Log" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/Log")}>
+                      LOG
+                </Link>
               </li>
+
               <div className="navbar-right-panel">
                 <li className="nav-item welcome-message">
                   Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>
