@@ -32,11 +32,11 @@ class LeaveCommentModal extends Component {
                 <h5 className="modal-title" id="editLabel">Leave a Comment</h5>
               </div>
               <div className="modal-body">
-                <form>
-                <div className="form-group row">
-                  <label>Comment:</label>
-                  <input className="form-control" maxLength="200" type="text" value={this.state.value} onChange={e => this.handleChange(e)}/>
-                </div>
+                <form className="container">
+                  <div className="form-group row">
+                    <label>Comment:</label>
+                    <input className="form-control" maxLength="200" type="text" value={this.state.value} onChange={e => this.handleChange(e)}/>
+                  </div>
                 </form>
               </div>
               <div className="modal-footer">
@@ -56,7 +56,7 @@ class LeaveCommentModal extends Component {
       alert("Comment cannot be blank.");
       return;
     }
-    
+
     this.props.api.put('/api/requests/' + this.props.request, {reviewer_comment: this.state.value})
     .then(function(response) {
       if(response.data.error){

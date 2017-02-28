@@ -3,7 +3,7 @@ import Select from 'react-select';
 import UserSelect from '../user/UserSelect.js';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import '../../App.css';
 
 const statuses = [
@@ -37,9 +37,8 @@ class LogFilterBox extends Component {
     var userId = this.state.user;
     var itemName = this.refs.itemName.value;
     var actionType = this.state.type;
-
-    var startDate = moment(this.state.startDate).format('YYYY-MM-DD');
-    var endDate = moment(this.state.endDate).format('YYYY-MM-DD');
+    var startDate = encodeURIComponent(moment(this.state.startDate).format());
+    var endDate = encodeURIComponent(moment(this.state.endDate).endOf('day').format());
 
     this.props.filterRequests(actionType, userId, itemName, startDate, endDate);
   }
@@ -117,7 +116,7 @@ class LogFilterBox extends Component {
                             className="form-control"
                             selected={this.state.endDate}
                             onChange={date => this.handleEndDateChange(date)} />
-                        
+
                       </div>
 
 

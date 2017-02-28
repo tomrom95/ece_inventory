@@ -61,6 +61,7 @@ class ItemEditor extends Component {
 
 	handleFormChange(event, label, index) {
 		var data = this.state.data;
+
 		if(label === "custom_fields"){
 			data.custom_fields[index].value = event.target.value;
 			this.setState({date: data});
@@ -87,7 +88,9 @@ class ItemEditor extends Component {
 			}
 			else if (keys[i] === 'custom_fields'){
 				if(vals[i].length > 0){
-
+					list.push(<div className="form-group" key={"createform-div-customfields-labelrow-"+i}>
+								Custom Fields
+								</div>)
 					for(var j = 0; j < vals[i].length; j++){
 						var field = vals[i][j];
 						var label = "";
@@ -110,6 +113,7 @@ class ItemEditor extends Component {
 							list.push(
 								<button
 									key={i + "edit-field-button" + j}
+
 									onClick={this.editCustomField.bind(this, j, field)}
 									type="button"
 									className="btn btn-outline-primary add-button">
@@ -183,7 +187,7 @@ class ItemEditor extends Component {
 						type = response.data.type;
 						name = response.data.name;
 
-						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAlpha(value)){
+						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(value)){
 							type_mismatch = true;
 						}
 						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(value)){
@@ -193,7 +197,7 @@ class ItemEditor extends Component {
 							if(type === "INT" && value % 1 !== 0){
 								type_mismatch = true;
 							}
-							else if(type === "FLOAT" && value % 1 === 0){
+							else if(type === "FLOAT" && !validator.isFloat(value)){
 								type_mismatch = true;
 							}
 						}
@@ -209,6 +213,8 @@ class ItemEditor extends Component {
 
 	addField(value, already_exists, type_mismatch, field_params){
 		if(value && !already_exists && !type_mismatch){
+			this.refs.field.value = "";
+			this.refs.fieldvalue.value = "";
 			this.props.api.post('/api/inventory/'+ this.props.itemId+ "/customFields/",  field_params)
 				.then(function(response) {
 						if (response.data.error) {
@@ -232,6 +238,7 @@ class ItemEditor extends Component {
 		}
 	}
 
+
 	deleteCustomField(field){
 		this.props.api.delete('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field)
 			.then(function(response) {
@@ -248,24 +255,65 @@ class ItemEditor extends Component {
 
 	}
 
+
+
 	editCustomField(index, field){
+		var new_value = this.state.data.custom_fields[index].value
 		var body = {
 			field: field.field,
-			value: this.state.data.custom_fields[index].value,
+			value: new_value,
 		}
-		this.props.api.put('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field, body)
+		var type = "";
+		var type_mismatch = false;
+		this.props.api.get('/api/customFields/'+field.field)
 			.then(function(response) {
 					if (response.data.error) {
 						alert(response.data.error);
 					} else {
-						this.props.callback();
+						type = response.data.type;
+						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(new_value)){
+							type_mismatch = true;
+						}
+						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(new_value)){
+							type_mismatch = true;
+						}
+						else if((type === "INT" || type === "FLOAT") && validator.isNumeric(new_value)){
+							if(type === "INT" && new_value % 1 !== 0){
+								type_mismatch = true;
+							}
+							else if(type === "FLOAT" && new_value % 1 === 0){
+								type_mismatch = true;
+							}
+						}
 
+						this.submitFieldEdit(type_mismatch, body, field);
 					}
 				}.bind(this))
 				.catch(function(error) {
 					console.log(error);
 				}.bind(this));
+
 	}
+
+	submitFieldEdit(type_mismatch, body, field){
+		if(!type_mismatch){
+			this.props.api.put('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field, body)
+				.then(function(response) {
+						if (response.data.error) {
+							alert(response.data.error);
+						} else {
+							this.props.callback();
+						}
+					}.bind(this))
+					.catch(function(error) {
+						console.log(error);
+					}.bind(this));
+		}
+		else{
+			alert("new value is incorrect type");
+		}
+	}
+
 
 	makeCustomTextBox(row, index, field, label){
 		var id = "createform-custom-row-"+row;
@@ -284,6 +332,7 @@ class ItemEditor extends Component {
 				{input}
 			</div>
 		);
+
 	}
 
 	makeQuantityReasonField() {
