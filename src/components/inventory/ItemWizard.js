@@ -217,10 +217,10 @@ class ItemWizard extends Component {
 					callback={this.props.callback}
 					allCustomFields={this.state.allCustomFields}
 					key={"add-field-"+row}
-					ref="field"/>
+					ref={"field"}/>
 				<input type="text"
 					className="form-control"
-					ref="fieldvalue"
+					ref={"fieldvalue"}
 					key={"add-field-value"+row}
 					placeholder="Value">
 					</input>
@@ -442,6 +442,11 @@ class ItemWizard extends Component {
   }
 
   	clearForm() {
+			this.refs.field.setState({
+				selectedField: ""
+			})
+
+			this.refs.fieldvalue.value = "";
   		var keys = getKeys(this.state.data);
 			keys.forEach(function(key) {
 				if (key === "Tags") {

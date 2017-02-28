@@ -65,7 +65,8 @@ class CustomFieldsPopup extends Component {
 			        {this.makeForm()}
 			      </div>
 			      <div className="modal-footer">
-			        <button onClick={e => {this.onSubmission()}} type="button" data-dismiss="modal" className="btn btn-primary">Submit</button>
+			        <button onClick={e => {this.onSubmission()}} type="button" className="btn btn-primary">Submit</button>
+              <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
 			      </div>
 			    </div>
 			  </div>
@@ -103,7 +104,7 @@ class CustomFieldsPopup extends Component {
 				{type}
 				<label htmlFor={"createform-row-"}>Private
           {is_private}
-        </label>				
+        </label>
 			</div>
 		);
 	}

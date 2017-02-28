@@ -31,7 +31,6 @@ class CustomFieldSelect extends Component {
 
 
   componentWillReceiveProps(newProps){
-    console.log("test");
     var data = this.mapFields(newProps.allCustomFields);
     this.setState({allFields: data});
   }

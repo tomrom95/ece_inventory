@@ -87,9 +87,9 @@ class ItemEditor extends Component {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
 			}
 			else if (keys[i] === 'custom_fields'){
-				list.push(<div className="modal-footer">
+				list.push(<div key = {"createform-button-bar-row-"+i} className="modal-footer">
 										<button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-										<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+										<button type="button" onClick={() => this.clearForm()} className="btn btn-secondary" data-dismiss="modal">Close</button>
 										<button onClick={() => this.onSubmission()} type="button" className="btn btn-primary">Apply</button>
 									</div>);
 				if(vals[i].length > 0){
@@ -152,10 +152,10 @@ class ItemEditor extends Component {
 					callback={this.props.callback}
 					allCustomFields={this.state.allCustomFields}
 					key={"add-field-"+row}
-					ref="field"/>
+					ref={"field"}/>
 				<input type="text"
 					className="form-control"
-					ref="fieldvalue"
+					ref={"fieldvalue"}
 					key={"add-field-value"+row}
 					placeholder="Value">
 					</input>
@@ -167,6 +167,15 @@ class ItemEditor extends Component {
 				</button>
 			</div>
 		);
+	}
+
+	clearForm() {
+		this.refs.field.setState({
+			selectedField: ""
+		})
+
+		this.refs.fieldvalue.value = "";
+
 	}
 
 	checkFieldParams(custom_field, value, current_fields){
@@ -222,13 +231,15 @@ class ItemEditor extends Component {
 
 	addField(value, already_exists, type_mismatch, field_params, invalid_length){
 		if(value && !already_exists && !type_mismatch){
-			this.refs.field.value = "";
-			this.refs.fieldvalue.value = "";
+			//this.refs.field.value = "";
+			//this.refs.fieldvalue.value = "";
 			this.props.api.post('/api/inventory/'+ this.props.itemId+ "/customFields/",  field_params)
 				.then(function(response) {
 						if (response.data.error) {
 							alert(response.data.error);
 						} else {
+							this.clearForm();
+
 							this.props.callback();
 						}
 					}.bind(this))
