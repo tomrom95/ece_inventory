@@ -140,7 +140,7 @@ class InventoryTable extends Component {
 										callback={this.props.callback}/>
 								);
 			}
-			list.push(<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>);
+			list.push(<ShoppingCart callback={this.props.callback} api={this.props.api} key={"shopping-cart-button"}/>);
 			list.push(
 					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
