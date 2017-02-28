@@ -81,6 +81,7 @@ class GlobalRequests extends Component {
           "Items": cart.items,
           "Reason": reason,
           "Status": status,
+          "Reviewer Comment": cart.reviewer_comment,
           "_id": cart._id,
           "user_id": user_id
       }

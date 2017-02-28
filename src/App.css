@@ -138,7 +138,6 @@
   min-width: 115%;
 }
 
-
 .error-box {
   font-size: 12px;
   height: 80%;
@@ -276,8 +275,6 @@
 }
 
 .signout-button {
-  /*position: absolute;
-  right: 6%;*/
   display: inline-block;
 }
 
@@ -472,16 +469,21 @@
   color: black;
 }
 
-.custom-field-buttons{
+.tooltip-inner {
+  background-color: rgba(80,80,80,1)!important;
+  border-left:solid;
+  border-color: rgba(0,150,255,1);
+  color: white;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+.custom-field-buttons {
   padding-top: 5%;
 }
 
 .custom-field-buttons > button{
   margin-right: 3%;
-}
-
-.form-group label {
-  margin-top:4%;
 }
 
 .table > tbody > tr > td {

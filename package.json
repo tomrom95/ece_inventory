@@ -31,6 +31,7 @@
     "react": "^15.4.2",
     "react-addons-css-transition-group": "^15.4.2",
     "react-addons-shallow-compare": "^15.4.2",
+    "react-addons-transition-group": "^15.4.2",
     "react-bootstrap": "0.30.7",
     "react-bootstrap-table": "^2.10.2",
     "react-datepicker": "^0.41.1",
@@ -42,6 +43,7 @@
     "react-select": "^1.0.0-rc.3",
     "react-simple-list": "^2.2.0",
     "react-timer": "^1.0.2",
+    "reactstrap": "^4.2.0",
     "uuid": "^3.0.1",
     "validator": "^6.2.1"
   },

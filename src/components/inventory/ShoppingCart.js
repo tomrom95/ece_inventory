@@ -199,7 +199,7 @@ class ShoppingCart extends Component {
 				<button data-toggle="modal"
 						data-target={"#cart-button"}
 						type="button"
-						className="btn btn-secondary"
+						className="btn btn-outline-primary"
 						onClick={() => this.loadData()}>
 							My Cart <span className="fa fa-shopping-cart"></span>
 				</button>
