@@ -448,6 +448,21 @@
   margin-right: 3%;
 }
 
+.docs-glyph{
+  font-size:60px;
+  display:inline-block;
+}
+
+.docs-glyph > span {
+  margin-right:30px;
+}
+
+.docs-title{
+  display:inline-block;
+}
+ .docs-row{
+   padding-bottom:3%;
+ }
 .form-group label {
   margin-top:4%;
 }
