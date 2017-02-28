@@ -171,7 +171,7 @@ class CustomFieldListPopup extends Component {
             alert(response.data.error);
           } else {
             this.props.callback();
-            alert("CUstom Field deleted successfully.");
+            alert("Custom Field deleted successfully.");
 
           }
         }.bind(this))
@@ -242,7 +242,7 @@ class CustomFieldListPopup extends Component {
             console.log(response.data.error);
           } else {
 						this.props.callback();
-            alert("changes applied to item");
+            alert("Changes applied to item");
 	        }
 	      }.bind(this))
 	      .catch(function(error) {

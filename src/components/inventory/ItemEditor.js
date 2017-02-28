@@ -249,7 +249,7 @@ class ItemEditor extends Component {
 					}.bind(this));
 		}
 		else if(already_exists) {
-			alert("item already has that custom field");
+			alert("Item already has that custom field");
 		}
 		else if(type_mismatch){
 			alert("Not correct type");
@@ -258,7 +258,7 @@ class ItemEditor extends Component {
 			alert("String is too long for type SHORT_STRING");
 		}
 		else if(!value){
-			alert("field must have a value");
+			alert("Field must have a value");
 		}
 	}
 
@@ -334,7 +334,7 @@ class ItemEditor extends Component {
 					}.bind(this));
 		}
 		else{
-			alert("new value is incorrect type");
+			alert("New value is incorrect type");
 		}
 	}
 

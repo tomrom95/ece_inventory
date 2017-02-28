@@ -124,10 +124,10 @@ class CustomFieldsPopup extends Component {
 			isPrivate: this.state.isPrivate,
 		}
     if(!custom_field.name){
-      alert("must add name");
+      alert("Must add name");
     }
     else if(!custom_field.type){
-      alert("must specify type");
+      alert("Must specify type");
     }
     else {
       this.props.api.post('/api/customFields/', custom_field)
@@ -135,7 +135,7 @@ class CustomFieldsPopup extends Component {
   	        if (response.data.error) {
           		console.log(response.data.error);
   	        } else {
-              alert("custom field made successfully");
+              alert("Custom Field made successfully");
   						this.props.callback();
               this.clearForm();
   	        }
