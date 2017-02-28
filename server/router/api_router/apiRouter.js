@@ -30,8 +30,8 @@ router.route('/inventory/:item_id/customFields')
       .post(restrictToManagers, item_field_routes.postAPI);
 
 router.route('/inventory/:item_id/customFields/:field_id')
-      .put(restrictToAdmins, item_field_routes.putAPI)
-      .delete(restrictToAdmins, item_field_routes.deleteAPI);
+      .put(restrictToManagers, item_field_routes.putAPI)
+      .delete(restrictToManagers, item_field_routes.deleteAPI);
 
 router.route('/inventory/:item_id/instances')
       .get(instance_routes.getAPI)
