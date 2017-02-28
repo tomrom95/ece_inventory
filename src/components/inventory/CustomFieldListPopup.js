@@ -29,6 +29,16 @@ class CustomFieldListPopup extends Component {
     });
   }
 
+  componentWillReceiveProps(newProps){
+    console.log(newProps.allCustomFields);
+
+    var data = this.mapFields(newProps.allCustomFields);
+    this.setState({
+      data: data,
+      allFields: newProps.allCustomFields
+    });
+  }
+
 	componentWillMount(){
     this.props.api.get('/api/customFields')
       .then(function(response) {
@@ -118,7 +128,7 @@ class CustomFieldListPopup extends Component {
 		});
 	}
 
-  
+
 
   handleTypeChange(event, id) {
     var new_type = event;
