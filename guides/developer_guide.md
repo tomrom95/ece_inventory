@@ -23,6 +23,12 @@ Our frontend is build purely in ReactJS. We use the react-scripts library to aut
 
 The frontend uses the React Router library to create URL routes like “/inventory”. It also uses a library called Axios to make HTTP calls to the backend server. Axios is setup with a URL and a header, and requests can be made to a certain endpoint and returned asynchronously to the client.
 
+The rendering of elements is divided into two parts: a Home element and its children elements. The main component of the Home page is the navigation bar, which is determined by the User's priviledge status.  The Home element passes the necessary props to its children react elements, which consist of all the possible pages for all users. Certain pages to which a standard or manager level User does not have access to will return a message of denied access if the User tries to manually reach a URL not available on the navigation bar.
+
+Most medium or smaller react components have a particular callback() function passed in as a prop which updates its parent elements which pass them their new props; this allows for instant re-rendering without manual refreshing.  The state of a component is only event updated with the setState({}) function, and render() is never called manually.  Render is automatically called by React when the state of an element is updated.
+
+The main aspects of the application are divided into folders, such as inventory, requests, logging, etc.  All components specific to a particular feature will be found only in its respective subfolder located in the "src/components" folder.
+
 ### Database Schema
 Here is a UML for our database:
 
@@ -59,7 +65,7 @@ router.route('/inventory')
       .post(restrictToManagers, inventory_routes.postAPI);
 ```
 
-Then, in the routes folder, all of our endpoints are stored. Each base endpoint has its own file, and follows the simple convention to name any exported method either getAPI, getAPIById, postAPI, putAPI, deleteAPI, or patchAPI. 
+Then, in the routes folder, all of our endpoints are stored. Each base endpoint has its own file, and follows the simple convention to name any exported method either getAPI, getAPIById, postAPI, putAPI, deleteAPI, or patchAPI.
 
 If you would like to add any endpoint, just add a new file to the routes directory, import it into the router file, and specify the endpoints and authentication level.
 
