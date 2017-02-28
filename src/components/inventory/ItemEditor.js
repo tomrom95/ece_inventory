@@ -322,6 +322,7 @@ class ItemEditor extends Component {
 	}
 
 
+
 	makeCustomTextBox(row, index, field, label){
 		var id = "createform-custom-row-"+row;
 		this.state.formIds.push(id);
