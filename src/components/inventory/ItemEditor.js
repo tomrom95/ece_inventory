@@ -444,8 +444,6 @@ class ItemEditor extends Component {
 	  		has_instance_objects: false
   		}
 
-
-
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
 
@@ -459,6 +457,7 @@ class ItemEditor extends Component {
 			        	alert(response.data.error);
 			        } else {
 			        	this.props.callback();
+			    		alert("Edit was successful.");
 			        }
 			      }.bind(this))
 			      .catch(function(error) {
