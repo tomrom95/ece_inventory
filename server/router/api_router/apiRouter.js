@@ -23,15 +23,15 @@ router.route('/inventory/tags')
 
 router.route('/inventory/:item_id')
       .get(inventory_routes.getAPIbyID)
-      .put(restrictToAdmins, inventory_routes.putAPI)
+      .put(restrictToManagers, inventory_routes.putAPI)
       .delete(restrictToAdmins, inventory_routes.deleteAPI);
 
 router.route('/inventory/:item_id/customFields')
-      .post(restrictToAdmins, item_field_routes.postAPI);
+      .post(restrictToManagers, item_field_routes.postAPI);
 
 router.route('/inventory/:item_id/customFields/:field_id')
-      .put(restrictToAdmins, item_field_routes.putAPI)
-      .delete(restrictToAdmins, item_field_routes.deleteAPI);
+      .put(restrictToManagers, item_field_routes.putAPI)
+      .delete(restrictToManagers, item_field_routes.deleteAPI);
 
 router.route('/inventory/:item_id/instances')
       .get(instance_routes.getAPI)
@@ -65,7 +65,7 @@ router.route('/requests/:request_id')
       .patch(restrictToManagers, request_routes.patchAPI);
 
 router.route('/users')
-      .get(restrictToAdmins, user_routes.getAPI)
+      .get(restrictToManagers, user_routes.getAPI)
       .post(restrictToAdmins, user_routes.postAPI);
 
 router.route('/users/:user_id')
