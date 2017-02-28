@@ -135,6 +135,7 @@ class CustomFieldsPopup extends Component {
   	        if (response.data.error) {
           		console.log(response.data.error);
   	        } else {
+              alert("custom field made successfully");
   						this.props.callback();
               this.clearForm();
   	        }

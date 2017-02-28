@@ -78,17 +78,21 @@ class NavBar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/Docs" className="nav-link">DOCS</Link>
+                <Link to="/Docs" 
+                      className={"nav-link" + (this.state.activeTab === "/Docs" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/Docs")}>
+                      DOCS
+                </Link>
               </li>
               <div className="navbar-right-panel">
-              <li className="nav-item welcome-message">
-              Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>
-              </li>
-              <li className="nav-item btn-nav signout-button">
-                <button className="btn btn-outline-primary" onClick={this.props.onClick}>
-                  Sign Out
-                </button>
-              </li>
+                <li className="nav-item welcome-message">
+                Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>
+                </li>
+                <li className="nav-item btn-nav signout-button">
+                  <button className="btn btn-outline-primary" onClick={this.props.onClick}>
+                    Sign Out
+                  </button>
+                </li>
               </div>
             </ul>
           </div>
@@ -106,25 +110,51 @@ class NavBar extends Component {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <Link to="/UserProfile" className="nav-link">PROFILE</Link>
+                <Link to="/UserProfile" 
+                      className={"nav-link" + (this.state.activeTab === "/UserProfile" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/UserProfile")}>
+                      PROFILE
+                </Link>
               </li>
               <li className="nav-item">
-                <Link to="/Inventory" className="nav-link">INVENTORY</Link>
+                <Link to="/Inventory" 
+                      className={"nav-link" + (this.state.activeTab === "/Inventory" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/Inventory")}>
+                      INVENTORY
+                </Link>
               </li>
               <li className="nav-item">
-                <Link to="/GlobalRequests" className="nav-link">USER REQUESTS</Link>
+                <Link to="/GlobalRequests"
+                      className={"nav-link" + (this.state.activeTab === "/GlobalRequests" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/GlobalRequests")}>
+                      USER REQUESTS
+                </Link>
               </li>
               <li className="nav-item">
-                <Link to="/CurrentOrders" className="nav-link">MY REQUESTS</Link>
+                <Link to="/CurrentOrders"
+                      className={"nav-link" + (this.state.activeTab === "/CurrentOrders" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/CurrentOrders")}>
+                      MY REQUESTS
+                </Link>
               </li>
               <li className="nav-item">
-                <Link to="/Log" className="nav-link">LOG</Link>
+                <Link to="/Log"
+                      className={"nav-link" + (this.state.activeTab === "/Log" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/Log")}>
+                      LOG
+                </Link>
               </li>
-              <li className="nav-item btn-nav signout-button">
-                <button className="btn btn-outline-primary" onClick={this.props.onClick}>
-                  Sign Out
-                </button>
-              </li>
+
+              <div className="navbar-right-panel">
+                <li className="nav-item welcome-message">
+                  Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>
+                </li>
+                <li className="nav-item btn-nav signout-button">
+                  <button className="btn btn-outline-primary" onClick={this.props.onClick}>
+                    Sign Out
+                  </button>
+                </li>
+              </div>
             </ul>
           </div>
         </nav>
@@ -162,14 +192,14 @@ class NavBar extends Component {
                 </Link>
               </li>
               <div className="navbar-right-panel">
-              <li className="nav-item welcome-message">
-              Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>
-              </li>
-              <li className="nav-item btn-nav signout-button">
-                <button className="btn btn-outline-primary" onClick={this.props.onClick}>
-                  Sign Out
-                </button>
-              </li>
+                <li className="nav-item welcome-message">
+                  Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>
+                </li>
+                <li className="nav-item btn-nav signout-button">
+                  <button className="btn btn-outline-primary" onClick={this.props.onClick}>
+                    Sign Out
+                  </button>
+                </li>
               </div>
             </ul>
           </div>

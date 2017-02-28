@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import '../../App.css';
 import TableRow from '../inventory/TableRow';
 import Modal from 'react-modal';
-import LeaveCommentPopup from './LeaveCommentPopup.js';
-import ButtonGroup from 'react-bootstrap';
+import LeaveCommentModal from './LeaveCommentModal.js';
 import RequestItemsPopup from "./RequestItemsPopup.js";
 
 
@@ -176,7 +175,11 @@ class RequestTable extends Component {
   commentButton(index){
     return(
 			<td key={"comment-td-"+index} className="subtable-row">
-      	<LeaveCommentPopup key={"comment"+index} request={this.state.raw_data[index]._id} api={this.props.api}/>
+      	<LeaveCommentModal id={index} 
+                          key={"comment-"+index} 
+                          request={this.state.raw_data[index]._id} 
+                          api={this.props.api}
+                          callback={() => this.props.callback()}/>
 			</td>
     )
   }

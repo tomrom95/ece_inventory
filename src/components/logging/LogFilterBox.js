@@ -12,7 +12,11 @@ const statuses = [
     { value: 'ITEM_DELETED', label: 'Item Deletions' },
     { value: 'REQUEST_DISBURSED', label: 'Request Disbursals' },
     { value: 'REQUEST_CREATED', label: 'Request Creations' },
-    { value: 'REQUEST_EDITED', label: 'Request Edits' }
+    { value: 'REQUEST_EDITED', label: 'Request Edits' },
+    { value: 'REQUEST_DELETED', label: 'Request Deletions' },
+    { value: 'FIELD_CREATED', label: 'Field Creations' },
+    { value: 'FIELD_EDITED', label: 'Field Edits' },
+    { value: 'FIELD_DELETED', label: 'Field Deletions' }
 ];
 
 class LogFilterBox extends Component {

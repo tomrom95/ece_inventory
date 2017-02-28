@@ -110,8 +110,7 @@ class ItemWizard extends Component {
 			<button type="button"
 				className="btn btn-outline-primary add-button"
 				data-toggle="modal"
-				data-target={"#createModal"}
-				data-backdrop="static">
+				data-target={"#createModal"}>
 				<span className="fa fa-plus"></span>
 			</button>
 
@@ -151,8 +150,7 @@ class ItemWizard extends Component {
 				disallowCustom={false}
 				api={this.props.api}
 				id={id}
-				ref={label}
-			/>
+				ref={label}/>
 	} else {
 		input = <input type={type}
 			className="form-control"
@@ -452,7 +450,9 @@ class ItemWizard extends Component {
 				if (key === "Tags") {
 					this.refs[key].clearTags();
 				} else {
-					// this throws an error when key = "Custom Fields"
+					if (key === "custom_fields")
+						return;
+
 					this.refs[key].value = "";
 				}
 			}.bind(this));

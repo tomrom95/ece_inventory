@@ -52,14 +52,6 @@ class AddToCartButton extends Component {
 			quantity: Number(qty)
 		}
 
-		/*
-		var role = JSON.parse(localStorage.getItem('user')).role;
-		if (role === "ADMIN" || role==="MANAGER") {
-			if (this.state.checked === true)
-				cartItem.user = this.refs.userSelect.getSelectedUserId();
-		}
-		*/
-
 		this.props.api.post('/api/cart/items', cartItem)
 		.then(function(response) {
 	        if (response.data.error) {
