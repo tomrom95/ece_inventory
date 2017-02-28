@@ -64,7 +64,7 @@ class CustomFieldListPopup extends Component {
           key={field_id+"-NAME"}
           onChange={e => this.handleNameChange(e, field_id)}>
         </input>
-    var type_input = <Select
+  /*  var type_input = <Select
           simpleValue
           value={field.type}
           clearable={true}
@@ -72,7 +72,7 @@ class CustomFieldListPopup extends Component {
           ref={field_id+"-TYPE"}
           key={field_id+"-TYPE"}
           onChange={e=>this.handleTypeChange(e, field_id)}
-        />
+        />*/
     var is_private = <input type="checkbox"
     			className="form-control"
           checked={field.isPrivate}
@@ -86,8 +86,7 @@ class CustomFieldListPopup extends Component {
       <div className="form-group" key={"createform-div-row-"+row}>
         <label key={"name-row-"+row+"-"+field_id} htmlFor={"createform-row-"+row}>Name</label>
         {name_input}
-        <label key={"type-row-"+row+"-"+field_id} htmlFor={"createform-row-"+row}>Type</label>
-        {type_input}
+
         <label key={"privacy-row-"+row+"-"+field_id} htmlFor={"createform-row-"+row}>Private
           {is_private}
         </label>
@@ -221,17 +220,19 @@ class CustomFieldListPopup extends Component {
 
 	onSubmission(field_id) {
     var name_ref = field_id+"-NAME";
-    var type_ref = field_id+"-TYPE";
+    //var type_ref = field_id+"-TYPE";
     var private_ref = field_id+"-PRIVACY";
     var isPrivate = false;
+    var type = "";
     for(var j = 0; j < this.state.data.length; j++){
       if(this.state.allFields[j]._id === field_id){
         isPrivate = this.state.data[j].isPrivate;
+        type = this.state.data[j].type;
       }
     }
 		var new_field = {
       name: this.refs[name_ref].value,
-      type: this.refs[type_ref]._focusedOption.value,
+      type: type,
       isPrivate: isPrivate,
     }
 		this.props.api.put('/api/customFields/' + field_id, new_field)
