@@ -30,7 +30,6 @@ class CustomFieldListPopup extends Component {
   }
 
   componentWillReceiveProps(newProps){
-    console.log(newProps.allCustomFields);
 
     var data = this.mapFields(newProps.allCustomFields);
     this.setState({
@@ -88,7 +87,7 @@ class CustomFieldListPopup extends Component {
       <div className="form-group" key={"createform-div-row-"+row}>
         <label key={"name-row-"+row+"-"+field_id} htmlFor={"createform-row-"+row}>Name</label>
         {name_input}
-      
+
         <label key={"privacy-row-"+row+"-"+field_id} htmlFor={"createform-row-"+row}>Private
           {is_private}
         </label>
