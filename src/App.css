@@ -301,16 +301,15 @@
 
 .nav-link {
   font-size: 14px;
+  margin: 0;
   margin-top: 2px;
   margin-bottom: 2px;
 }
 
 .nav-link.active {
-  background-color: rgba(255,255,255,0);
-  border:solid;
-  border-width: 1px;
-  border-radius: 2px;
-  border-color: rgba(0,150,255,1);
+  background-color: rgba(0,120,255,1);
+  border-radius: 4px;
+  color: white!important;
 }
 
 .navbar {
