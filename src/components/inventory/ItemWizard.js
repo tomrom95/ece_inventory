@@ -371,7 +371,7 @@ class ItemWizard extends Component {
 								type_mismatch = true;
 							}
 						}
-						else if (type === "SHORT_STRING" && value.length > 200) {
+						else if (type === "SHORT_STRING" && new_value.length > 200) {
 							invalid_length = true;
 						}
 						this.submitFieldEdit(type_mismatch, body, field, invalid_length);
