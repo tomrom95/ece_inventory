@@ -65,11 +65,11 @@ router.route('/requests/:request_id')
       .patch(restrictToManagers, request_routes.patchAPI);
 
 router.route('/users')
-      .get(user_routes.getAPI)
+      .get(restrictToManagers, user_routes.getAPI)
       .post(restrictToAdmins, user_routes.postAPI);
 
 router.route('/users/:user_id')
-      .get(restrictToManagers, user_routes.getAPIbyID)
+      .get(user_routes.getAPIbyID)
       .put(restrictToAdmins, user_routes.putAPI);
 
 router.route('/logs')

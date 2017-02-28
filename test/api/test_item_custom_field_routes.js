@@ -213,7 +213,7 @@ describe('Inventory Custom Fields API Test', function () {
       });
     });
 
-    it('does not allow managers to add new field', (done) => {
+    it('allows managers to add new field', (done) => {
       var itemToCreate = Item({
         "quantity": 1000,
         "name": "test_item",
@@ -227,9 +227,9 @@ describe('Inventory Custom Fields API Test', function () {
             value: 'hudson'
           })
           .end((err, res) => {
-            res.should.have.status(403);
+            res.should.have.status(200);
             Item.findById(item._id, function(error, foundItem) {
-              foundItem.custom_fields.length.should.be.eql(0);
+              foundItem.custom_fields.length.should.be.eql(1);
               done();
             });
           });
