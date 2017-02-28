@@ -98,7 +98,7 @@ class GlobalRequests extends Component {
         url += this.state.requestId;
 
     if (this.state.itemId && this.state.status) {
-      url += '?items=' + this.state.itemId + "&status=" + this.state.status;
+      url += '?item_id=' + this.state.itemId + "&status=" + this.state.status;
     }
 
     if(JSON.parse(localStorage.getItem('user')).is_admin === false){

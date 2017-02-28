@@ -89,7 +89,7 @@ class AddToCartButton extends Component {
 				    <div className="modal-content add-to-cart">
 				      <div className="modal-header">
 				        <h6 className="modal-title" id="modalLabel">
-				        	<div>{this.props.itemName} </div>
+				        	<div className="add-to-cart-title">{this.props.itemName}</div>
 				        </h6>
 				      </div>
 

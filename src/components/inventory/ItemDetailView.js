@@ -18,7 +18,9 @@ class ItemDetailView extends React.Component {
     this.state = {
       item: null,
       error: null,
-      requests: []
+      requests: [],
+      itemId: props.params.itemID,
+      requestsVisible: true
     }
     this.addRequests = this.addRequests.bind(this);
   }
@@ -31,8 +33,16 @@ class ItemDetailView extends React.Component {
     this.loadData();
   }
 
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      itemId: newProps.params.itemID
+    }, function() {
+      this.loadData();
+    });
+  } 
+
   loadData() {
-    this.axiosInstance.get('/inventory/' + this.props.params.itemID)
+    this.axiosInstance.get('/inventory/' + this.state.itemId)
     .then(function(response) {
       this.setState({item: response.data});
     }.bind(this))
@@ -58,7 +68,7 @@ class ItemDetailView extends React.Component {
     for(var i = 0; i < fields.length; i++){
       var label = "";
 
-        for(var k = 0; k < this.props.allCustomFields.length; k++){
+        for (var k = 0; k < this.props.allCustomFields.length; k++){
           if(this.props.allCustomFields[k]._id === fields[i].field){
     				label = this.props.allCustomFields[k].name;
     			}
@@ -98,8 +108,8 @@ class ItemDetailView extends React.Component {
       button = (<button type="button"
                   className="btn btn-sm btn-outline-primary info-button"
                   data-toggle="modal"
-                  data-target={"#infoModal-"+this.props.params.itemID}
-                  onClick={() => this.loadData()}>
+                  data-target={"#infoModal-"+this.state.itemId}
+                  onClick={() => {this.loadData(); this.jankRefresh()}}>
                     <span className="fa fa-info"></span>
                 </button>);
     }
@@ -107,8 +117,8 @@ class ItemDetailView extends React.Component {
       button = <a href={"#"}
                   className="log-detailview-links"
                   data-toggle="modal"
-                  data-target={"#infoModal-"+this.props.params.itemID}
-                  onClick={() => this.loadData()}>
+                  data-target={"#infoModal-"+this.state.itemId}
+                  onClick={() => {this.loadData();this.jankRefresh()}}>
                     {this.state.item.name}
                 </a>
     }
@@ -119,7 +129,7 @@ class ItemDetailView extends React.Component {
         {button}
 
         <div className="modal fade"
-              id={"infoModal-"+this.props.params.itemID}
+              id={"infoModal-"+this.state.itemId}
               tabIndex="-1"
               role="dialog"
               aria-labelledby="infoLabel"
@@ -129,7 +139,7 @@ class ItemDetailView extends React.Component {
                 <div className="modal-body">
 
                   <div className="row">
-                    <div className="col-xs-4 detail-view-title"><h4>{this.state.item.name}</h4></div>
+                    <div className="col-xs-4"><h4 className="detail-view-title">{this.state.item.name}</h4></div>
                     <div className="col-xs-8 info-icon"><span className="fa fa-info"></span></div>
                   </div>
                   <div className="row">
@@ -168,13 +178,14 @@ class ItemDetailView extends React.Component {
       return(
         <div className="item-detail-view-requests">
           <GlobalRequests
-          itemID={this.props.params.itemID}
+          key={"requestsFor-"+this.state.itemId}
+          itemID={this.state.itemId}
           rowsPerPage={2}
           status="PENDING"
           showFilterBox={false}
           showStatusFilterBox={false}
           hasOtherParams={true}
-          id={"detail-view-"+this.props.params.itemID}/>
+          id={"detail-view-"+this.state.itemId}/>
         </div>
       );
     }
@@ -182,20 +193,20 @@ class ItemDetailView extends React.Component {
       return(
         <div className="item-detail-view-requests">
           <CurrentOrders
-          itemID={this.props.params.itemID}
+          itemID={this.state.itemId}
           rowsPerPage={2}
           status="PENDING"
           showFilterBox={false}
           showStatusFilterBox={false}
           hasOtherParams={true}
-          id={"detail-view-"+this.props.params.itemID}/>
+          id={"detail-view-"+this.state.itemId}/>
         </div>);
     }
   }
 
   makeLogView() {
     var filters = {
-      item_id: this.props.params.itemID
+      item_id: this.state.itemId
     }
     return (
       <div className="item-detail-view-logs">
@@ -207,21 +218,31 @@ class ItemDetailView extends React.Component {
     );
   }
 
+  jankRefresh() {
+    this.setState({
+      requestsVisible: false
+    }, function() {
+      this.setState({
+        requestsVisible: true
+      });
+    }.bind(this));
+  }
+
   makeCollapsibleItems() {
     return (
     <div id="accordion" role="tablist" aria-multiselectable="true">
       <div className="card">
         <div className="card-header" role="tab" id="headingOne">
           <h7 className="mb-0">
-            <a data-toggle="collapse" data-parent="#accordion" href={"#requestsCollapse-"+this.props.params.itemID} aria-expanded="true">
-              <strong>REQUESTS CONTAINING THIS ITEM</strong>
+            <a data-toggle="collapse" data-parent="#accordion" href={"#requestsCollapse-"+this.state.itemId} aria-expanded="true">
+              <strong>PENDING REQUESTS OF THIS ITEM</strong>
             </a>
           </h7>
         </div>
 
-        <div id={"requestsCollapse-"+this.props.params.itemID} className="collapse" role="tabpanel">
+        <div id={"requestsCollapse-"+this.state.itemId} className="collapse" role="tabpanel">
           <div className="card-block">
-            {this.addRequests()}
+            {this.state.requestsVisible ? this.addRequests() : null}
           </div>
         </div>
       </div>
@@ -229,14 +250,14 @@ class ItemDetailView extends React.Component {
       (<div className="card">
         <div className="card-header" role="tab" id="headingTwo">
           <h7 className="mb-0">
-            <a className="collapsed" data-toggle="collapse" data-parent="#accordion" href={"#logsCollapse-"+this.props.params.itemID} aria-expanded="false">
+            <a className="collapsed" data-toggle="collapse" data-parent="#accordion" href={"#logsCollapse-"+this.state.itemId} aria-expanded="false">
               <strong>LOG ENTRIES CONTAINING THIS ITEM</strong>
             </a>
           </h7>
         </div>
-        <div id={"logsCollapse-"+this.props.params.itemID} className="collapse" role="tabpanel" aria-labelledby="headingTwo">
+        <div id={"logsCollapse-"+this.state.itemId} className="collapse" role="tabpanel" aria-labelledby="headingTwo">
           <div className="card-block">
-            {this.makeLogView()}
+            {this.state.requestsVisible ? this.makeLogView() : null}
           </div>
         </div>
       </div>) : null }
