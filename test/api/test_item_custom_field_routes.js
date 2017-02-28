@@ -213,7 +213,7 @@ describe('Inventory Custom Fields API Test', function () {
       });
     });
 
-    it('does not allow managers to add new field', (done) => {
+    it('allows managers to add new field', (done) => {
       var itemToCreate = Item({
         "quantity": 1000,
         "name": "test_item",
@@ -227,9 +227,9 @@ describe('Inventory Custom Fields API Test', function () {
             value: 'hudson'
           })
           .end((err, res) => {
-            res.should.have.status(403);
+            res.should.have.status(200);
             Item.findById(item._id, function(error, foundItem) {
-              foundItem.custom_fields.length.should.be.eql(0);
+              foundItem.custom_fields.length.should.be.eql(1);
               done();
             });
           });
@@ -360,9 +360,9 @@ describe('Inventory Custom Fields API Test', function () {
           .set('Authorization', managerToken)
           .send({value: 'hudson'})
           .end((err, res) => {
-            res.should.have.status(403);
+            res.should.have.status(200);
             Item.findById(item._id, function(error, foundItem) {
-              foundItem.custom_fields[0].value.should.be.eql('ciemas');
+              foundItem.custom_fields[0].value.should.be.eql('hudson');
               done();
             });
           });
@@ -383,7 +383,7 @@ describe('Inventory Custom Fields API Test', function () {
       itemToCreate.save(function(err, item) {
         chai.request(server)
           .put('/api/inventory/' + item._id + '/customFields/' + defaultFields.location._id)
-          .set('Authorization', managerToken)
+          .set('Authorization', standardToken)
           .send({value: 'hudson'})
           .end((err, res) => {
             res.should.have.status(403);
@@ -449,7 +449,7 @@ describe('Inventory Custom Fields API Test', function () {
       });
     });
 
-    it('does not allow managers to delete a field', (done) => {
+    it('allows managers to delete a field', (done) => {
       var itemToCreate = Item({
         "quantity": 1000,
         "name": "test_item",
@@ -465,9 +465,9 @@ describe('Inventory Custom Fields API Test', function () {
           .delete('/api/inventory/' + item._id + '/customFields/' + defaultFields.location._id)
           .set('Authorization', managerToken)
           .end((err, res) => {
-            res.should.have.status(403);
+            res.should.have.status(200);
             Item.findById(item._id, function(error, foundItem) {
-              foundItem.custom_fields[0].value.should.be.eql('ciemas');
+              foundItem.custom_fields.length.should.be.eql(0);
               done();
             });
           });
@@ -488,7 +488,7 @@ describe('Inventory Custom Fields API Test', function () {
       itemToCreate.save(function(err, item) {
         chai.request(server)
           .delete('/api/inventory/' + item._id + '/customFields/' + defaultFields.location._id)
-          .set('Authorization', managerToken)
+          .set('Authorization', standardToken)
           .end((err, res) => {
             res.should.have.status(403);
             Item.findById(item._id, function(error, foundItem) {

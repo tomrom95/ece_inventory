@@ -21,7 +21,7 @@ returns: // does not return instance objects
     has_instance_objects: Boolean,
     custom_fields: [
     {
-        _id: String,
+        field: String,
 	value: String // Mixed Type in MongoDB
     }]
 }]
@@ -35,7 +35,7 @@ params:
   tags: [String],
   custom_fields: [
     {
-        _id: String,
+        field: String,
 	value: String // Mixed Type in MongoDB
     }
   ]
@@ -51,7 +51,7 @@ return:
   has_instance_objects: Boolean,
   custom_fields: [
     {
-        _id: String,
+        field: String,
 	value: String // Mixed Type in MongoDB
     }
   ]
@@ -70,7 +70,7 @@ return:
   has_instance_objects: Boolean,
   custom_fields:[
     {
-        _id: String,
+        field: String,
 	value: String // Mixed Type in MongoDB
     }
    ]
@@ -87,7 +87,7 @@ body:
   tags: String array [optional],
   custom_fields:[
     {
-        _id: String,
+        field: String,
 	value: String // Mixed Type in MongoDB
     }
    ] [optional]
@@ -103,7 +103,7 @@ return:
   has_instance_objects: Boolean,
   custom_fields:[
     {
-        _id: String,
+        field: String,
 	value: String // Mixed Type in MongoDB
     }
    ]
@@ -508,10 +508,11 @@ params:
 	item_id: String,
 	item_name: String,
 	type: String, // ('ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
-		'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED')
+		'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED',
+		'REQUEST_DELETED', 'FIELD_CREATED', 'FIELD_EDITED', 'FIELD_DELETED')
 	user_id: String,
-	start_date: String, // in format '2017-01-25' (YEAR-MONTH-DAY)
-	end_date: String // in format '2017-01-25' (YEAR-MONTH-DAY)
+	start_date: String, // in full date format '2017-02-27T00:00:00-05:00' (encoded)
+	end_date: String // in full date format '2017-02-27T00:00:00-05:00' (encoded)
 }
 return:
 [
@@ -543,7 +544,8 @@ return:
 			}
 		],
   	type: String, // ('ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
-      'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED')
+      'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED',
+      'REQUEST_DELETED', 'FIELD_CREATED', 'FIELD_EDITED', 'FIELD_DELETED')
     time_stamp: String,
 		description: String
   }

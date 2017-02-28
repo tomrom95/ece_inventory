@@ -54,11 +54,21 @@
 }
 
 .requesttable {
-  margin-left: 16px;
-  max-width: 100%;
+  margin-left: 2.7%;
+  max-width: 95%;
+  min-width: 95%;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
+}
+
+.single-request-item {
+  margin-left: 1.8%;
+}
+
+.single-request-pageview {
+  min-width: 140%;
+  max-width: 140%;
 }
 
 .col-xs-12 {
@@ -83,23 +93,56 @@
   margin-left: 0px;
 }
 
+.row {
+  margin-right: 0;
+}
+
+.card-title.row {
+  margin-right: -15%;
+}
+
 .log-table {
   background-color: white;
+  margin-left: 2.9%;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
   color: gray;
-}
-
-.logtable-container {
+  font-size: 85%;
 }
 
 .log-detailview-links {
   overflow: hidden;
   white-space:normal;
   max-width: 200px;
+  min-width: 200px;
   text-overflow: ellipsis;
   display: block;
+}
+
+.log-description {
+  max-width: 600px;
+  min-width: 600px;
+  overflow: hidden;
+  white-space:normal;
+  text-overflow: ellipsis;
+}
+
+.item-detail-view-logs {
+  margin-left: -3.4%;
+  min-width: 105%;
+}
+
+.item-detail-view-requests {
+  margin-left: -6.5%;
+  min-width: 115%;
+}
+
+.error-box {
+  font-size: 12px;
+  height: 80%;
+  margin-bottom: 0;
+  margin-right: 5%;
 }
 
 .react-datepicker__input-container {
@@ -150,6 +193,7 @@
 .info-modal {
   min-width: 120%;
   margin-top: -50px;
+  font-weight: normal;
 }
 
 .request-button {
@@ -201,6 +245,7 @@
   height: 300px;
   max-width: 200px;
   margin-left: 20px;
+  margin-top: 15px;
   border: none;
   border-left: solid;
   border-color: rgba(0,150,255,1);
@@ -211,7 +256,7 @@
 .login-form {
   margin: 50px;
   margin-left: 90px;
-  width: 300px;
+  max-width: 30%;
   font-family: 'Open Sans';
 }
 
@@ -230,8 +275,20 @@
 }
 
 .signout-button {
-  position: absolute;
-  right: 6%;
+  display: inline-block;
+}
+
+.navbar-right-panel{
+  position:absolute;
+  right:4%;
+  display: inline-block;
+}
+
+.navbar-right-panel > .welcome-message {
+  display:inline-block;
+  padding-right: 20px;
+  color: gray;
+  font-size: 90%;
 }
 
 .navbar-brand {
@@ -241,8 +298,15 @@
 
 .nav-link {
   font-size: 14px;
+  margin: 0;
   margin-top: 2px;
   margin-bottom: 2px;
+}
+
+.nav-link.active {
+  background-color: rgba(0,120,255,1);
+  border-radius: 4px;
+  color: white!important;
 }
 
 .navbar {
@@ -285,6 +349,12 @@
   overflow-y: scroll;
 }
 
+.cart-actiontype-button {
+  color: gray;
+  text-align: left;
+  font-size: 95%;
+}
+
 .page-dropdown {
   max-height: 175px;
   overflow-y: scroll;
@@ -321,7 +391,6 @@
 }
 
 .inventory-page {
-  margin-top:10px;
   margin-right: 20px;
 }
 
@@ -361,10 +430,12 @@
 
 .perpage-button {
   width: 170px;
+  margin-left: 3.2%!important;
 }
 
 .cart-checkbox {
   margin-left: 2%;
+  margin-top: 0;
 }
 
 .cart-quantity-box {
@@ -392,6 +463,39 @@
   padding-left: 0.3%;
   color: black;
 }
+
+.tooltip-inner {
+  background-color: rgba(80,80,80,1)!important;
+  border-left:solid;
+  border-color: rgba(0,150,255,1);
+  color: white;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+.custom-field-buttons {
+  padding-top: 5%;
+}
+
+.custom-field-buttons > button{
+  margin-right: 3%;
+}
+
+.docs-glyph{
+  font-size:60px;
+  display:inline-block;
+}
+
+.docs-glyph > span {
+  margin-right:30px;
+}
+
+.docs-title{
+  display:inline-block;
+}
+ .docs-row{
+   padding-bottom:3%;
+ }
 
 .table > tbody > tr > td {
   vertical-align: middle;

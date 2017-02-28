@@ -59,7 +59,7 @@ class CustomFieldsPopup extends Component {
 			  <div className="modal-dialog" role="document">
 			    <div className="modal-content">
 			      <div className="modal-header">
-			        <h5 className="modal-title" id="createLabel">Create New Item</h5>
+			        <h5 className="modal-title" id="createLabel">Create New Field</h5>
 			      </div>
 			      <div className="modal-body">
 			        {this.makeForm()}
@@ -101,8 +101,9 @@ class CustomFieldsPopup extends Component {
 			  {name}
 				<label htmlFor={"createform-row-"}>Type</label>
 				{type}
-				<label htmlFor={"createform-row-"}>Private</label>
-				{is_private}
+				<label htmlFor={"createform-row-"}>Private
+          {is_private}
+        </label>				
 			</div>
 		);
 	}

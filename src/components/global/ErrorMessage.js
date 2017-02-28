@@ -33,7 +33,7 @@ class ErrorMessage extends Component {
 		}
 
 		return(
-			<div className="alert alert-danger alert-dismissable fade show" role="alert">
+			<div className="alert alert-danger alert-dismissable fade show error-box" role="alert">
 			  	<button onClick={() => this.hideError()} type="button" className="close" data-dismiss="alert" aria-label="Close">
     				<span aria-hidden="true">&times;</span>
   				</button>

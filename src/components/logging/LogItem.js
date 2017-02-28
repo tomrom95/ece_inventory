@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../../App.css';
 import ItemDetailView from '../inventory/ItemDetailView.js';
+import SingleRequestView from '../requests/SingleRequestView.js';
 
 class LogItem extends Component {
 
@@ -11,19 +12,28 @@ class LogItem extends Component {
 			- list of itemIds
 			- list of itemNames (equal in length to list of itemIds)
 			- log item ID
+			- showButtons boolean
 	*/
 
 	constructor(props) {
 		super(props);
 		this.state = {
-      allCustomFields: this.props.allCustomFields,
+     	 allCustomFields: props.allCustomFields,
+     	 showButtons: props.showButtons,
+     	 requestId: props.requestId,
+     	 logItemId: props.logItemId,
+     	 itemIds: props.itemIds
 		};
 	}
 
 	componentWillReceiveProps(newProps) {
 		this.setState({
-			allCustomFields: newProps.allCustomFields
-		})
+			allCustomFields: newProps.allCustomFields,
+			showButtons: newProps.showButtons,
+			requestId: newProps.requestId,
+     		logItemId: newProps.logItemId,
+	     	itemIds: newProps.itemIds
+		});
 	}
 
 	render() {
@@ -31,22 +41,38 @@ class LogItem extends Component {
 		var description = this.props.description;
 		if (!description)
 			description = "Description not available.";
+
 		var buttons = []; var i;
-		for (i=0; i<this.props.itemIds.length; i++) {
-			buttons.push(
-			<ItemDetailView
-				key={"log-detailview-" + this.props.itemIds[i]+ "-" + this.props.logItemId}
-				params={{itemID: this.props.itemIds[i]}}
-				isButton={false}
-				allCustomFields={this.state.allCustomFields}
-			/>
-			);
+
+		if (this.state.showButtons) {
+			for (i=0; i<this.state.itemIds.length; i++) {
+				buttons.push(
+				<ItemDetailView
+					key={"log-detailview-" + this.state.itemIds[i]+ "-" + this.state.logItemId}
+					params={{itemID: this.state.itemIds[i]}}
+					isButton={false}
+					allCustomFields={this.state.allCustomFields}/>
+				);
+			}
+
+			if (this.state.requestId) {
+				var uniqueKey = "log-request-detail-view-"+this.state.requestId+"-"+this.state.logItemId;
+				buttons.push(<SingleRequestView 
+								key={uniqueKey}
+								requestId={this.state.requestId}
+								id={uniqueKey}/>);
+			}
 		}
 		return (
 			<tr>
 		      <td>{timestamp}</td>
-		      <td>{description}</td>
-		      <td className="log-detailview-links">{buttons}</td>
+		      <td className="log-description">{description}</td>
+
+		      {
+		      	this.state.showButtons ?
+		      	<td className="log-detailview-links">{buttons}</td>
+		      	: null
+		      }
 		    </tr>
 	    );
 	}

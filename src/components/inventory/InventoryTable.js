@@ -7,7 +7,6 @@ import ItemEditor from './ItemEditor.js';
 import ItemDetailView from './ItemDetailView.js';
 import CustomFieldsPopup from './CustomFieldsPopup.js';
 import CustomFieldListPopup from './CustomFieldListPopup.js';
-
 import ShoppingCart from './ShoppingCart.js';
 
 var meta;

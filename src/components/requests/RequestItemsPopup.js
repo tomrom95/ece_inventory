@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
+import { Tooltip } from 'reactstrap';
 
 class RequestItemsPopup extends Component {
 
@@ -13,6 +14,7 @@ class RequestItemsPopup extends Component {
 		super(props);
 		this.state = {
 			items: props.items,
+			reviewerComment: props.reviewerComment,
 			id: props.id
 		}
 	}
@@ -20,6 +22,7 @@ class RequestItemsPopup extends Component {
 	componentWillReceiveProps(newProps) {
 		this.setState({
 			items: newProps.items,
+			reviewerComment: newProps.reviewerComment,
 			id: newProps.id
 		});
 	}
@@ -30,60 +33,59 @@ class RequestItemsPopup extends Component {
     		return (<p><strong>Something went wrong!</strong></p>);
     	}
 
-		var list = [];
+		var str = 'Items:\n';
 		var i;
 		for (i=0; i<this.state.items.length; i++) {
 			var itemName = this.state.items[i].item.name;
 			var quantity = this.state.items[i].quantity;
-			list.push(
-				<div key={"requestInfoRow-"+this.state.id+"-"+i} className="row">
-					<p key={"requestInfoItem-"+this.state.id+"-"+i}>
-						{itemName + " (" + quantity+") "}
-					</p>
-		        </div>
-		    );
+			var reviewerComment = '';
+			if (this.state.reviewerComment)
+				reviewerComment = this.state.reviewerComment;
+
+			str += itemName + ' (' + quantity+ ')' + '\n';
+
+			if (reviewerComment.length > 0)
+				str += "\nReviewer Comment:\n" + reviewerComment;
     	}    	
-    	return list;
-	}
+    	return str;
+    }
 
-	render() {
-	    return (
-	      <td>
-	        <button type="button"
-	          className="btn btn-sm btn-outline-primary info-button"
-	          data-toggle="modal"
-	          data-target={"#requestInfoModal-"+this.state.id} >
-	            <span className="fa fa-info"></span>
-	        </button>
+  	render() {
+  		return <TooltipComponent itemList={this.makeItemsList()}
+  					id={"request-detail-tooltip-"+this.state.id}/>;
+  	}
+}
 
-	        <div className="modal fade"
-	              id={"requestInfoModal-"+this.state.id}
-	              tabIndex="-1"
-	              role="dialog"
-	              aria-labelledby="requestInfoLabel"
-	              aria-hidden="true">
-	            <div className="modal-dialog" role="document">
-	              <div className="modal-content">
+class TooltipComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tooltipOpen: false
+    };
+  }
 
-	                <div className="modal-body">
+  toggle() {
+    this.setState({
+      tooltipOpen: !this.state.tooltipOpen
+    });
+  }
 
-	                  <div className="row">
-	                    <div className="col-xs-4 detail-view-title"><h4>Items in this Request</h4></div>
-	                    <div className="col-xs-8 info-icon"><span className="fa fa-info"></span></div>
-	                  </div>
-
-	                  <div className="row">
-	                    <div className="offset-md-1 col-md-10">
-	                    	{this.makeItemsList()}
-	                    </div>
-	                  </div>
-
-	                </div>
-
-	              </div>
-	            </div>
-	        </div>
-	      </td>
+  render() {
+    return (
+      <td>
+        <button className="btn btn-sm btn-outline-primary info-button"
+        		type="button"  
+        		id={this.props.id}>
+        		<span className="fa fa-info"></span>
+       	</button>
+        <Tooltip placement="left"
+        		 isOpen={this.state.tooltipOpen} 
+        		 target={this.props.id} 
+        		 toggle={e=> this.toggle()}
+        		 autohide={false}>
+          {this.props.itemList}
+        </Tooltip>
+      </td>
     );
   }
 }
