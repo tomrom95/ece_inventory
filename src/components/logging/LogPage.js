@@ -78,7 +78,7 @@ class LogPage extends Component {
           				renderComponent={table}
           				showFilterBox={false}
           				showStatusFilterBox={false}
-          				rowsPerPage={this.props.rowsPerPage ? this.props.rowsPerPage: 10}
+          				rowsPerPage={this.props.rowsPerPage ? this.props.rowsPerPage: 15}
          				id={"log-page-"+this.props.id}
           				hasOtherParams={this.state.filters ? true : false}
           				extraProps={{

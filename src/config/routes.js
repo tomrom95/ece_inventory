@@ -8,7 +8,6 @@ import CreateUser from '../components/user/CreateUser.js';
 import EditUsers from '../components/user/EditUsers.js';
 import DocsView from '../components/docs/DocsView.js';
 import Transactions from '../components/transactions/Transactions.js';
-import ItemDetailView from '../components/inventory/ItemDetailView.js';
 import LogTable from '../components/logging/LogTable.js';
 import LogPage from '../components/logging/LogPage.js';
 import { Route} from 'react-router';
@@ -72,12 +71,6 @@ class LogPageWrapper extends Component {
     }
 }
 
-class ItemDetailViewWrapper extends Component {
-    render() {
-        return <ItemDetailView api={"something"}/>;
-    }
-}
-
 export default (
   <Route path="/" component={Home}>
     <Route path="UserProfile" component={UserProfile}></Route>
@@ -89,6 +82,5 @@ export default (
     <Route path="Docs" component={DocsWrapper}></Route>
     <Route path="Transactions" component={TransactionsWrapper}></Route>
     <Route path="Log" component={LogPageWrapper}></Route>
-    <Route path="Detail/:itemID" component={ItemDetailViewWrapper} />
   </Route>
 );

@@ -62,6 +62,15 @@
   border-color: rgba(0,150,255,1);
 }
 
+.single-request-item {
+  margin-left: 1.8%;
+}
+
+.single-request-pageview {
+  min-width: 140%;
+  max-width: 140%;
+}
+
 .col-xs-12 {
   margin-left: 20px;
   margin-right: 50px;
@@ -99,6 +108,7 @@
   border-width: 4px;
   border-color: rgba(0,150,255,1);
   color: gray;
+  font-size: 85%;
 }
 
 .log-detailview-links {
@@ -127,7 +137,6 @@
   margin-left: -6.5%;
   min-width: 115%;
 }
-
 
 .error-box {
   font-size: 12px;
@@ -184,6 +193,7 @@
 .info-modal {
   min-width: 120%;
   margin-top: -50px;
+  font-weight: normal;
 }
 
 .request-button {
@@ -246,7 +256,7 @@
 .login-form {
   margin: 50px;
   margin-left: 90px;
-  width: 300px;
+  max-width: 30%;
   font-family: 'Open Sans';
 }
 
@@ -265,8 +275,6 @@
 }
 
 .signout-button {
-  /*position: absolute;
-  right: 6%;*/
   display: inline-block;
 }
 
@@ -279,6 +287,8 @@
 .navbar-right-panel > .welcome-message {
   display:inline-block;
   padding-right: 20px;
+  color: gray;
+  font-size: 90%;
 }
 
 .navbar-brand {
@@ -288,8 +298,15 @@
 
 .nav-link {
   font-size: 14px;
+  margin: 0;
   margin-top: 2px;
   margin-bottom: 2px;
+}
+
+.nav-link.active {
+  background-color: rgba(0,120,255,1);
+  border-radius: 4px;
+  color: white!important;
 }
 
 .navbar {
@@ -330,6 +347,12 @@
 .rowcount-dropdown {
   height: 175px;
   overflow-y: scroll;
+}
+
+.cart-actiontype-button {
+  color: gray;
+  text-align: left;
+  font-size: 95%;
 }
 
 .page-dropdown {
@@ -407,11 +430,12 @@
 
 .perpage-button {
   width: 170px;
-  margin-left: 3.3%!important;
+  margin-left: 3.2%!important;
 }
 
 .cart-checkbox {
   margin-left: 2%;
+  margin-top: 0;
 }
 
 .cart-quantity-box {
@@ -440,7 +464,16 @@
   color: black;
 }
 
-.custom-field-buttons{
+.tooltip-inner {
+  background-color: rgba(80,80,80,1)!important;
+  border-left:solid;
+  border-color: rgba(0,150,255,1);
+  color: white;
+  white-space: pre-wrap;
+  text-align: left;
+}
+
+.custom-field-buttons {
   padding-top: 5%;
 }
 
@@ -463,9 +496,6 @@
  .docs-row{
    padding-bottom:3%;
  }
-.form-group label {
-  margin-top:4%;
-}
 
 .table > tbody > tr > td {
   vertical-align: middle;

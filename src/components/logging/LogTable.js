@@ -39,6 +39,7 @@ class LogTable extends Component {
 			var timestamp = formatDate(new Date(logItem.time_stamp).toString()); // pass down
 			var description = logItem.description; // pass down
 			var items = logItem.items;
+			var requestId = logItem.request;
 			var itemIds = []; // pass down
 			var itemNames = []; // pass down
 			for (j=0; j<items.length; j++) {
@@ -51,6 +52,7 @@ class LogTable extends Component {
 					timestamp={timestamp}
 					description={description}
 					itemIds={itemIds}
+					requestId={requestId}
 					itemNames={itemNames}
 					logItemId={logItem._id}
           			allCustomFields={this.state.allCustomFields}

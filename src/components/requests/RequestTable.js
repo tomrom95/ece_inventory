@@ -16,7 +16,8 @@ function getKeys(data) {
 	var i;
 	var ret = [];
 	for (i=0; i<keys.length; i++) {
-    if (keys[i] === "_id" || keys[i] === "user_id" || keys[i] === "item_id" || keys[i] === "Items") {
+    if (keys[i] === "_id" || keys[i] === "user_id" || 
+        keys[i] === "item_id" || keys[i] === "Items" || keys[i] === "Reviewer Comment") {
 			continue;
 		}
 		else ret.push(keys[i]);
@@ -48,7 +49,7 @@ class RequestTable extends Component {
       global: this.props.global
 		}
     this.denyButton = this.denyButton.bind(this);
-	}
+  }
 
   componentWillReceiveProps(newProps) {
     this.setState({
@@ -113,7 +114,12 @@ class RequestTable extends Component {
 
 			var id = this.props.data[i]._id;
       var itemData = this.props.data[i]["Items"];
-      var itemsInfoButton = <RequestItemsPopup key={"request-detail-view-"+id} id={id} items={itemData} />;
+      var itemsInfoButton = <RequestItemsPopup 
+                                key={"request-detail-view-"+id} 
+                                id={id} 
+                                items={itemData}
+                                reviewerComment={(this.state.raw_data[i])["Reviewer Comment"]} />;
+
       button_list.push(itemsInfoButton);
 
 			var elem = (<TableRow
@@ -269,6 +275,7 @@ class RequestTable extends Component {
     }.bind(this));
 
   }
+
   commentRequest(index) {
     this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
       {

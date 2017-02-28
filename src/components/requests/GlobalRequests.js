@@ -20,20 +20,29 @@ class GlobalRequests extends Component {
 
     this.state = {
       itemId: props.itemID,
-      status: props.status
+      status: props.status,
+      requestId: props.requestId
     };
   }
 
   componentWillReceiveProps(newProps) {
+    var newState = {};
+
     if (newProps.itemID) {
-      this.setState({
-        itemId: newProps.itemID
-      });
+      newState.itemId = newProps.itemID;
     }
 
     if (newProps.status) {
+      newState.status = newProps.status;
+    }
+
+    if (newProps.requestId) {
+      newState.requestId = newProps.requestId;
+    }
+
+    if (newProps.itemID || newProps.status || newProps.requestId) {
       this.setState({
-        status: newProps.status
+        newState
       });
     }
   }
@@ -50,11 +59,14 @@ class GlobalRequests extends Component {
       return user.username;
     }
   }
-  
+
   processData(responseData) {
     var requests = responseData.data;
     var i; var j;
     var items = [];
+    if (this.state.requestId)
+      requests = [requests];
+
     for (i=0; i<requests.length; i++) {
       var cart = requests[i];
 
@@ -69,6 +81,7 @@ class GlobalRequests extends Component {
           "Items": cart.items,
           "Reason": reason,
           "Status": status,
+          "Reviewer Comment": cart.reviewer_comment,
           "_id": cart._id,
           "user_id": user_id
       }
@@ -81,6 +94,9 @@ class GlobalRequests extends Component {
     var url = '/api/requests/';
     var table = RequestTable;
 
+    if (this.state.requestId)
+        url += this.state.requestId;
+
     if (this.state.itemId && this.state.status) {
       url += '?items=' + this.state.itemId + "&status=" + this.state.status;
     }
@@ -92,6 +108,7 @@ class GlobalRequests extends Component {
     else{
       return (
           <PaginationContainer
+          hidePageControlBar={this.props.notPaginated}
           url={url}
           processData={data=>this.processData(data)}
           renderComponent={table}

@@ -9,7 +9,8 @@ class ShoppingCart extends Component {
 		super(props);
 		this.state = {
 			items: [],
-			checked: null
+			checked: null,
+			actionType: "Assign to User"
 		}
 	}
 
@@ -63,8 +64,13 @@ class ShoppingCart extends Component {
 
 		var role = JSON.parse(localStorage.getItem('user')).role;
 		if (role === "ADMIN" || role==="MANAGER") {
-			if (this.state.checked === true)
+			if (this.state.checked === true) {
 				params.user = this.refs.userSelect.getSelectedUserId();
+				if (!params.user) {
+					alert("User must be selected");
+					return;
+				}
+			}
 		}
 
 		this.props.api.patch('api/cart/', params)
@@ -73,7 +79,18 @@ class ShoppingCart extends Component {
 				alert(response.data.error);
 			}
 			else {
-				//alert(response.data.message);
+				var requestId = response.data.request._id;
+				if (this.state.checked === true && this.state.actionType === "Disburse to User") {
+					this.props.api.patch('/api/requests/' + requestId, { action: "DISBURSE" })
+	    			.then(function(response) {
+	      				if(response.data.error){
+	        				alert(response.data.error + ". A request was created but was not fulfilled.");
+	      				}
+				    }.bind(this))
+				    .catch(function(error) {
+				      alert(error);
+				    }.bind(this));
+				}
 			}
 		}.bind(this));
 		document.getElementById('cart-reason').value = '';
@@ -95,13 +112,19 @@ class ShoppingCart extends Component {
 	    });
 	}
 
+	setActionType(action) {
+		this.setState({
+			actionType: action
+		});
+	}
+
 	makeCheckBox(){
 		var role = JSON.parse(localStorage.getItem('user')).role;
 		if (role === "ADMIN" || role === "MANAGER") {
 			return (
 				<div className="row request-quantity" key={"request-on-behalf-row"}>
 				  <div className="col-xs-10">
-				  	<label htmlFor={"request-on-behalf-box"}>Assign to User</label>
+				  	<label htmlFor={"request-on-behalf-box"}>Assign/Disburse to User</label>
 				  </div>
 				  <div className="col-xs-2 cart-checkbox">
 				  	<input type={"checkbox"}
@@ -116,7 +139,7 @@ class ShoppingCart extends Component {
 		else return null;
 	}
 
-	requestOnBehalf() {
+	makeUserSelectDropdown() {
 		if (this.state.checked === true) {
 			return (
 				<div className="row request-quantity">
@@ -127,6 +150,28 @@ class ShoppingCart extends Component {
 		else return null;
 	}
 
+	makeActionTypeDropdown() {
+		if (this.state.checked === true) {
+			return (
+				<div className="row form-group request-quantity">
+					<div className="btn-group">
+				        <button type="button" className="btn btn-secondary dropdown-toggle cart-actiontype-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				          {this.state.actionType}
+				        </button>
+				        <div className="dropdown-menu">
+				          	<a onClick={()=>this.setActionType("Assign to User")} className="dropdown-item" href="#">
+				            	Assign to User
+				          	</a>
+			          		<a onClick={()=>this.setActionType("Disburse to User")} className="dropdown-item" href="#">
+				            	Disburse to User
+				          	</a>		          
+				        </div>
+				    </div>
+			    </div>
+		    );
+		} else return null;
+	}
+ 
 	makeDirectRequestRegion() {
 		if (this.state.items.length === 0) {
 			return null;
@@ -135,7 +180,8 @@ class ShoppingCart extends Component {
 	 		return (
 		        <div className="form-group row">
 		        	{this.makeCheckBox()}
-		        	{this.requestOnBehalf()}
+		        	{this.makeActionTypeDropdown()}
+		        	{this.makeUserSelectDropdown()}
 		        </div>
 	  		);
 	}
@@ -153,7 +199,7 @@ class ShoppingCart extends Component {
 				<button data-toggle="modal"
 						data-target={"#cart-button"}
 						type="button"
-						className="btn btn-secondary"
+						className="btn btn-outline-primary"
 						onClick={() => this.loadData()}>
 							My Cart <span className="fa fa-shopping-cart"></span>
 				</button>
