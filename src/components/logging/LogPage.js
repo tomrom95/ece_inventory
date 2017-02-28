@@ -61,15 +61,15 @@ class LogPage extends Component {
 	render() {
 		var url = this.makeURL();
     	var table = LogTable;
-		return (		
+		return (
 			<div className="row">
 				{ this.state.showFilterBox ?
 					(<div className="col-md-3">
-						<LogFilterBox api={this.instance} 
+						<LogFilterBox api={this.instance}
 									  filterRequests={(type, id, itemName, startDate, endDate) =>
 									 					this.setFilters(type, id, itemName, startDate, endDate)}/>
 					  </div>)
-				: null }	
+				: null }
 
 				<div className={this.state.showFilterBox ? "col-md-9" : ""}>
 					<PaginationContainer

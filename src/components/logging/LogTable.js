@@ -25,9 +25,22 @@ class LogTable extends Component {
 		};
 	}
 
+  componentWillMount() {
+    this.props.api.get('/api/customFields')
+      .then(function(response) {
+        if (response.data.error) {
+          console.log(response.data.error);
+        }
+        this.setState({allCustomFields: response.data});
+      }.bind(this))
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
+
 	componentWillReceiveProps(newProps) {
 		this.setState({
-			items: newProps.data	
+			items: newProps.data
 		});
 	}
 
@@ -64,11 +77,11 @@ class LogTable extends Component {
 
 	render() {
 		var rows = this.makeLogItems(this.state.items.data);
-		return (		
+		return (
 				<div className="logtable-container">
 					<table className="table table-sm table-striped log-table">
 					  <thead>
-					    <tr>				    
+					    <tr>
 					      <th>Timestamp</th>
 					      <th>Description</th>
 					      {this.state.showButtons ? <th>Details</th> : null}
