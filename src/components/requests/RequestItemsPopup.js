@@ -38,15 +38,12 @@ class RequestItemsPopup extends Component {
 		for (i=0; i<this.state.items.length; i++) {
 			var itemName = this.state.items[i].item.name;
 			var quantity = this.state.items[i].quantity;
-			var reviewerComment = '';
-			if (this.state.reviewerComment)
-				reviewerComment = this.state.reviewerComment;
+			str += "   " + itemName + ' (' + quantity+ ')' + '\n';
+    	}    
 
-			str += itemName + ' (' + quantity+ ')' + '\n';
+    	if (this.state.reviewerComment && this.state.reviewerComment.length > 0)
+				str += "\nReviewer Comment:\n" + "   " + this.state.reviewerComment;
 
-			if (reviewerComment.length > 0)
-				str += "\nReviewer Comment:\n" + reviewerComment;
-    	}    	
     	return str;
     }
 

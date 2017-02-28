@@ -87,11 +87,11 @@ class ItemEditor extends Component {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
 			}
 			else if (keys[i] === 'custom_fields'){
-				list.push(<div className="modal-footer">
-										<button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-										<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-										<button onClick={() => this.onSubmission()} type="button" className="btn btn-primary">Apply</button>
-									</div>);
+				list.push(<div key={"buttons-region"} className="modal-footer">
+								<button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+								<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+								<button onClick={() => this.onSubmission()} type="button" className="btn btn-primary">Apply</button>
+							</div>);
 				if(vals[i].length > 0){
 					list.push(<div className="form-group" key={"createform-div-customfields-labelrow-"+i}>
 								Custom Fields
@@ -444,8 +444,6 @@ class ItemEditor extends Component {
 	  		has_instance_objects: false
   		}
 
-
-
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
 
@@ -459,6 +457,7 @@ class ItemEditor extends Component {
 			        	alert(response.data.error);
 			        } else {
 			        	this.props.callback();
+			    		alert("Edit was successful.");
 			        }
 			      }.bind(this))
 			      .catch(function(error) {
@@ -467,36 +466,35 @@ class ItemEditor extends Component {
 				}
   }
 
-	render() {
-    return (
-		<div>
-			<button type="button"
-				className="btn btn-sm btn-outline-primary"
-				data-toggle="modal"
-				data-target={"#editModal-"+this.props.itemId}
-				data-backdrop="static">
-				<span className="fa fa-pencil"></span>
-			</button>
+  	render() {
+	    return (
+			<div>
+				<button type="button"
+					className="btn btn-sm btn-outline-primary"
+					data-toggle="modal"
+					data-target={"#editModal-"+this.props.itemId}>
+					<span className="fa fa-pencil"></span>
+				</button>
 
-			<div className="modal fade"
-				id={"editModal-"+this.props.itemId}
-				tabIndex="-1" role="dialog"
-				aria-labelledby="editLabel"
-				aria-hidden="true">
-			  <div className="modal-dialog" role="document">
-			    <div className="modal-content">
-			      <div className="modal-header">
-			        <h5 className="modal-title" id="editLabel">Edit Current Item</h5>
-			      </div>
-			      <div className="modal-body">
-			        {this.makeForm()}
-			      </div>
+				<div className="modal fade"
+					id={"editModal-"+this.props.itemId}
+					tabIndex="-1" role="dialog"
+					aria-labelledby="editLabel"
+					aria-hidden="true">
+				  <div className="modal-dialog" role="document">
+				    <div className="modal-content">
+				      <div className="modal-header">
+				        <h5 className="modal-title" id="editLabel">Edit Current Item</h5>
+				      </div>
+				      <div className="modal-body">
+				        {this.makeForm()}
+				      </div>
 
-			    </div>
-			  </div>
+				    </div>
+				  </div>
+				</div>
 			</div>
-		</div>
-		);
+			);
 	}
 }
 
