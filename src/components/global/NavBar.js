@@ -76,7 +76,11 @@ class NavBar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/Docs" className="nav-link">DOCS</Link>
+                <Link to="/Docs" 
+                      className={"nav-link" + (this.state.activeTab === "/Docs" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/Docs")}>
+                      DOCS
+                </Link>
               </li>
               <div className="navbar-right-panel">
               <li className="nav-item welcome-message">
