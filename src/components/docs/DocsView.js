@@ -23,7 +23,7 @@ class DocsView extends Component {
         <p>All guides for the ECE458 Inventory Project.</p>
         <br/>
         <div className="row docs-row">
-          <a href="/guides/deployment_guide.md">
+          <a href="/guides/deployment_guide.md" download>
           <div className="docs-glyph">
             <span className="fa fa-upload" aria-hidden="true"></span>
           </div>
@@ -34,7 +34,7 @@ class DocsView extends Component {
           </a>
         </div>
         <div className="row docs-row">
-          <a href="/guides/developer_guide.md">
+          <a href="/guides/developer_guide.md" download>
           <div className="docs-glyph">
             <span className="fa fa-flask" aria-hidden="true"></span>
           </div>
@@ -45,7 +45,7 @@ class DocsView extends Component {
           </a>
         </div>
         <div className="row docs-row">
-          <a href="/guides/api_guide.md">
+          <a href="/guides/api_guide.md" download>
           <div className="docs-glyph">
             <span className="fa fa-list-alt" aria-hidden="true"></span>
           </div>
@@ -56,12 +56,23 @@ class DocsView extends Component {
           </a>
         </div>
         <div className="row docs-row">
-          <a href="/guides/api_contract.txt">
+          <a href="/guides/api_contract.txt" download>
           <div className="docs-glyph">
             <span className="fa fa-bars" aria-hidden="true"></span>
           </div>
           <div className="docs-title">
             <h3>API Contract
+            </h3>
+          </div>
+          </a>
+        </div>
+        <div className="row docs-row">
+          <a href="/guides/ECE458.postman_collection.json" download>
+          <div className="docs-glyph">
+            <span className="fa fa-wrench" aria-hidden="true"></span>
+          </div>
+          <div className="docs-title">
+            <h3>Postman API Collection
             </h3>
           </div>
           </a>
