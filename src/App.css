@@ -353,6 +353,12 @@
   overflow-y: scroll;
 }
 
+.cart-actiontype-button {
+  color: gray;
+  text-align: left;
+  font-size: 95%;
+}
+
 .page-dropdown {
   max-height: 175px;
   overflow-y: scroll;
@@ -433,6 +439,12 @@
 
 .cart-checkbox {
   margin-left: 2%;
+  margin-top: 2.2%;
+}
+
+.cart-request-checkbox {
+  margin-left: 7%;
+  margin-top: 1.5%;
 }
 
 .cart-quantity-box {
