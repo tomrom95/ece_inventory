@@ -37,6 +37,9 @@ class NavBar extends Component {
               <li className="nav-item">
                 <Link to="/EditUsers" className="nav-link">EDIT USERS</Link>
               </li>
+              <li className="nav-item">
+                <Link to="/Docs" className="nav-link">DOCS</Link>
+              </li>
               <div className="navbar-right-panel">
               <li className="nav-item welcome-message">
               Welcome back, {this.props.first_name ? this.props.first_name: this.props.username}.

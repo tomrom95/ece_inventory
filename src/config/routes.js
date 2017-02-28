@@ -6,6 +6,7 @@ import UserProfile from '../components/user/UserProfile.js';
 import GlobalRequests from '../components/requests/GlobalRequests.js';
 import CreateUser from '../components/user/CreateUser.js';
 import EditUsers from '../components/user/EditUsers.js';
+import DocsView from '../components/docs/DocsView.js';
 import Transactions from '../components/transactions/Transactions.js';
 import ItemDetailView from '../components/inventory/ItemDetailView.js';
 import LogTable from '../components/logging/LogTable.js';
@@ -53,6 +54,12 @@ class TransactionsWrapper extends Component {
     }
 }
 
+class DocsWrapper extends Component {
+  render() {
+    return <DocsView/>
+  }
+}
+
 class LogTableWrapper extends Component {
     render() {
         return (<LogTable showButtons={true} showFilterBox={true} />);
@@ -79,6 +86,7 @@ export default (
     <Route path="GlobalRequests" component={GlobalRequestsWrapper}></Route>
     <Route path="CreateUser" component={CreateUserWrapper}></Route>
     <Route path="EditUsers" component={EditUsers}></Route>
+    <Route path="Docs" component={DocsWrapper}></Route>
     <Route path="Transactions" component={TransactionsWrapper}></Route>
     <Route path="Log" component={LogPageWrapper}></Route>
     <Route path="Detail/:itemID" component={ItemDetailViewWrapper} />
