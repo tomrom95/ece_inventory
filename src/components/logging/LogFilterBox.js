@@ -37,8 +37,14 @@ class LogFilterBox extends Component {
     var userId = this.state.user;
     var itemName = this.refs.itemName.value;
     var actionType = this.state.type;
-    var startDate = encodeURIComponent(moment(this.state.startDate).startOf('day').format());
-    var endDate = encodeURIComponent(moment(this.state.endDate).endOf('day').format());
+    var startDate;
+    if (startDate) {
+      startDate = encodeURIComponent(moment(this.state.startDate).startOf('day').format());
+    }
+    var endDate;
+    if (endDate) {
+      endDate = encodeURIComponent(moment(this.state.endDate).endOf('day').format());
+    }
 
     this.props.filterRequests(actionType, userId, itemName, startDate, endDate);
   }
