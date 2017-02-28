@@ -1,6 +1,6 @@
 // Generation of inventory items for insertManyItems method (in addition to existing JSON items in demo data file).
 var willInsertManyItems = true;
-var itemQuantity = 100;
+var itemQuantity = 500;
 
 var mongoose = require('mongoose');
 let Item = require('../server/model/items');
@@ -46,6 +46,7 @@ var insertManyItems = function(quantity, callback){
   for(i = 0; i<quantity; i++){
     var item_copy = JSON.parse(JSON.stringify(item));
     item_copy.name = (i + 1) +" V Function Generator";
+    item_copy.model_number = i+1000;
     item_copy.tags.push((i%3==0) ? "heavy" : "large");
     item_copy.tags.push((i%2==0) ? "white" : "maroon");
     itemArray.push(item_copy);
