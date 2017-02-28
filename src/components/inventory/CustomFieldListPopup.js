@@ -30,7 +30,6 @@ class CustomFieldListPopup extends Component {
   }
 
   componentWillReceiveProps(newProps){
-
     var data = this.mapFields(newProps.allCustomFields);
     this.setState({
       data: data,

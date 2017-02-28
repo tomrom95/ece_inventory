@@ -80,6 +80,7 @@ class ShoppingCart extends Component {
 			}
 			else {
 				var requestId = response.data.request._id;
+				//this.props.callback();
 				if (this.state.checked === true && this.state.actionType === "Disburse to User") {
 					this.props.api.patch('/api/requests/' + requestId, { action: "DISBURSE" })
 	    			.then(function(response) {
