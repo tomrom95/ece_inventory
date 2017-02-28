@@ -17,7 +17,9 @@ class NavBar extends Component {
   }
 
   render() {
-    if(this.props.role === "ADMIN" || this.props.role === "MANAGER"){
+
+    if(this.props.role === "ADMIN" ){
+
       return (
         <nav className="navbar fixed-top navbar-toggleable-md navbar-light bg-faded">
           <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,49 +29,49 @@ class NavBar extends Component {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <Link to="/UserProfile" 
+                <Link to="/UserProfile"
                       className={"nav-link" + (this.state.activeTab === "/UserProfile" ? " active" : "")}
                       onClick={() => this.setActiveTab("/UserProfile")}>
                       PROFILE
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/Inventory" 
+                <Link to="/Inventory"
                       className={"nav-link" + (this.state.activeTab === "/Inventory" ? " active" : "")}
                       onClick={() => this.setActiveTab("/Inventory")}>
                       INVENTORY
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/GlobalRequests" 
+                <Link to="/GlobalRequests"
                       className={"nav-link" + (this.state.activeTab === "/GlobalRequests" ? " active" : "")}
                       onClick={() => this.setActiveTab("/GlobalRequests")}>
                       USER REQUESTS
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/CurrentOrders" 
+                <Link to="/CurrentOrders"
                       className={"nav-link" + (this.state.activeTab === "/CurrentOrders" ? " active" : "")}
                       onClick={() => this.setActiveTab("/CurrentOrders")}>
                       MY REQUESTS
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/Log" 
+                <Link to="/Log"
                       className={"nav-link" + (this.state.activeTab === "/Log" ? " active" : "")}
                       onClick={() => this.setActiveTab("/Log")}>
                       LOG
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/CreateUser" 
+                <Link to="/CreateUser"
                       className={"nav-link" + (this.state.activeTab === "/CreateUser" ? " active" : "")}
                       onClick={() => this.setActiveTab("/CreateUser")}>
                       CREATE USER
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/EditUsers" 
+                <Link to="/EditUsers"
                       className={"nav-link" + (this.state.activeTab === "/EditUsers" ? " active" : "")}
                       onClick={() => this.setActiveTab("/EditUsers")}>
                       EDIT USERS
@@ -94,6 +96,41 @@ class NavBar extends Component {
       );
 
     }
+    else if(this.props.role === "MANAGER"){
+      return (
+        <nav className="navbar fixed-top navbar-toggleable-md navbar-light bg-faded">
+          <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <a className="navbar-brand" href="#">ECE INVENTORY</a>
+          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item">
+                <Link to="/UserProfile" className="nav-link">PROFILE</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/Inventory" className="nav-link">INVENTORY</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/GlobalRequests" className="nav-link">USER REQUESTS</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/CurrentOrders" className="nav-link">MY REQUESTS</Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/Log" className="nav-link">LOG</Link>
+              </li>
+              <li className="nav-item btn-nav signout-button">
+                <button className="btn btn-outline-primary" onClick={this.props.onClick}>
+                  Sign Out
+                </button>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      );
+
+    }
     else{
       return (
         <nav className="navbar fixed-top navbar-toggleable-md navbar-light bg-faded">
@@ -104,21 +141,21 @@ class NavBar extends Component {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <Link to="/UserProfile" 
+                <Link to="/UserProfile"
                       className={"nav-link" + (this.state.activeTab === "/UserProfile" ? " active" : "")}
                       onClick={() => this.setActiveTab("/UserProfile")}>
                       PROFILE
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/Inventory" 
+                <Link to="/Inventory"
                       className={"nav-link" + (this.state.activeTab === "/Inventory" ? " active" : "")}
                       onClick={() => this.setActiveTab("/Inventory")}>
                       INVENTORY
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/CurrentOrders" 
+                <Link to="/CurrentOrders"
                       className={"nav-link" + (this.state.activeTab === "/CurrentOrders" ? " active" : "")}
                       onClick={() => this.setActiveTab("/CurrentOrders")}>
                       MY REQUESTS

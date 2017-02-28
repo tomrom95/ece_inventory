@@ -190,7 +190,9 @@ class InventoryTable extends Component {
 						key={"request-popup-button-"+id}/>
 			);
 			list.push(this.makeEditButton(data,id));
-			list.push(this.makeDeleteButton(id));
+			if (JSON.parse(localStorage.getItem('user')).role === "ADMIN") {
+				list.push(this.makeDeleteButton(id));
+			}
 
 			list.push(<td className="subtable-row" key={"detail-view-" + id}>
 						<ItemDetailView key={"detail-view-button-" + id}
