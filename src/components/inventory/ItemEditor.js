@@ -87,6 +87,11 @@ class ItemEditor extends Component {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
 			}
 			else if (keys[i] === 'custom_fields'){
+				list.push(<div className="modal-footer">
+										<button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+										<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+										<button onClick={() => this.onSubmission()} type="button" className="btn btn-primary">Apply</button>
+									</div>);
 				if(vals[i].length > 0){
 					list.push(<div className="form-group" key={"createform-div-customfields-labelrow-"+i}>
 								Custom Fields
@@ -202,7 +207,7 @@ class ItemEditor extends Component {
 								type_mismatch = true;
 							}
 						}
-						else if (type === "SHORT_STRING" && value.length > 100) {
+						else if (type === "SHORT_STRING" && value.length > 200) {
 							invalid_length = true;
 						}
 
@@ -486,11 +491,7 @@ class ItemEditor extends Component {
 			      <div className="modal-body">
 			        {this.makeForm()}
 			      </div>
-			      <div className="modal-footer">
-			        <button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-			        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-			        <button onClick={() => this.onSubmission()} type="button" className="btn btn-primary">Apply</button>
-			      </div>
+
 			    </div>
 			  </div>
 			</div>
