@@ -215,10 +215,10 @@ class ItemWizard extends Component {
 					callback={this.props.callback}
 					allCustomFields={this.state.allCustomFields}
 					key={"add-field-"+row}
-					ref="field"/>
+					ref={"field"}/>
 				<input type="text"
 					className="form-control"
-					ref="fieldvalue"
+					ref={"fieldvalue"}
 					key={"add-field-value"+row}
 					placeholder="Value">
 					</input>
@@ -278,7 +278,7 @@ class ItemWizard extends Component {
 			})
 		}
 		else if(already_exists) {
-			alert("item already has that custom field");
+			alert("Item already has that custom field");
 		}
 		else if(type_mismatch){
 			alert("Not correct type");
@@ -287,7 +287,7 @@ class ItemWizard extends Component {
 			alert("String is too long for type SHORT_STRING");
 		}
 		else if(!value){
-			alert("field must have a value");
+			alert("Field must have a value");
 		}
 	}
 
@@ -395,7 +395,7 @@ class ItemWizard extends Component {
 					}.bind(this));
 		}
 		else{
-			alert("new value is incorrect type");
+			alert("New value is incorrect type");
 		}
 	}
 
@@ -440,6 +440,11 @@ class ItemWizard extends Component {
   }
 
   	clearForm() {
+			this.refs.field.setState({
+				selectedField: ""
+			})
+
+			this.refs.fieldvalue.value = "";
   		var keys = getKeys(this.state.data);
 			keys.forEach(function(key) {
 				if (key === "Tags") {

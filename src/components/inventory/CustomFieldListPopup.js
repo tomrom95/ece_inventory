@@ -29,6 +29,16 @@ class CustomFieldListPopup extends Component {
     });
   }
 
+  componentWillReceiveProps(newProps){
+    console.log(newProps.allCustomFields);
+
+    var data = this.mapFields(newProps.allCustomFields);
+    this.setState({
+      data: data,
+      allFields: newProps.allCustomFields
+    });
+  }
+
 	componentWillMount(){
     this.props.api.get('/api/customFields')
       .then(function(response) {
@@ -118,7 +128,7 @@ class CustomFieldListPopup extends Component {
 		});
 	}
 
-  
+
 
   handleTypeChange(event, id) {
     var new_type = event;
@@ -161,7 +171,7 @@ class CustomFieldListPopup extends Component {
             alert(response.data.error);
           } else {
             this.props.callback();
-            alert("CUstom Field deleted successfully.");
+            alert("Custom Field deleted successfully.");
 
           }
         }.bind(this))
@@ -232,7 +242,7 @@ class CustomFieldListPopup extends Component {
             console.log(response.data.error);
           } else {
 						this.props.callback();
-            alert("changes applied to item");
+            alert("Changes applied to item");
 	        }
 	      }.bind(this))
 	      .catch(function(error) {

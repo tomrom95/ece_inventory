@@ -100,6 +100,19 @@ class InventoryTable extends Component {
       });
 	}
 
+	setCustomFields(){
+		this.props.api.get('/api/customFields')
+      .then(function(response) {
+        if (response.data.error) {
+          console.log(response.data.error);
+        }
+        this.setState({allCustomFields: response.data});
+      }.bind(this))
+      .catch(function(error) {
+        console.log(error);
+      });
+	}
+
 
 	render() {
 		return (
@@ -131,13 +144,14 @@ class InventoryTable extends Component {
 						<CustomFieldListPopup
 										api={this.props.api}
 										key={"editfields-button"}
-										callback={this.props.callback}/>
+										callback={this.setCustomFields.bind(this)}
+										allCustomFields={this.state.allCustomFields}/>
 								);
 				list.push(
 						<CustomFieldsPopup
 										api={this.props.api}
 										key={"makefields-button"}
-										callback={this.props.callback}/>
+										callback={this.setCustomFields.bind(this)}/>
 								);
 			}
 			list.push(<ShoppingCart callback={this.props.callback} api={this.props.api} key={"shopping-cart-button"}/>);
