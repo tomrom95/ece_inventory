@@ -467,35 +467,35 @@ class ItemEditor extends Component {
 				}
   }
 
-	render() {
-    return (
-		<div>
-			<button type="button"
-				className="btn btn-sm btn-outline-primary"
-				data-toggle="modal"
-				data-target={"#editModal-"+this.props.itemId}>
-				<span className="fa fa-pencil"></span>
-			</button>
+  	render() {
+	    return (
+			<div>
+				<button type="button"
+					className="btn btn-sm btn-outline-primary"
+					data-toggle="modal"
+					data-target={"#editModal-"+this.props.itemId}>
+					<span className="fa fa-pencil"></span>
+				</button>
 
-			<div className="modal fade"
-				id={"editModal-"+this.props.itemId}
-				tabIndex="-1" role="dialog"
-				aria-labelledby="editLabel"
-				aria-hidden="true">
-			  <div className="modal-dialog" role="document">
-			    <div className="modal-content">
-			      <div className="modal-header">
-			        <h5 className="modal-title" id="editLabel">Edit Current Item</h5>
-			      </div>
-			      <div className="modal-body">
-			        {this.makeForm()}
-			      </div>
+				<div className="modal fade"
+					id={"editModal-"+this.props.itemId}
+					tabIndex="-1" role="dialog"
+					aria-labelledby="editLabel"
+					aria-hidden="true">
+				  <div className="modal-dialog" role="document">
+				    <div className="modal-content">
+				      <div className="modal-header">
+				        <h5 className="modal-title" id="editLabel">Edit Current Item</h5>
+				      </div>
+				      <div className="modal-body">
+				        {this.makeForm()}
+				      </div>
 
-			    </div>
-			  </div>
+				    </div>
+				  </div>
+				</div>
 			</div>
-		</div>
-		);
+			);
 	}
 }
 
