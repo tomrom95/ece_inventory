@@ -115,6 +115,8 @@ class CustomFieldListPopup extends Component {
 		});
 	}
 
+  
+
   handleTypeChange(event, id) {
     var new_type = event;
     var data = this.state.data;

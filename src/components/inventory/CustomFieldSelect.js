@@ -16,7 +16,7 @@ class CustomFieldSelect extends Component {
     return this.state.selectedField;
   }
 
-  clearUser() {
+  clearField() {
     this.setState({
       selectedField: null
     });
@@ -28,6 +28,7 @@ class CustomFieldSelect extends Component {
       return {label: label, value: field._id};
     });
   }
+
 
 
   componentWillMount() {

@@ -400,7 +400,7 @@ class ItemWizard extends Component {
 		var fields = [];
 		for(var i = 0; i < this.state.data.custom_fields.length; i++){
 		 	var obj = {
-				_id: this.state.data.custom_fields[i].field,
+				field: this.state.data.custom_fields[i].field,
 				value: this.state.data.custom_fields[i].value
 			}
 			fields.push(obj);

@@ -213,6 +213,8 @@ class ItemEditor extends Component {
 
 	addField(value, already_exists, type_mismatch, field_params){
 		if(value && !already_exists && !type_mismatch){
+			this.refs.field.value = "";
+			this.refs.fieldvalue.value = "";
 			this.props.api.post('/api/inventory/'+ this.props.itemId+ "/customFields/",  field_params)
 				.then(function(response) {
 						if (response.data.error) {

@@ -107,6 +107,13 @@ class CustomFieldsPopup extends Component {
 		);
 	}
 
+  clearForm() {
+    this.refs.field_name.value = "";
+    this.setState({
+      type: "",
+      isPrivate: false,
+    });
+  }
 
 	onSubmission() {
 		var custom_field = {
@@ -114,17 +121,27 @@ class CustomFieldsPopup extends Component {
 			type: this.state.type,
 			isPrivate: this.state.isPrivate,
 		}
-		this.props.api.post('/api/customFields/', custom_field)
-	  	.then(function(response) {
-	        if (response.data.error) {
-        		console.log(response.data.error);
-	        } else {
-						this.props.callback();
-	        }
-	      }.bind(this))
-	      .catch(function(error) {
-	        console.log(error);
-	      }.bind(this));
+    if(!custom_field.name){
+      alert("must add name");
+    }
+    else if(!custom_field.type){
+      alert("must specify type");
+    }
+    else {
+      this.props.api.post('/api/customFields/', custom_field)
+  	  	.then(function(response) {
+  	        if (response.data.error) {
+          		console.log(response.data.error);
+  	        } else {
+  						this.props.callback();
+              this.clearForm();
+  	        }
+  	      }.bind(this))
+  	      .catch(function(error) {
+  	        console.log(error);
+  	      }.bind(this));
+    }
+
 
   }
 
