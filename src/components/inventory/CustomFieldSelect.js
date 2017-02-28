@@ -30,6 +30,10 @@ class CustomFieldSelect extends Component {
   }
 
 
+  componentWillReceiveProps(newProps){
+    var data = this.mapFields(newProps.allCustomFields);
+    this.setState({allFields: data});
+  }
 
   componentWillMount() {
     this.props.api.get('/api/customFields')
