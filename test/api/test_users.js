@@ -70,13 +70,15 @@ describe('Inventory API Test', function () {
         });
     });
 
-    it('Does not allow managers to access the endpoint', (done) => {
+    it('Allows managers to access the endpoint', (done) => {
       chai.request(server)
         .get('/api/users')
         .set('Authorization', managerToken)
         .end((err, res) => {
-          should.exist(err);
-          res.should.have.status(403);
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(12);
           done();
         });
     });
@@ -229,13 +231,15 @@ describe('Inventory API Test', function () {
         });
     });
 
-    it('Does not allow managers to look up other users', (done) => {
+    it('Allows managers to look up other users', (done) => {
       chai.request(server)
         .get('/api/users/' + standardUser._id)
         .set('Authorization', managerToken)
         .end((err, res) => {
-          should.exist(err);
-          res.should.have.status(403);
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.username.should.be.eql('standard');
           done();
         });
     });

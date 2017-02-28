@@ -9,7 +9,7 @@ import jwtDecode from 'jwt-decode'
 class Home extends Component {
   constructor(props) {
     super(props);
-    if(localStorage.getItem('user')){
+    if (localStorage.getItem('user')) {
       var user_stored = JSON.parse(localStorage.getItem('user'));
       var token_stored = localStorage.getItem('token');
       if (jwtDecode(token_stored).exp < Date.now() / 1000) {
@@ -47,7 +47,6 @@ class Home extends Component {
   }
 
   componentDidMount() {
-     browserHistory.push('/Inventory');
   }
 
   handleNameChange(event) {
@@ -166,7 +165,7 @@ class Home extends Component {
       }
       return (
         <div className="App">
-	         <NavBar onClick={this.signOut} role={this.state.user.role}/>
+	         <NavBar onClick={this.signOut} role={this.state.user.role} username={this.state.user.username} first_name = {this.state.user.first_name}/>
           <div className="main-container">
             {children}
           </div>
@@ -174,42 +173,51 @@ class Home extends Component {
       );
     } else
         return(
-          <div className="login-form container">
-            <div className="form-group">
-              <h3 className="row">Log In Locally</h3>
-              <form className="row">
+          <div className="container">
+            <div className="row">
+              <div className="col-md-6 login-form">
                 <div className="form-group">
-                  <label htmlFor="username-field">Username</label>
-                  <input type="text"
-                      value={this.state.name}
-                      className="form-control"
-                      id="username-field"
-                      placeholder="Username"
-                      onChange={this.handleNameChange}/>
+                  <h3 className="row">Log In Locally</h3>
+                  <form>
+                    <div className="form-group row">
+                      <label htmlFor="username-field">Username</label>
+                      <input type="text"
+                          value={this.state.name}
+                          className="form-control"
+                          id="username-field"
+                          placeholder="Username"
+                          onChange={this.handleNameChange}/>
+                    </div>
+                    <div className="form-group row">
+                      <label htmlFor="password-field">Password</label>
+                      <input type="password"
+                        value={this.state.passwrd}
+                        className="form-control"
+                        id="password-field"
+                        placeholder="Password"
+                        onChange={this.handlePasswrdChange}/>
+                    </div>
+                  </form>
+                  <div className="form-group row">
+                    <button className="btn btn-primary" onClick={this.login}>
+                        Local Log In
+                    </button>
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label htmlFor="password-field">Password</label>
-                  <input type="password"
-                    value={this.state.passwrd}
-                    className="form-control"
-                    id="password-field"
-                    placeholder="Password"
-                    onChange={this.handlePasswrdChange}/>
-                </div>
-              </form>
-              <div className="form-group row">
-                <button className="btn btn-primary" onClick={this.login}>
-                    Local Log In
-                </button>
               </div>
+
+              <div className="col-md-6 login-form">
+                <div className="form-group">
+                  <h3 className="row">Log In with your NetID</h3>
+                  <div className="form-group row">
+                    <a href={this.createNetIDLoginLink()} className="btn btn-primary" role="button">NetID Login</a>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-            <div className="form-group">
-              <h3 className="row">Log In with your NetID</h3>
-              <div className="row">
-                <a href={this.createNetIDLoginLink()} className="btn btn-primary" role="button">NetID Login</a>
-              </div>
-            </div>
+
           </div>
           );
   }

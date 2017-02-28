@@ -3,6 +3,7 @@ import axios from 'axios';
 import GlobalRequests from '../requests/GlobalRequests';
 import CurrentOrders from '../requests/CurrentOrders.js';
 import CustomFieldsPopup from './CustomFieldsPopup.js';
+import LogPage from '../logging/LogPage.js';
 
 function getString(str) {
   if (str === undefined || str === null || str.length === 0) {
@@ -152,7 +153,7 @@ class ItemDetailView extends React.Component {
                     </div>
 
                   </div>
-                  {this.addRequests()}
+                  {this.makeCollapsibleItems()}
                 </div>
               </div>
             </div>
@@ -165,7 +166,7 @@ class ItemDetailView extends React.Component {
   addRequests(){
     if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER"){
       return(
-        <div className="row request-subtable">
+        <div className="item-detail-view-requests">
           <GlobalRequests
           itemID={this.props.params.itemID}
           rowsPerPage={2}
@@ -179,7 +180,7 @@ class ItemDetailView extends React.Component {
     }
     else{
       return(
-        <div className="row request-subtable">
+        <div className="item-detail-view-requests">
           <CurrentOrders
           itemID={this.props.params.itemID}
           rowsPerPage={2}
@@ -190,6 +191,58 @@ class ItemDetailView extends React.Component {
           id={"detail-view-"+this.props.params.itemID}/>
         </div>);
     }
+  }
+
+  makeLogView() {
+    var filters = {
+      item_id: this.props.params.itemID
+    }
+    return (
+      <div className="item-detail-view-logs">
+        <LogPage filters={filters} 
+                  showButtons={false} 
+                  showFilterBox={false}
+                  rowsPerPage={5}/>
+      </div>
+    );
+  }
+
+  makeCollapsibleItems() {
+    return (
+    <div id="accordion" role="tablist" aria-multiselectable="true">
+      <div className="card">
+        <div className="card-header" role="tab" id="headingOne">
+          <h7 className="mb-0">
+            <a data-toggle="collapse" data-parent="#accordion" href={"#requestsCollapse-"+this.props.params.itemID} aria-expanded="true">
+              <strong>REQUESTS CONTAINING THIS ITEM</strong>
+            </a>
+          </h7>
+        </div>
+
+        <div id={"requestsCollapse-"+this.props.params.itemID} className="collapse" role="tabpanel">
+          <div className="card-block">
+            {this.addRequests()}
+          </div>
+        </div>
+      </div>
+      {JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER" ?
+      (<div className="card">
+        <div className="card-header" role="tab" id="headingTwo">
+          <h7 className="mb-0">
+            <a className="collapsed" data-toggle="collapse" data-parent="#accordion" href={"#logsCollapse-"+this.props.params.itemID} aria-expanded="false">
+              <strong>LOG ENTRIES CONTAINING THIS ITEM</strong>
+            </a>
+          </h7>
+        </div>
+        <div id={"logsCollapse-"+this.props.params.itemID} className="collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div className="card-block">
+            {this.makeLogView()}
+          </div>
+        </div>
+      </div>) : null }
+
+    </div>
+    );
   }
 }
 

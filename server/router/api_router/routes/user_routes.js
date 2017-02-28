@@ -48,7 +48,7 @@ module.exports.getAPI = function(req, res) {
 }
 
 module.exports.getAPIbyID = function(req, res) {
-  if ((req.user.role !== 'ADMIN') && (req.user._id != req.params.user_id)) {
+  if ((req.user.role === 'STANDARD') && (req.user._id != req.params.user_id)) {
     return res.status(403).send({error: 'You do not have permission to view another user profile'});
   }
   User.findById(req.params.user_id, function(error, user) {

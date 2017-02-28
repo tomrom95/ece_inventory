@@ -4,6 +4,7 @@
     "name": "1k resistor",
     "has_instance_objects": false,
     "vendor_info": "IBM",
+    "model_number": "A123",
     "tags": [
       "component",
       "electric",
@@ -15,6 +16,7 @@
     "name": "2k resistor",
     "has_instance_objects": false,
     "vendor_info": "IBM",
+    "model_number": "A123",
     "tags": [
       "component",
       "electric",
@@ -26,6 +28,7 @@
     "name": "5k resistor",
     "has_instance_objects": false,
     "vendor_info": "IBM",
+    "model_number": "A123",
     "tags": [
       "component",
       "electric",
@@ -37,6 +40,7 @@
     "name": "10k resistor",
     "has_instance_objects": false,
     "vendor_info": "IBM",
+    "model_number": "A123",
     "tags": [
       "component",
       "electric",
@@ -48,6 +52,7 @@
     "name": "100k resistor",
     "has_instance_objects": false,
     "vendor_info": "Qualcomm",
+    "model_number": "A123",
     "tags": [
       "component",
       "electric",
@@ -59,6 +64,7 @@
     "name": "100k inductor",
     "has_instance_objects": false,
     "vendor_info": "Qualcomm",
+    "model_number": "A123",
     "tags": [
       "component",
       "electric",
@@ -71,6 +77,7 @@
     "name": "150k inductor",
     "has_instance_objects": false,
     "vendor_info": "Qualcomm",
+    "model_number": "A123",
     "tags": [
       "component",
       "electric",
@@ -83,6 +90,7 @@
     "name": "1m Wire",
     "has_instance_objects": false,
     "vendor_info": "Qualcomm",
+    "model_number": "A123",
     "tags": [
       "component",
       "connector"
@@ -93,6 +101,7 @@
     "name": "5M Wire",
     "has_instance_objects": false,
     "vendor_info": "Qualcomm",
+    "model_number": "A123",
     "tags": [
       "component",
       "connector"
@@ -103,6 +112,7 @@
     "name": "240V PSU",
     "has_instance_objects": false,
     "vendor_info": "Qualcomm",
+    "model_number": "A123",
     "tags": [
       "Power",
       "expensive",
@@ -114,6 +124,7 @@
     "name": "120V PSU",
     "has_instance_objects": false,
     "vendor_info": "Qualcomm",
+    "model_number": "A123",
     "tags": [
       "Power",
       "expensive",
@@ -126,6 +137,7 @@
     "name": "Oscilloscope",
     "has_instance_objects": true,
     "vendor_info": "Qualcomm",
+    "model_number": "A123",
     "tags": [
       "Power",
       "expensive",

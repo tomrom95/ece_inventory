@@ -41,7 +41,7 @@ class Inventory extends Component {
             showStatusFilterBox={false}
             hasOtherParams={false}
             id={'inventory-page'}
-            rowsPerPage={10} />);
+            rowsPerPage={15} />);
 
   }
 }
