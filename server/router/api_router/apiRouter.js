@@ -69,7 +69,7 @@ router.route('/users')
       .post(restrictToAdmins, user_routes.postAPI);
 
 router.route('/users/:user_id')
-      .get(user_routes.getAPIbyID)
+      .get(restrictToManagers, user_routes.getAPIbyID)
       .put(restrictToAdmins, user_routes.putAPI);
 
 router.route('/logs')
