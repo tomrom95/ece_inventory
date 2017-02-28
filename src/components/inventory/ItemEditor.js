@@ -174,6 +174,7 @@ class ItemEditor extends Component {
 
 		var type = "";
 		var type_mismatch = false;
+		var invalid_length = false;
 		var name = "";
 		this.props.api.get('/api/customFields/'+custom_field)
 			.then(function(response) {
@@ -201,8 +202,11 @@ class ItemEditor extends Component {
 								type_mismatch = true;
 							}
 						}
+						else if (type === "SHORT_STRING" && value.length > 100) {
+							invalid_length = true;
+						}
 
-						this.addField(value, already_exists, type_mismatch, field_params);
+						this.addField(value, already_exists, type_mismatch, field_params, invalid_length);
 					}
 				}.bind(this))
 				.catch(function(error) {
@@ -211,7 +215,7 @@ class ItemEditor extends Component {
 
 	}
 
-	addField(value, already_exists, type_mismatch, field_params){
+	addField(value, already_exists, type_mismatch, field_params, invalid_length){
 		if(value && !already_exists && !type_mismatch){
 			this.refs.field.value = "";
 			this.refs.fieldvalue.value = "";
@@ -232,6 +236,9 @@ class ItemEditor extends Component {
 		}
 		else if(type_mismatch){
 			alert("Not correct type");
+		}
+		else if (invalid_length) {
+			alert("String is too long for type SHORT_STRING");
 		}
 		else if(!value){
 			alert("field must have a value");

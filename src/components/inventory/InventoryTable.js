@@ -126,18 +126,20 @@ class InventoryTable extends Component {
 		}
 
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
-			list.push(
-					<CustomFieldListPopup
-									api={this.props.api}
-									key={"editfields-button"}
-									callback={this.props.callback}/>
-							);
-			list.push(
-					<CustomFieldsPopup
-									api={this.props.api}
-									key={"makefields-button"}
-									callback={this.props.callback}/>
-							);
+			if(JSON.parse(localStorage.getItem('user')).role === "ADMIN"){
+				list.push(
+						<CustomFieldListPopup
+										api={this.props.api}
+										key={"editfields-button"}
+										callback={this.props.callback}/>
+								);
+				list.push(
+						<CustomFieldsPopup
+										api={this.props.api}
+										key={"makefields-button"}
+										callback={this.props.callback}/>
+								);
+			}
 			list.push(<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>);
 			list.push(
 					<ItemWizard data={getEmptyPrefill()}
