@@ -315,7 +315,7 @@ class ItemWizard extends Component {
 						type = response.data.type;
 						name = response.data.name;
 
-						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAlpha(value)){
+						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(value)){
 							type_mismatch = true;
 						}
 						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(value)){
@@ -350,13 +350,14 @@ class ItemWizard extends Component {
 		}
 		var type = "";
 		var type_mismatch = false;
+		var invalid_length = false;
 		this.props.api.get('/api/customFields/'+field.field)
 			.then(function(response) {
 					if (response.data.error) {
 						alert(response.data.error);
 					} else {
 						type = response.data.type;
-						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAlpha(new_value)){
+						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(new_value)){
 							type_mismatch = true;
 						}
 						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(new_value)){
@@ -370,8 +371,10 @@ class ItemWizard extends Component {
 								type_mismatch = true;
 							}
 						}
-
-						this.submitFieldEdit(type_mismatch, body, field);
+						else if (type === "SHORT_STRING" && value.length > 200) {
+							invalid_length = true;
+						}
+						this.submitFieldEdit(type_mismatch, body, field, invalid_length);
 					}
 				}.bind(this))
 				.catch(function(error) {
@@ -380,7 +383,7 @@ class ItemWizard extends Component {
 
 	}
 
-	submitFieldEdit(type_mismatch, body, field){
+	submitFieldEdit(type_mismatch, body, field, invalid_length){
 		if(!type_mismatch){
 			this.props.api.put('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field, body)
 				.then(function(response) {
