@@ -15,7 +15,6 @@ var postmanJSON = require("../ECE458.postman_collection.json");
 console.log("Connecting to Mongodb...");
 mongoose.connect('mongodb://admin:ece458duke@localhost/inventory');
 
-chai.
 User.findOne({"username": username.toString()}, function(err,user){
   if(err || !user) console.log("There was an error finding this user. "+ err);
   console.log("User found");

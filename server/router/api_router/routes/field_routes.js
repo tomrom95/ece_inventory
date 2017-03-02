@@ -20,7 +20,8 @@ module.exports.getAPI = function (req, res) {
 
 module.exports.getAPIbyID = function(req,res){
   CustomField.findById(req.params.field_id, function (error, field){
-    if(error) return res.send({error: err});
+    console.log(error);
+    if(error) return res.send({error: error});
     if (!field) return res.send({error: 'field does not exist'});
     if (field.isPrivate && req.user.role === 'STANDARD') {
       return res.status(403).send({error: 'You do not have permission to see this field'})
