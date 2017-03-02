@@ -27,7 +27,11 @@ EmailSettingsSchema.statics.getSingleton = function (next) {
       if (error) {
         next(error);
       } else if (!settings) {
-        next(null, new this());
+        var newSettings = new this();
+        newSettings.save(function(error, doc) {
+          if (error) return next(error);
+          next(null, doc);
+        });
       } else {
         next(null, settings);
       }
