@@ -25,13 +25,7 @@ class UserProfile extends Component {
   }
 
   render() {
-    var status = '';
-    if(this.props.isAdmin){
-      status = 'Administrator';
-    }
-    else{
-      status = 'Non-Administrator';
-    }
+  
 
     return(
       <div className="card user-info center-text">

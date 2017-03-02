@@ -39,7 +39,7 @@ class RequestItemsPopup extends Component {
 			var itemName = this.state.items[i].item.name;
 			var quantity = this.state.items[i].quantity;
 			str += "   " + itemName + ' (' + quantity+ ')' + '\n';
-    	}    
+    	}
 
     	if (this.state.reviewerComment && this.state.reviewerComment.length > 0)
 				str += "\nReviewer Comment:\n" + "   " + this.state.reviewerComment;
@@ -71,13 +71,13 @@ class TooltipComponent extends Component {
     return (
       <td>
         <button className="btn btn-sm btn-outline-primary info-button"
-        		type="button"  
+        		type="button"
         		id={this.props.id}>
         		<span className="fa fa-info"></span>
        	</button>
         <Tooltip placement="left"
-        		 isOpen={this.state.tooltipOpen} 
-        		 target={this.props.id} 
+        		 isOpen={this.state.tooltipOpen}
+        		 target={this.props.id}
         		 toggle={e=> this.toggle()}
         		 autohide={false}>
           {this.props.itemList}

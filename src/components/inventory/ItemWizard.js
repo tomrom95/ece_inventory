@@ -301,11 +301,9 @@ class ItemWizard extends Component {
 				already_exists = true;
 			}
 		}
-
 		var type = "";
 		var type_mismatch = false;
 		var invalid_length = false;
-		var name = "";
 		this.props.api.get('/api/customFields/'+custom_field)
 			.then(function(response) {
 					if (response.data.error) {
@@ -316,20 +314,8 @@ class ItemWizard extends Component {
 							value: value
 						}
 						type = response.data.type;
-						name = response.data.name;
-
-						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(value)){
-							type_mismatch = true;
-						}
-						else if (type === "SHORT_STRING" && value.length > 200) {
-							invalid_length = true;
-						}
-						else if(type === "INT" && !validator.isInt(value)){
-							type_mismatch = true;
-						}
-						else if(type === "FLOAT" && !validator.isFloat(value)){
-							type_mismatch = true;
-						}
+						type_mismatch = this.checkMismatch(type, value);
+						invalid_length = this.checkInvalidLength(type, value);
 
 						this.addField(value, already_exists, type_mismatch, field_params, invalid_length);
 					}
@@ -355,18 +341,8 @@ class ItemWizard extends Component {
 						alert(response.data.error);
 					} else {
 						type = response.data.type;
-						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(new_value)){
-							type_mismatch = true;
-						}
-						else if (type === "SHORT_STRING" && new_value.length > 200) {
-							invalid_length = true;
-						}
-						else if(type === "INT" && !validator.isInt(new_value)){
-							type_mismatch = true;
-						}
-						else if(type === "FLOAT" && !validator.isFloat(new_value)){
-							type_mismatch = true;
-						}
+						type_mismatch = this.checkMismatch(type, new_value);
+						invalid_length = this.checkInvalidLength(type, new_value);
 						this.submitFieldEdit(type_mismatch, body, field, invalid_length);
 					}
 				}.bind(this))
@@ -393,6 +369,24 @@ class ItemWizard extends Component {
 		else{
 			alert("New value is incorrect type");
 		}
+	}
+
+	checkMismatch(type, value){
+		var type_mismatch = false;
+		if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(value)){
+			type_mismatch = true;
+		}
+		else if(type === "INT" && !validator.isInt(value)){
+			type_mismatch = true;
+		}
+		else if(type === "FLOAT" && !validator.isFloat(value)){
+			type_mismatch = true;
+		}
+		return type_mismatch;
+	}
+
+	checkInvalidLength(type, value){
+			return (type === "SHORT_STRING" && value.length > 200);
 	}
 
 

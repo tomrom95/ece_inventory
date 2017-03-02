@@ -76,8 +76,8 @@ class CustomFieldsPopup extends Component {
 	makeForm(){
 		var name = <input type="text"
 			className="form-control"
-			ref="field_name"
-			key={1}>
+			ref={"field_name"}
+			key={"field_name"}>
 			</input>
 		var type = <Select
 			simpleValue
@@ -87,12 +87,13 @@ class CustomFieldsPopup extends Component {
 			placeholder="Choose Type"
 			options={types}
 			onChange={this.handleTypeChange.bind(this)}
+      key={"field_type"}
 		/>
 		var is_private = <input type="checkbox"
 			className="form-control"
       checked={this.state.isPrivate}
 			onChange={this.handleInputChange.bind(this)}
-			key={3}>
+			key={"field_isPrivate"}>
 			</input>
 
 		return (
@@ -110,7 +111,6 @@ class CustomFieldsPopup extends Component {
 
   clearForm() {
     this.refs.field_name.value = "";
-    this.refs.field_type = "";
     this.setState({
       type: "",
       isPrivate: false,
@@ -136,8 +136,8 @@ class CustomFieldsPopup extends Component {
           		console.log(response.data.error);
   	        } else {
               alert("Custom Field made successfully");
-  						this.props.callback();
               this.clearForm();
+  						this.props.callback();
   	        }
   	      }.bind(this))
   	      .catch(function(error) {
