@@ -75,7 +75,7 @@ module.exports.putAPI = function(req, res) {
   }
   var fields = ['first_name', 'last_name', 'email'];
   if (req.user.role !== 'STANDARD') {
-    fields.push('email_settings');
+    fields.push('subscribed');
   }
   if (req.user.role === 'ADMIN') {
     // Only admins can edit role

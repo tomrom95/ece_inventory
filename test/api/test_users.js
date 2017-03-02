@@ -375,10 +375,7 @@ describe('Users API Test', function () {
           first_name: 'Kip',
           last_name: 'Coonley',
           email: 'kip@coon.ley',
-          email_settings: {
-            subscribed: true,
-            subject_tag: 'sup homie'
-          }
+          subscribed: true
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -387,16 +384,14 @@ describe('Users API Test', function () {
           res.body.first_name.should.be.eql('Kip');
           res.body.last_name.should.be.eql('Coonley');
           res.body.email.should.be.eql('kip@coon.ley');
-          res.body.email_settings.subscribed.should.be.eql(true);
-          res.body.email_settings.subject_tag.should.be.eql('sup homie');
+          res.body.subscribed.should.be.eql(true);
           User.findById(managerUser._id, function(error, user) {
             should.not.exist(error);
             user.role.should.be.eql('MANAGER');
             user.first_name.should.be.eql('Kip');
             user.last_name.should.be.eql('Coonley');
             user.email.should.be.eql('kip@coon.ley');
-            user.email_settings.subscribed.should.be.eql(true);
-            user.email_settings.subject_tag.should.be.eql('sup homie');
+            user.subscribed.should.be.eql(true);
             done();
           })
         });
