@@ -5,8 +5,7 @@ var EmailSettings = require('../../server/model/emailSettings.js');
 var chai = require('chai');
 let assert = chai.assert;
 let should = chai.should();
-
-mongoose.connect('mongodb://localhost/test');
+let server = require('../../server');
 
 describe('Email Settings', function() {
   beforeEach((done) => {
