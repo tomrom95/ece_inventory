@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
 import axios from 'axios';
-import LogItem from './LogItem.js';
 import LogFilterBox from './LogFilterBox.js';
 import LogTable from './LogTable.js';
 import PaginationContainer from '../global/PaginationContainer.js';
