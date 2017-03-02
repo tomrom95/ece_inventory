@@ -57,6 +57,24 @@ return:
   ]
 }
 
+/api/inventory/import
+POST
+body:
+{
+  name: String [required],
+  quantity: Integer [required],
+  model_number: String,
+  description: String,
+  tags: [String],
+  custom_fields: [
+    {
+        name: String, // Name of Custom field, not ID
+				value: String
+  ]
+}
+or Array of body objects above.
+
+
 /api/inventory/:item_id
 GET
 return:
