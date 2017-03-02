@@ -11,7 +11,7 @@ let should = chai.should();
 chai.use(chaiHttp);
 chai.use(require('chai-things'));
 
-describe('Inventory API Test', function () {
+describe('Users API Test', function () {
   var adminToken;
   var adminUser;
   var standardToken;
@@ -21,15 +21,15 @@ describe('Inventory API Test', function () {
   beforeEach((done) => { //Before each test we empty the database
     User.remove({}, (err) => {
       should.not.exist(err);
-      helpers.createNewUser('admin', 'test', 'ADMIN', function(err, user) {
+      helpers.createNewUser('admin', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
         should.not.exist(err);
         adminToken = helpers.createAuthToken(user);
         adminUser = user;
-        helpers.createNewUser('standard', 'test', 'STANDARD', function(err, user) {
+        helpers.createNewUser('standard', 'test', 'standard@email.com', 'STANDARD', function(err, user) {
           should.not.exist(err);
           standardToken = helpers.createAuthToken(user);
           standardUser = user;
-          helpers.createNewUser('manager', 'test', 'MANAGER', function(err, user) {
+          helpers.createNewUser('manager', 'test', 'manager@email.com', 'MANAGER', function(err, user) {
             should.not.exist(err);
             managerToken = helpers.createAuthToken(user);
             managerUser = user;
@@ -189,7 +189,8 @@ describe('Inventory API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('object');
-          res.body.username.should.be.eql('standard')
+          res.body.username.should.be.eql('standard');
+          res.body.email.should.be.eql('standard@email.com');
           done();
         });
     });
@@ -216,6 +217,7 @@ describe('Inventory API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.username.should.be.eql('manager');
+          res.body.email.should.be.eql('manager@email.com');
           done();
         });
     });
@@ -240,6 +242,7 @@ describe('Inventory API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.username.should.be.eql('standard');
+          res.body.email.should.be.eql('standard@email.com');
           done();
         });
     });
@@ -253,6 +256,7 @@ describe('Inventory API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.username.should.be.eql('manager');
+          res.body.email.should.be.eql('manager@email.com');
           done();
         });
     });
@@ -268,19 +272,38 @@ describe('Inventory API Test', function () {
           .set('Authorization', adminToken)
           .send({
             username: 'test_user',
-            password: 'test'
+            password: 'test',
+            email: 'test@email.com'
           })
           .end((err, res) => {
             should.not.exist(err);
             res.should.have.status(200);
             res.body.user.username.should.be.eql('test_user');
+            res.body.user.email.should.be.eql('test@email.com');
             should.not.exist(res.body.error);
             User.findById(res.body.user._id, function(error, user) {
               should.not.exist(error);
               user.username.should.be.eql('test_user');
+              user.email.should.be.eql('test@email.com');
               done();
             });
 
+          });
+      });
+
+      it('returns error for invalid email', (done) => {
+        chai.request(server)
+          .post('/api/users')
+          .set('Authorization', adminToken)
+          .send({
+            username: 'other_user',
+            password: 'test',
+            email: 'testmail.com'
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.body.error.should.be.eql('Invalid email');
+            done();
           });
       });
 
@@ -290,7 +313,8 @@ describe('Inventory API Test', function () {
           .set('Authorization', standardToken)
           .send({
             username: 'other_user',
-            password: 'test'
+            password: 'test',
+            email: 'test@email.com'
           })
           .end((err, res) => {
             should.exist(err);
@@ -345,7 +369,8 @@ describe('Inventory API Test', function () {
         .send({
           role: 'MANAGER',
           first_name: 'Glip',
-          last_name: 'Glop'
+          last_name: 'Glop',
+          email: 'newemail@email.com'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -355,12 +380,14 @@ describe('Inventory API Test', function () {
           res.body.role.should.be.eql('MANAGER');
           res.body.first_name.should.be.eql('Glip');
           res.body.last_name.should.be.eql('Glop');
+          res.body.email.should.be.eql('newemail@email.com');
           User.findById(standardUser._id, function(error, user) {
             should.not.exist(error);
             user.username.should.be.eql('standard');
             user.role.should.be.eql('MANAGER');
             user.first_name.should.be.eql('Glip');
             user.last_name.should.be.eql('Glop');
+            user.email.should.be.eql('newemail@email.com');
             done();
           })
       });

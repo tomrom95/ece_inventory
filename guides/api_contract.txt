@@ -556,7 +556,8 @@ GET // Only admins can get
 return {
 	_id: String,
 	username: String,
-	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+	role: String ('ADMIN', 'MANAGER', 'STANDARD'),
+	email: String
 }
 
 POST
@@ -564,13 +565,15 @@ body: // Only admins can post
 {
 	username: String,
 	password: String,
-	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+	role: String ('ADMIN', 'MANAGER', 'STANDARD'),
+	email: String
 }
 return {
 	user: {
 		_id: String,
 		username: String,
-		role: String ('ADMIN', 'MANAGER', 'STANDARD')
+		role: String ('ADMIN', 'MANAGER', 'STANDARD'),
+		email: String
 	}
 }
 
@@ -580,18 +583,21 @@ return {
 	_id: String,
 	username: String,
 	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+	email: String
 }
 
 PUT { // Only admins can put
 body {
 	first_name: String,
 	last_name: String,
-	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+	role: String ('ADMIN', 'MANAGER', 'STANDARD'),
+	email: String
 }
 return {
 	_id: String,
 	username: String,
-	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+	role: String ('ADMIN', 'MANAGER', 'STANDARD'),
+	email: String
 }
 
 }
@@ -609,6 +615,7 @@ return {
 	user: {
 		username: String,
 		password_hash: String,
-		role: String ('ADMIN', 'MANAGER', 'STANDARD')
+		role: String ('ADMIN', 'MANAGER', 'STANDARD'),
+		email: String
 	}
 }

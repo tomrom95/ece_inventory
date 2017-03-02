@@ -14,6 +14,11 @@ var UserSchema = new mongoose.Schema({
     unique: true,
     sparse: true
   },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
   first_name: String,
   last_name: String,
   is_local: {
@@ -31,6 +36,13 @@ var UserSchema = new mongoose.Schema({
   apikey: {
     type: String,
     default: uuidV4()
+  },
+  email_settings: {
+    subscribed: {
+      type: Boolean,
+      default: false
+    },
+    subject_tag: String
   }
 });
 

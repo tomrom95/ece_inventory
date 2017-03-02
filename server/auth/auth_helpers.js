@@ -32,7 +32,7 @@ var compare = function(givenPassword, savedHash, next) {
   });
 }
 
-var createNewUser = function(username, password, role, next) {
+var createNewUser = function(username, password, email, role, next) {
   createPasswordHash(password, function(error, hash) {
     if (error != null) {
       next(error, null);
@@ -41,6 +41,7 @@ var createNewUser = function(username, password, role, next) {
     var newUser = new User({
       username: username,
       password_hash: hash,
+      email: email,
       role: role,
     });
     newUser.save(function (error, user) {
