@@ -11,7 +11,7 @@ class LogPage extends Component {
 	constructor(props) {
 		super(props);
 		this.instance = axios.create({
-		  baseURL: 'https://' + location.hostname + ':3001',
+		  baseURL: 'https://' + location.hostname,
 		  headers: {'Authorization': localStorage.getItem('token')}
 		});
 		this.state = {

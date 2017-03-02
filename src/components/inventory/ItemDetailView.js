@@ -27,7 +27,7 @@ class ItemDetailView extends React.Component {
 
   componentDidMount() {
     this.axiosInstance = axios.create({
-      baseURL: 'https://' + location.hostname + ':3001/api',
+      baseURL: 'https://' + location.hostname + '/api',
       headers: {'Authorization': localStorage.getItem('token')}
     });
     this.loadData();
@@ -39,7 +39,7 @@ class ItemDetailView extends React.Component {
     }, function() {
       this.loadData();
     });
-  } 
+  }
 
   loadData() {
     this.axiosInstance.get('/inventory/' + this.state.itemId)
@@ -210,8 +210,8 @@ class ItemDetailView extends React.Component {
     }
     return (
       <div className="item-detail-view-logs">
-        <LogPage filters={filters} 
-                  showButtons={false} 
+        <LogPage filters={filters}
+                  showButtons={false}
                   showFilterBox={false}
                   rowsPerPage={5}/>
       </div>
