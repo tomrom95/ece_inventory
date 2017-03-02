@@ -1,7 +1,7 @@
 API Guide
 ===================
 
-The production server is located at https://colab-sbx-186.oit.duke.edu. The web interface is served at port 3000, while the API endpoints are served at port 3001, at https://colab-sbx-186.oit.duke.edu:3001/. Note that all API endpoints communicate via HTTPS.
+The production server is located at https://colab-sbx-186.oit.duke.edu. Note that all API endpoints communicate via HTTPS.
 
 The parameters, body and expected return payloads are all specified in the API contract.
 
@@ -16,11 +16,11 @@ You will need a program to contact the API with. You can use
 ####Postman
 1) In Postman, near the top of the screen, you will see a dropdown with key words such as GET, POST, PUT etc. Choose an action to denote the type of API you would like to make.
 
-2) To the right of the dropdown, is the textbox to enter the URL. You will need to enter the production server URL: https://colab-sbx-186.oit.duke.edu:3001/ followed by the relevant route as shown in the API contract.
+2) To the right of the dropdown, is the textbox to enter the URL. You will need to enter the production server URL: https://colab-sbx-186.oit.duke.edu followed by the relevant route as shown in the API contract.
 
 3) If you are using a GET method, you have the option of adding queryable fields to the URL (depending on the fields supported in the contract), but following the url with a "?", followed by the query field and value with '"&" between query field-value pairs. This is an example URL:
 
-    https://colab-sbx-186.oit.duke.edu:3001/api/inventory?name=1k&vendor_info=IBM
+    https://colab-sbx-186.oit.duke.edu/api/inventory?name=1k&vendor_info=IBM
 
 4) If you are using a POST, PUT or PATCH method, or any API call listed in the contract that requires the filling out of a body, hit the tab "Body" directly under the URL box to enter the field-value parameters. Make sure the option of "x-www-form-urlencoded" is selected. If you are using the "raw" option, make sure that in the drop down next to "binary", the option "JSON" is selected.
 
@@ -47,7 +47,7 @@ The format of these requests are all in JSON format. All methods requiring a bod
 
 To what URL do they go (if web-based)?
 ---
-The base URL for the production server is `https://colab-sbx-186.oit.duke.edu:3001/` . Different routes are appended to the end of this URL depending on the API endpoint that you wish to test.
+The base URL for the production server is `https://colab-sbx-186.oit.duke.edu` . Different routes are appended to the end of this URL depending on the API endpoint that you wish to test.
 
 What is the format of responses?
 ---

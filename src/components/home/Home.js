@@ -59,7 +59,7 @@ class Home extends Component {
 
   login() {
     browserHistory.push('/Inventory');
-    axios.post('https:' + '//' + location.hostname + ':3001' + '/auth/login', {
+    axios.post('https://' + location.hostname + '/auth/login', {
       username: this.state.name,
       password: this.state.passwrd,
     })
@@ -89,7 +89,7 @@ class Home extends Component {
       if (!token) return;
       location.hash = '';
       this.setState({loggingIn: true});
-      axios.post('https://' + location.hostname + ':3001/auth/login', {
+      axios.post('https://' + location.hostname + '/auth/login', {
         token: token
       }).then(function(result) {
         if (result.error) {
