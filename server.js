@@ -8,8 +8,8 @@ var User = require('./server/model/users');
 var passportJWT = require('passport-jwt');
 var passportLocalAPI = require('passport-localapikey-update');
 var passport = require('passport');
-var secrets = require('./server/secrets.js');
 var fs = require('fs');
+var secrets = require('./server/secrets.js');
 var https = require('https');
 var path = require('path');
 
@@ -94,16 +94,20 @@ app.get('/*', function (request, response){
 })
 
 if (process.env.NODE_ENV == 'test') {
-  app.listen(secrets.apiPort, function () {
-    console.log('API running but not on https');
+  app.listen(secrets.testPort, function () {
+    console.log('API running on test port ' + secrets.testPort);
+  });
+} else if (secrets.useProxy) {
+  app.listen(secrets.proxyPort, function () {
+    console.log('API running on proxy port ' + secrets.proxyPort);
   });
 } else {
   https.createServer({
     key: fs.readFileSync('key.pem'),
     cert: fs.readFileSync('cert.pem'),
     passphrase: secrets.sslSecret
-  }, app).listen(secrets.clientPort, function() {
-    console.log('API running on port ' + secrets.clientPort);
+  }, app).listen(secrets.productionPort, function() {
+    console.log('API running on production port ' + secrets.productionPort);
   });
 }
 
