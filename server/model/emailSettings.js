@@ -16,23 +16,27 @@ var EmailSettingsSchema = new mongoose.Schema({
   }]
 });
 
+/**
+Helper statics function to get the one email settings document
+Can be accessed through EmailSettings.getSingleton()
+If document already exists, it's returned, otherwise a new blank one is created
+*/
 EmailSettingsSchema.statics.getSingleton = function (next) {
   this.findOne()
     .exec(function(error, settings) {
       if (error) {
         next(error);
       } else if (!settings) {
-        var newSettings = this.model('EmailSettings')();
-        newSettings.save(function(error, doc) {
-          if(error) return next(error);
-          next(null, doc);
-        });
+        next(null, new this());
       } else {
         next(null, settings);
       }
     }.bind(this));
 };
 
+/**
+Pre save hook to make sure that no new documents are ever added
+*/
 EmailSettingsSchema.pre('save', function (next) {
     this.model('EmailSettings').find({}, function(err, settings) {
       if (settings.length) {
