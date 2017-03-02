@@ -326,9 +326,9 @@ describe('Users API Test', function () {
   });
 
   describe('PUT /user by id', () =>{
-    it('Does not allow a standard user to make changes', (done) => {
+    it('Does not allow a standard user to make changes to another person', (done) => {
       chai.request(server)
-        .put('/api/users/' + standardUser._id)
+        .put('/api/users/' + adminUser._id)
         .set('Authorization', standardToken)
         .send({role: 'ADMIN'})
         .end((err, res) => {
@@ -338,9 +338,73 @@ describe('Users API Test', function () {
         });
     });
 
-    it('Does not allow a manager to make changes', (done) => {
+    it('Allows a standard user to change his name and email but nothing else', (done) => {
+      chai.request(server)
+        .put('/api/users/' + standardUser._id)
+        .set('Authorization', standardToken)
+        .send({
+          role: 'ADMIN',
+          first_name: 'Kip',
+          last_name: 'Coonley',
+          email: 'kip@coon.ley'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.role.should.be.eql('STANDARD');
+          res.body.first_name.should.be.eql('Kip');
+          res.body.last_name.should.be.eql('Coonley');
+          res.body.email.should.be.eql('kip@coon.ley');
+          User.findById(standardUser._id, function(error, user) {
+            should.not.exist(error);
+            user.role.should.be.eql('STANDARD');
+            user.first_name.should.be.eql('Kip');
+            user.last_name.should.be.eql('Coonley');
+            user.email.should.be.eql('kip@coon.ley');
+            done();
+          })
+        });
+    });
+
+    it('Allows a manager to change his name, email, and email_settings but nothing else', (done) => {
       chai.request(server)
         .put('/api/users/' + managerUser._id)
+        .set('Authorization', managerToken)
+        .send({
+          role: 'ADMIN',
+          first_name: 'Kip',
+          last_name: 'Coonley',
+          email: 'kip@coon.ley',
+          email_settings: {
+            subscribed: true,
+            subject_tag: 'sup homie'
+          }
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.role.should.be.eql('MANAGER');
+          res.body.first_name.should.be.eql('Kip');
+          res.body.last_name.should.be.eql('Coonley');
+          res.body.email.should.be.eql('kip@coon.ley');
+          res.body.email_settings.subscribed.should.be.eql(true);
+          res.body.email_settings.subject_tag.should.be.eql('sup homie');
+          User.findById(managerUser._id, function(error, user) {
+            should.not.exist(error);
+            user.role.should.be.eql('MANAGER');
+            user.first_name.should.be.eql('Kip');
+            user.last_name.should.be.eql('Coonley');
+            user.email.should.be.eql('kip@coon.ley');
+            user.email_settings.subscribed.should.be.eql(true);
+            user.email_settings.subject_tag.should.be.eql('sup homie');
+            done();
+          })
+        });
+    });
+
+    it('Does not allow a manager to make changes to other users', (done) => {
+      chai.request(server)
+        .put('/api/users/' + standardUser._id)
         .set('Authorization', managerToken)
         .send({role: 'ADMIN'})
         .end((err, res) => {
@@ -349,6 +413,7 @@ describe('Users API Test', function () {
           done();
         });
     });
+
     it('Fails if invalid user id is provided for admin for PUT', (done) => {
       chai.request(server)
         .put('/api/users/' + "999c99867cc99a16bb62d641")
@@ -362,6 +427,7 @@ describe('Users API Test', function () {
           done();
         });
     });
+
     it('Allows an admin user to change first name, last name, role', (done) => {
       chai.request(server)
         .put('/api/users/' + standardUser._id)

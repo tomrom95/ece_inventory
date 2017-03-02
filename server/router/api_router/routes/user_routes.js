@@ -69,8 +69,20 @@ module.exports.getAPIbyID = function(req, res) {
 }
 
 module.exports.putAPI = function(req, res) {
+  if (req.user.role !== 'ADMIN' && req.params.user_id !== String(req.user._id)) {
+    res.status(403);
+    return res.send({error: 'Only admins can edit other users'});
+  }
+  var fields = ['first_name', 'last_name', 'email'];
+  if (req.user.role !== 'STANDARD') {
+    fields.push('email_settings');
+  }
+  if (req.user.role === 'ADMIN') {
+    // Only admins can edit role
+    fields.push('role');
+  }
   var update = {};
-  ['first_name', 'last_name', 'role', 'email'].forEach(function(field) {
+  fields.forEach(function(field) {
     if (req.body[field]) {
       update[field] = req.body[field];
     }
