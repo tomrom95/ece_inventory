@@ -12,7 +12,7 @@ module.exports.postAPI = function(req, res) {
 
   var role = req.body.role || 'STANDARD';
   if (!newUsername || !newPassword || !newEmail) {
-    res.send({error: 'Username and password required for new account'});
+    res.send({error: 'Username, password, and email required for new account'});
     return;
   }
   if (!validator.isEmail(newEmail)) {
