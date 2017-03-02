@@ -619,3 +619,21 @@ return {
 		email: String
 	}
 }
+
+/api/emailSettings
+GET
+params: none
+return: {
+	subject_tag: String,
+	loan_emails: [{
+		date: String,
+		body: String
+	}]
+}
+
+/api/emailSettings/loans/:email_id
+DELETE
+params: none
+return: {
+	message: "Delete successful"
+}
