@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 
 // Places a try catch around all requests. The server never stops
-app.use(function (err, req, res, next) {
+app.use(function (error, req, res, next) {
   console.error(error);
   res.status(500);
   res.render('error', { error: 'A server error has occured.' });
