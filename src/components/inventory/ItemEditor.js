@@ -206,20 +206,16 @@ class ItemEditor extends Component {
 						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(value)){
 							type_mismatch = true;
 						}
-						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(value)){
-							type_mismatch = true;
-						}
-						else if((type === "INT" || type === "FLOAT") && validator.isNumeric(value)){
-							if(type === "INT" && value % 1 !== 0){
-								type_mismatch = true;
-							}
-							else if(type === "FLOAT" && !validator.isFloat(value)){
-								type_mismatch = true;
-							}
-						}
 						else if (type === "SHORT_STRING" && value.length > 200) {
 							invalid_length = true;
 						}
+						else if(type === "INT" && !validator.isInt(value)){
+							type_mismatch = true;
+						}
+						else if(type === "FLOAT" && !validator.isFloat(value)){
+							type_mismatch = true;
+						}
+
 
 						this.addField(value, already_exists, type_mismatch, field_params, invalid_length);
 					}
@@ -289,6 +285,7 @@ class ItemEditor extends Component {
 		}
 		var type = "";
 		var type_mismatch = false;
+		var invalid_length = false;
 		this.props.api.get('/api/customFields/'+field.field)
 			.then(function(response) {
 					if (response.data.error) {
@@ -298,16 +295,14 @@ class ItemEditor extends Component {
 						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(new_value)){
 							type_mismatch = true;
 						}
-						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(new_value)){
+						else if (type === "SHORT_STRING" && new_value.length > 200) {
+							invalid_length = true;
+						}
+						else if(type === "INT" && !validator.isInt(new_value)){
 							type_mismatch = true;
 						}
-						else if((type === "INT" || type === "FLOAT") && validator.isNumeric(new_value)){
-							if(type === "INT" && new_value % 1 !== 0){
-								type_mismatch = true;
-							}
-							else if(type === "FLOAT" && new_value % 1 === 0){
-								type_mismatch = true;
-							}
+						else if(type === "FLOAT" && !validator.isFloat(new_value)){
+							type_mismatch = true;
 						}
 
 						this.submitFieldEdit(type_mismatch, body, field);
@@ -446,17 +441,16 @@ class ItemEditor extends Component {
 
 	onSubmission() {
 		var tags = this.refs.Tags.getSelectedTags();
-		
 		var object = {
-			name: this.refs.Name.value,
+				name: this.refs.Name.value,
 	  		quantity: this.refs.Quantity.value,
-	 		model_number: this.refs["Model Number"].value,
+	 			model_number: this.refs["Model Number"].value,
 	  		description: this.refs.Description.value,
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
 	  		has_instance_objects: false
   		}
-  		
+
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
 

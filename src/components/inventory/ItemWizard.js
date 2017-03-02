@@ -67,8 +67,9 @@ class ItemWizard extends Component {
 			else if(keys[i] === 'custom_fields'){
 				list.push(<div className="form-group" key={"createform-div-customfields-labelrow-"+i}>
 							Custom Fields
-							</div>)
+							</div>);
 				for(var j = 0; j < vals[i].length; j++){
+
 					var field = vals[i][j];
 					var label = "";
 					for(var n = 0; n < this.state.allCustomFields.length; n ++){
@@ -269,13 +270,15 @@ class ItemWizard extends Component {
 			var data = this.state.data;
 			var custom_fields = [];
 			if(data.custom_fields){
-				custom_fields.push(data.custom_fields)
+				for(var j = 0; j < data.custom_fields.length; j++){
+					custom_fields.push(data.custom_fields[j])
+				}
 			}
 			custom_fields.push(field_params);
 			data.custom_fields = custom_fields;
 			this.setState({
 				data: data
-			})
+			});
 		}
 		else if(already_exists) {
 			alert("Item already has that custom field");
@@ -318,19 +321,14 @@ class ItemWizard extends Component {
 						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(value)){
 							type_mismatch = true;
 						}
-						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(value)){
-							type_mismatch = true;
-						}
-						else if((type === "INT" || type === "FLOAT") && validator.isNumeric(value)){
-							if(type === "INT" && value % 1 !== 0){
-								type_mismatch = true;
-							}
-							else if(type === "FLOAT" && value % 1 === 0){
-								type_mismatch = true;
-							}
-						}
 						else if (type === "SHORT_STRING" && value.length > 200) {
 							invalid_length = true;
+						}
+						else if(type === "INT" && !validator.isInt(value)){
+							type_mismatch = true;
+						}
+						else if(type === "FLOAT" && !validator.isFloat(value)){
+							type_mismatch = true;
 						}
 
 						this.addField(value, already_exists, type_mismatch, field_params, invalid_length);
@@ -360,19 +358,14 @@ class ItemWizard extends Component {
 						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(new_value)){
 							type_mismatch = true;
 						}
-						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(new_value)){
-							type_mismatch = true;
-						}
-						else if((type === "INT" || type === "FLOAT") && validator.isNumeric(new_value)){
-							if(type === "INT" && new_value % 1 !== 0){
-								type_mismatch = true;
-							}
-							else if(type === "FLOAT" && new_value % 1 === 0){
-								type_mismatch = true;
-							}
-						}
 						else if (type === "SHORT_STRING" && new_value.length > 200) {
 							invalid_length = true;
+						}
+						else if(type === "INT" && !validator.isInt(new_value)){
+							type_mismatch = true;
+						}
+						else if(type === "FLOAT" && !validator.isFloat(new_value)){
+							type_mismatch = true;
 						}
 						this.submitFieldEdit(type_mismatch, body, field, invalid_length);
 					}
@@ -445,8 +438,12 @@ class ItemWizard extends Component {
   	clearForm() {
 			this.refs.field.setState({
 				selectedField: ""
+			});
+			var data = this.state.data;
+			data.custom_fields = [];
+			this.setState({
+				data: data
 			})
-
 			this.refs.fieldvalue.value = "";
   		var keys = getKeys(this.state.data);
 			keys.forEach(function(key) {

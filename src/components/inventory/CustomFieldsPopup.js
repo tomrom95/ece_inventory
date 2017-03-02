@@ -21,14 +21,11 @@ class CustomFieldsPopup extends Component {
 			type: "",
 			isPrivate: false,
 		}
-		this.handleInputChange = this.handleInputChange.bind(this);
 	}
 
 
 
 	handleInputChange(event) {
-	    const value = event.target.checked;
-
 	    this.setState({
 	      isPrivate: !this.state.isPrivate,
 	    });
@@ -66,7 +63,7 @@ class CustomFieldsPopup extends Component {
 			      </div>
 			      <div className="modal-footer">
 			        <button onClick={e => {this.onSubmission()}} type="button" className="btn btn-primary">Submit</button>
-              <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button onClick={e => {this.clearForm()}} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
 			      </div>
 			    </div>
 			  </div>
@@ -85,6 +82,7 @@ class CustomFieldsPopup extends Component {
 		var type = <Select
 			simpleValue
 			value={this.state.type}
+      ref={"field_type"}
 			clearable={true}
 			placeholder="Choose Type"
 			options={types}
@@ -92,7 +90,8 @@ class CustomFieldsPopup extends Component {
 		/>
 		var is_private = <input type="checkbox"
 			className="form-control"
-			onChange={this.handleInputChange}
+      checked={this.state.isPrivate}
+			onChange={this.handleInputChange.bind(this)}
 			key={3}>
 			</input>
 
@@ -103,7 +102,7 @@ class CustomFieldsPopup extends Component {
 				<label htmlFor={"createform-row-"}>Type</label>
 				{type}
 				<label htmlFor={"createform-row-"}>Private
-          {is_private}
+        {is_private}
         </label>
 			</div>
 		);
@@ -111,6 +110,7 @@ class CustomFieldsPopup extends Component {
 
   clearForm() {
     this.refs.field_name.value = "";
+    this.refs.field_type = "";
     this.setState({
       type: "",
       isPrivate: false,
