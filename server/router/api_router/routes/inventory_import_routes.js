@@ -18,9 +18,14 @@ module.exports.postAPI = function (req, res) {
 };
 
 var importData = function(data, next) {
+  getCustomFieldArrayPromise(data.custom_fields, next);
+}
+
+var getCustomFieldArrayPromise = function(customFieldData, next){
   var draftCustomFieldArray = [];
-  getCustomFieldArayPromise(next).then(function(err, fieldArray)){
-    for(var enteredField in data.custom_fields){
+
+   CustomField.find({}).then(function(err, fieldArray){
+    for(var enteredField in customFieldData){
       var isMatch = false;
       for(var dataField in fieldArray){
           if(enteredField.name === dataField.name){
@@ -35,8 +40,4 @@ var importData = function(data, next) {
       if(!isMatch) return next(enteredField.name + " was not found in list of current custom fields");
     }
   });
-}
-
-var getCustomFieldArrayPromise = function(next){
-  return CustomField.find({});
 };
