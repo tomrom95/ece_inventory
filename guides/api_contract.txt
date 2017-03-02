@@ -65,15 +65,15 @@ body:
   quantity: Integer [required],
   model_number: String,
   description: String,
+  vendor_info: String,
   tags: [String],
   custom_fields: [
     {
         name: String, // Name of Custom field, not ID
-				value: String
+	value: String
   ]
 }
 or Array of body objects above.
-
 
 /api/inventory/:item_id
 GET
