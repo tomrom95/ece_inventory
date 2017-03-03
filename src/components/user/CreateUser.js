@@ -19,7 +19,7 @@ class CreateUser extends React.Component {
 
   componentWillMount() {
     this.axiosInstance = axios.create({
-      baseURL: 'https://' + location.hostname + ':3001/api',
+      baseURL: 'https://' + location.hostname + '/api',
       headers: {'Authorization': localStorage.getItem('token')}
     });
   }

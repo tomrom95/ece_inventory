@@ -8,11 +8,8 @@ import CreateUser from '../components/user/CreateUser.js';
 import EditUsers from '../components/user/EditUsers.js';
 import DocsView from '../components/docs/DocsView.js';
 import Transactions from '../components/transactions/Transactions.js';
-import LogTable from '../components/logging/LogTable.js';
 import LogPage from '../components/logging/LogPage.js';
 import { Route} from 'react-router';
-import querystring from 'querystring';
-import axios from 'axios';
 
 class InventoryWrapper extends Component {
     render() {
@@ -59,11 +56,6 @@ class DocsWrapper extends Component {
   }
 }
 
-class LogTableWrapper extends Component {
-    render() {
-        return (<LogTable showButtons={true} showFilterBox={true} />);
-    }
-}
 
 class LogPageWrapper extends Component {
     render() {

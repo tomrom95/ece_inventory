@@ -62,7 +62,7 @@ class GlobalRequests extends Component {
 
   processData(responseData) {
     var requests = responseData.data;
-    var i; var j;
+    var i;
     var items = [];
     if (this.state.requestId)
       requests = [requests];

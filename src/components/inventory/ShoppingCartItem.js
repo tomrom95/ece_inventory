@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import LogItem from '../logging/LogItem.js';
 
 function getString(str) {
 	if (str === undefined || str === null || str.trim().length === 0) {
@@ -114,13 +113,13 @@ class ShoppingCartItem extends Component {
 		<div className="card cart-item">
 		  <div className="card-block">
 		  	<div className="row">
-			  	<h5 className="col-md-10"> 
+			  	<h5 className="col-md-10">
 			  		{this.state.itemName}
 			  	</h5>
 			  	<div className="col-md-2">
-			  		<button 
-			  		onClick={() => this.deleteItem()} 
-			  		type="button" 
+			  		<button
+			  		onClick={() => this.deleteItem()}
+			  		type="button"
 			  		className="btn btn-danger btn-sm">
 			  			<span className="fa fa-remove"></span>
 			  		</button>
@@ -129,12 +128,12 @@ class ShoppingCartItem extends Component {
 			<div className="container">
 			    <div className="row">
 			    	{"Model: " + getString(this.state.modelNumber)}
-			    </div>		    
+			    </div>
 			    <div className="row" key={"qty-textbox-"+this.state.id}>
 			  		<label className="cart-quantity-label" htmlFor={"qty-"+this.state.id}>{"Quantity:"}</label>
-			  		<input type={"number"} 
-			  			className="form-control cart-quantity-box" 
-			  			value={this.state.quantity} 
+			  		<input type={"number"}
+			  			className="form-control cart-quantity-box"
+			  			value={this.state.quantity}
 			  			onChange={e => this.handleFormChange(e)}
 			  			ref={"qty-"+this.state.id}>
 			  		</input>

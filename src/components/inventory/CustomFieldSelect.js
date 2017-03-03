@@ -6,7 +6,6 @@ class CustomFieldSelect extends Component {
     super(props);
     this.state = {
       allFields: [],
-      selectedFieldName: "",
       selectedField: null,
     }
   }
@@ -24,7 +23,7 @@ class CustomFieldSelect extends Component {
 
   mapFields(fields) {
     return fields.map(function(field) {
-      var label = field.name + " " + "(" + field.type + ")";
+      var label = field.name + " (" + field.type + ")";
       return {label: label, value: field._id};
     });
   }
@@ -41,7 +40,6 @@ class CustomFieldSelect extends Component {
         if (response.error) {
           console.log(response.error);
         }
-        //console.log(response);
         var data = this.mapFields(response.data);
         this.setState({allFields: data});
       }.bind(this))

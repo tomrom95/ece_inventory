@@ -73,7 +73,7 @@ class PaginationContainer extends Component {
 
 	componentWillMount() {
 		this.instance = axios.create({
-		  baseURL: 'https://' + location.hostname + ':3001',
+		  baseURL: 'https://' + location.hostname,
 		  headers: {'Authorization': localStorage.getItem('token')}
 		});
 		this.loadData(1, false);
