@@ -315,7 +315,7 @@ class PaginationContainer extends Component {
 	                  title={this.state.error.title}
 	                  message={this.state.error.message}
 	                  hidden={this.state.errorHidden}
-	                  hideFunction={()=> this.state.errorHidden=true}/>
+	                  hideFunction={()=> {this.state.errorHidden=true}}/>
 	            </div>
             </div>);
 

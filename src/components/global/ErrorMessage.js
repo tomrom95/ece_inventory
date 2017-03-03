@@ -8,7 +8,8 @@ class ErrorMessage extends Component {
 		this.state = {
 			title: this.props.title,
 			message: this.props.message,
-			hidden: this.props.hidden
+			hidden: this.props.hidden,
+			interval: null
 		}
 	}
 
@@ -24,12 +25,19 @@ class ErrorMessage extends Component {
 		this.setState({
 			hidden: true
 		});
+		clearInterval(this.state.interval);
 		this.props.hideFunction();
 	}
 
 	render() {
 		if (this.state.hidden === true) {
 			return null;
+		}
+
+		if (this.state.hidden === false) {
+			this.state.interval = setInterval(function() {
+				this.hideError();
+			}.bind(this), 1500);
 		}
 
 		return(
