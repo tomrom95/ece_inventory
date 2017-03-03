@@ -10,8 +10,12 @@ module.exports.postAPI = function (req, res) {
     if(req.body instanceof Array){
       importMultipleItems(req.body, function(err, data){
         if(err) return res.send({error:err});
+        var message = "Successful import of "+ data.length + " item(s): ";
+        data.forEach(function(item){
+          message += item.name + " ";
+        })
         return res.json({
-          message: "Successful import of "+ data.length + " items"
+          message: message
         });
       });
     } else {
@@ -27,11 +31,13 @@ module.exports.postAPI = function (req, res) {
 var importSingleItem = function(data, next) {
   CustomField.find({}).then(function(fieldArray){
    if(data.custom_fields){
-     data.custom_fields = updateCustomFields(data.custom_fields, fieldArray, next);
+     var result = updateCustomFields(data.custom_fields, fieldArray, next);
+     if(result.error) return next(result.error, null);
+     data.custom_fields = result;
    }
    var item = new Item(data);
    item.save(function(err,item){
-     if(err) return next(err);
+     if(err) return next(err,null);
      return next(null, item);//On successful import
    })
  });
@@ -40,39 +46,39 @@ var importSingleItem = function(data, next) {
 var importMultipleItems = function(data, next){
   CustomField.find({}).then(function(fieldArray){
     var itemArray = [];
-    data.forEach(function(item){
-      if(item.custom_fields){
-        item.custom_fields = updateCustomFields(item.custom_fields, fieldArray, next);
-      }
-      itemArray.push(new Item(item));
-    });
+    for(var i in data){
+      if(data[i].custom_fields){
+          var result = updateCustomFields(data[i].custom_fields, fieldArray, next);
+          if(result.error) return next(result.error, null);
+          data[i].custom_fields = result;
+        }
+        itemArray.push(new Item(data[i]));
+    }
     Item.insertMany(itemArray, function(err, items){
       console.log(err);
-      if(err) return next(err);
+      if(err) return next(err,null);
       return next(null, items); // successfully inserted array
     })
-  });
-}
+  })
+};
 
 var updateCustomFields = function(enteredCustomFields, dataCustomFields, next){
   var draftCustomFieldArray = [];
   console.log(enteredCustomFields);
   console.log(dataCustomFields)
-  enteredCustomFields.forEach(function(enteredField){
-   var isMatch = false;
-   dataCustomFields.forEach(function(dataField){
-       if(enteredField.name === dataField.name){
-         isMatch = true;
-         let draftField = {
-           "field": dataField._id,
-           "value": enteredField.value
-         }
-         draftCustomFieldArray.push(draftField);
-       }
-   });
-   if(!isMatch){
-     return next("The entered custom field "+enteredField.name + " was not found in list of current custom fields");
-   }
-  });
+  for(var i in enteredCustomFields){
+    var isMatch = false;
+    for(var j in dataCustomFields){
+          if(enteredCustomFields[i].name === dataCustomFields[j].name){
+            isMatch = true;
+            let draftField = {
+              "field": dataCustomFields[j]._id,
+              "value": enteredCustomFields[i].value
+            }
+            draftCustomFieldArray.push(draftField);
+          }
+      };
+      if(!isMatch) return {error: "The entered custom field "+enteredCustomFields[i].name + " was not found in list of current custom fields"};
+  }
   return draftCustomFieldArray;
 }
