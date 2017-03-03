@@ -34,6 +34,11 @@ var RequestSchema = new mongoose.Schema({
     enum: ['PENDING', 'APPROVED', 'DENIED', 'FULFILLED'],
     default: 'PENDING'
   },
+  action:{
+    type: String,
+    enum: ['DISBURSEMENT', 'LOAN'],
+    required: true
+  },
   requestor_comment: String,
   reviewer_comment: String,
   is_cancelled: {
