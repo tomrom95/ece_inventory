@@ -557,7 +557,8 @@ return {
 	_id: String,
 	username: String,
 	role: String ('ADMIN', 'MANAGER', 'STANDARD'),
-	email: String
+	email: String,
+	subscribed: Boolean
 }
 
 POST
@@ -566,14 +567,14 @@ body: // Only admins can post
 	username: String,
 	password: String,
 	role: String ('ADMIN', 'MANAGER', 'STANDARD'),
-	email: String
+	email: String,
 }
 return {
 	user: {
 		_id: String,
 		username: String,
 		role: String ('ADMIN', 'MANAGER', 'STANDARD'),
-		email: String
+		email: String,
 	}
 }
 
@@ -583,21 +584,24 @@ return {
 	_id: String,
 	username: String,
 	role: String ('ADMIN', 'MANAGER', 'STANDARD')
-	email: String
+	email: String,
+	subscribed: Boolean
 }
 
-PUT { // Only admins can put
+PUT { // Anyone can edit themselves, only admins can edit others
 body {
 	first_name: String,
 	last_name: String,
-	role: String ('ADMIN', 'MANAGER', 'STANDARD'),
-	email: String
+	role: String ('ADMIN', 'MANAGER', 'STANDARD'), // only admins can change this
+	email: String,
+	subscribed: Boolean // managers and above can change this
 }
 return {
 	_id: String,
 	username: String,
 	role: String ('ADMIN', 'MANAGER', 'STANDARD'),
-	email: String
+	email: String,
+	subscribed: Boolean
 }
 
 }
@@ -616,6 +620,7 @@ return {
 		username: String,
 		password_hash: String,
 		role: String ('ADMIN', 'MANAGER', 'STANDARD'),
-		email: String
+		email: String,
+		subscribed: Boolean
 	}
 }
