@@ -57,13 +57,15 @@ module.exports.deleteAPI = function(req, res) {
   if (!req.params.email_id) return res.send({error: 'email id required'});
   EmailSettings.getSingleton(function(error, settings) {
     if (error) return res.send({error: error});
-    settings.loan_emails = settings.loan_emails.filter(function(email) {
-      return String(email._id) !== req.params.email_id;
+    var index = settings.loan_emails.findIndex(function(email) {
+      return String(email._id) === req.params.email_id;
     });
+    if (index < 0) return res.send({error: 'email id does not exist'});
 
+    settings.loan_emails.splice(index, 1);
     settings.save(function(error, updatedSettings) {
       if (error) return res.send({error: error});
-      return res.json(updatedSettings.loan_emails);
+      return res.json({message: 'Successful'});
     });
   });
 }

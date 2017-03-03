@@ -18,6 +18,7 @@ describe('Email settings API Test', function () {
   var standardUser;
   var managerToken;
   var managerUser;
+  var currentSettings;
 
   beforeEach((done) => { //Before each test we empty the database
     EmailSettings.remove({}, (err) => {
@@ -43,8 +44,9 @@ describe('Email settings API Test', function () {
                   {date: new Date('2017-02-24'), body: 'first body'},
                   {date: new Date('2017-02-25'), body: 'second body'}
                 ]
-                settings.save(function(error) {
+                settings.save(function(error, settings) {
                   should.not.exist(error);
+                  currentSettings = settings;
                   done();
                 });
               });
@@ -221,6 +223,68 @@ describe('Email settings API Test', function () {
         });
     });
 
+  });
+
+  describe('DELETE /api/emailSettings/loans/:email_id', () =>{
+    it('deletes an existing email', (done) => {
+      var email = currentSettings.loan_emails.find((e) => e.body === 'first body');
+      chai.request(server)
+        .delete('/api/emailSettings/loans/' + email._id)
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.message.should.be.eql('Successful');
+          EmailSettings.getSingleton(function(error, settings) {
+            should.not.exist(error);
+            settings.loan_emails.length.should.be.eql(1);
+            settings.loan_emails[0].body.should.be.eql('second body');
+            done();
+          });
+        });
+    });
+
+    it('allows managers to delete email', (done) => {
+      var email = currentSettings.loan_emails.find((e) => e.body === 'first body');
+      chai.request(server)
+        .delete('/api/emailSettings/loans/' + email._id)
+        .set('Authorization', managerToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.message.should.be.eql('Successful');
+          EmailSettings.getSingleton(function(error, settings) {
+            should.not.exist(error);
+            settings.loan_emails.length.should.be.eql(1);
+            settings.loan_emails[0].body.should.be.eql('second body');
+            done();
+          });
+        });
+    });
+
+    it('does not let a standard user delete', (done) => {
+      var email = currentSettings.loan_emails.find((e) => e.body === 'first body');
+      chai.request(server)
+        .delete('/api/emailSettings/loans/' + email._id)
+        .set('Authorization', standardToken)
+        .end((err, res) => {
+          should.exist(err);
+          res.should.have.status(403);
+          done();
+        });
+    });
+
+    it('returns error if email id is non existent', (done) => {
+      chai.request(server)
+        .delete('/api/emailSettings/loans/' + '1111')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.error.should.be.eql('email id does not exist');
+          done();
+        });
+    });
   });
 
 });
