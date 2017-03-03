@@ -43,7 +43,8 @@ class ItemWizard extends Component {
 		this.state = {
 			data: props.data,
 			allCustomFields: props.allCustomFields,
-			formIds: []
+			formIds: [],
+			activated: false
 		}
 	}
 
@@ -51,7 +52,14 @@ class ItemWizard extends Component {
 		this.setState({
 			data: newProps.data,
 			allCustomFields: newProps.allCustomFields,
-			formIds: getValues(newProps.data, getKeys(newProps.data))
+			formIds: getValues(newProps.data, getKeys(newProps.data)),
+			activated: false
+		});
+	}
+
+	activateView() {
+		this.setState({
+			activated: true
 		});
 	}
 
@@ -106,15 +114,22 @@ class ItemWizard extends Component {
 	}
 
 	render() {
-		return (
-		<th>
+		var button = 
 			<button type="button"
 				className="btn btn-outline-primary add-button"
 				data-toggle="modal"
-				data-target={"#createModal"}>
+				data-target={"#createModal"}
+				onMouseOver={() => this.activateView()}>
 				<span className="fa fa-plus"></span>
-			</button>
+			</button>;
 
+		if (this.state.activated === false) {
+			return <th>{button}</th>;
+		}
+
+		return (
+		<th>
+			{button}
 			<div className="modal fade"
 				id={"createModal"}
 				tabIndex="-1"

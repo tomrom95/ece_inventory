@@ -55,8 +55,7 @@ class TagSelector extends Component {
           placeholder="Choose tag(s)"
           options={this.state.allTags}
           onChange={this.handleChange.bind(this)}
-          onFocus={() => this.loadData()}
-        />
+          onFocus={() => this.loadData()}/>
       );
     } else {
       return (
@@ -67,8 +66,7 @@ class TagSelector extends Component {
           placeholder="Choose tag(s)"
           options={this.state.allTags}
           onChange={this.handleChange.bind(this)}
-          onFocus={() => this.loadData()}
-        />
+          onFocus={() => this.loadData()}/>
       );
     }
 
