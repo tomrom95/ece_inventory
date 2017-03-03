@@ -12,7 +12,7 @@ module.exports.postAPI = function (req, res) {
         if(err) return res.send({error:err});
         var message = "Successful import of "+ data.length + " item(s): ";
         data.forEach(function(item){
-          message += item.name + " ";
+          message += "\""+item.name+"\" ";
         })
         return res.json({
           message: message
