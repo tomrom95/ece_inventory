@@ -17,7 +17,7 @@ class TagSelector extends Component {
 
   clearTags() {
     this.setState({
-      selectedTags: []
+      selectedTags: null
     });
   }
 
