@@ -30,7 +30,6 @@ class ItemDetailView extends React.Component {
       baseURL: 'https://' + location.hostname + '/api',
       headers: {'Authorization': localStorage.getItem('token')}
     });
-    this.loadData();
   }
 
   componentWillReceiveProps(newProps) {
@@ -59,7 +58,6 @@ class ItemDetailView extends React.Component {
       return(
         <div className="row">
           <p>No custom fields</p>
-
         </div>
       );
     }

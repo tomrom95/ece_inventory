@@ -7,6 +7,25 @@ import StatusFilterBox from '../requests/StatusFilterBox.js';
 
 var filterNames = ["name", "model_number", "required_tags", "excluded_tags", "status", "user"];
 
+function validNumber(num) {
+	if (!isNaN(num)) {
+		return (num > 0);
+	}
+	return false;
+}
+
+function isWholeNumber(num) {
+	if (!validNumber(num)) {
+		return "Not a valid number!";
+	}
+	else {
+		if (Number(num) !== parseInt(num)) {
+			return "Please input a whole number!";
+		}
+		else return true;
+	}
+}
+
 class PaginationContainer extends Component {
 
 	/*
@@ -24,6 +43,7 @@ class PaginationContainer extends Component {
 			initialLoad: true,
 			page: 1,
 			rowsPerPage: 5,
+			pageBox: 1,
 			errorHidden: true,
 			error: {
 				title: "",
@@ -80,11 +100,6 @@ class PaginationContainer extends Component {
 	}
 
 	loadData(page, justDeleted) {
-	  if (page <= 0) {
-	    document.getElementById("pageNum-"+this.state.id).value = this.state.page;
-	    return;
-	  }
-
 	  this.instance.get(this.getURL(page, this.state.rowsPerPage))
 	  .then(function (response) {
 	    if (this.state.initialLoad) {
@@ -95,7 +110,9 @@ class PaginationContainer extends Component {
 	      if (page === 1) {
 	        this.setState({items: []});
 	      } else {
-	        document.getElementById("pageNum-"+this.state.id).value = this.state.page;
+	        this.setState({
+	        	pageBox: this.state.page
+	        });
 	        if (justDeleted === true) {
 	        	this.previousPage();
 	        }
@@ -111,12 +128,18 @@ class PaginationContainer extends Component {
 	        page: page
 	      });
 
-	      document.getElementById("pageNum-"+this.state.id).value = page;
+	      this.setState({
+	      	pageBox: page
+	      });
 	    }
 	  }.bind(this));
 	}
 
 	previousPage() {
+		var prevPage = this.state.page -1;
+		if (Number(prevPage) <= 0) {
+			return;
+		}
 		this.loadData(this.state.page - 1, false);
 	}
 
@@ -173,9 +196,29 @@ class PaginationContainer extends Component {
 	  	this.loadData(1, false);
 	}
 
+	onPageTextEdit(event) {
+		if (isWholeNumber(event.target.value) === true || event.target.value === "") {
+			this.setState({
+				pageBox: event.target.value
+			});
+		}
+		else {
+			this.setState({
+				pageBox: this.state.page
+			})
+		}
+	}
+
 	makePageBox() {
     	return (
-      	<input type="text" defaultValue={this.state.page} className="form-control pagenum-textbox" id={"pageNum-"+this.state.id}></input>
+      	<input 
+      		type="text"
+      		onChange={e => this.onPageTextEdit(e)} 
+      		value={this.state.pageBox} 
+      		className="form-control pagenum-textbox" 
+      		ref={"pageNum-"+this.state.id}
+      		id={"pageNum-"+this.state.id}>
+  		</input>
     	);
   	}
 
@@ -183,7 +226,7 @@ class PaginationContainer extends Component {
 		return(
 		  <button type="button"
 		    className="btn btn-primary"
-		    onClick={e=> this.loadData(document.getElementById('pageNum-'+this.state.id).value, false)}>
+		    onClick={e=> this.loadData(this.refs["pageNum-"+this.state.id].value, false)}>
 		    GO
 		  </button>
 		);
