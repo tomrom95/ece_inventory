@@ -43,7 +43,9 @@ class ItemWizard extends Component {
 		this.state = {
 			data: props.data,
 			allCustomFields: props.allCustomFields,
-			formIds: []
+			formIds: [],
+			activated: false,
+			justApplied: false
 		}
 	}
 
@@ -51,7 +53,14 @@ class ItemWizard extends Component {
 		this.setState({
 			data: newProps.data,
 			allCustomFields: newProps.allCustomFields,
-			formIds: getValues(newProps.data, getKeys(newProps.data))
+			formIds: getValues(newProps.data, getKeys(newProps.data)),
+			activated: this.state.justApplied ? true : false
+		});
+	}
+
+	activateView() {
+		this.setState({
+			activated: true
 		});
 	}
 
@@ -106,15 +115,22 @@ class ItemWizard extends Component {
 	}
 
 	render() {
-		return (
-		<th>
+		var button = 
 			<button type="button"
 				className="btn btn-outline-primary add-button"
 				data-toggle="modal"
-				data-target={"#createModal"}>
+				data-target={"#createModal"}
+				onMouseOver={() => this.activateView()}>
 				<span className="fa fa-plus"></span>
-			</button>
+			</button>;
 
+		if (this.state.activated === false) {
+			return <th>{button}</th>;
+		}
+
+		return (
+		<th>
+			{button}
 			<div className="modal fade"
 				id={"createModal"}
 				tabIndex="-1"
@@ -401,14 +417,14 @@ class ItemWizard extends Component {
 			fields.push(obj);
 		}
 		var object = {
-				name: this.refs.Name.value,
+			name: this.refs.Name.value,
 	  		quantity: this.refs.Quantity.value,
-	 			model_number: this.refs["Model Number"].value,
+	 		model_number: this.refs["Model Number"].value,
 	  		description: this.refs.Description.value,
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
 	  		has_instance_objects: false,
-				custom_fields: fields
+			custom_fields: fields
   		}
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
@@ -420,6 +436,9 @@ class ItemWizard extends Component {
 			        } else {
 			        	this.props.callback();
 			        	this.clearForm();
+			        	this.setState({
+			        		justApplied: true
+			        	});
 			        	alert("Successfully created new item: " + response.data.name);
 			        }
 			      }.bind(this))

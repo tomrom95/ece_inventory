@@ -14,10 +14,6 @@ class ShoppingCart extends Component {
 		}
 	}
 
-	componentDidMount() {
-		this.loadData();
-	}
-
 	loadData() {
 		this.props.api.get('api/cart/')
 		.then(function(response) {
