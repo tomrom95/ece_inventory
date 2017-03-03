@@ -14,6 +14,15 @@ var UserSchema = new mongoose.Schema({
     unique: true,
     sparse: true
   },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  subscribed: {
+    type: Boolean,
+    default: false
+  },
   first_name: String,
   last_name: String,
   is_local: {

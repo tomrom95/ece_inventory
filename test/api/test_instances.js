@@ -23,7 +23,7 @@ describe('Instance API Test', function() {
       should.not.exist(err);
       User.remove({}, (err) => {
         should.not.exist(err);
-        auth_helpers.createNewUser('test_user', 'test', 'ADMIN', function(err, user) {
+        auth_helpers.createNewUser('test_user', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
           should.not.exist(err);
           token = auth_helpers.createAuthToken(user);
           fakeJSONData.instances = instances_helpers.createMockInstances();
