@@ -21,13 +21,13 @@ describe('Inventory API Test', function () {
         should.not.exist(err);
         User.remove({}, (err) => {
           should.not.exist(err);
-          helpers.createNewUser('test_user', 'test', 'ADMIN', function(err, user) {
+          helpers.createNewUser('admin', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
             should.not.exist(err);
             token = helpers.createAuthToken(user);
-            helpers.createNewUser('standard', 'test', 'STANDARD', function(err, user) {
+            helpers.createNewUser('standard', 'test', 'standard@email.com', 'STANDARD', function(err, user) {
               should.not.exist(err);
               standardToken = helpers.createAuthToken(user);
-              helpers.createNewUser('manager', 'test', 'MANAGER', function(err, user) {
+              helpers.createNewUser('manager', 'test', 'manager@email.com', 'MANAGER', function(err, user) {
                 should.not.exist(err);
                 managerToken = helpers.createAuthToken(user);
                 Item.insertMany(fakeJSONData).then(function(obj){

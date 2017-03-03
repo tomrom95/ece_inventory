@@ -31,15 +31,15 @@ describe('Cart API Test', function () {
         should.not.exist(err);
         User.remove({}, (err) => {
           should.not.exist(err);
-          helpers.createNewUser('admin', 'test', 'ADMIN', function(err, user) {
+          helpers.createNewUser('admin', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
             should.not.exist(err);
             adminToken = helpers.createAuthToken(user);
             adminUser = user;
-            helpers.createNewUser('standard', 'test', 'STANDARD', function(err, user) {
+            helpers.createNewUser('standard', 'test', 'standard@email.com', 'STANDARD', function(err, user) {
               should.not.exist(err);
               standardToken = helpers.createAuthToken(user);
               standardUser = user;
-              helpers.createNewUser('manager', 'test', 'MANAGER', function(err, user) {
+              helpers.createNewUser('manager', 'test', 'manager@email.com', 'MANAGER', function(err, user) {
                 should.not.exist(err);
                 managerToken = helpers.createAuthToken(user);
                 managerUser = user;

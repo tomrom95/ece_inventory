@@ -16,7 +16,7 @@ describe('/login Test', function () {
   beforeEach((done) => {
     User.remove({}, (err) => {
       should.not.exist(err);
-      helpers.createNewUser('test_user', 'test', 'STANDARD', function(err, user) {
+      helpers.createNewUser('test_user', 'test', 'test@test.com', 'STANDARD', function(err, user) {
         should.not.exist(err);
         done();
       });

@@ -38,6 +38,7 @@ function loginWithOAuth(oauthToken, next) {
         {
           _id: user._id,
           netid: user.netid,
+          email: user.netid + '@duke.edu',
           first_name: user.first_name,
           last_name: user.last_name,
           apikey: user.apikey,
