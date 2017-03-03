@@ -36,6 +36,7 @@ var LoanSchema = new mongoose.Schema({
   created: {
     type: Date,
     default: Date.now,
+    required: true,
   },
   lastModified:{
     type: Date,
@@ -43,3 +44,4 @@ var LoanSchema = new mongoose.Schema({
   }
 })
 LoanSchema.plugin(mongoosePaginate);
+module.exports = mongoose.model('Loan', LoanSchema);
