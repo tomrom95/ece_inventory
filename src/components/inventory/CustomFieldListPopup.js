@@ -1,15 +1,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import axios from 'axios';
-import Select from 'react-select';
 
-
-
-const types = [
-    { value: 'SHORT_STRING', label: 'SHORT_STRING' },
-    { value: 'LONG_STRING', label: 'LONG_STRING' },
-    { value: 'INT', label: 'INT' },
-    { value: 'FLOAT', label: 'FLOAT' }];
 
 
 class CustomFieldListPopup extends Component {
@@ -18,14 +9,13 @@ class CustomFieldListPopup extends Component {
 		super(props);
 		this.state = {
       data: [],
-      allFields: [],
       formIds: [],
 		}
 	}
 
   mapFields(fields) {
     return fields.map(function(field) {
-      return {name: field.name, type: field.type, isPrivate: field.isPrivate};
+      return {name: field.name, type: field.type, isPrivate: field.isPrivate, _id: field._id};
     });
   }
 
@@ -33,7 +23,6 @@ class CustomFieldListPopup extends Component {
     var data = this.mapFields(newProps.allCustomFields);
     this.setState({
       data: data,
-      allFields: newProps.allCustomFields
     });
   }
 
@@ -44,7 +33,6 @@ class CustomFieldListPopup extends Component {
           console.log(response.error);
         }
         else{
-          this.setState({allFields: response.data});
           var data = this.mapFields(response.data);
           this.setState({data: data});
         }
@@ -54,15 +42,15 @@ class CustomFieldListPopup extends Component {
       });
 	}
 
-  makeTextBox(row, field, field_id){
+  makeTextBox(row, field){
     var id = "editfield-form-row-"+row;
     this.state.formIds.push(id);
     var name_input = <input type="text"
           className="form-control"
           value={field.name}
-          ref={field_id+"-NAME"}
-          key={field_id+"-NAME"}
-          onChange={e => this.handleNameChange(e, field_id)}>
+          ref={field._id+"-NAME"}
+          key={field._id+"-NAME"}
+          onChange={e => this.handleNameChange(e, field._id)}>
         </input>
   /*  var type_input = <Select
           simpleValue
@@ -76,30 +64,29 @@ class CustomFieldListPopup extends Component {
     var is_private = <input type="checkbox"
     			className="form-control"
           checked={field.isPrivate}
-    			onChange={e=>this.handlePrivacyChange(e, field_id)}
-          ref={field_id+"-PRIVACY"}
-    			key={field_id+"-PRIVACY"}>
+    			onChange={e=>this.handlePrivacyChange(e, field._id)}
+          ref={field._id+"-PRIVACY"}
+    			key={field._id+"-PRIVACY"}>
     			</input>
 
 
     return (
       <div className="form-group" key={"createform-div-row-"+row}>
-        <label key={"name-row-"+row+"-"+field_id} htmlFor={"createform-row-"+row}>Name</label>
+        <label key={"name-row-"+row+"-"+field._id} htmlFor={"createform-row-"+row}>Name</label>
         {name_input}
 
-        <label key={"privacy-row-"+row+"-"+field_id} htmlFor={"createform-row-"+row}>Private
-          {is_private}
-        </label>
+        <label key={"privacy-row-"+row+"-"+field._id} htmlFor={"createform-row-"+row}>Private</label>
+        {is_private}
         <div className="custom-field-buttons">
         <button type="button"
 					className="btn btn-outline-primary add-button"
 					key={"button-add-field"+row}
-					onClick={e => this.onSubmission(field_id)}>
+					onClick={e => this.onSubmission(field._id)}>
 					Apply Changes
 				</button>
         <button
           key={"delete-field"+row}
-          onClick={()=>{this.deleteCustomField(field_id)}}
+          onClick={()=>{this.deleteCustomField(field._id)}}
           type="button"
           className="btn btn-danger delete-button">
           Delete
@@ -112,15 +99,12 @@ class CustomFieldListPopup extends Component {
   handleNameChange(event, id) {
     var new_name = event.target.value;
     var data = this.state.data;
-    var allFields = this.state.allFields;
-		for(var i = 0; i < this.state.allFields.length; i ++){
-      if(this.state.allFields[i]._id === id){
+		for(var i = 0; i < this.state.data.length; i ++){
+      if(this.state.data[i]._id === id){
         data[i].name = new_name;
-        allFields[i].name = new_name;
       }
     }
 		this.setState({
-			allFields: allFields,
       data: data
 		});
 	}
@@ -130,32 +114,24 @@ class CustomFieldListPopup extends Component {
   handleTypeChange(event, id) {
     var new_type = event;
     var data = this.state.data;
-    var allFields = this.state.allFields;
-		for(var i = 0; i < this.state.allFields.length; i ++){
-      if(this.state.allFields[i]._id === id){
+		for(var i = 0; i < this.state.data.length; i ++){
+      if(this.state.data[i]._id === id){
         data[i].type = new_type;
-        allFields[i].type = new_type;
       }
     }
 		this.setState({
-			allFields: allFields,
       data: data
 		});
 	}
 
   handlePrivacyChange(event, id) {
-    var check_state = event;
-    var allFields = this.state.allFields;
     var data = this.state.data;
-    var ref = id+"-PRIVACY";
-		for(var i = 0; i < this.state.allFields.length; i ++){
-      if(this.state.allFields[i]._id === id){
-        allFields[i].isPrivate = !this.state.allFields[i].isPrivate;
+		for(var i = 0; i < this.state.data.length; i ++){
+      if(this.state.data[i]._id === id){
         data[i].isPrivate = !this.state.data[i].isPrivate;
       }
     }
 		this.setState({
-			allFields: allFields,
       data: data,
 		});
 	}
@@ -212,41 +188,46 @@ class CustomFieldListPopup extends Component {
 	makeForm(){
     var list = []; var i;
     for (i=0; i<this.state.data.length; i++) {
-      list.push(this.makeTextBox(i, this.state.data[i], this.state.allFields[i]._id));
+      list.push(this.makeTextBox(i, this.state.data[i]));
     }
     return list;
 	}
 
 
 	onSubmission(field_id) {
-    var name_ref = field_id+"-NAME";
-    //var type_ref = field_id+"-TYPE";
-    var private_ref = field_id+"-PRIVACY";
+    var name = "";
     var isPrivate = false;
     var type = "";
     for(var j = 0; j < this.state.data.length; j++){
-      if(this.state.allFields[j]._id === field_id){
+      if(this.state.data[j]._id === field_id){
+        name = this.state.data[j].name;
         isPrivate = this.state.data[j].isPrivate;
         type = this.state.data[j].type;
       }
     }
 		var new_field = {
-      name: this.refs[name_ref].value,
+      name: name,
       type: type,
       isPrivate: isPrivate,
     }
-		this.props.api.put('/api/customFields/' + field_id, new_field)
-	  	.then(function(response) {
-	        if (response.data.error) {
-            console.log(response.data.error);
-          } else {
-						this.props.callback();
-            alert("Changes applied to item");
-	        }
-	      }.bind(this))
-	      .catch(function(error) {
-	        console.log(error);
-	      }.bind(this));
+    if(name.length === 0){
+      alert("field name must not be null");
+    }
+    else{
+      this.props.api.put('/api/customFields/' + field_id, new_field)
+  	  	.then(function(response) {
+  	        if (response.data.error) {
+              console.log(response.data.error);
+            } else {
+  						this.props.callback();
+              alert("Changes applied to item");
+  	        }
+  	      }.bind(this))
+  	      .catch(function(error) {
+  	        console.log(error);
+  	      }.bind(this));
+
+    }
 
   }
 

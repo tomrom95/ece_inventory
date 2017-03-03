@@ -87,12 +87,13 @@ class ItemEditor extends Component {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
 			}
 			else if (keys[i] === 'custom_fields'){
+				// add cancel, close, apply button bar first
 				list.push(<div key = {"createform-button-bar-row-"+i} className="modal-footer">
 										<button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
 										<button type="button" onClick={() => this.clearForm()} className="btn btn-secondary" data-dismiss="modal">Close</button>
 										<button onClick={() => this.onSubmission()} type="button" className="btn btn-primary">Apply</button>
 									</div>);
-
+				// create existing custom field text boxes
 				if(vals[i].length > 0){
 					list.push(<div className="form-group" key={"createform-div-customfields-labelrow-"+i}>
 								Custom Fields
@@ -105,6 +106,7 @@ class ItemEditor extends Component {
 								label = this.state.allCustomFields[n].name + " " + "(" + this.state.allCustomFields[n].type + ")";
 							}
 						}
+						// if label is null, the field has been deleted globally and should not be added
 						if(label !== ""){
 							list.push(this.makeCustomTextBox(i, j, field, label));
 							list.push(
@@ -173,10 +175,8 @@ class ItemEditor extends Component {
 	clearForm() {
 		this.refs.field.setState({
 			selectedField: ""
-		})
-
+		});
 		this.refs.fieldvalue.value = "";
-
 	}
 
 	checkFieldParams(custom_field, value, current_fields){
@@ -186,11 +186,10 @@ class ItemEditor extends Component {
 				already_exists = true;
 			}
 		}
-
 		var type = "";
 		var type_mismatch = false;
 		var invalid_length = false;
-		var name = "";
+		//var name = "";
 		this.props.api.get('/api/customFields/'+custom_field)
 			.then(function(response) {
 					if (response.data.error) {
@@ -201,26 +200,9 @@ class ItemEditor extends Component {
 							value: value
 						}
 						type = response.data.type;
-						name = response.data.name;
-
-						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(value)){
-							type_mismatch = true;
-						}
-						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(value)){
-							type_mismatch = true;
-						}
-						else if((type === "INT" || type === "FLOAT") && validator.isNumeric(value)){
-							if(type === "INT" && value % 1 !== 0){
-								type_mismatch = true;
-							}
-							else if(type === "FLOAT" && !validator.isFloat(value)){
-								type_mismatch = true;
-							}
-						}
-						else if (type === "SHORT_STRING" && value.length > 200) {
-							invalid_length = true;
-						}
-
+						//name = response.data.name;
+						invalid_length = this.checkInvalidLength(type, value);
+						type_mismatch = this.checkMismatch(type, value);
 						this.addField(value, already_exists, type_mismatch, field_params, invalid_length);
 					}
 				}.bind(this))
@@ -231,16 +213,13 @@ class ItemEditor extends Component {
 	}
 
 	addField(value, already_exists, type_mismatch, field_params, invalid_length){
-		if(value && !already_exists && !type_mismatch){
-			//this.refs.field.value = "";
-			//this.refs.fieldvalue.value = "";
+		if(value && !already_exists && !type_mismatch && !invalid_length){
 			this.props.api.post('/api/inventory/'+ this.props.itemId+ "/customFields/",  field_params)
 				.then(function(response) {
 						if (response.data.error) {
 							alert(response.data.error);
 						} else {
 							this.clearForm();
-
 							this.props.callback();
 						}
 					}.bind(this))
@@ -270,7 +249,6 @@ class ItemEditor extends Component {
 						alert(response.data.error);
 					} else {
 						this.props.callback();
-
 					}
 				}.bind(this))
 				.catch(function(error) {
@@ -278,8 +256,6 @@ class ItemEditor extends Component {
 				}.bind(this));
 
 	}
-
-
 
 	editCustomField(index, field){
 		var new_value = this.state.data.custom_fields[index].value
@@ -289,28 +265,16 @@ class ItemEditor extends Component {
 		}
 		var type = "";
 		var type_mismatch = false;
+		var invalid_length = false;
 		this.props.api.get('/api/customFields/'+field.field)
 			.then(function(response) {
 					if (response.data.error) {
 						alert(response.data.error);
 					} else {
 						type = response.data.type;
-						if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(new_value)){
-							type_mismatch = true;
-						}
-						else if((type === "INT" || type === "FLOAT") && !validator.isNumeric(new_value)){
-							type_mismatch = true;
-						}
-						else if((type === "INT" || type === "FLOAT") && validator.isNumeric(new_value)){
-							if(type === "INT" && new_value % 1 !== 0){
-								type_mismatch = true;
-							}
-							else if(type === "FLOAT" && new_value % 1 === 0){
-								type_mismatch = true;
-							}
-						}
-
-						this.submitFieldEdit(type_mismatch, body, field);
+						invalid_length = this.checkInvalidLength(type, new_value);
+						type_mismatch = this.checkMismatch(type, new_value);
+						this.submitFieldEdit(type_mismatch, invalid_length, body, field);
 					}
 				}.bind(this))
 				.catch(function(error) {
@@ -319,8 +283,26 @@ class ItemEditor extends Component {
 
 	}
 
-	submitFieldEdit(type_mismatch, body, field){
-		if(!type_mismatch){
+	checkMismatch(type, value){
+		var type_mismatch = false;
+		if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(value)){
+			type_mismatch = true;
+		}
+		else if(type === "INT" && !validator.isInt(value)){
+			type_mismatch = true;
+		}
+		else if(type === "FLOAT" && !validator.isFloat(value)){
+			type_mismatch = true;
+		}
+		return type_mismatch;
+	}
+
+	checkInvalidLength(type, value){
+		return (type === "SHORT_STRING" && value.length > 200);
+	}
+
+	submitFieldEdit(type_mismatch, invalid_length, body, field){
+		if(!type_mismatch && !invalid_length){
 			this.props.api.put('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field, body)
 				.then(function(response) {
 						if (response.data.error) {
@@ -333,8 +315,11 @@ class ItemEditor extends Component {
 						console.log(error);
 					}.bind(this));
 		}
-		else{
+		else if(type_mismatch){
 			alert("New value is incorrect type");
+		}
+		else if (invalid_length) {
+			alert("String is too long for type SHORT_STRING")
 		}
 	}
 
@@ -446,17 +431,16 @@ class ItemEditor extends Component {
 
 	onSubmission() {
 		var tags = this.refs.Tags.getSelectedTags();
-		
 		var object = {
-			name: this.refs.Name.value,
+				name: this.refs.Name.value,
 	  		quantity: this.refs.Quantity.value,
-	 		model_number: this.refs["Model Number"].value,
+	 			model_number: this.refs["Model Number"].value,
 	  		description: this.refs.Description.value,
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
 	  		has_instance_objects: false
   		}
-  		
+
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
 

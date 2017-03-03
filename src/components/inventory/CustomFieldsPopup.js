@@ -21,14 +21,11 @@ class CustomFieldsPopup extends Component {
 			type: "",
 			isPrivate: false,
 		}
-		this.handleInputChange = this.handleInputChange.bind(this);
 	}
 
 
 
 	handleInputChange(event) {
-	    const value = event.target.checked;
-
 	    this.setState({
 	      isPrivate: !this.state.isPrivate,
 	    });
@@ -66,7 +63,7 @@ class CustomFieldsPopup extends Component {
 			      </div>
 			      <div className="modal-footer">
 			        <button onClick={e => {this.onSubmission()}} type="button" className="btn btn-primary">Submit</button>
-              <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button onClick={e => {this.clearForm()}} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
 			      </div>
 			    </div>
 			  </div>
@@ -79,21 +76,24 @@ class CustomFieldsPopup extends Component {
 	makeForm(){
 		var name = <input type="text"
 			className="form-control"
-			ref="field_name"
-			key={1}>
+			ref={"field_name"}
+			key={"field_name"}>
 			</input>
 		var type = <Select
 			simpleValue
 			value={this.state.type}
+      ref={"field_type"}
 			clearable={true}
 			placeholder="Choose Type"
 			options={types}
 			onChange={this.handleTypeChange.bind(this)}
+      key={"field_type"}
 		/>
 		var is_private = <input type="checkbox"
 			className="form-control"
-			onChange={this.handleInputChange}
-			key={3}>
+      checked={this.state.isPrivate}
+			onChange={this.handleInputChange.bind(this)}
+			key={"field_isPrivate"}>
 			</input>
 
 		return (
@@ -103,7 +103,7 @@ class CustomFieldsPopup extends Component {
 				<label htmlFor={"createform-row-"}>Type</label>
 				{type}
 				<label htmlFor={"createform-row-"}>Private
-          {is_private}
+        {is_private}
         </label>
 			</div>
 		);
@@ -136,8 +136,8 @@ class CustomFieldsPopup extends Component {
           		console.log(response.data.error);
   	        } else {
               alert("Custom Field made successfully");
-  						this.props.callback();
               this.clearForm();
+  						this.props.callback();
   	        }
   	      }.bind(this))
   	      .catch(function(error) {
