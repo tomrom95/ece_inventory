@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import axios from 'axios';
 import LogItem from './LogItem.js';
-import LogFilterBox from './LogFilterBox.js';
 
 function formatDate(dateString) {
   var i;

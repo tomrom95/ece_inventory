@@ -37,7 +37,7 @@ class CurrentOrders extends Component {
 
   processData(responseData) {
     var requests = responseData.data;
-    var i; var j;
+    var i;
     var items = [];
     for (i=0; i<requests.length; i++) {
 

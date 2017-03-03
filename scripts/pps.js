@@ -25,7 +25,7 @@ mongoose.connect('mongodb://admin:ece458duke@localhost/inventory');
 console.log("Making POST call to /auth/login...");
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 request.post(
-  'https://colab-sbx-186.oit.duke.edu:3001/auth/login',
+  'https://colab-sbx-186.oit.duke.edu/auth/login',
   {json:{"username": username, "password": password}},
   function(err, response, body){
     if(err){

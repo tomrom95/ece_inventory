@@ -5,7 +5,7 @@ node_js:
 services:
   - mongodb
 install:
-  - npm install -g create-react-app mocha pushstate-server
+  - npm install -g create-react-app mocha
   - npm install
 script:
   - npm test

@@ -62,7 +62,7 @@ Copy these files into your project's root directory. Make sure to use root acces
 Note that we can match the app id with any url you choose. If your site is www.DOMAIN.duke.edu or www.DOMAIN.com then your app ID should be ece-inventory-DOMAIN or ece-inventory-DOMAIN-https.
 
 11) Run in development using
-> npm run start-dev
+> sudo npm run start-dev
 
 Run in production using
-> npm run start-prod
+> sudo npm run start-prod

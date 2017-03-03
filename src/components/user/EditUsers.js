@@ -23,7 +23,7 @@ class EditUsers extends Component {
 
 	makeAPI() {
 		this.instance = axios.create({
-		  baseURL: 'https://' + location.hostname + ':3001',
+		  baseURL: 'https://' + location.hostname,
 		  headers: {'Authorization': localStorage.getItem('token')}
 		});
 	}
@@ -44,10 +44,10 @@ class EditUsers extends Component {
 		else return (
 		  <div className="form-group row">
 			  <label>Choose Privilege Level</label>
-		      <select onChange={e=>this.handleRoleChange(e)} 
-		      		value={this.state.roleSelected} 
-		      		id={"role-field"} 
-		      		className="form-control" 
+		      <select onChange={e=>this.handleRoleChange(e)}
+		      		value={this.state.roleSelected}
+		      		id={"role-field"}
+		      		className="form-control"
 		      		ref="role">
 		        <option>STANDARD</option>
 		        <option>MANAGER</option>
@@ -66,7 +66,7 @@ class EditUsers extends Component {
 		            Apply
 	    		</button>
   			);
-  		} 
+  		}
   		else return null;
   	}
 
@@ -77,7 +77,7 @@ class EditUsers extends Component {
 		          className="btn btn-danger cart-update-button"
 		          onClick={() => this.cancelEdits()}>
 		            Cancel
-	    		</button>  				
+	    		</button>
   			);
   		}
   		return null;
@@ -170,7 +170,7 @@ class EditUsers extends Component {
 			return <div className="text-center">You are not allowed to access this page.</div>
 		}
 
-		return ( 
+		return (
 			<div className="container">
 				<div className="row form-group">
 					<h3>Edit User Credentials</h3>
@@ -179,7 +179,7 @@ class EditUsers extends Component {
 					<div className="col-md-8">
 						{this.makeUserSelectDropdown()}
 						{this.makeRoleSelectDropdown()}
-						
+
 						<div className="row form-group">
 							<div className="col-xs-6">
 								{this.makeApplyButton()}
