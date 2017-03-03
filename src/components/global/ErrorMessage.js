@@ -24,9 +24,13 @@ class ErrorMessage extends Component {
 	hideError() {
 		this.setState({
 			hidden: true
-		});
-		clearInterval(this.state.interval);
-		this.props.hideFunction();
+		}, function() {
+			clearInterval(this.state.interval);
+			this.setState({
+				interval: null
+			});
+			this.props.hideFunction();
+		}.bind(this));
 	}
 
 	render() {
@@ -34,7 +38,7 @@ class ErrorMessage extends Component {
 			return null;
 		}
 
-		if (this.state.hidden === false) {
+		if (this.state.hidden === false && this.state.interval === null) {
 			this.state.interval = setInterval(function() {
 				this.hideError();
 			}.bind(this), 1500);
