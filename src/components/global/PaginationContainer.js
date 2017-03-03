@@ -125,26 +125,23 @@ class PaginationContainer extends Component {
 	    else {
 	      this.setState({
 	        items: this.state.processData(response),
-	        page: page
-	      });
-
-	      this.setState({
-	      	pageBox: page
+	        page: page,
+	        pageBox: page
 	      });
 	    }
 	  }.bind(this));
 	}
 
 	previousPage() {
-		var prevPage = this.state.page -1;
-		if (Number(prevPage) <= 0) {
+		var prevPage = Number(this.state.page) - 1;
+		if (prevPage <= 0) {
 			return;
 		}
-		this.loadData(this.state.page - 1, false);
+		this.loadData(prevPage, false);
 	}
 
 	nextPage() {
-		this.loadData(this.state.page + 1, false);
+		this.loadData(Number(this.state.page) + 1, false);
 	}
 
 	getURL(page, rowsPerPage) {
@@ -226,7 +223,7 @@ class PaginationContainer extends Component {
 		return(
 		  <button type="button"
 		    className="btn btn-primary"
-		    onClick={e=> this.loadData(this.refs["pageNum-"+this.state.id].value, false)}>
+		    onClick={e=> this.loadData(Number(this.refs["pageNum-"+this.state.id].value), false)}>
 		    GO
 		  </button>
 		);
