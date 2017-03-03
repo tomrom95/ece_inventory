@@ -44,7 +44,8 @@ class ItemWizard extends Component {
 			data: props.data,
 			allCustomFields: props.allCustomFields,
 			formIds: [],
-			activated: false
+			activated: false,
+			justApplied: false
 		}
 	}
 
@@ -53,7 +54,7 @@ class ItemWizard extends Component {
 			data: newProps.data,
 			allCustomFields: newProps.allCustomFields,
 			formIds: getValues(newProps.data, getKeys(newProps.data)),
-			activated: false
+			activated: this.state.justApplied ? true : false
 		});
 	}
 
@@ -416,14 +417,14 @@ class ItemWizard extends Component {
 			fields.push(obj);
 		}
 		var object = {
-				name: this.refs.Name.value,
+			name: this.refs.Name.value,
 	  		quantity: this.refs.Quantity.value,
-	 			model_number: this.refs["Model Number"].value,
+	 		model_number: this.refs["Model Number"].value,
 	  		description: this.refs.Description.value,
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
 	  		has_instance_objects: false,
-				custom_fields: fields
+			custom_fields: fields
   		}
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
@@ -435,6 +436,9 @@ class ItemWizard extends Component {
 			        } else {
 			        	this.props.callback();
 			        	this.clearForm();
+			        	this.setState({
+			        		justApplied: true
+			        	});
 			        	alert("Successfully created new item: " + response.data.name);
 			        }
 			      }.bind(this))

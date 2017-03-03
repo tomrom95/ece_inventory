@@ -125,7 +125,7 @@ class ItemDetailView extends React.Component {
     }
 
     if (this.state.item === null) {
-      return button;
+      return <div>{button}</div>;
     }
 
     return (

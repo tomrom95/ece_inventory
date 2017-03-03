@@ -46,7 +46,8 @@ class ItemEditor extends Component {
 			data: props.data,
 			allCustomFields: props.allCustomFields,
 			formIds: [],
-			activated: false
+			activated: false,
+			justApplied: false
 		}
 	}
 
@@ -57,7 +58,7 @@ class ItemEditor extends Component {
 			data: newProps.data,
 			allCustomFields: newProps.allCustomFields,
 			formIds: getValues(newProps.data, getKeys(newProps.data)),
-			activated: false
+			activated: this.state.justApplied ? true : false
 		});
 	}
 
@@ -456,6 +457,9 @@ class ItemEditor extends Component {
 			        	alert(response.data.error);
 			        } else {
 			        	this.props.callback();
+			   			this.setState({
+			   				justApplied: true
+			   			});
 			    		alert("Edit was successful.");
 			        }
 			      }.bind(this))
