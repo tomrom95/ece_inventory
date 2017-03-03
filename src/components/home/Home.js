@@ -73,13 +73,12 @@ class Home extends Component {
         });
       }
       else{
-        console.log(res.data.error);
+        alert(res.data.error);
       }
     })
     .catch(function (error) {
-      console.log(error);
+      alert(error);
     });
-    return false;
   }
 
   checkForOAuth() {
