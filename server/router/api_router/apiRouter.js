@@ -23,7 +23,7 @@ router.route('/inventory/tags')
       .get(tag_routes.getAPI);
 
 router.route('/inventory/import')
-      .post(inventory_import_routes.postAPI);
+      .post(restrictToAdmins,inventory_import_routes.postAPI);
 
 router.route('/inventory/:item_id')
       .get(inventory_routes.getAPIbyID)

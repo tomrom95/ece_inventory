@@ -147,10 +147,85 @@ describe('Inventory Import API Test', function () {
         .set('Authorization', adminToken)
         .send(singleItemJSON)
         .end((err, res) => {
-          console.log(err);
           should.not.exist(err);
           res.should.have.status(200);
-          done();
+          res.body.message.should.be.eql("Successful import of item 2k resistor");
+          Item.find({}, function(err, items){
+            items.length.should.be.eql(1);
+            items[0].name.should.be.eql("2k resistor");
+            done();
+          });
+        });
+    });
+    it('POSTs for mulitple item', (done) => {
+      chai.request(server)
+        .post('/api/inventory/import')
+        .set('Authorization', adminToken)
+        .send(multipleItemJSON)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.message.should.be.eql("Successful import of 2 item(s): \"1k resistor\" \"2k resistor\" ");
+          Item.find({}, function(err, items){
+            items.length.should.be.eql(2);
+            done();
+          });
+        });
+    });
+    it('Does not POST for standard', (done) => {
+      chai.request(server)
+        .post('/api/inventory/import')
+        .set('Authorization', standardToken)
+        .send(singleItemJSON)
+        .end((err, res) => {
+          res.should.have.status(403);
+          Item.find({}, function(err, items){
+            items.length.should.be.eql(0);
+            done();
+          });
+        });
+    });
+    it('Does not POST for manager', (done) => {
+      chai.request(server)
+        .post('/api/inventory/import')
+        .set('Authorization', managerToken)
+        .send(singleItemJSON)
+        .end((err, res) => {
+          res.should.have.status(403);
+          Item.find({}, function(err, items){
+            items.length.should.be.eql(0);
+            done();
+          });
+        });
+    });
+    it('Does not POST single item with an incorrect custom field', (done) => {
+      singleItemJSON.custom_fields[0].name = "dkjfh";
+      chai.request(server)
+        .post('/api/inventory/import')
+        .set('Authorization', adminToken)
+        .send(singleItemJSON)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.body.error.should.be.eql('The entered custom field dkjfh was not found in list of current custom fields');          console.log(res.body);
+          Item.find({}, function(err, items){
+            items.length.should.be.eql(0);
+            done();
+          });
+        });
+    });
+    it('Does not POST multiple item with an incorrect custom field', (done) => {
+      multipleItemJSON[1].custom_fields[1].name = "dkjfh";
+      chai.request(server)
+        .post('/api/inventory/import')
+        .set('Authorization', adminToken)
+        .send(singleItemJSON)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.body.error.should.be.eql('The entered custom field dkjfh was not found in list of current custom fields');          console.log(res.body);
+          Item.find({}, function(err, items){
+            items.length.should.be.eql(0);
+            done();
+          });
         });
     });
   });
