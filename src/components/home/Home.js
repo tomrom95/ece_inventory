@@ -64,7 +64,6 @@ class Home extends Component {
       password: this.state.passwrd,
     })
     .then(res => {
-
       if(res.data.token){
         localStorage.setItem('user', JSON.stringify(res.data.user));
         localStorage.setItem('token', res.data.token);
@@ -72,7 +71,6 @@ class Home extends Component {
           user: res.data.user,
           token: res.data.token,
         });
-
       }
       else{
         console.log(res.data.error);
@@ -81,6 +79,7 @@ class Home extends Component {
     .catch(function (error) {
       console.log(error);
     });
+    return false;
   }
 
   checkForOAuth() {
@@ -178,7 +177,7 @@ class Home extends Component {
               <div className="col-md-6 login-form">
                 <div className="form-group">
                   <h3 className="row">Log In Locally</h3>
-                  <form>
+                  <form onSubmit={e=>{this.login(); e.preventDefault()}}>
                     <div className="form-group row">
                       <label htmlFor="username-field">Username</label>
                       <input type="text"
@@ -197,12 +196,12 @@ class Home extends Component {
                         placeholder="Password"
                         onChange={this.handlePasswrdChange}/>
                     </div>
-                  </form>
-                  <div className="form-group row">
-                    <button className="btn btn-primary" onClick={this.login}>
+                    <div className="form-group row">
+                    <button type="submit" className="btn btn-primary">
                         Local Log In
                     </button>
                   </div>
+                  </form>
                 </div>
               </div>
 
