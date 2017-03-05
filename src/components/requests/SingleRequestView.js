@@ -8,7 +8,8 @@ class SingleRequestView extends Component {
 		super(props);
 		this.state = {
 			id: props.id,
-			requestId: props.requestId
+			requestId: props.requestId,
+			activated: false
 		}
 	}
 
@@ -20,11 +21,19 @@ class SingleRequestView extends Component {
 	}
 
 	render() {
+		var request = this.state.activated ? 
+							<GlobalRequests
+		            			notPaginated={true}
+								showFilterBox={false}
+								showStatusFilterBox={false}
+								hasOtherParams={false}
+								requestId={this.state.requestId}/> : null;
 		return (
 			<div>
 	        	<a data-toggle="modal"
 	        		href="#"
-		          	data-target={"#logRequestItem-"+this.state.id} >
+		          	data-target={"#logRequestItem-"+this.state.id}
+		          	onClick={() => this.setState({activated: true})} >
 		            View Request
 		        </a>
 
@@ -38,13 +47,7 @@ class SingleRequestView extends Component {
 		              		<h6 className="modal-title">Request Details</h6>
 		              	</div>
 		                <div className="modal-body single-request-item">
-		            		<GlobalRequests
-		            			notPaginated={true}
-								showFilterBox={false}
-								showStatusFilterBox={false}
-								hasOtherParams={false}
-								requestId={this.state.requestId}
-								api={"something"}/>
+		                	{request}
 		                </div>
 
 		              </div>

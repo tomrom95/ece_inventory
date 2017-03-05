@@ -46,6 +46,8 @@ class ItemEditor extends Component {
 			data: props.data,
 			allCustomFields: props.allCustomFields,
 			formIds: [],
+			activated: false,
+			justApplied: false
 		}
 	}
 
@@ -55,7 +57,8 @@ class ItemEditor extends Component {
 			originalQuantity: newProps.data.Quantity,
 			data: newProps.data,
 			allCustomFields: newProps.allCustomFields,
-			formIds: getValues(newProps.data, getKeys(newProps.data))
+			formIds: getValues(newProps.data, getKeys(newProps.data)),
+			activated: this.state.justApplied ? true : false
 		});
 	}
 
@@ -454,6 +457,9 @@ class ItemEditor extends Component {
 			        	alert(response.data.error);
 			        } else {
 			        	this.props.callback();
+			   			this.setState({
+			   				justApplied: true
+			   			});
 			    		alert("Edit was successful.");
 			        }
 			      }.bind(this))
@@ -461,17 +467,31 @@ class ItemEditor extends Component {
 			        console.log(error);
 			      }.bind(this));
 				}
-  }
+  	}
+
+  	activateView() {
+  		this.setState({
+  			activated: true
+  		});
+  	}
 
   	render() {
-	    return (
-			<div>
-				<button type="button"
+  		var button = 
+  				(<button type="button"
 					className="btn btn-sm btn-outline-primary"
 					data-toggle="modal"
-					data-target={"#editModal-"+this.props.itemId}>
+					data-target={"#editModal-"+this.props.itemId}
+					onMouseOver={() => this.activateView()}>
 					<span className="fa fa-pencil"></span>
-				</button>
+				</button>);
+
+		if (this.state.activated === false) {
+			return <div>{button}</div>;
+		}
+
+	    return (
+			<div>
+				{button}
 
 				<div className="modal fade"
 					id={"editModal-"+this.props.itemId}
