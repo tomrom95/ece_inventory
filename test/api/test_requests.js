@@ -5,7 +5,6 @@ let Item = require('../../server/model/items');
 let User = require('../../server/model/users');
 let Request = require('../../server/model/requests');
 let helpers = require('../../server/auth/auth_helpers');
-let server = require('../../server');
 let fakeItemData = require('./test_inventory_data');
 let fakeRequestData = require('./test_requests_data');
 let chai = require('chai');
@@ -13,6 +12,11 @@ let chaiHttp = require('chai-http');
 let should = chai.should();
 chai.use(chaiHttp);
 chai.use(require('chai-things'));
+
+let nodemailerMock = require('nodemailer-mock');
+let mockery = require('mockery');
+
+var server;
 
 describe('Requests API Test', function () {
   var token;
@@ -64,6 +68,27 @@ describe('Requests API Test', function () {
         });
       });
     });
+  });
+
+  before((done) =>{
+    mockery.enable({
+      warnOnUnregistered: false,
+      useCleanCache: true
+    });
+    mockery.registerMock('nodemailer', nodemailerMock);
+
+    server = require('../../server');
+    done();
+  });
+
+  afterEach((done) => {
+    nodemailerMock.mock.reset();
+    done();
+  });
+
+  after(function() {
+    mockery.deregisterAll();
+    mockery.disable();
   });
 
   describe('GET /requests', () =>{

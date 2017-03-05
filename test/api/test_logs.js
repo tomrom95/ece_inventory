@@ -8,13 +8,17 @@ let Request = require('../../server/model/requests');
 let Cart = require('../../server/model/carts');
 let CustomField = require('../../server/model/customFields');
 let helpers = require('../../server/auth/auth_helpers');
-let server = require('../../server');
 let fakeJSONData = require('./test_inventory_data');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let should = chai.should();
 chai.use(chaiHttp);
 chai.use(require('chai-things'));
+
+let nodemailerMock = require('nodemailer-mock');
+let mockery = require('mockery');
+
+var server;
 
 describe('Logging API Test', function () {
   var adminToken;
@@ -59,6 +63,26 @@ describe('Logging API Test', function () {
     });
   });
 
+  before((done) =>{
+    mockery.enable({
+      warnOnUnregistered: false,
+      useCleanCache: true
+    });
+    mockery.registerMock('nodemailer', nodemailerMock);
+
+    server = require('../../server');
+    done();
+  });
+
+  afterEach((done) => {
+    nodemailerMock.mock.reset();
+    done();
+  });
+
+  after(function() {
+    mockery.deregisterAll();
+    mockery.disable();
+  });
 
   describe('Logging adding/removing/disbursing inventory items', () =>{
     it('logs adding an item', (done) => {

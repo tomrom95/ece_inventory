@@ -6,8 +6,6 @@ let User = require('../../server/model/users');
 let Item = require('../../server/model/items');
 let Cart = require('../../server/model/carts');
 let helpers = require('../../server/auth/auth_helpers');
-let mockery = require('mockery');
-let nodemailerMock = require('nodemailer-mock');
 let fakeJSONData = require('./test_inventory_data');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -15,13 +13,10 @@ let should = chai.should();
 chai.use(chaiHttp);
 chai.use(require('chai-things'));
 
-// mock node mailer
-mockery.enable({
-  warnOnUnregistered: false
-});
+let nodemailerMock = require('nodemailer-mock');
+let mockery = require('mockery');
 
-mockery.registerMock('nodemailer', nodemailerMock)
-let server = require('../../server');
+var server = require('../../server');
 
 describe('Email settings API Test', function () {
   var adminToken;
@@ -86,17 +81,25 @@ describe('Email settings API Test', function () {
     });
   });
 
-  afterEach((done) => {
-    // reset mailer mock to remove old emails sent
-    nodemailerMock.mock.reset()
+  before((done) =>{
+    mockery.enable({
+      warnOnUnregistered: false,
+      useCleanCache: true
+    });
+    mockery.registerMock('nodemailer', nodemailerMock);
+
+    server = require('../../server');
     done();
   });
 
-  after((done) => {
-    // Tear down mockery to reset normal emailer
-    mockery.deregisterAll()
-    mockery.disable()
+  afterEach((done) => {
+    nodemailerMock.mock.reset();
     done();
+  });
+
+  after(function() {
+    mockery.deregisterAll();
+    mockery.disable();
   });
 
   describe('Emailing after request creation', function() {
