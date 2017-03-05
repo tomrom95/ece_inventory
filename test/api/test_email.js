@@ -132,8 +132,8 @@ describe('Email settings API Test', function () {
             should.not.exist(error);
             settings.subject_tag.should.be.eql('new tag');
             settings.loan_emails.length.should.be.eql(2);
+            done();
           });
-          done();
         });
     });
 
@@ -148,7 +148,14 @@ describe('Email settings API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
-          done();
+          res.body.subject_tag.should.be.eql('new tag');
+          res.body.loan_emails.length.should.be.eql(2);
+          EmailSettings.getSingleton(function(error, settings) {
+            should.not.exist(error);
+            settings.subject_tag.should.be.eql('new tag');
+            settings.loan_emails.length.should.be.eql(2);
+            done();
+          });
         });
     });
 
@@ -181,8 +188,8 @@ describe('Email settings API Test', function () {
           EmailSettings.getSingleton(function(error, settings) {
             should.not.exist(error);
             settings.loan_emails.length.should.be.eql(3);
+            done();
           });
-          done();
         });
     });
 
@@ -207,7 +214,12 @@ describe('Email settings API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
-          done();
+          res.body.length.should.be.eql(3);
+          EmailSettings.getSingleton(function(error, settings) {
+            should.not.exist(error);
+            settings.loan_emails.length.should.be.eql(3);
+            done();
+          });
         });
     });
 
