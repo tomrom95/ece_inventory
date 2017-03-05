@@ -10,12 +10,19 @@ class CustomFieldListPopup extends Component {
 		this.state = {
       data: [],
       formIds: [],
+      activated: false,
+      justApplied: false
 		}
 	}
 
   mapFields(fields) {
     return fields.map(function(field) {
-      return {name: field.name, type: field.type, isPrivate: field.isPrivate, _id: field._id};
+      return {
+        name: field.name, 
+        type: field.type, 
+        isPrivate: field.isPrivate,
+        _id: field._id
+       };
     });
   }
 
@@ -23,24 +30,32 @@ class CustomFieldListPopup extends Component {
     var data = this.mapFields(newProps.allCustomFields);
     this.setState({
       data: data,
+      activated: this.state.justApplied ? true : false
     });
   }
 
 	componentWillMount(){
-    this.props.api.get('/api/customFields')
-      .then(function(response) {
-        if (response.error) {
-          console.log(response.error);
-        }
-        else{
-          var data = this.mapFields(response.data);
-          this.setState({data: data});
-        }
-      }.bind(this))
-      .catch(function(error) {
-        console.log(error);
-      });
+    //this.loadData();
 	}
+
+  loadData() {
+    this.props.api.get('/api/customFields')
+    .then(function(response) {
+      if (response.error) {
+        console.log(response.error);
+      }
+      else{
+        var data = this.mapFields(response.data);
+        this.setState({
+          data: data,
+          activated: true
+        });
+      }
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    });
+  }
 
   makeTextBox(row, field){
     var id = "editfield-form-row-"+row;
@@ -52,15 +67,7 @@ class CustomFieldListPopup extends Component {
           key={field._id+"-NAME"}
           onChange={e => this.handleNameChange(e, field._id)}>
         </input>
-  /*  var type_input = <Select
-          simpleValue
-          value={field.type}
-          clearable={true}
-          options={types}
-          ref={field_id+"-TYPE"}
-          key={field_id+"-TYPE"}
-          onChange={e=>this.handleTypeChange(e, field_id)}
-        />*/
+
     var is_private = <input type="checkbox"
     			className="form-control"
           checked={field.isPrivate}
@@ -109,8 +116,6 @@ class CustomFieldListPopup extends Component {
 		});
 	}
 
-
-
   handleTypeChange(event, id) {
     var new_type = event;
     var data = this.state.data;
@@ -136,7 +141,6 @@ class CustomFieldListPopup extends Component {
 		});
 	}
 
-
   deleteCustomField(field_id){
     this.props.api.delete('/api/customFields/' + field_id)
       .then(function(response) {
@@ -145,23 +149,31 @@ class CustomFieldListPopup extends Component {
           } else {
             this.props.callback();
             alert("Custom Field deleted successfully.");
-
           }
         }.bind(this))
         .catch(function(error) {
           console.log(error);
         }.bind(this));
   }
+
 	render() {
+    var button =
+      <button type="button"
+        className="btn btn-outline-primary add-button"
+        data-toggle="modal"
+        data-target={"#editCustomFieldModal"}
+        onMouseOver={() => this.loadData()}
+        onClick={() => this.loadData()}>
+        Edit Fields
+      </button>
+
+    if (this.state.activated === false) {
+      return (<th>{button}</th>);
+    }
+
 		return (
 		<th>
-			<button type="button"
-				className="btn btn-outline-primary add-button"
-				data-toggle="modal"
-				data-target={"#editCustomFieldModal"}>
-				Edit Fields
-			</button>
-
+      {button}
 			<div className="modal fade"
 				id={"editCustomFieldModal"}
 				tabIndex="-1"
@@ -184,7 +196,6 @@ class CustomFieldListPopup extends Component {
 		);
 	}
 
-
 	makeForm(){
     var list = []; var i;
     for (i=0; i<this.state.data.length; i++) {
@@ -192,7 +203,6 @@ class CustomFieldListPopup extends Component {
     }
     return list;
 	}
-
 
 	onSubmission(field_id) {
     var name = "";
@@ -220,6 +230,9 @@ class CustomFieldListPopup extends Component {
               console.log(response.data.error);
             } else {
   						this.props.callback();
+              this.setState({
+                justApplied: true
+              });
               alert("Changes applied to item");
   	        }
   	      }.bind(this))
@@ -230,9 +243,6 @@ class CustomFieldListPopup extends Component {
     }
 
   }
-
-
-
 }
 
 export default CustomFieldListPopup

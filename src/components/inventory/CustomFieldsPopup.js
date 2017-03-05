@@ -3,8 +3,6 @@ import '../../App.css';
 import axios from 'axios';
 import Select from 'react-select';
 
-
-
 const types = [
     { value: 'SHORT_STRING', label: 'SHORT_STRING' },
     { value: 'LONG_STRING', label: 'LONG_STRING' },
@@ -23,8 +21,6 @@ class CustomFieldsPopup extends Component {
 		}
 	}
 
-
-
 	handleInputChange(event) {
 	    this.setState({
 	      isPrivate: !this.state.isPrivate,
@@ -38,8 +34,7 @@ class CustomFieldsPopup extends Component {
 	}
 
 	render() {
-		return (
-		<th>
+		var button =
 			<button type="button"
 				className="btn btn-outline-primary add-button"
 				data-toggle="modal"
@@ -47,6 +42,9 @@ class CustomFieldsPopup extends Component {
 				Make Field
 			</button>
 
+		return (
+		<th>
+			{button}
 			<div className="modal fade"
 				id={"makeCustomFieldModal"}
 				tabIndex="-1"
@@ -72,84 +70,86 @@ class CustomFieldsPopup extends Component {
 		);
 	}
 
-
 	makeForm(){
-		var name = <input type="text"
-			className="form-control"
-			ref={"field_name"}
-			key={"field_name"}>
+		var name = 
+			<input type="text"
+				className="form-control"
+				ref={"field_name"}
+				key={"field_name"}>
 			</input>
-		var type = <Select
-			simpleValue
-			value={this.state.type}
-      ref={"field_type"}
-			clearable={true}
-			placeholder="Choose Type"
-			options={types}
-			onChange={this.handleTypeChange.bind(this)}
-      key={"field_type"}
-		/>
-		var is_private = <input type="checkbox"
-			className="form-control"
-      checked={this.state.isPrivate}
-			onChange={this.handleInputChange.bind(this)}
-			key={"field_isPrivate"}>
+
+		var type = 
+			<Select
+				simpleValue
+				value={this.state.type}
+	      		ref={"field_type"}
+				clearable={true}
+				placeholder="Choose Type"
+				options={types}
+				onChange={this.handleTypeChange.bind(this)}
+	      		key={"field_type"}/>
+
+		var is_private = 
+			<input type="checkbox"
+				className="form-control"
+	      		checked={this.state.isPrivate}
+				onChange={this.handleInputChange.bind(this)}
+				key={"field_isPrivate"}>
 			</input>
 
 		return (
 			<div className="form-group" key={"createform-div-row-"}>
 			  <label htmlFor={"createform-row-"}>Name</label>
 			  {name}
-				<label htmlFor={"createform-row-"}>Type</label>
+				<label htmlFor={"createform-row-"}>
+					Type
+				</label>
+
 				{type}
+				
 				<label htmlFor={"createform-row-"}>Private
-        {is_private}
-        </label>
+        			{is_private}
+        		</label>
 			</div>
 		);
 	}
 
-  clearForm() {
-    this.refs.field_name.value = "";
-    this.setState({
-      type: "",
-      isPrivate: false,
-    });
-  }
+ 	clearForm() {
+	    this.refs.field_name.value = "";
+	    this.setState({
+	      type: "",
+	      isPrivate: false,
+	    });
+  	}
 
-	onSubmission() {
+ 	 onSubmission() {
 		var custom_field = {
 			name: this.refs.field_name.value,
 			type: this.state.type,
 			isPrivate: this.state.isPrivate,
 		}
-    if(!custom_field.name){
-      alert("Must add name");
-    }
-    else if(!custom_field.type){
-      alert("Must specify type");
-    }
-    else {
-      this.props.api.post('/api/customFields/', custom_field)
-  	  	.then(function(response) {
-  	        if (response.data.error) {
-          		console.log(response.data.error);
-  	        } else {
-              alert("Custom Field made successfully");
-              this.clearForm();
-  						this.props.callback();
-  	        }
-  	      }.bind(this))
-  	      .catch(function(error) {
-  	        console.log(error);
-  	      }.bind(this));
-    }
-
-
+	    if(!custom_field.name){
+	      alert("Must add name");
+	    }
+	    else if(!custom_field.type){
+	      alert("Must specify type");
+	    }
+	    else {
+	      this.props.api.post('/api/customFields/', custom_field)
+	  	  	.then(function(response) {
+	  	        if (response.data.error) {
+	          		console.log(response.data.error);
+	  	        } else {
+	              alert("Custom Field made successfully");
+	              this.clearForm();
+	  						this.props.callback();
+	  	        }
+	  	      }.bind(this))
+	  	      .catch(function(error) {
+	  	        console.log(error);
+	  	      }.bind(this));
+	    }
   }
-
-
-
 }
 
 export default CustomFieldsPopup

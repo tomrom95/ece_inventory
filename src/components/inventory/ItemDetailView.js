@@ -20,6 +20,7 @@ class ItemDetailView extends React.Component {
       error: null,
       requests: [],
       itemId: props.params.itemID,
+      itemName: props.params.itemName,
       requestsVisible: true
     }
     this.addRequests = this.addRequests.bind(this);
@@ -30,14 +31,14 @@ class ItemDetailView extends React.Component {
       baseURL: 'https://' + location.hostname + '/api',
       headers: {'Authorization': localStorage.getItem('token')}
     });
-    this.loadData();
   }
 
   componentWillReceiveProps(newProps) {
     this.setState({
-      itemId: newProps.params.itemID
+      itemId: newProps.params.itemID,
+      itemName: newProps.params.itemName
     }, function() {
-      this.loadData();
+      //this.loadData();
     });
   }
 
@@ -59,7 +60,6 @@ class ItemDetailView extends React.Component {
       return(
         <div className="row">
           <p>No custom fields</p>
-
         </div>
       );
     }
@@ -98,18 +98,14 @@ class ItemDetailView extends React.Component {
 
   render() {
     var button = null;
-    if (this.state.error) {
-      return (<div>{this.state.error}</div>);
-    } else if (this.state.item == null) {
-      return (<div></div>);
-    }
 
     if (this.props.isButton === true) {
       button = (<button type="button"
                   className="btn btn-sm btn-outline-primary info-button"
                   data-toggle="modal"
                   data-target={"#infoModal-"+this.state.itemId}
-                  onClick={() => {this.loadData(); this.jankRefresh()}}>
+                  onClick={() => {this.loadData(); this.jankRefresh()}}
+                  onMouseOver={() => this.loadData()}>
                     <span className="fa fa-info"></span>
                 </button>);
     }
@@ -118,9 +114,18 @@ class ItemDetailView extends React.Component {
                   className="log-detailview-links"
                   data-toggle="modal"
                   data-target={"#infoModal-"+this.state.itemId}
-                  onClick={() => {this.loadData();this.jankRefresh()}}>
-                    {this.state.item.name}
+                  onClick={() => {this.loadData();this.jankRefresh()}}
+                  onMouseOver={() => this.loadData()}>
+                    {this.state.itemName}
                 </a>
+    }
+
+    if (this.state.error) {
+      return (<div>{this.state.error}</div>);
+    }
+
+    if (this.state.item === null) {
+      return <div>{button}</div>;
     }
 
     return (
