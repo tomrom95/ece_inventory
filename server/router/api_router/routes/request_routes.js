@@ -181,9 +181,9 @@ function saveRequest(oldRequest, changes, res, user){
   var obj = Object.assign(oldRequest, changes);
   obj.save((err,request)=>{
     if(err) return res.send({error:err});
-    Request.populate(oldRequestCopy, {path: "items.item", select: itemFieldsToReturn}, function(error, request){
+    Request.populate(oldRequestCopy, {path: "items.item", select: itemFieldsToReturn}, function(error, populatedRequest){
       if(error) return res.send({error: error});
-      Emailer.sendRequestChangeEmail(oldRequestCopy, changes, user, function(error) {
+      Emailer.sendRequestChangeEmail(populatedRequest, changes, user, function(error) {
         if(error) return res.send({error: error});
         Logger.logRequestEdit(oldRequestCopy, changes, user, function(error) {
           if(error) return res.send({error: error});
