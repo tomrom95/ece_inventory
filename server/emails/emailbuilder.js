@@ -1,7 +1,9 @@
 'use strict';
 
 let nodemailer = require('nodemailer');
+var User = require('../model/users');
 let EmailSettings = require('../model/emailSettings');
+var QueryBuilder = require('../queries/querybuilder');
 
 function EmailBuilder() {
   this.message = {};
@@ -57,26 +59,47 @@ var validateMessage = function(message) {
   return null;
 }
 
+var getManagerEmails = function(next) {
+  var query = new QueryBuilder();
+  query
+    .searchNotEqual('role', 'STANDARD')
+    .searchBoolean('subscribed', true);
+  User.find(query.toJSON(), function(error, managers) {
+    if (error) return next(error);
+    return next(null, managers.map(m => m.email));
+  });
+}
+
 EmailBuilder.prototype.send = function(next) {
   var error = validateMessage(this.message);
   if (error) {
     return next(error);
   }
-  EmailSettings.getSingleton(function(error, settings) {
+  EmailSettings.getSingleton((error, settings) => {
     if (error) return next(error);
     // Add global message subject tag
     this.message.subject = settings.subject_tag + ' ' + this.message.subject;
-    this.transport.sendMail(this.message, function(error, info) {
-      try {
-        // If transport is not mocked, close it
-        this.transport.close();
-      } catch (e) {
-        // don't do anything
-      }
+    getManagerEmails((error, managerEmails) => {
       if (error) return next(error);
-      return next(null, info.response);
-    }.bind(this));
-  }.bind(this));
+      // add all subscribed managers in bcc
+      if (this.message.bcc) {
+        this.message.bcc += ',' + managerEmails.join();
+      } else {
+        this.message.bcc = managerEmails.join();
+      }
+
+      this.transport.sendMail(this.message, (error, info) => {
+        try {
+          // If transport is not mocked, close it
+          this.transport.close();
+        } catch (e) {
+          // don't do anything
+        }
+        if (error) return next(error);
+        return next(null, info.response);
+      });
+    });
+  });
 }
 
 module.exports = EmailBuilder;

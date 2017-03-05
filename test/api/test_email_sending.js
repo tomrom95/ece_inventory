@@ -67,7 +67,14 @@ describe('Email settings API Test', function () {
                     settings.save(function(error, settings) {
                       should.not.exist(error);
                       currentSettings = settings;
-                      done();
+                      User.update(
+                        {username: 'manager'},
+                        {$set: {subscribed: true}},
+                        function(error) {
+                          should.not.exist(error);
+                          done();
+                        }
+                      );
                     });
                   });
                 });
@@ -119,6 +126,7 @@ describe('Email settings API Test', function () {
           var email = sentMail[0];
           email.to.should.be.eql(standardUser.email);
           should.not.exist(email.cc);
+          email.bcc.should.be.eql(managerUser.email);
           email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'New Inventory Request Created');
           email.text.should.include('(10) 1k resistors');
           email.text.should.include('(1) Oscilloscope');
@@ -154,6 +162,7 @@ describe('Email settings API Test', function () {
           var email = sentMail[0];
           email.to.should.be.eql(standardUser.email);
           email.cc.should.be.eql(adminUser.email);
+          email.bcc.should.be.eql(managerUser.email);
           email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'New Inventory Request Created');
           email.text.should.include('(10) 1k resistors');
           email.text.should.include('(1) Oscilloscope');
@@ -194,6 +203,7 @@ describe('Email settings API Test', function () {
               var email = sentMail[0];
               email.to.should.be.eql(adminUser.email);
               should.not.exist(email.cc);
+              email.bcc.should.be.eql(managerUser.email);
               email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'New Inventory Request Created');
               email.text.should.include('(10) 1k resistors');
               email.text.should.include('(1) Oscilloscope');
@@ -237,6 +247,7 @@ describe('Email settings API Test', function () {
               var email = sentMail[0];
               email.to.should.be.eql(standardUser.email);
               email.cc.should.be.eql(adminUser.email);
+              email.bcc.should.be.eql(managerUser.email);
               email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'New Inventory Request Created');
               email.text.should.include('(10) 1k resistors');
               email.text.should.include('(1) Oscilloscope');
