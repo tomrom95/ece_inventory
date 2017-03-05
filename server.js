@@ -44,7 +44,12 @@ app.use(function(req, res, next) {
 
 var connectionString = (process.env.NODE_ENV == 'test') ? 'mongodb://localhost/test'
                                                         : 'mongodb://' + secrets.dbUser + ':' + secrets.dbPassword + '@localhost/inventory';
-mongoose.connect(connectionString);
+// connect if connection already open, else create one
+try {
+    mongoose.connect(connectionString);
+} catch(error) {
+    mongoose.createConnection(connectionString);
+}
 
 // passport setup
 var opts = {
@@ -93,22 +98,20 @@ app.get('/*', function (request, response){
   response.sendFile('index.html', {root: buildPath});
 })
 
-if (process.env.NODE_ENV == 'test') {
-  app.listen(secrets.testPort, function () {
-    console.log('API running on test port ' + secrets.testPort);
-  });
-} else if (secrets.useProxy) {
-  app.listen(secrets.proxyPort, function () {
-    console.log('API running on proxy port ' + secrets.proxyPort);
-  });
-} else {
-  https.createServer({
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem'),
-    passphrase: secrets.sslSecret
-  }, app).listen(secrets.productionPort, function() {
-    console.log('API running on production port ' + secrets.productionPort);
-  });
+if (process.env.NODE_ENV !== 'test') {
+  if (secrets.useProxy) {
+    app.listen(secrets.proxyPort, function () {
+      console.log('API running on proxy port ' + secrets.proxyPort);
+    });
+  } else {
+    https.createServer({
+      key: fs.readFileSync('key.pem'),
+      cert: fs.readFileSync('cert.pem'),
+      passphrase: secrets.sslSecret
+    }, app).listen(secrets.productionPort, function() {
+      console.log('API running on production port ' + secrets.productionPort);
+    });
+  }
 }
 
 module.exports = app;
