@@ -2,7 +2,8 @@
 var Cart = require("../../../model/carts");
 var User = require("../../../model/users");
 var Request = require("../../../model/requests");
-var LogHelpers = require('../../../logging/log_helpers');
+var Logger = require('../../../logging/logger');
+var Emailer = require('../../../emails/emailer');
 var QueryBuilder = require('../../../queries/querybuilder');
 var itemFieldsToReturn = 'name model_number description';
 
@@ -107,9 +108,9 @@ function checkout (initiatingUser, enteredUserID, reasonString, next) {
                           enteredUserID :
                           // Everyone else uses their own user id
                           initiatingUser._id;
-  User.findById(requestingUserID, function(err, user){
+  User.findById(requestingUserID, function(err, requestingUser){
     // Find if it exists
-    if (err||!user) return next("User does not exist");
+    if (err||!requestingUser) return next("User does not exist");
     // Admin may assign the request to the requestingUserID
     Cart.findOne({user: initiatingUser._id}, function(err, cart){
       if (err) return next(err);
@@ -131,15 +132,19 @@ function checkout (initiatingUser, enteredUserID, reasonString, next) {
          if (err) return next(err);
          // populate cart items in requests object
          Cart.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
-           // Log request creation using populated items
-           LogHelpers.logRequestCreation(request, initiatingUser._id, requestingUserID, function(error) {
-             // Delete cart, and put in a new one
-             Cart.remove({user: initiatingUser._id}, function(err){
-               if(err) return next(err);
-               var newCart = new Cart({user: initiatingUser._id});
-               newCart.save(function(err){
+           Emailer.sendNewRequestEmail(request, initiatingUser, requestingUser, function(error) {
+             if (error) return next(error);
+             // Log request creation using populated items
+             Logger.logRequestCreation(request, initiatingUser, requestingUser, function(error) {
+               if (error) return next(error);
+               // Delete cart, and put in a new one
+               Cart.remove({user: initiatingUser._id}, function(err){
                  if(err) return next(err);
-                 next(null, request);
+                 var newCart = new Cart({user: initiatingUser._id});
+                 newCart.save(function(err){
+                   if(err) return next(err);
+                   next(null, request);
+                 });
                });
              });
            });

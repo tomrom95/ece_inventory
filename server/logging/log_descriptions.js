@@ -1,5 +1,6 @@
 'use strict'
 var Log = require('../model/logs');
+var StringHelpers = require('./string_helpers');
 
 module.exports.newItem = function(item) {
   return 'A new item called ' + item.name + ' was created.';
@@ -9,42 +10,11 @@ module.exports.deletedItem = function(item) {
   return 'The item ' + item.name + ' was deleted from the inventory.';
 }
 
-var getDisplayName = function(user) {
-  if (user.first_name && user.last_name) {
-    return user.first_name + ' ' + user.last_name;
-  } else if (user.netid) {
-    return user.netid;
-  } else {
-    return user.username;
-  }
-}
-
-function createRequestItemString(requestItemMap, items) {
-  var itemString = "";
-  items.forEach(function(item, index) {
-    if (index !== 0 && items.length !== 2) {
-      itemString += ','
-    }
-    if (index === items.length - 1 && index !== 0) {
-      itemString += ' and';
-    }
-    var quantity = requestItemMap[item._id];
-    var plural = quantity === 1 ? '' : 's';
-    itemString += ' (' + quantity + ') ' + item.name + plural;
-  });
-  return itemString;
-}
-
 module.exports.requestCreated = function(request, createdByUser, createdForUser) {
-  var description = 'The user ' + getDisplayName((createdByUser) ? createdByUser : createdForUser) + ' requested';
-  var requestItemMap = {};
-  request.items.forEach(function(item) {
-    requestItemMap[item.item._id] = item.quantity;
-  });
-  var itemNames = request.items.map(obj => obj.item);
-  description += createRequestItemString(requestItemMap, itemNames);
+  var description = 'The user ' + StringHelpers.getDisplayName((createdByUser) ? createdByUser : createdForUser) + ' requested';
+  description += StringHelpers.createPopulatedRequestItemString(request);
   if (createdByUser) {
-    description += ' for the user ' + getDisplayName(createdForUser) + '.';
+    description += ' for the user ' + StringHelpers.getDisplayName(createdForUser) + '.';
   } else {
     description += '.';
   }
@@ -52,23 +22,23 @@ module.exports.requestCreated = function(request, createdByUser, createdForUser)
 }
 
 module.exports.deletedRequest = function(request, initiatingUser, requestUser) {
-  var description = 'The user ' + getDisplayName(initiatingUser) + ' cancelled ';
+  var description = 'The user ' + StringHelpers.getDisplayName(initiatingUser) + ' cancelled ';
   if (initiatingUser._id.equals(requestUser._id)) {
     description += 'his/her own request.';
   } else {
-    description += getDisplayName(requestUser) + '\'s request.';
+    description += StringHelpers.getDisplayName(requestUser) + '\'s request.';
   }
   return description;
 }
 
 module.exports.disbursedItem = function(request, items, disbursedFrom, disbursedTo) {
-  var description = 'The user ' + getDisplayName(disbursedFrom) + ' disbursed';
+  var description = 'The user ' + StringHelpers.getDisplayName(disbursedFrom) + ' disbursed';
   var requestItemMap = {};
   request.items.forEach(function(item) {
     requestItemMap[item.item] = item.quantity;
   });
-  description += createRequestItemString(requestItemMap, items);
-  description += ' to the user ' + getDisplayName(disbursedTo) + '.';
+  description += StringHelpers.createRequestItemString(requestItemMap, items);
+  description += ' to the user ' + StringHelpers.getDisplayName(disbursedTo) + '.';
   return description;
 }
 
@@ -120,11 +90,11 @@ var createChangesString = function(oldObject, changes) {
 }
 
 module.exports.editedRequest = function(oldRequest, changes, initiatingUser, affectedUser) {
-  var description = 'The user ' + getDisplayName(initiatingUser) + ' edited ';
+  var description = 'The user ' + StringHelpers.getDisplayName(initiatingUser) + ' edited ';
   if (initiatingUser._id.equals(affectedUser._id)) {
     description += 'his/her own request by changing';
   } else {
-    description += getDisplayName(affectedUser) + '\'s request by changing';
+    description += StringHelpers.getDisplayName(affectedUser) + '\'s request by changing';
   }
   description += createChangesString(oldRequest, changes);
   description += '.';

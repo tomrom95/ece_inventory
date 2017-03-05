@@ -1,6 +1,7 @@
 'use strict';
 
 let nodemailer = require('nodemailer');
+let EmailSettings = require('../model/emailSettings');
 
 function EmailBuilder() {
   this.message = {};
@@ -61,10 +62,21 @@ EmailBuilder.prototype.send = function(next) {
   if (error) {
     return next(error);
   }
-  this.transport.sendMail(this.message, (error, info) => {
-    transport.close();
-    next(error, info.response);
-  });
+  EmailSettings.getSingleton(function(error, settings) {
+    if (error) return next(error);
+    // Add global message subject tag
+    this.message.subject = settings.subject_tag + ' ' + this.message.subject;
+    this.transport.sendMail(this.message, function(error, info) {
+      try {
+        // If transport is not mocked, close it
+        this.transport.close();
+      } catch (e) {
+        // don't do anything
+      }
+      if (error) return next(error);
+      return next(null, info.response);
+    }.bind(this));
+  }.bind(this));
 }
 
 module.exports = EmailBuilder;

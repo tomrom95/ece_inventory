@@ -1,7 +1,7 @@
 'use strict';
 var CustomField = require('../../../model/customFields');
 var QueryBuilder = require('../../../queries/querybuilder');
-var LogHelpers = require('../../../logging/log_helpers');
+var Logger = require('../../../logging/logger');
 
 module.exports.getAPI = function (req, res) {
   var query = new QueryBuilder();
@@ -37,7 +37,7 @@ module.exports.postAPI = function(req, res){
   });
   customField.save(function(error, savedField){
     if(error) return res.send({error: error});
-    LogHelpers.logCustomFieldCreation(savedField, req.user, function(error) {
+    Logger.logCustomFieldCreation(savedField, req.user, function(error) {
       if(error) return res.send({error: error});
       res.json(savedField);
     });
@@ -58,7 +58,7 @@ module.exports.putAPI = function(req, res){
       {new: true},
       function(error, newCustomField) {
         if (error) return res.send({error: error});
-        LogHelpers.logCustomFieldEdit(customField, update, req.user, function(error) {
+        Logger.logCustomFieldEdit(customField, update, req.user, function(error) {
           if (error) return res.send({error: error});
           res.json(newCustomField);
         });
@@ -73,7 +73,7 @@ module.exports.deleteAPI = function(req, res){
     function(error, deletedField) {
       if (error) return res.send({error: error});
       if (!deletedField) return res.send({error: 'Could not find field to delete'});
-      LogHelpers.logCustomFieldDeletion(deletedField, req.user, function(error) {
+      Logger.logCustomFieldDeletion(deletedField, req.user, function(error) {
         if (error) return res.send({error: error});
         res.json({message: "Delete successful"});
       });

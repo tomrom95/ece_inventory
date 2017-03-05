@@ -1,7 +1,7 @@
 'use strict';
 var Item = require('../../../model/items');
 var CustomField = require('../../../model/customFields');
-var LogHelpers = require('../../../logging/log_helpers');
+var Logger = require('../../../logging/logger');
 var mongoose = require('mongoose');
 var validator = require('validator');
 
@@ -69,7 +69,7 @@ var createOrUpdateField = function(itemId, fieldId, value, user, next) {
       }
       item.save(function(error, newItem) {
         if (error) return next(error);
-        LogHelpers.logItemCustomFieldEdit(newItem, field, oldValue, newValue, user, function(error) {
+        Logger.logItemCustomFieldEdit(newItem, field, oldValue, newValue, user, function(error) {
           if (error) return next(error);
           next(null, newItem);
         });
@@ -96,7 +96,7 @@ module.exports.deleteAPI = function(req, res){
         if (!oldItemField) {
           return res.json({message: "Successful"});
         }
-        LogHelpers.logItemCustomFieldEdit(
+        Logger.logItemCustomFieldEdit(
           oldItem,
           field,
           oldItemField.value,
