@@ -14,3 +14,34 @@ module.exports.requestCreated = function(request, createdBy, createdFor) {
   text += '\n\nYou will be notified of any status changes for this request.';
   return text;
 }
+
+module.exports.requestDisbursed = function(request, items, initiator, createdFor) {
+  var requestItemMap = {};
+  request.items.forEach(function(item) {
+    requestItemMap[item.item] = item.quantity;
+  });
+
+  var text = 'Hello ' + StringHelpers.getDisplayName(createdFor) + ',\n\n';
+  text += 'Your request for ' + StringHelpers.createRequestItemString(requestItemMap, items);
+  text += ' has been disbursed by ' + StringHelpers.getDisplayName(initiator) + '.';
+  return text;
+}
+
+module.exports.requestChanged = function(request, changes, initiator, affectedUser) {
+  var text = 'Hello ' + StringHelpers.getDisplayName(affectedUser) + ',\n\n';
+  text += 'Your request for' +  StringHelpers.createPopulatedRequestItemString(request);
+  text += ' has been updated by ' + StringHelpers.getDisplayName(initiator);
+  text += ' by changing ' + StringHelpers.createChangesString(request, changes) + '.';
+  return text;
+}
+
+module.exports.requestCancelled = function(request, initiatingUser, requestUser) {
+  var text = 'Hello ' + StringHelpers.getDisplayName(requestUser) + ',\n\n';
+  text += 'Your request for ' + StringHelpers.createPopulatedRequestItemString(request);
+  text += ' has been cancelled';
+  if (!initiatingUser._id.equals(requestUser._id)) {
+    text += ' by ' + StringHelpers.getDisplayName(initiatingUser);
+  }
+  text += '.';
+  return text;
+}

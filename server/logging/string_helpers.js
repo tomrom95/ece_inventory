@@ -48,3 +48,50 @@ module.exports.createPopulatedRequestItemString = function(request) {
   var itemNames = request.items.map(obj => obj.item);
   return module.exports.createRequestItemString(requestItemMap, itemNames);
 }
+
+module.exports.getValueString = function(value) {
+  if (value === null || value === undefined) {
+    return 'undefined';
+  }
+  return JSON.stringify(value);
+}
+
+var processQuantityChange = function(changeEnum){
+  var snippet = " due to ";
+  switch(changeEnum){
+    case "MANUAL":
+      snippet += "manual override";
+      break;
+    case "LOSS":
+      snippet += "loss of item";
+      break;
+    case "ACQUISITION":
+      snippet += "acquisition of item";
+      break;
+    case "DESTRUCTION":
+      snippet += "destruction of item";
+      break;
+    default:
+      snippet += "undefined reason";
+      break;
+  }
+  return snippet;
+}
+
+module.exports.createChangesString = function(oldObject, changes) {
+  var changesString = "";
+  let quantity_reason = changes.quantity_reason;
+  delete changes.quantity_reason;
+  Object.keys(changes).forEach(function(key, index, keyArray) {
+    if (index !== 0 && keyArray.length !== 2) {
+      changesString += ',';
+    }
+    if (index === keyArray.length -1 && index !== 0) {
+      changesString += ' and';
+    }
+    changesString += ' ' + key + ' from ' + module.exports.getValueString(oldObject[key])
+      + ' to ' + module.exports.getValueString(changes[key]);
+    if(key === "quantity") changesString += processQuantityChange(quantity_reason);
+  });
+  return changesString;
+}
