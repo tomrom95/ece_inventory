@@ -84,8 +84,8 @@ module.exports.putAPI = function(req,res){
 };
 
 module.exports.patchAPI = function(req, res){
-  if (req.body.action == 'FULFILL') {
-    fulfill(req.user, req.body, function(err, request){
+  if (req.body.action == 'CHECKOUT') {
+    checkout(req.user, req.body, function(err, request){
       if (err) return res.send({error: err});
       // populate cart items in cart object
         res.json({
@@ -97,7 +97,7 @@ module.exports.patchAPI = function(req, res){
     return res.send({error: "Action not recognized"});
   }
 }
-function fulfill (initiatingUser, body, next) {
+function checkout (initiatingUser, body, next) {
   var enteredUserID = body.user;
   var reasonString = body.reason;
   var fulfillType = body.type;

@@ -331,7 +331,7 @@ return:
 PATCH
 body: {
 	user: String // user id
-	action: "FULFILL"
+	action: "CHECKOUT"
 	type: String ["DISBURSEMENT", "LOAN"]
 	reason: String
 }

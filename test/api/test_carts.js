@@ -626,7 +626,7 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', adminToken)
         .send({
-          action: 'FULFILL',
+          action: 'CHECKOUT',
           reason: 'Test request',
           type: 'DISBURSEMENT'
         })
@@ -671,7 +671,7 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', managerToken)
         .send({
-          action: 'FULFILL',
+          action: 'CHECKOUT',
           reason: 'Test request',
           type: 'DISBURSEMENT'
         })
@@ -716,7 +716,7 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', standardToken)
         .send({
-          action: 'FULFILL',
+          action: 'CHECKOUT',
           reason: 'Test request',
           type: 'DISBURSEMENT'
         })
@@ -761,7 +761,7 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', adminToken)
         .send({
-          action: 'FULFILL',
+          action: 'CHECKOUT',
           reason: 'Test request',
           type: 'DISBURSEMENT',
           user: standardUser._id
@@ -787,7 +787,7 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', standardToken)
         .send({
-          action: 'FULFILL',
+          action: 'CHECKOUT',
           reason: 'Test request',
           type: 'DISBURSEMENT',
           user: adminUser._id
@@ -808,7 +808,7 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', managerToken)
         .send({
-          action: 'FULFILL',
+          action: 'CHECKOUT',
           reason: 'Test request',
           type: 'DISBURSEMENT',
           user: standardUser._id
@@ -834,7 +834,7 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', adminToken)
         .send({
-          action: 'FULFILL',
+          action: 'CHECKOUT',
           reason: 'Test request',
           type: 'DISBURSEMENT',
           user: '99ae73d23d7d8010a8343a2f'
@@ -855,7 +855,7 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', standardToken)
         .send({
-          action: 'FULFILL',
+          action: 'CHECKOUT',
           reason: 'Test request',
           type: 'DISBURSEMENT'
         })
@@ -891,7 +891,7 @@ describe('Cart API Test', function () {
               .patch('/api/cart')
               .set('Authorization', standardToken)
               .send({
-                action: 'FULFILL',
+                action: 'CHECKOUT',
                 reason: 'Test request',
                 type: 'DISBURSEMENT'
               })
@@ -914,7 +914,7 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', standardToken)
         .send({
-          action: 'FULFILL',
+          action: 'CHECKOUT',
           type: 'DISBURSEMENT'
         })
         .end((err, res) => {
@@ -963,7 +963,7 @@ describe('Cart API Test', function () {
           .patch('/api/cart')
           .set('Authorization', standardToken)
           .send({
-            action: 'FULFILL',
+            action: 'CHECKOUT',
             reason: 'Test request',
             type: 'DISBURSEMENT'
           })
