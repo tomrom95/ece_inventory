@@ -3,7 +3,6 @@ process.env.NODE_ENV = 'test';
 let mongoose = require("mongoose");
 let EmailSettings = require('../../server/model/emailSettings');
 let User = require('../../server/model/users');
-let Item = require('../../server/model/items');
 let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
 let chai = require('chai');
@@ -30,7 +29,7 @@ describe('Email settings API Test', function () {
           should.not.exist(err);
           adminToken = helpers.createAuthToken(user);
           adminUser = user;
-          helpers.createNewUser('standard', 'test', 'tomrom95@gmail.com', 'STANDARD', function(err, user) {
+          helpers.createNewUser('standard', 'test', 'standard@email.com', 'STANDARD', function(err, user) {
             should.not.exist(err);
             standardToken = helpers.createAuthToken(user);
             standardUser = user;

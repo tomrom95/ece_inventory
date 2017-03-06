@@ -85,7 +85,6 @@ module.exports.putAPI = function(req,res){
 
 module.exports.patchAPI = function(req, res){
   if (req.body.action == 'CHECKOUT') {
-
     checkout(req.user, req.body.user, req.body.reason, function(err, request){
       if (err) return res.send({error: err});
       // populate cart items in cart object
@@ -120,7 +119,7 @@ function checkout (initiatingUser, enteredUserID, reasonString, next) {
        var request = new Request({
          user: requestingUserID,
          reason: reasonString,
-         status: 'PENDING'
+         status: 'PENDING',
        });
        // Copy array of items
        request.items = [];

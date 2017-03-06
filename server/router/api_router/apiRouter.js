@@ -1,4 +1,5 @@
 var inventory_routes = require('./routes/inventory_routes');
+var inventory_import_routes = require('./routes/inventory_import_routes');
 var cart_routes = require('./routes/cart_routes');
 var cart_item_routes = require('./routes/cart_item_routes');
 var instance_routes = require('./routes/instance_routes');
@@ -21,6 +22,9 @@ router.route('/inventory')
 
 router.route('/inventory/tags')
       .get(tag_routes.getAPI);
+
+router.route('/inventory/import')
+      .post(restrictToAdmins,inventory_import_routes.postAPI);
 
 router.route('/inventory/:item_id')
       .get(inventory_routes.getAPIbyID)
