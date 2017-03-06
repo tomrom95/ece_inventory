@@ -42,53 +42,6 @@ module.exports.disbursedItem = function(request, items, disbursedFrom, disbursed
   return description;
 }
 
-var getValueString = function(value) {
-  if (value === null || value === undefined) {
-    return 'undefined';
-  }
-  return JSON.stringify(value);
-}
-
-var processQuantityChange = function(changeEnum){
-  var snippet = " due to ";
-  switch(changeEnum){
-    case "MANUAL":
-      snippet += "manual override";
-      break;
-    case "LOSS":
-      snippet += "loss of item";
-      break;
-    case "ACQUISITION":
-      snippet += "acquisition of item";
-      break;
-    case "DESTRUCTION":
-      snippet += "destruction of item";
-      break;
-    default:
-      snippet += "undefined reason";
-      break;
-  }
-  return snippet;
-}
-
-var createChangesString = function(oldObject, changes) {
-  var changesString = "";
-  let quantity_reason = changes.quantity_reason;
-  delete changes.quantity_reason;
-  Object.keys(changes).forEach(function(key, index, keyArray) {
-    if (index !== 0 && keyArray.length !== 2) {
-      changesString += ',';
-    }
-    if (index === keyArray.length -1 && index !== 0) {
-      changesString += ' and';
-    }
-    changesString += ' ' + key + ' from ' + getValueString(oldObject[key])
-      + ' to ' + getValueString(changes[key]);
-    if(key === "quantity") changesString += processQuantityChange(quantity_reason);
-  });
-  return changesString;
-}
-
 module.exports.editedRequest = function(oldRequest, changes, initiatingUser, affectedUser) {
   var description = 'The user ' + StringHelpers.getDisplayName(initiatingUser) + ' edited ';
   if (initiatingUser._id.equals(affectedUser._id)) {
@@ -96,14 +49,14 @@ module.exports.editedRequest = function(oldRequest, changes, initiatingUser, aff
   } else {
     description += StringHelpers.getDisplayName(affectedUser) + '\'s request by changing';
   }
-  description += createChangesString(oldRequest, changes);
+  description += StringHelpers.createChangesString(oldRequest, changes);
   description += '.';
   return description;
 }
 
 module.exports.editedItem = function(oldItem, changes, user) {
   var description = 'The item ' + oldItem.name + ' was edited by changing';
-  description += createChangesString(oldItem, changes);
+  description += StringHelpers.createChangesString(oldItem, changes);
   description += '.';
   return description;
 }
@@ -119,7 +72,7 @@ module.exports.fieldCreated = function(field) {
 
 module.exports.fieldEdited = function(field, changes) {
   var description = 'The field ' + field.name + ' was edited by changing';
-  description += createChangesString(field, changes) + '.';
+  description += StringHelpers.createChangesString(field, changes) + '.';
   return description;
 }
 

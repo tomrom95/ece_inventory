@@ -183,9 +183,15 @@ function saveRequest(oldRequest, changes, res, user){
   var obj = Object.assign(oldRequest, changes);
   obj.save((err,request)=>{
     if(err) return res.send({error:err});
-    Logger.logRequestEdit(oldRequestCopy, changes, user, function(error) {
+    Request.populate(oldRequestCopy, {path: "items.item", select: itemFieldsToReturn}, function(error, populatedRequest){
       if(error) return res.send({error: error});
-      return res.json(request);
+      Emailer.sendRequestChangeEmail(populatedRequest, changes, user, function(error) {
+        if(error) return res.send({error: error});
+        Logger.logRequestEdit(oldRequestCopy, changes, user, function(error) {
+          if(error) return res.send({error: error});
+          return res.json(request);
+        });
+      });
     });
   });
 }
@@ -204,9 +210,15 @@ module.exports.deleteAPI = function(req,res){
         request.is_cancelled = true;
         request.save(function(error, updatedRequest) {
           if(error) return res.send({error: error});
-          Logger.logCancelledRequest(updatedRequest, req.user, function(error) {
+          Request.populate(updatedRequest, {path: "items.item", select: itemFieldsToReturn}, function(error, request){
             if(error) return res.send({error: error});
-            res.json({message: 'Delete successful'});
+            Emailer.sendCancelledRequestEmail(request, req.user, function(error) {
+              if(error) return res.send({error: error});
+              Logger.logCancelledRequest(request, req.user, function(error) {
+                if(error) return res.send({error: error});
+                res.json({message: 'Delete successful'});
+              });
+            });
           });
         });
       } else {
@@ -304,14 +316,15 @@ module.exports.patchAPI = function(req, res) {
       if (err) return res.send({error: err});
       Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
         if (err) res.send({error: err});
-        // TODO: Log differently for disburse and loan
-        console.log("Hit");
-        Logger.logDisbursement(request, cart, req.user, function(err) {
-          if (err) return res.send({error: err});
-          return res.json({
-            message: 'Disbursement successful',
-            request: request,
-            items: cart
+        Emailer.sendDisbursementEmail(request, cart, req.user, function(error) {
+          if (error) return res.send({error: error});
+          Logger.logDisbursement(request, cart, req.user, function(err) {
+            if (err) return res.send({error: err});
+            return res.json({
+              message: 'Disbursement successful',
+              request: request,
+              items: cart
+            });
           });
         });
       })

@@ -5,6 +5,7 @@ let EmailSettings = require('../../server/model/emailSettings');
 let User = require('../../server/model/users');
 let Item = require('../../server/model/items');
 let Cart = require('../../server/model/carts');
+let Request = require('../../server/model/requests');
 let helpers = require('../../server/auth/auth_helpers');
 let fakeJSONData = require('./test_inventory_data');
 let chai = require('chai');
@@ -265,5 +266,181 @@ describe('Email settings API Test', function () {
         });
       });
     });
+  });
+
+  describe('Sending emails after request changes', function() {
+    var testRequest;
+    beforeEach((done) => {
+      Request.remove({}, (err) => {
+        should.not.exist(err);
+        var newRequest = new Request({
+          user: standardUser._id,
+          items: [
+            {
+              item: allItems["1k resistor"]._id,
+              quantity: 2
+            },
+            {
+              item: allItems["2k resistor"]._id,
+              quantity: 5
+            },
+            {
+              item: allItems["Oscilloscope"]._id,
+              quantity: 1
+            }
+          ],
+          reason: "cuz",
+          action: "DISBURSEMENT"
+        });
+        newRequest.save(function(error, request) {
+          should.not.exist(error);
+          testRequest = request;
+          done();
+        });
+      });
+    });
+
+    it('emails after disbursing an item', (done) => {
+      chai.request(server)
+        .patch('/api/requests/' + testRequest._id)
+        .set('Authorization', adminToken)
+        .send({action: "FULFILL"})
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          var sentMail = nodemailerMock.mock.sentMail();
+          sentMail.length.should.be.eql(1);
+          var email = sentMail[0];
+          email.to.should.be.eql(standardUser.email);
+          email.cc.should.be.eql(adminUser.email);
+          email.bcc.should.be.eql(managerUser.email);
+          email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'Inventory Request Disbursed');
+          email.text.should.include('(2) 1k resistors');
+          email.text.should.include('(5) 2k resistors');
+          email.text.should.include('(1) Oscilloscope');
+          email.text.should.include('Hello standard,');
+          email.text.should.include('has been disbursed by admin.');
+          done();
+        });
+    });
+
+    it('should not email if disbursement fails', (done) => {
+      Request.remove({}, (err) => {
+        var newRequest = new Request({
+          user: standardUser._id,
+          items: [{
+            item: allItems["1k resistor"]._id,
+            quantity: 2000
+          }],
+          reason: "cuz",
+          action: "DISBURSEMENT"
+        });
+        newRequest.save(function(error, request) {
+          chai.request(server)
+            .patch('/api/requests/' + request._id)
+            .set('Authorization', adminToken)
+            .send({action: "FULFILL"})
+            .end((err, res) => {
+              should.not.exist(err);
+              res.should.have.status(200);
+              var sentMail = nodemailerMock.mock.sentMail();
+              sentMail.length.should.be.eql(0);
+              done();
+            });
+        });
+      });
+    });
+
+    it('emails after editing a request', (done) => {
+      chai.request(server)
+        .put('/api/requests/' + testRequest._id)
+        .set('Authorization', adminToken)
+        .send({
+          reason: "different reason",
+          status: "APPROVED"
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          var sentMail = nodemailerMock.mock.sentMail();
+          sentMail.length.should.be.eql(1);
+          var email = sentMail[0];
+          email.to.should.be.eql(standardUser.email);
+          email.cc.should.be.eql(adminUser.email);
+          email.bcc.should.be.eql(managerUser.email);
+          email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'Inventory Request Updated');
+          email.text.should.include('(2) 1k resistors');
+          email.text.should.include('(5) 2k resistors');
+          email.text.should.include('(1) Oscilloscope');
+          email.text.should.include('Hello standard,');
+          email.text.should.include('has been updated by admin by changing');
+          email.text.should.include('reason from "cuz" to "different reason"');
+          email.text.should.include('status from "PENDING" to "APPROVED"');
+          done();
+        });
+    });
+
+    it('does not email after editing a request if nothing changed', (done) => {
+      chai.request(server)
+        .put('/api/requests/' + testRequest._id)
+        .set('Authorization', adminToken)
+        .send({
+          reason: "cuz"
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          var sentMail = nodemailerMock.mock.sentMail();
+          sentMail.length.should.be.eql(0);
+          done();
+        });
+    });
+
+    it('logs someone cancelling their request', (done) => {
+      chai.request(server)
+        .delete('/api/requests/' + testRequest._id)
+        .set('Authorization', standardToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          var sentMail = nodemailerMock.mock.sentMail();
+          sentMail.length.should.be.eql(1);
+          var email = sentMail[0];
+          email.to.should.be.eql(standardUser.email);
+          should.not.exist(email.cc);
+          email.bcc.should.be.eql(managerUser.email);
+          email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'Inventory Request Cancelled');
+          email.text.should.include('(2) 1k resistors');
+          email.text.should.include('(5) 2k resistors');
+          email.text.should.include('(1) Oscilloscope');
+          email.text.should.include('Hello standard,');
+          email.text.should.include('has been cancelled.');
+          done();
+        });
+    });
+
+    it('logs someone cancelling someone else\'s request', (done) => {
+      chai.request(server)
+        .delete('/api/requests/' + testRequest._id)
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          var sentMail = nodemailerMock.mock.sentMail();
+          sentMail.length.should.be.eql(1);
+          var email = sentMail[0];
+          email.to.should.be.eql(standardUser.email);
+          email.cc.should.be.eql(adminUser.email);
+          email.bcc.should.be.eql(managerUser.email);
+          email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'Inventory Request Cancelled');
+          email.text.should.include('(2) 1k resistors');
+          email.text.should.include('(5) 2k resistors');
+          email.text.should.include('(1) Oscilloscope');
+          email.text.should.include('Hello standard,');
+          email.text.should.include('has been cancelled by admin.');
+          done();
+        });
+    });
+
   });
 });

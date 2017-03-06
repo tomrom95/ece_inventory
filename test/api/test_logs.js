@@ -467,7 +467,7 @@ describe('Logging API Test', function () {
         chai.request(server)
           .patch('/api/requests/' + testRequest._id)
           .set('Authorization', adminToken)
-          .send({action: "DISBURSE"})
+          .send({action: "FULFILL"})
           .end((err, res) => {
             should.not.exist(err);
             res.should.have.status(200);
@@ -508,7 +508,7 @@ describe('Logging API Test', function () {
             chai.request(server)
               .patch('/api/requests/' + request._id)
               .set('Authorization', adminToken)
-              .send({action: "DISBURSE"})
+              .send({action: "FULFILL"})
               .end((err, res) => {
                 should.not.exist(err);
                 res.should.have.status(200);
