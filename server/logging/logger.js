@@ -87,6 +87,7 @@ module.exports.logDisbursement = function(request, items, disbursedFrom, next) {
       type: 'REQUEST_DISBURSED',
       description: LogDescriptions.disbursedItem(request, items, disbursedFrom, disbursedTo)
     });
+
     newLog.save(function(error) {
       if (error) return next(error);
       next();

@@ -504,10 +504,10 @@ return:
 }
 
 PATCH
-// if you use the action "DISBURSE" it will update the item quantity by subtracting
+// if you use the action "FULFILL" it will update the item quantity by subtracting
 // the requested amount and then set the request status to "FULFILLED"
 params: {
-	action: "DISBURSE" // for now this is the only action
+	action: "FULFILL" // for now this is the only action
 }
 return {
 	items: [

@@ -1260,7 +1260,7 @@ describe('Requests API Test', function () {
         .patch('/api/requests/'+request._id)
         .set('Authorization', token)
         .send({
-          'action': 'DISBURSE'
+          'action': 'FULFILL'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -1301,7 +1301,7 @@ describe('Requests API Test', function () {
         .patch('/api/requests/'+request._id)
         .set('Authorization', token)
         .send({
-          'action': 'DISBURSE'
+          'action': 'FULFILL'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -1347,7 +1347,7 @@ describe('Requests API Test', function () {
         .patch('/api/requests/'+request._id)
         .set('Authorization', token)
         .send({
-          'action': 'DISBURSE'
+          'action': 'FULFILL'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -1393,7 +1393,7 @@ describe('Requests API Test', function () {
         .patch('/api/requests/'+request._id)
         .set('Authorization', token)
         .send({
-          'action': 'DISBURSE'
+          'action': 'FULFILL'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -1436,7 +1436,7 @@ describe('Requests API Test', function () {
         .patch('/api/requests/'+request._id)
         .set('Authorization', token)
         .send({
-          'action': 'DISBURSE'
+          'action': 'FULFILL'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -1476,7 +1476,7 @@ describe('Requests API Test', function () {
         .patch('/api/requests/'+request._id)
         .set('Authorization', token)
         .send({
-          'action': 'DISBURSE'
+          'action': 'FULFILL'
         })
         .end((err, res) => {
           should.not.exist(err);

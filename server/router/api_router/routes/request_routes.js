@@ -153,11 +153,11 @@ module.exports.putAPI = function(req,res){
       }
       if (req.user.role === 'MANAGER') {
         ['status', 'reviewer_comment', 'action']
-          .forEach(field => fieldsToEdit.add(field));
+        .forEach(field => fieldsToEdit.add(field));
       }
       if (req.user.role === 'ADMIN') {
         ['reason', 'status', 'user', 'items', 'created', 'requestor_comment', 'reviewer_comment', 'action']
-          .forEach(field => fieldsToEdit.add(field));
+        .forEach(field => fieldsToEdit.add(field));
       }
       // admins and managers can only edit reason if it's their own
       var changes = {};
@@ -216,82 +216,96 @@ module.exports.deleteAPI = function(req,res){
   });
 };
 
-function disburse(requestID, next) {
+
+function fulfill(requestID, next) {
   Request.findById(requestID, function(err, request) {
     if (err) return next(err);
     if (!request) return next('Request does not exist');
     if (request.status === 'FULFILLED') {
-      return next('Request has already been disbursed to the user');
+      return next('Request has already been fulfilled');
     }
     if (request.is_cancelled) {
       return next('You cannot fulfill a cancelled request');
     }
-    var checkQuantityPromises = [];
-    for (var i = 0; i < request.items.length; i++){
-      // Pass down index i into the closure for async call
-      (function(i){
-        // Push each promise to an array
-        checkQuantityPromises.push(new Promise((resolve, reject) => {
-          Item.findById(request.items[i].item, function(err, item) {
-            if(err) return next(err);
-            // Check that all items have sufficient quantity
-            if (item.quantity < request.items[i].quantity) {
-              return next('Insufficient quantity of item: '+item.name);
-            }
-            resolve();
-          });
-        }));
-      })(i);
-
-    }
-    // Resolve array of promises sequentially
-    Promise.all(checkQuantityPromises).then(function(obj) {
-      // returned
-      var updatedCart = [];
-      var disbursePromises = [];
+      var checkQuantityPromises = [];
       for (var i = 0; i < request.items.length; i++){
         // Pass down index i into the closure for async call
         (function(i){
-          disbursePromises.push(new Promise((resolve, reject) => {
+          // Push each promise to an array
+          checkQuantityPromises.push(new Promise((resolve, reject) => {
             Item.findById(request.items[i].item, function(err, item) {
-              item.quantity -= request.items[i].quantity;
-              item.save(function(err, updatedItem) {
-                if (err) return next(err);
-                if (!updatedItem) return next('Item does not exist');
-                Item.populate(updatedItem,{path: "item", select: itemFieldsToReturn}, function(err, item){
-                  updatedCart.push(updatedItem);
-                  resolve();
-                })
-              });
+              if(err) return next(err);
+              // Check that all items have sufficient quantity
+              if (item.quantity < request.items[i].quantity) {
+                return next('Insufficient quantity of item: '+item.name);
+              }
+              resolve();
             });
-          }))
+          }));
         })(i);
 
       }
-      Promise.all(disbursePromises).then(function(){
-        // Only update request if item quantity change was successful.
-        // This prevents a request from being fulfilled if there isn't enough
-        // of a certain item in the cart to disburse.
-        request.status = "FULFILLED";
-        request.save(function(err, updatedRequest) {
-          if (err) return next(err);
-          next(null, updatedRequest, updatedCart);
+      // Resolve array of promises sequentially
+      Promise.all(checkQuantityPromises).then(function(obj) {
+        // returned
+        var updatedCart = [];
+        var disbursePromises = [];
+        for (var i = 0; i < request.items.length; i++){
+          // Pass down index i into the closure for async call
+          (function(i){
+            disbursePromises.push(new Promise((resolve, reject) => {
+              Item.findById(request.items[i].item, function(err, item) {
+                item.quantity -= request.items[i].quantity;
+                item.save(function(err, updatedItem) {
+                  if (err) return next(err);
+                  if (!updatedItem) return next('Item does not exist');
+                  Item.populate(updatedItem,{path: "item", select: itemFieldsToReturn}, function(err, item){
+                    updatedCart.push(updatedItem);
+                    resolve();
+                  })
+                });
+              });
+            }))
+          })(i);
+        }
+        Promise.all(disbursePromises).then(function(){
+          // Only update request if item quantity change was successful.
+          // This prevents a request from being fulfilled if there isn't enough
+          // of a certain item in the cart to disburse.
+          request.status = "FULFILLED";
+          request.save(function(err, updatedRequest) {
+            if (err) return next(err);
+            if(request.action === "LOAN") {
+              var loan = new Loan({
+                user: updatedRequest.user,
+                items: updatedRequest.items,
+                request: updatedRequest._id,
+              });
+              loan.save(function(err, updatedLoan){
+                if (err) return next(err);
+                next(null, updatedRequest, updatedCart);
+              })
+            } else if (request.action === "DISBURSEMENT"){
+              next(null, updatedRequest, updatedCart);
+            }
+          });
+        }, function(err){
+          return next(err);
         });
       }, function(err){
         return next(err);
       });
-    }, function(err){
-      return next(err);
     });
-  });
 }
 
 module.exports.patchAPI = function(req, res) {
-  if (req.body.action == 'DISBURSE') {
-    disburse(req.params.request_id, function(err, request, cart) {
+  if (req.body.action == 'FULFILL') {
+    fulfill(req.params.request_id, function(err, request, cart) {
       if (err) return res.send({error: err});
       Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
         if (err) res.send({error: err});
+        // TODO: Log differently for disburse and loan
+        console.log("Hit");
         Logger.logDisbursement(request, cart, req.user, function(err) {
           if (err) return res.send({error: err});
           return res.json({
