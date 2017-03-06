@@ -13,14 +13,17 @@ var Emailer = require('../server/emails/emailer');
 
 mongoose.connect('mongodb://admin:ece458duke@localhost/inventory');
 
-var removeOldEmails = function(settings, next) {
-  var endToday = moment().endOf('day');
-  settings.loan_emails = settings.loan_emails.filter(function(loanObj) {
-    return endToday.isAfter(moment(loanObj.date));
-  });
-  settings.save(function(error) {
+var removeOldEmails = function(next) {
+  EmailSettings.getSingleton(function(error, settings) {
     if (error) return next(error);
-    next();
+    var endToday = moment().endOf('day');
+    settings.loan_emails = settings.loan_emails.filter(function(loanObj) {
+      return endToday.isBefore(moment(loanObj.date));
+    });
+    settings.save(function(error) {
+      if (error) return next(error);
+      next();
+    });
   });
 }
 
@@ -29,10 +32,12 @@ Emailer.checkForLoanEmailAndSendAll(function(error) {
     console.log(error);
     process.exit();
   } else {
+    console.log('send loan emails for today');
     removeOldEmails(function(error) {
       if (error) {
         console.log(error);
       }
+      console.log('old emails removed')
       process.exit();
     });
   }

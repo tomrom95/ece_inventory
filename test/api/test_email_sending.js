@@ -547,6 +547,27 @@ describe('Email settings API Test', function () {
       });
     });
 
+    it('does not send loan emails if there are none to send today', (done) => {
+      EmailSettings.getSingleton(function(error, settings) {
+        should.not.exist(error);
+        var yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        settings.loan_emails = {
+          body: 'Semester is over',
+          date: yesterday
+        };
+        settings.save(function(error) {
+          should.not.exist(error);
+          // test loan emailer
+          Emailer.checkForLoanEmailAndSendAll(function(error) {
+            should.not.exist(error);
+            var sentMail = nodemailerMock.mock.sentMail();
+            sentMail.length.should.be.eql(0);
+            done();
+          });
+        });
+      });
+    });
 
   });
 });
