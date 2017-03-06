@@ -75,17 +75,6 @@ module.exports.sendCancelledRequestEmail = function(request, initiatingUser, nex
   });
 }
 
-var removeOldEmails = function(settings) {
-  var endToday = moment().endOf('day');
-  settings.loan_emails = settings.loan_emails.filter(function(loanObj) {
-    return endToday.isAfter(moment(loanObj.date));
-  });
-  settings.save(function(error) {
-    if (error) console.log(error);
-    process.exit();
-  })
-}
-
 var sendSingleLoanEmail = function(userId, loans, loanEmailObj, next) {
   var builder = new EmailBuilder();
   User.findById(userId, function(error, loanUser) {
