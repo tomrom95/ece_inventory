@@ -55,7 +55,6 @@ var importMultipleItems = function(data, next){
         itemArray.push(new Item(data[i]));
     }
     Item.insertMany(itemArray, function(err, items){
-      console.log(err);
       if(err) return next(err,null);
       return next(null, items); // successfully inserted array
     })
@@ -64,8 +63,6 @@ var importMultipleItems = function(data, next){
 
 var updateCustomFields = function(enteredCustomFields, dataCustomFields, next){
   var draftCustomFieldArray = [];
-  console.log(enteredCustomFields);
-  console.log(dataCustomFields)
   for(var i in enteredCustomFields){
     var isMatch = false;
     for(var j in dataCustomFields){
