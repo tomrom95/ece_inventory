@@ -197,7 +197,8 @@ describe('Email settings API Test', function () {
             .patch('/api/cart')
             .set('Authorization', adminToken)
             .send({
-              action: 'CHECKOUT',
+              action: 'FULFILL',
+              type: 'DISBURSEMENT',
               reason: 'I want them'
             })
             .end((err, res) => {
@@ -240,8 +241,9 @@ describe('Email settings API Test', function () {
             .patch('/api/cart')
             .set('Authorization', adminToken)
             .send({
-              action: 'CHECKOUT',
+              action: 'FULFILL',
               reason: 'I want them',
+              type: 'DISBURSEMENT',
               user: standardUser._id
             })
             .end((err, res) => {

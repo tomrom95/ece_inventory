@@ -624,7 +624,8 @@ describe('Logging API Test', function () {
               .patch('/api/cart')
               .set('Authorization', adminToken)
               .send({
-                action: 'CHECKOUT',
+                action: 'FULFILL',
+                type: 'DISBURSEMENT',
                 reason: 'I want them'
               })
               .end((err, res) => {
@@ -671,7 +672,8 @@ describe('Logging API Test', function () {
               .patch('/api/cart')
               .set('Authorization', adminToken)
               .send({
-                action: 'CHECKOUT',
+                action: 'FULFILL',
+                type: 'DISBURSEMENT',
                 reason: 'I want them',
                 user: standardUser._id
               })
@@ -720,7 +722,8 @@ describe('Logging API Test', function () {
               .patch('/api/cart')
               .set('Authorization', managerToken)
               .send({
-                action: 'CHECKOUT',
+                action: 'FULFILL',
+                type: 'DISBURSEMENT',
                 reason: 'I want them',
                 user: adminUser._id
               })

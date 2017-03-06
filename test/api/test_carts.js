@@ -626,8 +626,9 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', adminToken)
         .send({
-          action: 'CHECKOUT',
-          reason: 'Test request'
+          action: 'FULFILL',
+          reason: 'Test request',
+          type: 'DISBURSEMENT'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -670,8 +671,9 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', managerToken)
         .send({
-          action: 'CHECKOUT',
-          reason: 'Test request'
+          action: 'FULFILL',
+          reason: 'Test request',
+          type: 'DISBURSEMENT'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -714,8 +716,9 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', standardToken)
         .send({
-          action: 'CHECKOUT',
-          reason: 'Test request'
+          action: 'FULFILL',
+          reason: 'Test request',
+          type: 'DISBURSEMENT'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -758,8 +761,9 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', adminToken)
         .send({
-          action: 'CHECKOUT',
+          action: 'FULFILL',
           reason: 'Test request',
+          type: 'DISBURSEMENT',
           user: standardUser._id
         })
         .end((err, res) => {
@@ -783,8 +787,9 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', standardToken)
         .send({
-          action: 'CHECKOUT',
+          action: 'FULFILL',
           reason: 'Test request',
+          type: 'DISBURSEMENT',
           user: adminUser._id
         })
         .end((err, res) => {
@@ -803,8 +808,9 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', managerToken)
         .send({
-          action: 'CHECKOUT',
+          action: 'FULFILL',
           reason: 'Test request',
+          type: 'DISBURSEMENT',
           user: standardUser._id
         })
         .end((err, res) => {
@@ -828,8 +834,9 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', adminToken)
         .send({
-          action: 'CHECKOUT',
+          action: 'FULFILL',
           reason: 'Test request',
+          type: 'DISBURSEMENT',
           user: '99ae73d23d7d8010a8343a2f'
         })
         .end((err, res) => {
@@ -848,8 +855,9 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', standardToken)
         .send({
-          action: 'CHECKOUT',
-          reason: 'Test request'
+          action: 'FULFILL',
+          reason: 'Test request',
+          type: 'DISBURSEMENT'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -883,8 +891,9 @@ describe('Cart API Test', function () {
               .patch('/api/cart')
               .set('Authorization', standardToken)
               .send({
-                action: 'CHECKOUT',
-                reason: 'Test request'
+                action: 'FULFILL',
+                reason: 'Test request',
+                type: 'DISBURSEMENT'
               })
               .end((err, res) => {
                 should.not.exist(err);
@@ -905,7 +914,8 @@ describe('Cart API Test', function () {
         .patch('/api/cart')
         .set('Authorization', standardToken)
         .send({
-          action: 'CHECKOUT',
+          action: 'FULFILL',
+          type: 'DISBURSEMENT'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -953,8 +963,9 @@ describe('Cart API Test', function () {
           .patch('/api/cart')
           .set('Authorization', standardToken)
           .send({
-            action: 'CHECKOUT',
-            reason: 'Test request'
+            action: 'FULFILL',
+            reason: 'Test request',
+            type: 'DISBURSEMENT'
           })
           .end((err, res) => {
             should.not.exist(err);
