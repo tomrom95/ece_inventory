@@ -11,6 +11,7 @@ var restrictToManagers = require('../../auth/auth_helpers').restrictToManagers;
 var tag_routes = require('./routes/tag_routes');
 var field_routes = require('./routes/field_routes');
 var item_field_routes = require('./routes/item_field_routes');
+var email_routes = require('./routes/email_routes');
 
 var express = require('express');
 var router = express.Router();
@@ -87,5 +88,15 @@ router.route('/customFields/:field_id')
       .get(field_routes.getAPIbyID)
       .put(restrictToAdmins, field_routes.putAPI)
       .delete(restrictToAdmins, field_routes.deleteAPI);
+
+router.route('/emailSettings')
+      .get(restrictToManagers, email_routes.getAPI)
+      .put(restrictToManagers, email_routes.putAPI);
+
+router.route('/emailSettings/loans')
+      .post(restrictToManagers, email_routes.postAPI);
+
+router.route('/emailSettings/loans/:email_id')
+      .delete(restrictToManagers, email_routes.deleteAPI);
 
 module.exports = router;
