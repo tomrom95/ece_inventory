@@ -205,6 +205,7 @@ module.exports.deleteAPI = function(req, res){
     if (item.is_deleted) {
       res.send({error: 'Item has already been marked as deleted'})
     }
+    var itemCopy = new Item(item);
     item.is_deleted = true;
     // adds '- deleted year-month-day hour:minute:second' to name to allow for
     // new items with same name
@@ -212,7 +213,7 @@ module.exports.deleteAPI = function(req, res){
 
     item.save(function(error, newItem) {
       if (error) return res.send(error);
-      Logger.logDeletion(newItem, req.user, function(error) {
+      Logger.logDeletion(itemCopy, req.user, function(error) {
         if (error) return res.send({error: error});
         return res.json({message: "Delete successful"});
       });
