@@ -119,7 +119,8 @@ describe('Email settings API Test', function () {
               quantity: 1,
             }
           ],
-          reason: "cuz"
+          reason: "cuz",
+          action: "DISBURSEMENT"
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -155,7 +156,8 @@ describe('Email settings API Test', function () {
               quantity: 1,
             }
           ],
-          reason: "cuz"
+          reason: "cuz",
+          action: "DISBURSEMENT"
         })
         .end((err, res) => {
           should.not.exist(err);

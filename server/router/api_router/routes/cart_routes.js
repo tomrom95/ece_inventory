@@ -120,6 +120,8 @@ function checkout (initiatingUser, enteredUserID, reasonString, next) {
          user: requestingUserID,
          reason: reasonString,
          status: 'PENDING',
+         // For now, disbursement - to change with frontend choice
+         action: 'DISBURSEMENT'
        });
        // Copy array of items
        request.items = [];
