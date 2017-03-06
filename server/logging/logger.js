@@ -3,20 +3,7 @@ var Log = require('../model/logs');
 var User = require('../model/users');
 var Item = require('../model/items');
 var LogDescriptions = require('./log_descriptions');
-
-var getFilteredChanges = function(oldObject, changes) {
-  var filteredKeys = Object.keys(changes)
-    .filter(function(key) {
-      // stringify values so that you can do equality with things like arrays
-      return String(oldObject[key]) != String(changes[key]);
-    })
-  var filteredChanges = {};
-  filteredKeys.forEach(key => filteredChanges[key] = changes[key]);
-  if (Object.keys(filteredChanges).length === 0) {
-    return null;
-  }
-  return filteredChanges;
-}
+var StringHelpers = require('./string_helpers');
 
 module.exports.logNewItem = function(item, user, next) {
   var newLog = new Log({
@@ -42,7 +29,7 @@ var noFilteredChanges = function(changes){
 
 module.exports.logEditing = function(oldItem, changes, user, next) {
   // First filter changes to remove fields that haven't actually changed
-  var filteredChanges = getFilteredChanges(oldItem, changes);
+  var filteredChanges = StringHelpers.getFilteredChanges(oldItem, changes);
   // If nothing actually changed, don't log
   if (noFilteredChanges(filteredChanges)) {
     return next();
@@ -107,15 +94,15 @@ module.exports.logDisbursement = function(request, items, disbursedFrom, next) {
   });
 }
 
-var logRequestCreationHelper = function(request, createdByUser, createdForUser, next) {
+module.exports.logRequestCreation = function(request, createdBy, createdFor, next) {
   var itemIds = request.items.map(i => i.item._id);
   var newLog = new Log({
-    initiating_user: (createdByUser) ? createdByUser._id : createdForUser._id,
-    affected_user: (createdByUser) ? createdForUser._id : null, // only include if admin made request for someone else
+    initiating_user: createdBy._id,
+    affected_user: (createdBy._id.equals(createdFor._id)) ? null : createdFor._id, // only include if admin made request for someone else
     items: itemIds,
     request: request._id,
     type: 'REQUEST_CREATED',
-    description: LogDescriptions.requestCreated(request, createdByUser, createdForUser)
+    description: LogDescriptions.requestCreated(request, createdBy, createdFor)
   });
   newLog.save(function(error) {
     if (error) return next(error);
@@ -123,22 +110,8 @@ var logRequestCreationHelper = function(request, createdByUser, createdForUser, 
   });
 }
 
-module.exports.logRequestCreation = function(request, createdBy, createdFor, next) {
-  User.findById(createdFor, function(error, createdForUser) {
-    if (error) return next(error);
-    if (String(createdBy) !== String(createdFor)) {
-      User.findById(createdBy, function(error, createdByUser) {
-        if (error) return next(error);
-        return logRequestCreationHelper(request, createdByUser, createdForUser, next);
-      });
-    } else {
-      return logRequestCreationHelper(request, null, createdForUser, next);
-    }
-  });
-}
-
 module.exports.logRequestEdit = function(oldRequest, changes, initiatingUser, next) {
-  var filteredChanges = getFilteredChanges(oldRequest, changes);
+  var filteredChanges = StringHelpers.getFilteredChanges(oldRequest, changes);
   // If nothing actually changed, don't log
   if (!filteredChanges) {
     return next();
@@ -193,7 +166,7 @@ module.exports.logCustomFieldCreation = function(field, initiatingUser, next) {
 }
 
 module.exports.logCustomFieldEdit = function(field, changes, initiatingUser, next) {
-  var filteredChanges = getFilteredChanges(field, changes);
+  var filteredChanges = StringHelpers.getFilteredChanges(field, changes);
   if (!filteredChanges) {
     return next();
   }

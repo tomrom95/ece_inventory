@@ -2,7 +2,7 @@
 var Item = require('../../../model/items');
 var CustomField = require('../../../model/customFields');
 var QueryBuilder = require('../../../queries/querybuilder');
-var LogHelpers = require('../../../logging/log_helpers');
+var Logger = require('../../../logging/logger');
 const quantityReasonStrings = ["LOSS", "MANUAL", "DESTRUCTION", "ACQUISITION"];
 
 var getPrivateFields = function(next) {
@@ -119,7 +119,7 @@ module.exports.postAPI = function(req, res){
   item.save(function(err, newItem){
     if(err)
     return res.send({error: err});
-    LogHelpers.logNewItem(newItem, req.user, function(error) {
+    Logger.logNewItem(newItem, req.user, function(error) {
       if (error) return res.send({error: error});
       return res.json(newItem);
     });
@@ -189,7 +189,7 @@ module.exports.putAPI = function(req, res){
       obj.tags = trimTags(req.body.tags);
       obj.save((err,item) => {
         if(err) return res.send({error: err});
-          LogHelpers.logEditing(oldItemCopy, changes, req.user, function(err) {
+          Logger.logEditing(oldItemCopy, changes, req.user, function(err) {
           if(err) return res.send({error: err});
           res.json(item);
         });
@@ -207,7 +207,7 @@ module.exports.deleteAPI = function(req, res){
     item.is_deleted = true;
     item.save(function(error, newItem) {
       if (error) return res.send(error);
-      LogHelpers.logDeletion(newItem, req.user, function(error) {
+      Logger.logDeletion(newItem, req.user, function(error) {
         if (error) return res.send({error: error});
         return res.json({message: "Delete successful"});
       });
