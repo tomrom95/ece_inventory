@@ -35,8 +35,7 @@ var LoanSchema = new mongoose.Schema({
   },
   created: {
     type: Date,
-    default: Date.now,
-    required: true,
+    default: Date.now
   },
   lastModified:{
     type: Date,
