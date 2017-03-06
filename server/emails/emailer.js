@@ -72,3 +72,17 @@ module.exports.sendCancelledRequestEmail = function(request, initiatingUser, nex
       });
   });
 }
+
+module.exports.sendLoanReminderEmail = function(userId, loans, loanEmailObj, next) {
+  User.findById(userId, function(error, loanUser) {
+    if (error) return next(error);
+    builder
+      .setToEmails([loanUser])
+      .setSubject('ECE Inventory Loans Reminder')
+      .setBody(EmailBodies.loanReminder(loanUser, loans, loanEmailObj.body))
+      .send(function(error, info) {
+        if (error) return next(error);
+        return next(null, info);
+      });
+  });
+}
