@@ -206,7 +206,7 @@ describe('Inventory Import API Test', function () {
         .send(singleItemJSON)
         .end((err, res) => {
           should.not.exist(err);
-          res.body.error.should.be.eql('The entered custom field dkjfh was not found in list of current custom fields');          console.log(res.body);
+          res.body.error.should.be.eql('The entered custom field dkjfh was not found in list of current custom fields');
           Item.find({}, function(err, items){
             items.length.should.be.eql(0);
             done();
@@ -221,7 +221,7 @@ describe('Inventory Import API Test', function () {
         .send(singleItemJSON)
         .end((err, res) => {
           should.not.exist(err);
-          res.body.error.should.be.eql('The entered custom field dkjfh was not found in list of current custom fields');          console.log(res.body);
+          res.body.error.should.be.eql('The entered custom field dkjfh was not found in list of current custom fields');
           Item.find({}, function(err, items){
             items.length.should.be.eql(0);
             done();
