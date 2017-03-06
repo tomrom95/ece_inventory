@@ -6,11 +6,13 @@ let User = require('../../server/model/users');
 let Item = require('../../server/model/items');
 let Cart = require('../../server/model/carts');
 let Request = require('../../server/model/requests');
+let Loan = require('../../server/model/loans');
 let helpers = require('../../server/auth/auth_helpers');
 let fakeJSONData = require('./test_inventory_data');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let should = chai.should();
+let assert = chai.assert;
 chai.use(chaiHttp);
 chai.use(require('chai-things'));
 
@@ -435,6 +437,116 @@ describe('Email settings API Test', function () {
           done();
         });
     });
+
+  });
+
+  describe('Sending loan reminder emails', function() {
+    var Emailer;
+    before(() => {
+      // require after because of mocking
+      Emailer = require('../../server/emails/emailer');
+    });
+
+    beforeEach((done) => {
+      var loans = [
+        {
+          user: standardUser._id,
+          request: '111111111111111111111111', // don't care about this, just fake it
+          items: [
+            {
+              item: allItems["1k resistor"]._id,
+              quantity: 2,
+              status: 'LENT'
+            },
+            {
+              item: allItems["2k resistor"]._id,
+              quantity: 5,
+              status: 'RETURNED'
+            }
+          ]
+        },
+        {
+          user: standardUser._id,
+          request: '222222222222222222222222', // don't care about this, just fake it
+          items: [
+            {
+              item: allItems["Oscilloscope"]._id,
+              quantity: 1,
+              status: 'LENT'
+            },
+            {
+              item: allItems["5k resistor"]._id,
+              quantity: 3,
+              status: 'DISBURSED'
+            }
+          ]
+        },
+        {
+          user: managerUser._id,
+          request: '333333333333333333333333', // don't care about this, just fake it
+          items: [
+            {
+              item: allItems["1k resistor"]._id,
+              quantity: 1,
+              status: 'LENT'
+            },
+            {
+              item: allItems["2k resistor"]._id,
+              quantity: 3,
+              status: 'LENT'
+            }
+          ]
+        },
+      ];
+      Loan.remove({}, function(error) {
+        should.not.exist(error);
+        Loan.insertMany(loans).then(function(array) {
+          done();
+        });
+      });
+    });
+
+    it('sends loan emails to appropriate users if there is a email to send today', (done) => {
+      EmailSettings.getSingleton(function(error, settings) {
+        should.not.exist(error);
+        settings.loan_emails = {
+          body: 'Semester is over',
+          date: new Date()
+        };
+        settings.save(function(error) {
+          should.not.exist(error);
+          // test loan emailer
+          Emailer.checkForLoanEmailAndSendAll(function(error) {
+            should.not.exist(error);
+            var sentMail = nodemailerMock.mock.sentMail();
+            sentMail.length.should.be.eql(2);
+            sentMail.forEach(function(email) {
+              if (email.to === standardUser.email) {
+                email.text.should.include(' - (2) 1k resistors');
+                email.text.should.include(' - (1) Oscilloscope');
+                email.text.should.not.include(' - (3) 2k resistors');
+                email.text.should.not.include(' - (3) 5k resistors');
+                email.text.should.include('Hello standard,');
+              } else if (email.to === managerUser.email) {
+                email.text.should.include(' - (1) 1k resistor');
+                email.text.should.include(' - (3) 2k resistors');
+                email.text.should.include('Hello manager,');
+              } else {
+                assert.fail(0,1, 'to email not correct');
+              }
+              // both should include
+              should.not.exist(email.cc);
+              email.bcc.should.be.eql(managerUser.email);
+              email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'ECE Inventory Loans Reminder');
+              email.text.should.include('The following items are due in your loans:');
+              email.text.should.include('Semester is over');
+            });
+            done();
+          });
+        });
+      });
+    });
+
 
   });
 });

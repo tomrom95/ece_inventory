@@ -51,10 +51,11 @@ module.exports.loanReminder = function(loanUser, loans, bodyPrepend) {
   text += bodyPrepend + '\n\n';
   text += 'The following items are due in your loans: \n\n';
   loans.forEach(function(loan) {
-    loan.items.forEach(function(item) {
-      if (item.status === 'LENT') {
-        text += '' // populate and stuff with due date
+    loan.items.forEach(function(itemObj) {
+      if (itemObj.status === 'LENT') {
+        text += ' - ' + StringHelpers.itemQuantityString(itemObj.item.name, itemObj.quantity) + '\n';
       }
-    })
-  })
+    });
+  });
+  return text;
 }
