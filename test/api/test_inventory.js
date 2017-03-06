@@ -1,6 +1,7 @@
 process.env.NODE_ENV = 'test';
 
 let mongoose = require("mongoose");
+let moment = require('moment');
 let Item = require('../../server/model/items');
 let User = require('../../server/model/users');
 let helpers = require('../../server/auth/auth_helpers');
@@ -773,6 +774,7 @@ describe('Inventory API Test', function () {
         .delete('/api/inventory/'+item.id)
         .set('Authorization', token)
         .end((err, res) => {
+          var currentDate = moment().format('YYYY-MM-DD');
           should.not.exist(err);
               chai.request(server)
               .get('/api/inventory/'+item.id)
@@ -781,7 +783,12 @@ describe('Inventory API Test', function () {
                 should.not.exist(err);
                 res.should.have.status(200);
                 res.body.should.be.a('object');
-                res.body.name.should.be.eql('Laptop');
+                res.body.is_deleted.should.be.eql(true);
+                // check if name changed
+                res.body.name.should.include('Laptop');
+                // check if it has the current date in it.
+                // cannot check time
+                res.body.name.should.include(currentDate);
                 done();
           });
         });
@@ -800,15 +807,21 @@ describe('Inventory API Test', function () {
         .delete('/api/inventory/'+item.id)
         .set('Authorization', token)
         .end((err, res) => {
+          var currentDate = moment().format('YYYY-MM-DD');
           should.not.exist(err);
               chai.request(server)
               .get('/api/inventory/'+item.id)
-              .set('Authorization', managerToken)
+              .set('Authorization', token)
               .end((err, res) => {
                 should.not.exist(err);
                 res.should.have.status(200);
                 res.body.should.be.a('object');
-                res.body.name.should.be.eql('Laptop');
+                res.body.is_deleted.should.be.eql(true);
+                // check if name changed
+                res.body.name.should.include('Laptop');
+                // check if it has the current date in it.
+                // cannot check time
+                res.body.name.should.include(currentDate);
                 done();
           });
         });

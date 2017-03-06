@@ -3,6 +3,7 @@ var Item = require('../../../model/items');
 var CustomField = require('../../../model/customFields');
 var QueryBuilder = require('../../../queries/querybuilder');
 var Logger = require('../../../logging/logger');
+var moment = require('moment');
 const quantityReasonStrings = ["LOSS", "MANUAL", "DESTRUCTION", "ACQUISITION"];
 
 var getPrivateFields = function(next) {
@@ -205,6 +206,10 @@ module.exports.deleteAPI = function(req, res){
       res.send({error: 'Item has already been marked as deleted'})
     }
     item.is_deleted = true;
+    // adds '- deleted year-month-day hour:minute:second' to name to allow for
+    // new items with same name
+    item.name = item.name + ' - deleted ' + moment().format('YYYY-MM-DD hh:mm:ssa');
+
     item.save(function(error, newItem) {
       if (error) return res.send(error);
       Logger.logDeletion(newItem, req.user, function(error) {
