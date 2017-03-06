@@ -1,4 +1,4 @@
-'use strict'
+#!/usr/bin/env node
 
 /*
 Run this script daily to send loan emails and delete old ones
