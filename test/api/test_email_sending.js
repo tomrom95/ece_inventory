@@ -314,12 +314,12 @@ describe('Email settings API Test', function () {
           email.to.should.be.eql(standardUser.email);
           email.cc.should.be.eql(adminUser.email);
           email.bcc.should.be.eql(managerUser.email);
-          email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'Inventory Request Disbursed');
+          email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'Inventory Request Fulfilled');
           email.text.should.include('(2) 1k resistors');
           email.text.should.include('(5) 2k resistors');
           email.text.should.include('(1) Oscilloscope');
           email.text.should.include('Hello standard,');
-          email.text.should.include('has been disbursed by admin.');
+          email.text.should.include('has been fulfilled as a disbursement to you by admin.');
           done();
         });
     });

@@ -3,6 +3,7 @@ var Request = require('../../../model/requests');
 var Item = require('../../../model/items');
 var User = require('../../../model/users');
 var Cart = require('../../../model/carts');
+var Loan = require('../../../model/loans');
 var mongoose = require('mongoose');
 var QueryBuilder = require('../../../queries/querybuilder');
 var Emailer = require('../../../emails/emailer');
@@ -101,8 +102,10 @@ function processAndPost(request, createdBy, createdFor, req, res){
   request.status = req.body.status;
   request.requestor_comment = req.body.requestor_comment;
   request.reviewer_comment = req.body.reviewer_comment;
-  if(req.body.action === 'DISBURSEMENT') request.action = 'DISBURSEMENT';
-  if(req.body.action === 'LOAN') request.action = 'LOAN';
+  if (!['DISBURSEMENT', 'LOAN'].includes(req.body.action)) {
+    return res.send({error: 'Action must either be DISBURSEMENT or LOAN'});
+  }
+  request.action = req.body.action
   request.save(function(err, request){
     if(err) return res.send({error:err});
     Request.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, request){
@@ -316,27 +319,17 @@ module.exports.patchAPI = function(req, res) {
       if (err) return res.send({error: err});
       Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
         if (err) res.send({error: err});
-
-        if(request.action === 'DISBURSEMENT'){
-          Emailer.sendDisbursementEmail(request, cart, req.user, function(error) {
-            if (error) return res.send({error: error});
-            Logger.logDisbursement(request, cart, req.user, function(err) {
-              if (err) return res.send({error: err});
-              return res.json({
-                message: 'Disbursement successful',
-                request: request,
-                items: cart
-              });
+        Emailer.sendFulfillEmail(request, cart, req.user, function(error) {
+          if (error) return res.send({error: error});
+          Logger.logFulfill(request, cart, req.user, function(err) {
+            if (err) return res.send({error: err});
+            return res.json({
+              message: 'Fulfillment successful',
+              request: request,
+              items: cart
             });
           });
-        } else if (request.action === 'LOAN'){
-          return res.json({
-            message: 'Loan creation successful',
-            // Should return loan
-            request: request,
-            items: cart
-          });
-        }
+        });
       })
     });
   } else {

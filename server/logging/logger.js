@@ -75,7 +75,7 @@ module.exports.logDeletion = function(item, user, next) {
   });
 }
 
-module.exports.logDisbursement = function(request, items, disbursedFrom, next) {
+module.exports.logFulfill = function(request, items, disbursedFrom, next) {
   User.findById(request.user, function(error, disbursedTo) {
     if (error) return next(error);
     var itemIds = request.items.map(i => i.item);
@@ -84,8 +84,8 @@ module.exports.logDisbursement = function(request, items, disbursedFrom, next) {
       affected_user: request.user,
       items: itemIds,
       request: request._id,
-      type: 'REQUEST_DISBURSED',
-      description: LogDescriptions.disbursedItem(request, items, disbursedFrom, disbursedTo)
+      type: 'REQUEST_FULFILLED',
+      description: LogDescriptions.fulfilledItem(request, items, disbursedFrom, disbursedTo)
     });
 
     newLog.save(function(error) {

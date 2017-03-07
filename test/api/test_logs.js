@@ -480,7 +480,7 @@ describe('Logging API Test', function () {
                 ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
                   .should.include(item);
               })
-              log.type.should.be.eql('REQUEST_DISBURSED');
+              log.type.should.be.eql('REQUEST_FULFILLED');
               log.initiating_user.should.be.eql(adminUser._id);
               log.affected_user.should.be.eql(standardUser._id);
               log.description.should.include('(2) 1k resistors');
@@ -1104,7 +1104,7 @@ describe('Logging API Test', function () {
           initiating_user: managerUser._id,
           affected_user: standardUser._id,
           items: [allItems["Oscilloscope"]._id, allItems["120V"]._id],
-          type: 'REQUEST_DISBURSED',
+          type: 'REQUEST_FULFILLED',
           description: 'Disbursed oscilloscope and 120V',
           time_stamp: new Date('2017-02-13'),
         },
@@ -1112,7 +1112,7 @@ describe('Logging API Test', function () {
           initiating_user: adminUser._id,
           affected_user: managerUser._id,
           items: [allItems["Oscilloscope"]._id, allItems["100k resistor"]._id],
-          type: 'REQUEST_DISBURSED',
+          type: 'REQUEST_FULFILLED',
           description: 'Disbursed oscilloscope and 100k resistor',
           time_stamp: new Date('2017-02-14'),
         },

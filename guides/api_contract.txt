@@ -527,7 +527,7 @@ params:
 	item_id: String,
 	item_name: String,
 	type: String, // ('ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
-		'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED',
+		'REQUEST_FULFILLED', 'REQUEST_CREATED', 'REQUEST_EDITED',
 		'REQUEST_DELETED', 'FIELD_CREATED', 'FIELD_EDITED', 'FIELD_DELETED')
 	user_id: String,
 	start_date: String, // in full date format '2017-02-27T00:00:00-05:00' (encoded)
@@ -563,7 +563,7 @@ return:
 			}
 		],
   	type: String, // ('ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
-      'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED',
+      'REQUEST_FULFILLED', 'REQUEST_CREATED', 'REQUEST_EDITED',
       'REQUEST_DELETED', 'FIELD_CREATED', 'FIELD_EDITED', 'FIELD_DELETED')
     time_stamp: String,
 		description: String

@@ -4,6 +4,7 @@ let mongoose = require("mongoose");
 let Item = require('../../server/model/items');
 let User = require('../../server/model/users');
 let Request = require('../../server/model/requests');
+let Loan = require('../../server/model/loans');
 let helpers = require('../../server/auth/auth_helpers');
 let fakeItemData = require('./test_inventory_data');
 let fakeRequestData = require('./test_requests_data');
@@ -15,7 +16,8 @@ chai.use(require('chai-things'));
 
 let nodemailerMock = require('nodemailer-mock');
 let mockery = require('mockery');
-var server;
+
+var server = require('../../server');
 
 const pendingMockRequest = {
   "reviewer_comment": "NONADMIN",
@@ -42,41 +44,44 @@ describe('Requests API Test', function () {
   var user_id;
   var itemsArray;
   beforeEach((done) => { //Before each test we empty the database
-    Item.remove({}, (err) => {
+    Loan.remove({}, (err) => {
       should.not.exist(err);
-      Request.remove({}, (err)=>{
+      Item.remove({}, (err) => {
         should.not.exist(err);
-        User.remove({}, (err) => {
+        Request.remove({}, (err)=>{
           should.not.exist(err);
-          helpers.createNewUser('test_user', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
+          User.remove({}, (err) => {
             should.not.exist(err);
-            token = helpers.createAuthToken(user);
-            user_id = user._id;
-            Item.insertMany(fakeItemData).then(function(obj){
-              // Get the id from one item
-              Item.findOne({'name':'1k resistor'}, function(err,item1){
-                should.not.exist(err);
-                item1_id = item1._id;
-                Item.findOne({'name':'2k resistor'}, function(err,item2){
+            helpers.createNewUser('test_user', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
+              should.not.exist(err);
+              token = helpers.createAuthToken(user);
+              user_id = user._id;
+              Item.insertMany(fakeItemData).then(function(obj){
+                // Get the id from one item
+                Item.findOne({'name':'1k resistor'}, function(err,item1){
                   should.not.exist(err);
-                  item2_id = item2._id;
-                  // Add the user id manually, and the item associated
-                  fakeRequestData.forEach(function(obj){
-                    itemsArray = [
-                      {
-                        item: item1_id,
-                        quantity: 1000
-                      },
-                      {
-                        item: item2_id,
-                        quantity: 2000
-                      }
-                    ];
-                    obj.items = itemsArray;
-                    obj.user = user._id;
-                  });
-                  Request.insertMany(fakeRequestData, function(obj){
-                    done();
+                  item1_id = item1._id;
+                  Item.findOne({'name':'2k resistor'}, function(err,item2){
+                    should.not.exist(err);
+                    item2_id = item2._id;
+                    // Add the user id manually, and the item associated
+                    fakeRequestData.forEach(function(obj){
+                      itemsArray = [
+                        {
+                          item: item1_id,
+                          quantity: 1000
+                        },
+                        {
+                          item: item2_id,
+                          quantity: 2000
+                        }
+                      ];
+                      obj.items = itemsArray;
+                      obj.user = user._id;
+                    });
+                    Request.insertMany(fakeRequestData, function(error, obj){
+                      done();
+                    });
                   });
                 });
               });
@@ -1266,7 +1271,7 @@ describe('Requests API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.request.status.should.be.eql('FULFILLED');
-          res.body.message.should.be.eql("Disbursement successful");
+          res.body.message.should.be.eql("Fulfillment successful");
           res.body.items.should.be.a('array');
           res.body.items.length.should.be.eql(1);
           Item.findById(item2_id, function(err, item) {
@@ -1307,7 +1312,7 @@ describe('Requests API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.request.status.should.be.eql('FULFILLED');
-          res.body.message.should.be.eql("Disbursement successful");
+          res.body.message.should.be.eql("Fulfillment successful");
           res.body.items.should.be.a('array');
           res.body.items.length.should.be.eql(2);
           Item.findById(item2_id, function(err, item) {
@@ -1321,6 +1326,9 @@ describe('Requests API Test', function () {
               Request.findById(request._id, function(err, request) {
                 should.not.exist(err);
                 request.status.should.be.eql('FULFILLED');
+                Loan.find({}, function(error, loans) {
+                  loans.length.should.be.eql(0);
+                })
                 done();
               });
             });
@@ -1328,6 +1336,67 @@ describe('Requests API Test', function () {
         });
       });
     });
+
+    it('creates a loan after fulfilling a request for a loan', (done) => {
+      var request = new Request(approvedMockRequest);
+      request.action = 'LOAN';
+      request.items = [
+        {
+          item: item1_id,
+          quantity: 100
+        },
+        {
+          item: item2_id,
+          quantity:300
+        }
+      ];
+      request.user = user_id;
+      request.save((err, request) => {
+        should.not.exist(err);
+        chai.request(server)
+        .patch('/api/requests/'+request._id)
+        .set('Authorization', token)
+        .send({
+          'action': 'FULFILL'
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.request.status.should.be.eql('FULFILLED');
+          res.body.message.should.be.eql("Fulfillment successful");
+          res.body.items.should.be.a('array');
+          res.body.items.length.should.be.eql(2);
+          Item.findById(item2_id, function(err, item) {
+            should.not.exist(err);
+            item.quantity.should.be.eql(700);
+            item.name.should.be.eql("2k resistor");
+            Item.findById(item1_id, function(err, item) {
+              should.not.exist(err);
+              item.quantity.should.be.eql(900);
+              item.name.should.be.eql("1k resistor");
+              Request.findById(request._id, function(err, request) {
+                should.not.exist(err);
+                request.status.should.be.eql('FULFILLED');
+                Loan.find({}, function(err, loans) {
+                  loans.length.should.be.eql(1);
+                  var loan = loans[0];
+                  loan.user.should.be.eql(user_id);
+                  loan.items.length.should.be.eql(2);
+                  loan.items.forEach(function(itemObj) {
+                    [item1_id, item2_id].should.include(itemObj.item);
+                    [100, 300].should.include(itemObj.quantity);
+                    itemObj.status.should.be.eql('LENT');
+                  });
+                  loan.request.should.be.eql(request._id);
+                  done();
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+
     it('updates the request and multiple items after disbursement of all remaining quantity', (done) => {
       var request = new Request(approvedMockRequest);
       request.items = [
@@ -1353,7 +1422,7 @@ describe('Requests API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.request.status.should.be.eql('FULFILLED');
-          res.body.message.should.be.eql("Disbursement successful");
+          res.body.message.should.be.eql("Fulfillment successful");
           res.body.items.should.be.a('array');
           res.body.items.length.should.be.eql(2);
           Item.findById(item2_id, function(err, item) {
