@@ -55,7 +55,8 @@ class ShoppingCart extends Component {
 
 		var params = {
 			action: "CHECKOUT",
-			reason: reason
+			reason: reason,
+			type: "DISBURSEMENT"
 		}
 
 		var role = JSON.parse(localStorage.getItem('user')).role;
@@ -78,7 +79,7 @@ class ShoppingCart extends Component {
 				var requestId = response.data.request._id;
 				//this.props.callback();
 				if (this.state.checked === true && this.state.actionType === "Disburse to User") {
-					this.props.api.patch('/api/requests/' + requestId, { action: "DISBURSE" })
+					this.props.api.patch('/api/requests/' + requestId, { action: "FULFILL" })
 	    			.then(function(response) {
 	      				if(response.data.error){
 	        				alert(response.data.error + ". A request was created but was not fulfilled.");
@@ -161,14 +162,14 @@ class ShoppingCart extends Component {
 				          	</a>
 			          		<a onClick={()=>this.setActionType("Disburse to User")} className="dropdown-item" href="#">
 				            	Disburse to User
-				          	</a>		          
+				          	</a>
 				        </div>
 				    </div>
 			    </div>
 		    );
 		} else return null;
 	}
- 
+
 	makeDirectRequestRegion() {
 		if (this.state.items.length === 0) {
 			return null;

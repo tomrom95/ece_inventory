@@ -23,15 +23,15 @@ module.exports.sendNewRequestEmail = function(request, createdBy, createdFor, ne
     });
 }
 
-module.exports.sendDisbursementEmail = function(request, items, disbursedFrom, next) {
+module.exports.sendFulfillEmail = function(request, items, disbursedFrom, next) {
   var builder = new EmailBuilder();
   User.findById(request.user, function(error, affectedUser) {
     if (error) return next(error);
     builder
       .setToEmails([affectedUser.email])
       .setCCEmails([disbursedFrom.email])
-      .setSubject('Inventory Request Disbursed')
-      .setBody(EmailBodies.requestDisbursed(request, items, disbursedFrom, affectedUser))
+      .setSubject('Inventory Request Fulfilled')
+      .setBody(EmailBodies.requestFulfilled(request, items, disbursedFrom, affectedUser))
       .send(function(error, info) {
         if (error) return next(error);
         return next(null, info);

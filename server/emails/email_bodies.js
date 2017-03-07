@@ -15,7 +15,7 @@ module.exports.requestCreated = function(request, createdBy, createdFor) {
   return text;
 }
 
-module.exports.requestDisbursed = function(request, items, initiator, createdFor) {
+module.exports.requestFulfilled = function(request, items, initiator, createdFor) {
   var requestItemMap = {};
   request.items.forEach(function(item) {
     requestItemMap[item.item] = item.quantity;
@@ -23,7 +23,8 @@ module.exports.requestDisbursed = function(request, items, initiator, createdFor
 
   var text = 'Hello ' + StringHelpers.getDisplayName(createdFor) + ',\n\n';
   text += 'Your request for ' + StringHelpers.createRequestItemString(requestItemMap, items);
-  text += ' has been disbursed by ' + StringHelpers.getDisplayName(initiator) + '.';
+  text += ' has been fulfilled as a ' + request.action.toLowerCase();
+  text += ' to you by ' + StringHelpers.getDisplayName(initiator) + '.';
   return text;
 }
 

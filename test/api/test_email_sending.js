@@ -201,6 +201,7 @@ describe('Email settings API Test', function () {
             .set('Authorization', adminToken)
             .send({
               action: 'CHECKOUT',
+              type: 'DISBURSEMENT',
               reason: 'I want them'
             })
             .end((err, res) => {
@@ -245,6 +246,7 @@ describe('Email settings API Test', function () {
             .send({
               action: 'CHECKOUT',
               reason: 'I want them',
+              type: 'DISBURSEMENT',
               user: standardUser._id
             })
             .end((err, res) => {
@@ -290,7 +292,7 @@ describe('Email settings API Test', function () {
             }
           ],
           reason: "cuz",
-          action: "LOAN"
+          action: "DISBURSEMENT"
         });
         newRequest.save(function(error, request) {
           should.not.exist(error);
@@ -304,7 +306,7 @@ describe('Email settings API Test', function () {
       chai.request(server)
         .patch('/api/requests/' + testRequest._id)
         .set('Authorization', adminToken)
-        .send({action: "DISBURSE"})
+        .send({action: "FULFILL"})
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
@@ -314,12 +316,12 @@ describe('Email settings API Test', function () {
           email.to.should.be.eql(standardUser.email);
           email.cc.should.be.eql(adminUser.email);
           email.bcc.should.be.eql(managerUser.email);
-          email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'Inventory Request Disbursed');
+          email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'Inventory Request Fulfilled');
           email.text.should.include('(2) 1k resistors');
           email.text.should.include('(5) 2k resistors');
           email.text.should.include('(1) Oscilloscope');
           email.text.should.include('Hello standard,');
-          email.text.should.include('has been disbursed by admin.');
+          email.text.should.include('has been fulfilled as a disbursement to you by admin.');
           done();
         });
     });
@@ -340,7 +342,7 @@ describe('Email settings API Test', function () {
           chai.request(server)
             .patch('/api/requests/' + request._id)
             .set('Authorization', adminToken)
-            .send({action: "DISBURSE"})
+            .send({action: "FULFILL"})
             .end((err, res) => {
               should.not.exist(err);
               res.should.have.status(200);
