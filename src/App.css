@@ -390,6 +390,7 @@
 .cart-modal {
   color: gray;
   width: 86.5%;
+  margin-left: 10%;
 }
 
 .filterbox {
@@ -487,7 +488,11 @@
 }
 
 .custom-field-buttons {
-  padding-top: 5%;
+  margin-top: -3%;
+}
+
+.customfield-apply {
+  margin-left: 52.5%;
 }
 
 .custom-field-buttons > button{
@@ -495,11 +500,22 @@
 }
 
 .customfield-maker-isprivate {
-  margin-left: 0.5%;
+  margin-left: 0.35%;
+  margin-bottom: -3%;
 }
 
 .customfield-maker-checkbox {
   margin-left: 3%;
+}
+
+.customfield-item {
+  margin-bottom: 4%;
+}
+
+.customfield-editor-modal {
+  max-width: 86.5%;
+  margin-left: 10%;
+  color: gray;
 }
 
 .page-link {
