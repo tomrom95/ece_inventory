@@ -231,6 +231,34 @@ module.exports.deleteAPI = function(req,res){
   });
 };
 
+var addCheckQuantityPromise = function(checkQuantityPromises, request, i) {
+  checkQuantityPromises.push(new Promise((resolve, reject) => {
+    Item.findById(request.items[i].item, function(err, item) {
+      if(err) return next(err);
+      // Check that all items have sufficient quantity
+      if (item.quantity < request.items[i].quantity) {
+        return reject('Insufficient quantity of item: '+item.name);
+      }
+      resolve();
+    });
+  }));
+}
+
+var addFulfillPromise = function(fulfillPromises, updatedCart, request, i) {
+  fulfillPromises.push(new Promise((resolve, reject) => {
+    Item.findById(request.items[i].item, function(err, item) {
+      item.quantity -= request.items[i].quantity;
+      item.save(function(err, updatedItem) {
+        if (err) return reject(err);
+        if (!updatedItem) return reject('Item does not exist');
+        Item.populate(updatedItem,{path: "item", select: itemFieldsToReturn}, function(err, item){
+          updatedCart.push(updatedItem);
+          resolve();
+        })
+      });
+    });
+  }));
+}
 
 function fulfill(requestID, next) {
   Request.findById(requestID, function(err, request) {
@@ -244,46 +272,19 @@ function fulfill(requestID, next) {
     }
       var checkQuantityPromises = [];
       for (var i = 0; i < request.items.length; i++){
-        // Pass down index i into the closure for async call
-        (function(i){
-          // Push each promise to an array
-          checkQuantityPromises.push(new Promise((resolve, reject) => {
-            Item.findById(request.items[i].item, function(err, item) {
-              if(err) return next(err);
-              // Check that all items have sufficient quantity
-              if (item.quantity < request.items[i].quantity) {
-                return next('Insufficient quantity of item: '+item.name);
-              }
-              resolve();
-            });
-          }));
-        })(i);
+        addCheckQuantityPromise(checkQuantityPromises, request, i);
 
       }
       // Resolve array of promises sequentially
       Promise.all(checkQuantityPromises).then(function(obj) {
         // returned
         var updatedCart = [];
-        var disbursePromises = [];
+        var fulfillPromises = [];
         for (var i = 0; i < request.items.length; i++){
           // Pass down index i into the closure for async call
-          (function(i){
-            disbursePromises.push(new Promise((resolve, reject) => {
-              Item.findById(request.items[i].item, function(err, item) {
-                item.quantity -= request.items[i].quantity;
-                item.save(function(err, updatedItem) {
-                  if (err) return next(err);
-                  if (!updatedItem) return next('Item does not exist');
-                  Item.populate(updatedItem,{path: "item", select: itemFieldsToReturn}, function(err, item){
-                    updatedCart.push(updatedItem);
-                    resolve();
-                  })
-                });
-              });
-            }))
-          })(i);
+          addFulfillPromise(fulfillPromises, updatedCart, request, i);
         }
-        Promise.all(disbursePromises).then(function(){
+        Promise.all(fulfillPromises).then(function(){
           // Only update request if item quantity change was successful.
           // This prevents a request from being fulfilled if there isn't enough
           // of a certain item in the cart to disburse.
