@@ -15,8 +15,25 @@ chai.use(require('chai-things'));
 
 let nodemailerMock = require('nodemailer-mock');
 let mockery = require('mockery');
-
 var server;
+
+const pendingMockRequest = {
+  "reviewer_comment": "NONADMIN",
+  "requestor_comment": "NONADMIN",
+  "reason": "NONADMIN",
+  "status": "PENDING",
+  "action": "DISBURSEMENT",
+  "created": "2019-01-29"
+};
+
+const approvedMockRequest = {
+  "reviewer_comment": "NONADMIN",
+  "requestor_comment": "NONADMIN",
+  "reason": "NONADMIN",
+  "status": "APPROVED",
+  "action": "DISBURSEMENT",
+  "created": "2019-01-29"
+};
 
 describe('Requests API Test', function () {
   var token;
@@ -117,14 +134,7 @@ describe('Requests API Test', function () {
       helpers.createNewUser('standard', 'test', 'test@test.com', 'STANDARD', function(err, user) {
         should.not.exist(err);
         standard_token = helpers.createAuthToken(user);
-        var request = new Request({
-          "reviewer_comment": "NONADMIN",
-          "requestor_comment": "NONADMIN",
-          "reason": "NONADMIN",
-          "quantity": 2000,
-          "status": "PENDING",
-          "created": "2019-01-29T05:00:00.000Z"
-        });
+        var request = new Request(pendingMockRequest);
         request.items = itemsArray;
         request.user = user._id;
         request.save(function(err){
@@ -154,14 +164,7 @@ describe('Requests API Test', function () {
       });
     });
     it('GETs requests by item id', (done) => {
-        var request = new Request({
-          "reviewer_comment": "NONADMIN",
-          "requestor_comment": "NONADMIN",
-          "reason": "NONADMIN",
-          "quantity": 2000,
-          "status": "PENDING",
-          "created": "2019-01-29T05:00:00.000Z"
-        });
+        var request = new Request(pendingMockRequest);
         request.items = [
           {
             item: item2_id,
@@ -195,14 +198,7 @@ describe('Requests API Test', function () {
       var item2_id;
       Item.findOne({"name": "5k resistor"}, function(err, item3){
         should.not.exist(err);
-        var request = new Request({
-          "reviewer_comment": "NONADMIN",
-          "requestor_comment": "NONADMIN",
-          "reason": "NONADMIN",
-          "quantity": 2000,
-          "status": "PENDING",
-          "created": "2019-01-29T05:00:00.000Z"
-        });
+        var request = new Request(pendingMockRequest);
         request.items = [
           {
             item: item3._id,
@@ -469,14 +465,7 @@ describe('Requests API Test', function () {
     it('GET request by request ID successful', (done) => {
       Item.findOne({"name": "2k resistor"}, function(err, item2){
         should.not.exist(err);
-        var request = new Request({
-          "reviewer_comment": "NONADMIN",
-          "requestor_comment": "NONADMIN",
-          "reason": "NONADMIN",
-          "quantity": 2000,
-          "status": "PENDING",
-          "created": "2019-01-29"
-        });
+        var request = new Request(pendingMockRequest);
         request.items = [
           {
             item: item2._id,
@@ -505,14 +494,7 @@ describe('Requests API Test', function () {
     it('GET no Request by invalid request ID successful', (done) => {
       Item.findOne({"name": "2k resistor"}, function(err, item2){
         should.not.exist(err);
-        var request = new Request({
-          "reviewer_comment": "NONADMIN",
-          "requestor_comment": "NONADMIN",
-          "reason": "NONADMIN",
-          "quantity": 2000,
-          "status": "PENDING",
-          "created": "2019-01-29"
-        });
+        var request = new Request(pendingMockRequest);
         request.item = item2._id;
         request.user = user_id;
         request.save(function(err){
@@ -541,6 +523,7 @@ describe('Requests API Test', function () {
           "reason": "NONADMIN",
           "quantity": 2000,
           "status": "PENDING",
+          "action": "DISBURSEMENT",
           "created": "2019-01-29"
         });
         chai.request(server)
@@ -601,7 +584,7 @@ describe('Requests API Test', function () {
           "requestor_comment": "NONADMIN",
           "reason": "NONADMIN",
           "status": "DSFJHK",
-          "quantity": 2000,
+          "action": "DISBURSEMENT",
           "created": "2019-01-29"
         });
         request.items = [
@@ -632,6 +615,7 @@ describe('Requests API Test', function () {
         should.not.exist(err);
         var request = new Request({
           "status": "PENDING",
+          "action": "DISBURSEMENT"
         });
         request.items = [
           {
@@ -660,6 +644,7 @@ describe('Requests API Test', function () {
         Item.findOne({"name": "2k resistor"}, function(err, item2){
           should.not.exist(err);
           var request = {
+            "action": "DISBURSEMENT",
             "status": "PENDING",
           };
           request.items = [
@@ -693,7 +678,7 @@ describe('Requests API Test', function () {
           should.not.exist(err);
           var request = {
             "status": "PENDING",
-            "quantity": 2000,
+            "action": "DISBURSEMENT",
             "user": user._id
           };
           request.items = [
@@ -726,7 +711,7 @@ describe('Requests API Test', function () {
           should.not.exist(err);
           var request = {
             "status": "PENDING",
-            "quantity": 2000,
+            "action": "DISBURSEMENT",
             "user": user._id
           };
           request.items = [
@@ -759,7 +744,7 @@ describe('Requests API Test', function () {
           should.not.exist(err);
           var request = {
             "status": "PENDING",
-            "quantity": 2000,
+            "action": "DISBURSEMENT",
             "user": "53cb6b9b4f4ddef1ad47f943"
           };
           request.item = item2._id;
@@ -785,7 +770,7 @@ describe('Requests API Test', function () {
           should.not.exist(err);
           var request = {
             "status": "PENDING",
-            "quantity": 2000,
+            "action": "DISBURSEMENT",
             "user": user_id
           };
           request.item = item2._id;
@@ -806,13 +791,7 @@ describe('Requests API Test', function () {
   });
   describe('PUT /requests/:request_id', ()=> {
     it('PUTS request by request id', (done) => {
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "PENDING",
-        "created": "2019-01-29"
-      });
+      var request = new Request(pendingMockRequest);
       request.items = [
         {
           item: item2_id,
@@ -851,14 +830,7 @@ describe('Requests API Test', function () {
     it('PUTS request - admin user can specify user id', (done) => {
       helpers.createNewUser('standard_user', 'test', 'test@test.com', 'STANDARD' , function(err, user) {
         should.not.exist(err);
-        var request = new Request({
-          "reviewer_comment": "NONADMIN",
-          "requestor_comment": "NONADMIN",
-          "reason": "NONADMIN",
-          "status": "PENDING",
-          "quantity": 2000,
-          "created": "2019-01-29"
-        });
+        var request = new Request(pendingMockRequest);
         request.items = [
           {
             item: item2_id,
@@ -895,7 +867,7 @@ describe('Requests API Test', function () {
         "requestor_comment": "NONADMIN",
         "reason": "NONADMIN",
         "status": "PENDING",
-        "quantity": 2000,
+        "action": "DISBURSEMENT",
         "created": "2019-01-29"
       });
       request.items = [
@@ -913,7 +885,6 @@ describe('Requests API Test', function () {
         .send({
           'reason': 'NONE',
           'status': 'APPROVED',
-          'quantity': 3000,
           'user': '111111111111111111111111'
         })
         .end((err, res) => {
@@ -929,6 +900,7 @@ describe('Requests API Test', function () {
     it('Should not PUT request - user tries to fulfill a request through PUT', (done) => {
       var request = new Request({
         "reason": "NONADMIN",
+        "action": "DISBURSEMENT",
       });
       request.items = [
         {
@@ -959,14 +931,7 @@ describe('Requests API Test', function () {
         helpers.createNewUser('standard_user', 'test', 'test@test.com', 'STANDARD' , function(err, user) {
           should.not.exist(err);
         var standard_token = helpers.createAuthToken(user);
-        var request = new Request({
-          "reviewer_comment": "NONADMIN",
-          "requestor_comment": "NONADMIN",
-          "reason": "NONADMIN",
-          "status": "PENDING",
-          "quantity": 2000,
-          "created": "2019-01-29"
-        });
+        var request = new Request(pendingMockRequest);
         request.items = [
           {
             item: item2_id,
@@ -998,14 +963,7 @@ describe('Requests API Test', function () {
       helpers.createNewUser('standard_user', 'test', 'test@test.com', 'STANDARD' , function(err, user) {
       should.not.exist(err);
       var standard_token = helpers.createAuthToken(user);
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "PENDING",
-        "quantity": 2000,
-        "created": "2019-01-29"
-      });
+      var request = new Request(pendingMockRequest);
       request.items = [
         {
           item: item2_id,
@@ -1021,7 +979,6 @@ describe('Requests API Test', function () {
         .send({
           'reason': 'NONE',
           'status': 'APPROVED',
-          'quantity': 3000
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -1036,14 +993,7 @@ describe('Requests API Test', function () {
   });
   describe('DELETE /request/:item_id', ()=>{
     it('DELETE request by request id', (done) =>{
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "PENDING",
-        "quantity": 2000,
-        "created": "2019-01-29"
-      });
+      var request = new Request(pendingMockRequest);
       request.items = [
         {
           item: item2_id,
@@ -1066,14 +1016,7 @@ describe('Requests API Test', function () {
       })
     });
     it('DELETE request by request id then DELETE should fail', (done) =>{
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "PENDING",
-        "quantity": 2000,
-        "created": "2019-01-29"
-      });
+      var request = new Request(pendingMockRequest);
       request.items = [
         {
           item: item2_id,
@@ -1102,14 +1045,7 @@ describe('Requests API Test', function () {
       })
     });
     it('DELETE request by request id then GET should not fail', (done) =>{
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "PENDING",
-        "quantity": 2000,
-        "created": "2019-01-29"
-      });
+      var request = new Request(pendingMockRequest);
       request.items = [
         {
           item: item2_id,
@@ -1138,14 +1074,7 @@ describe('Requests API Test', function () {
       });
     });
     it('DELETE request by request id then PUT should fail', (done) =>{
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "PENDING",
-        "quantity": 2000,
-        "created": "2019-01-29"
-      });
+      var request = new Request(pendingMockRequest);
       request.items = [
         {
           item: item2_id,
@@ -1178,14 +1107,7 @@ describe('Requests API Test', function () {
         should.not.exist(err);
         token = helpers.createAuthToken(user);
         user_id = user._id;
-        var request = new Request({
-          "reviewer_comment": "NONADMIN",
-          "requestor_comment": "NONADMIN",
-          "reason": "NONADMIN",
-          "status": "PENDING",
-          "quantity": 2000,
-          "created": "2019-01-29"
-        });
+        var request = new Request(pendingMockRequest);
         request.items = [
           {
             item: item2_id,
@@ -1219,14 +1141,7 @@ describe('Requests API Test', function () {
       });
     });
     it('DELETE someone elses request by non-admin user', (done) =>{
-      var admin_request = new Request({
-        "reviewer_comment": "ADMIN",
-        "requestor_comment": "ADMIN",
-        "reason": "ADMIN",
-        "status": "PENDING",
-        "quantity": 2000,
-        "created": "2019-01-29"
-      });
+      var admin_request = new Request(pendingMockRequest);
       admin_request.items = [
         {
           item: item2_id,
@@ -1240,14 +1155,7 @@ describe('Requests API Test', function () {
           should.not.exist(err);
           var standard_token = helpers.createAuthToken(user);
           standard_user_id = user._id;
-          var standard_request = new Request({
-            "reviewer_comment": "NONADMIN",
-            "requestor_comment": "NONADMIN",
-            "reason": "NONADMIN",
-            "status": "PENDING",
-            "quantity": 2000,
-            "created": "2019-01-29"
-          });
+          var standard_request = new Request(pendingMockRequest);
           standard_request.items = [
             {
               item: item2_id,
@@ -1276,14 +1184,7 @@ describe('Requests API Test', function () {
         should.not.exist(err);
         standard_token = helpers.createAuthToken(user);
         standard_user_id = user._id;
-        var standard_request = new Request({
-          "reviewer_comment": "NONADMIN",
-          "requestor_comment": "NONADMIN",
-          "reason": "NONADMIN",
-          "status": "PENDING",
-          "quantity": 2000,
-          "created": "2019-01-29"
-        });
+        var standard_request = new Request(pendingMockRequest);
         standard_request.items = [
           {
             item: item2_id,
@@ -1320,13 +1221,7 @@ describe('Requests API Test', function () {
 
   describe('PATCH /requests/:request_id', ()=> {
     it('Error if DISBURSE not entered as action', (done) => {
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "APPROVED",
-        "created": "2019-01-29"
-      });
+      var request = new Request(pendingMockRequest);
       request.items = [
         {
           item: item2_id,
@@ -1351,13 +1246,7 @@ describe('Requests API Test', function () {
       });
     });
     it('updates the request and item after disbursement', (done) => {
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "APPROVED",
-        "created": "2019-01-29"
-      });
+      var request = new Request(approvedMockRequest);
       request.items = [
         {
           item: item2_id,
@@ -1394,13 +1283,7 @@ describe('Requests API Test', function () {
       });
     });
     it('updates the request and multiple items after disbursement', (done) => {
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "APPROVED",
-        "created": "2019-01-29"
-      });
+      var request = new Request(approvedMockRequest);
       request.items = [
         {
           item: item1_id,
@@ -1446,13 +1329,7 @@ describe('Requests API Test', function () {
       });
     });
     it('updates the request and multiple items after disbursement of all remaining quantity', (done) => {
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "APPROVED",
-        "created": "2019-01-29"
-      });
+      var request = new Request(approvedMockRequest);
       request.items = [
         {
           item: item1_id,
@@ -1498,13 +1375,7 @@ describe('Requests API Test', function () {
       });
     });
     it('Does not disburse if first item has insufficient quantity', (done) => {
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "APPROVED",
-        "created": "2019-01-29"
-      });
+      var request = new Request(approvedMockRequest);
       request.items = [
         {
           item: item1_id,
@@ -1547,13 +1418,7 @@ describe('Requests API Test', function () {
       });
     });
     it('Does not disburse if second item has insufficient quantity', (done) => {
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "APPROVED",
-        "created": "2019-01-29"
-      });
+      var request = new Request(approvedMockRequest);
       request.items = [
         {
           item: item1_id,
@@ -1597,13 +1462,7 @@ describe('Requests API Test', function () {
     });
 
     it('cannot update a quantity below 0', (done) => {
-      var request = new Request({
-        "reviewer_comment": "NONADMIN",
-        "requestor_comment": "NONADMIN",
-        "reason": "NONADMIN",
-        "status": "APPROVED",
-        "created": "2019-01-29"
-      });
+      var request = new Request(approvedMockRequest);
       request.items = [
         {
           item: item2_id,
