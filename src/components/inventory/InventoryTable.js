@@ -102,7 +102,7 @@ class InventoryTable extends Component {
 	}
 
 	setCustomFields(){
-		this.props.api.get('/api/customFields')
+	  this.props.api.get('/api/customFields')
       .then(function(response) {
         if (response.data.error) {
           console.log(response.data.error);

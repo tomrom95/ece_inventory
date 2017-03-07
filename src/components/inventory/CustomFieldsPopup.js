@@ -33,43 +33,6 @@ class CustomFieldsPopup extends Component {
 		});
 	}
 
-	render() {
-		var button =
-			<button type="button"
-				className="btn btn-outline-primary add-button"
-				data-toggle="modal"
-				data-target={"#makeCustomFieldModal"}>
-				Make Field
-			</button>
-
-		return (
-		<th>
-			{button}
-			<div className="modal fade"
-				id={"makeCustomFieldModal"}
-				tabIndex="-1"
-				role="dialog"
-				aria-labelledby="createLabel"
-				aria-hidden="true">
-			  <div className="modal-dialog" role="document">
-			    <div className="modal-content">
-			      <div className="modal-header">
-			        <h5 className="modal-title" id="createLabel">Create New Field</h5>
-			      </div>
-			      <div className="modal-body">
-			        {this.makeForm()}
-			      </div>
-			      <div className="modal-footer">
-			        <button onClick={e => {this.onSubmission()}} type="button" className="btn btn-primary">Submit</button>
-              <button onClick={e => {this.clearForm()}} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-		</th>
-		);
-	}
-
 	makeForm(){
 
 
@@ -93,26 +56,32 @@ class CustomFieldsPopup extends Component {
 
 		var is_private =
 			<input type="checkbox"
-				className="form-control"
 	      		checked={this.state.isPrivate}
 				onChange={this.handleInputChange.bind(this)}
 				key={"field_isPrivate"}>
 			</input>
 
 		return (
-			<div className="form-group" key={"createform-div-row-"}>
-			  <label htmlFor={"createform-row-"}>Name</label>
-			  {name}
-				<label htmlFor={"createform-row-"}>
-					Type
-				</label>
 
-				{type}
+			<div>
+				<div className="form-group" key={"createform-div-row-"}>
+				  <label htmlFor={"createform-row-"}>Name</label>
+				  {name}
+			  </div>
 
-				<label htmlFor={"createform-row-"}>Private
-        {is_private}
-        </label>
+			  <div className="form-group">
+					<label htmlFor={"createform-row-"}>Type</label>
+					{type}
+				</div>
 
+				<div className="form-group row customfield-maker-isprivate">
+					<div className="col-xs-10">
+						<label htmlFor={"createform-row-"}>Private</label>
+					</div>
+					<div className="col-xs-2 customfield-maker-checkbox">
+						{is_private}
+					</div>
+				</div>
 			</div>
 		);
 	}
@@ -125,7 +94,7 @@ class CustomFieldsPopup extends Component {
 	    });
   	}
 
- 	 onSubmission() {
+ 	onSubmission() {
 		var custom_field = {
 			name: this.refs.field_name.value,
 			type: this.state.type,
@@ -153,7 +122,45 @@ class CustomFieldsPopup extends Component {
 	  	        console.log(error);
 	  	      }.bind(this));
 	    }
-  }
+  	}
+
+	render() {
+		var button =
+			<button type="button"
+				className="btn btn-outline-primary add-button"
+				data-toggle="modal"
+				data-target={"#makeCustomFieldModal"}>
+				Make Field
+			</button>
+
+		return (
+		<th>
+			{button}
+			<div className="modal fade"
+				id={"makeCustomFieldModal"}
+				tabIndex="-1"
+				role="dialog"
+				aria-labelledby="createLabel"
+				aria-hidden="true">
+			  <div className="modal-dialog" role="document">
+			    <div className="modal-content customfield-editor-modal">
+			      <div className="modal-header">
+			        <h5 className="modal-title" id="createLabel">Create New Field</h5>
+			      </div>
+			      <div className="modal-body">
+			        {this.makeForm()}
+			      </div>
+			      <div className="modal-footer">
+              		<button onClick={e => {this.clearForm()}} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+      		     	<button onClick={e => {this.onSubmission()}} type="button" className="btn btn-primary">Submit</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		</th>
+		);
+	}
+
 }
 
 export default CustomFieldsPopup

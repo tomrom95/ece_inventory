@@ -10,6 +10,7 @@ class CustomFieldListPopup extends Component {
 		this.state = {
       data: [],
       formIds: [],
+      changed: [],
       activated: false,
       justApplied: false
 		}
@@ -36,11 +37,12 @@ class CustomFieldListPopup extends Component {
   }
 
 	componentWillMount(){
-    
+
 
 
     //this.loadData();
 	}
+
 
   loadData() {
     this.props.api.get('/api/customFields')
@@ -52,7 +54,8 @@ class CustomFieldListPopup extends Component {
         var data = this.mapFields(response.data);
         this.setState({
           data: data,
-          activated: true
+          activated: true,
+          changed: []
         });
       }
     }.bind(this))
@@ -73,7 +76,6 @@ class CustomFieldListPopup extends Component {
         </input>
 
     var is_private = <input type="checkbox"
-    			className="form-control"
           checked={field.isPrivate}
     			onChange={e=>this.handlePrivacyChange(e, field._id)}
           ref={field._id+"-PRIVACY"}
@@ -82,26 +84,49 @@ class CustomFieldListPopup extends Component {
 
 
     return (
-      <div className="form-group" key={"createform-div-row-"+row}>
-        <label key={"name-row-"+row+"-"+field._id} htmlFor={"createform-row-"+row}>Name</label>
-        {name_input}
+      <div className="customfield-item" key={"customfield-wrapper-"+row}>
+        <div className="card" key={"customfield-card-"+row}>
+          <div className="card-block" key={"customfield-cardblock-"+row}>
+            <div className="row">
+              <div className="col-md-10">
+                <div className="form-group" key={"createform-div-row-"+row}>
+                  <label key={"name-row-"+row+"-"+field._id} htmlFor={"createform-row-"+row}>Name</label>
+                  {name_input}
+                </div>
+              </div>
+              <div className="col-md-2">
+                <button
+                    key={"delete-field"+row}
+                    onClick={()=>{this.deleteCustomField(field._id)}}
+                    type="button"
+                    className="btn btn-sm btn-danger delete-button">
+                    <span className="fa fa-remove"></span>
+                </button>
+              </div>
+            </div>
 
-        <label key={"privacy-row-"+row+"-"+field._id} htmlFor={"createform-row-"+row}>Private</label>
-        {is_private}
-        <div className="custom-field-buttons">
-        <button type="button"
-					className="btn btn-outline-primary add-button"
-					key={"button-add-field"+row}
-					onClick={e => this.onSubmission(field._id)}>
-					Apply Changes
-				</button>
-        <button
-          key={"delete-field"+row}
-          onClick={()=>{this.deleteCustomField(field._id)}}
-          type="button"
-          className="btn btn-danger delete-button">
-          Delete
-        </button>
+            <div className="form-group row customfield-maker-isprivate">
+              <div className="col-xs-8">
+                <label key={"privacy-row-"+row+"-"+field._id} htmlFor={"createform-row-"+row}>Private</label>
+              </div>
+              <div className="col-xs-2 customfield-maker-checkbox">
+                {is_private}
+              </div>
+              <div className="col-xs-2 customfield-apply">
+                  {
+                    this.state.changed[row] === true ?
+                    <button type="button"
+                      className="btn btn-sm btn-outline-primary"
+                      key={"button-add-field"+row}
+                      onClick={e => this.onSubmission(field._id)}>
+                      Apply
+                    </button> : null
+                  }
+              </div>
+            </div>
+
+
+          </div>
         </div>
       </div>
     );
@@ -110,13 +135,16 @@ class CustomFieldListPopup extends Component {
   handleNameChange(event, id) {
     var new_name = event.target.value;
     var data = this.state.data;
+    var changed = this.state.changed;
 		for(var i = 0; i < this.state.data.length; i ++){
       if(this.state.data[i]._id === id){
         data[i].name = new_name;
+        changed[i] = true;
       }
     }
 		this.setState({
-      data: data
+      data: data,
+      changed: changed
 		});
 	}
 
@@ -135,13 +163,16 @@ class CustomFieldListPopup extends Component {
 
   handlePrivacyChange(event, id) {
     var data = this.state.data;
+    var changed = this.state.changed;
 		for(var i = 0; i < this.state.data.length; i ++){
       if(this.state.data[i]._id === id){
         data[i].isPrivate = !this.state.data[i].isPrivate;
+        changed[i] = true;
       }
     }
 		this.setState({
       data: data,
+      changed: changed
 		});
 	}
 
@@ -151,8 +182,11 @@ class CustomFieldListPopup extends Component {
           if (response.data.error) {
             alert(response.data.error);
           } else {
+            this.setState({
+              activated: true,
+              justApplied: true
+            });
             this.props.callback();
-            alert("Custom Field deleted successfully.");
           }
         }.bind(this))
         .catch(function(error) {
@@ -160,47 +194,10 @@ class CustomFieldListPopup extends Component {
         }.bind(this));
   }
 
-	render() {
-    var button =
-      <button type="button"
-        className="btn btn-outline-primary add-button"
-        data-toggle="modal"
-        data-target={"#editCustomFieldModal"}
-        onMouseOver={() => this.loadData()}
-        onClick={() => this.loadData()}>
-        Edit Fields
-      </button>
-
-    if (this.state.activated === false) {
-      return (<th>{button}</th>);
-    }
-
-		return (
-		<th>
-      {button}
-			<div className="modal fade"
-				id={"editCustomFieldModal"}
-				tabIndex="-1"
-				role="dialog"
-				aria-labelledby="createLabel"
-				aria-hidden="true">
-			  <div className="modal-dialog" role="document">
-			    <div className="modal-content">
-			      <div className="modal-header">
-			        <h5 className="modal-title" id="createLabel">Edit Custom Fields</h5>
-			      </div>
-			      <div className="modal-body">
-			        {this.makeForm()}
-			      </div>
-
-			    </div>
-			  </div>
-			</div>
-		</th>
-		);
-	}
-
 	makeForm(){
+    if (this.state.data.length === 0) {
+      return <div>No custom fields defined!</div>;
+    }
     var list = []; var i;
     for (i=0; i<this.state.data.length; i++) {
       list.push(this.makeTextBox(i, this.state.data[i]));
@@ -235,10 +232,16 @@ class CustomFieldListPopup extends Component {
             } else {
   						this.props.callback();
 
+              var changed = this.state.changed;
+              for (var i=0; i<this.state.data.length; i++) {
+                if (this.state.data[i]._id === field_id) {
+                  changed[i] = false;
+                }
+              }
               this.setState({
-                justApplied: true
+                justApplied: true,
+                changed: changed
               });
-              alert("Changes applied to item");
   	        }
   	      }.bind(this))
   	      .catch(function(error) {
@@ -248,7 +251,61 @@ class CustomFieldListPopup extends Component {
 
 
     }
+  }
 
+  render() {
+    var button =
+      <button type="button"
+        className="btn btn-outline-primary add-button"
+        data-toggle="modal"
+        data-target={"#editCustomFieldModal"}
+        onMouseOver={() => this.loadData()}
+        onClick={() => this.loadData()}>
+        Edit Fields
+      </button>
+
+    if (this.state.activated === false) {
+      return (<th>{button}</th>);
+    }
+
+    return (
+    <th>
+      {button}
+      <div className="modal fade"
+        id={"editCustomFieldModal"}
+        tabIndex="-1"
+        role="dialog"
+        aria-labelledby="createLabel"
+        aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content customfield-editor-modal">
+            <div className="modal-header">
+              <h5 className="modal-title" id="createLabel">Edit Custom Fields</h5>
+            </div>
+            <div className="modal-body">
+              {this.makeForm()}
+            </div>
+            <div className="modal-footer">
+            { this.state.data.length === 0 ? null :
+                <button type="button"
+                    className="btn btn-secondary"
+                    data-dismiss="modal"
+                    onClick={() => this.loadData()}>
+                  Cancel
+                </button>
+            }
+                <button type="button"
+                    data-dismiss="modal"
+                    className={"btn btn-primary"}>
+                    Close
+                </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </th>
+    );
   }
 }
 

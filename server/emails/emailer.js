@@ -1,6 +1,9 @@
 'use strict'
 var Log = require('../model/logs');
 var User = require('../model/users');
+var EmailSettings = require('../model/emailSettings');
+var Loan = require('../model/loans');
+var Item = require('../model/items');
 var StringHelpers = require('../logging/string_helpers');
 var EmailBuilder = require('./emailbuilder');
 var EmailBodies = require('./email_bodies');
@@ -70,5 +73,80 @@ module.exports.sendCancelledRequestEmail = function(request, initiatingUser, nex
         if (error) return next(error);
         return next(null, info);
       });
+  });
+}
+
+var sendSingleLoanEmail = function(userId, loans, loanEmailObj, next) {
+  var builder = new EmailBuilder();
+  User.findById(userId, function(error, loanUser) {
+    if (error) return next(error);
+    builder
+      .setToEmails([loanUser.email])
+      .setSubject('ECE Inventory Loans Reminder')
+      .setBody(EmailBodies.loanReminder(loanUser, loans, loanEmailObj.body))
+      .send(function(error, info) {
+        if (error) return next(error);
+        return next(null, info);
+      });
+  });
+}
+
+var sendAllLoanEmails = function(loanEmailObj, next) {
+  // Find all loans that have lent items
+  Loan.find({'items.status': 'LENT'})
+      .populate('items.item', 'name')
+      .exec(function(error, loans) {
+        if (error) {
+          next(error);
+        }
+        var emailPromises = [];
+        var userLoanMap = {};
+        // create map of users to the loans they owe
+        loans.forEach(function(loan) {
+          if (userLoanMap[loan.user]) {
+            userLoanMap[loan.user].push(loan);
+          } else {
+            userLoanMap[loan.user] = [loan];
+          }
+        });
+        // for each user, send them an email with their loan items
+        Object.keys(userLoanMap).forEach(function(user) {
+          emailPromises.push(new Promise((resolve, reject) => {
+            sendSingleLoanEmail(user, userLoanMap[user], loanEmailObj, function(error) {
+              if (error) {
+                reject(error);
+              } else {
+                resolve();
+              }
+            });
+          }));
+        });
+
+        Promise.all(emailPromises).then(function() {
+          next();
+        }, function(error) {
+          next(error);
+        });
+      });
+}
+
+module.exports.checkForLoanEmailAndSendAll = function(next) {
+  EmailSettings.getSingleton(function(error, settings) {
+    if (error) return next(error);
+    // check if there's a loan email to send today
+    var today = new Date();
+    var loanEmailObj = settings.loan_emails.find((loanObj) => {
+      // comparing date strings only compares day, not time
+      return loanObj.date.toDateString() === today.toDateString()
+    });
+
+    if (loanEmailObj) {
+      sendAllLoanEmails(loanEmailObj, function(error) {
+       if (error) return next(error);
+       next();
+      });
+    } else {
+      return next();
+    }
   });
 }

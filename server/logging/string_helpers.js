@@ -24,6 +24,11 @@ module.exports.getDisplayName = function(user) {
   }
 }
 
+module.exports.itemQuantityString = function(itemName, quantity) {
+  var plural = quantity === 1 ? '' : 's';
+  return '(' + quantity + ') ' + itemName + plural;
+}
+
 module.exports.createRequestItemString = function(requestItemMap, items) {
   var itemString = "";
   items.forEach(function(item, index) {
@@ -34,8 +39,7 @@ module.exports.createRequestItemString = function(requestItemMap, items) {
       itemString += ' and';
     }
     var quantity = requestItemMap[item._id];
-    var plural = quantity === 1 ? '' : 's';
-    itemString += ' (' + quantity + ') ' + item.name + plural;
+    itemString += ' ' + module.exports.itemQuantityString(item.name, quantity);
   });
   return itemString;
 }

@@ -114,50 +114,6 @@ class ItemWizard extends Component {
 		return list;
 	}
 
-	render() {
-		var button = 
-			<button type="button"
-				className="btn btn-outline-primary add-button"
-				data-toggle="modal"
-				data-target={"#createModal"}
-				onMouseOver={() => this.activateView()}>
-				<span className="fa fa-plus"></span>
-			</button>;
-
-		if (this.state.activated === false) {
-			return <th>{button}</th>;
-		}
-
-		return (
-		<th>
-			{button}
-			<div className="modal fade"
-				id={"createModal"}
-				tabIndex="-1"
-				role="dialog"
-				aria-labelledby="createLabel"
-				aria-hidden="true">
-			  <div className="modal-dialog" role="document">
-			    <div className="modal-content">
-			      <div className="modal-header">
-			        <h5 className="modal-title" id="createLabel">Create New Item</h5>
-			      </div>
-			      <div className="modal-body">
-			        {this.makeForm()}
-			      </div>
-			      <div className="modal-footer">
-			        <button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-			        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-			        <button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Submit</button>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-		</th>
-		);
-	}
-
-
 	makeTextBox(row, type, label, defaultValue){
 		var id = "createform-row-"+row;
 		this.state.formIds.push(id);
@@ -471,6 +427,48 @@ class ItemWizard extends Component {
 			}.bind(this));
   	}
 
+  	render() {
+		var button = 
+			<button type="button"
+				className="btn btn-outline-primary add-button"
+				data-toggle="modal"
+				data-target={"#createModal"}
+				onMouseOver={() => this.activateView()}>
+				<span className="fa fa-plus"></span>
+			</button>;
+
+		if (this.state.activated === false) {
+			return <th>{button}</th>;
+		}
+
+		return (
+		<th>
+			{button}
+			<div className="modal fade"
+				id={"createModal"}
+				tabIndex="-1"
+				role="dialog"
+				aria-labelledby="createLabel"
+				aria-hidden="true">
+			  <div className="modal-dialog" role="document">
+			    <div className="modal-content">
+			      <div className="modal-header">
+			        <h5 className="modal-title" id="createLabel">Create New Item</h5>
+			      </div>
+			      <div className="modal-body">
+			        {this.makeForm()}
+			      </div>
+			      <div className="modal-footer">
+			        <button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+			        <button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Submit</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		</th>
+		);
+	}
 }
 
 export default ItemWizard

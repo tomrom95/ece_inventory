@@ -87,7 +87,6 @@ EmailBuilder.prototype.send = function(next) {
       } else {
         this.message.bcc = managerEmails.join();
       }
-
       this.transport.sendMail(this.message, (error, info) => {
         try {
           // If transport is not mocked, close it
