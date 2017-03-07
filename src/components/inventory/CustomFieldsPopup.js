@@ -91,25 +91,31 @@ class CustomFieldsPopup extends Component {
 
 		var is_private = 
 			<input type="checkbox"
-				className="form-control"
 	      		checked={this.state.isPrivate}
 				onChange={this.handleInputChange.bind(this)}
 				key={"field_isPrivate"}>
 			</input>
 
 		return (
-			<div className="form-group" key={"createform-div-row-"}>
-			  <label htmlFor={"createform-row-"}>Name</label>
-			  {name}
-				<label htmlFor={"createform-row-"}>
-					Type
-				</label>
+			<div>
+				<div className="form-group" key={"createform-div-row-"}>
+				  <label htmlFor={"createform-row-"}>Name</label>
+				  {name}
+			  	</div>
 
-				{type}
-				
-				<label htmlFor={"createform-row-"}>Private
-        			{is_private}
-        		</label>
+			  	<div className="form-group">
+					<label htmlFor={"createform-row-"}>Type</label>
+					{type}
+				</div>
+
+				<div className="form-group row customfield-maker-isprivate">
+					<div className="col-xs-10">
+						<label htmlFor={"createform-row-"}>Private</label>
+					</div>
+					<div className="col-xs-2 customfield-maker-checkbox">
+						{is_private}
+					</div>
+				</div>
 			</div>
 		);
 	}

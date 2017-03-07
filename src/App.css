@@ -494,6 +494,14 @@
   margin-right: 3%;
 }
 
+.customfield-maker-isprivate {
+  margin-left: 0.5%;
+}
+
+.customfield-maker-checkbox {
+  margin-left: 3%;
+}
+
 .page-link {
   background-color: white!important;
   color: rgba(0,120,255,1)!important;
