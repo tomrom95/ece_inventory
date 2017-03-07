@@ -48,7 +48,7 @@ describe('Tag API Test', function () {
         should.not.exist(err);
         User.remove({}, (err) => {
           should.not.exist(err);
-          helpers.createNewUser('test_user', 'test', 'ADMIN', function(err, user) {
+          helpers.createNewUser('test_user', 'test', 'test@email.com', 'ADMIN', function(err, user) {
             should.not.exist(err);
             token = helpers.createAuthToken(user);
             Item.insertMany(itemData).then(function(obj){

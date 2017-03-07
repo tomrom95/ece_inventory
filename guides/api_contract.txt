@@ -57,6 +57,24 @@ return:
   ]
 }
 
+/api/inventory/import
+POST
+body:
+{
+  name: String [required],
+  quantity: Integer [required],
+  model_number: String,
+  description: String,
+  vendor_info: String,
+  tags: [String],
+  custom_fields: [
+    {
+        name: String, // Name of Custom field, not ID
+	value: String
+  ]
+}
+or Array of body objects above.
+
 /api/inventory/:item_id
 GET
 return:
@@ -556,7 +574,9 @@ GET // Only admins can get
 return {
 	_id: String,
 	username: String,
-	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+	role: String ('ADMIN', 'MANAGER', 'STANDARD'),
+	email: String,
+	subscribed: Boolean
 }
 
 POST
@@ -564,13 +584,15 @@ body: // Only admins can post
 {
 	username: String,
 	password: String,
-	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+	role: String ('ADMIN', 'MANAGER', 'STANDARD'),
+	email: String,
 }
 return {
 	user: {
 		_id: String,
 		username: String,
-		role: String ('ADMIN', 'MANAGER', 'STANDARD')
+		role: String ('ADMIN', 'MANAGER', 'STANDARD'),
+		email: String,
 	}
 }
 
@@ -580,18 +602,24 @@ return {
 	_id: String,
 	username: String,
 	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+	email: String,
+	subscribed: Boolean
 }
 
-PUT { // Only admins can put
+PUT { // Anyone can edit themselves, only admins can edit others
 body {
 	first_name: String,
 	last_name: String,
-	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+	role: String ('ADMIN', 'MANAGER', 'STANDARD'), // only admins can change this
+	email: String,
+	subscribed: Boolean // managers and above can change this
 }
 return {
 	_id: String,
 	username: String,
-	role: String ('ADMIN', 'MANAGER', 'STANDARD')
+	role: String ('ADMIN', 'MANAGER', 'STANDARD'),
+	email: String,
+	subscribed: Boolean
 }
 
 }
@@ -609,6 +637,44 @@ return {
 	user: {
 		username: String,
 		password_hash: String,
-		role: String ('ADMIN', 'MANAGER', 'STANDARD')
+		role: String ('ADMIN', 'MANAGER', 'STANDARD'),
+		email: String,
+		subscribed: Boolean
 	}
+}
+
+/api/emailSettings
+GET
+params: none
+return: {
+	subject_tag: String,
+	loan_emails: [{
+		date: String,
+		body: String
+	}]
+}
+PUT
+params: [{
+	subject_tag: String
+}]
+return {
+	// email settings object
+}
+
+/api/emailSettings/loans
+POST
+params: {
+	date: String, // format 2017-02-24
+	body: String
+}
+return: {
+	date: String,
+	body: String
+}
+
+/api/emailSettings/loans/:email_id
+DELETE
+params: none
+return: {
+	message: "Delete successful"
 }

@@ -112,6 +112,13 @@ QueryBuilder.prototype.searchInArray = function(name, requiredItems, excludedIte
   return this;
 }
 
+QueryBuilder.prototype.searchNotEqual = function(name, value) {
+  if (value) {
+    this.queryObject[name] = {$ne: value};
+  }
+  return this;
+}
+
 QueryBuilder.prototype.toJSON = function() {
   return this.queryObject;
 }

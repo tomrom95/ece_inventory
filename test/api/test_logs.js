@@ -8,13 +8,17 @@ let Request = require('../../server/model/requests');
 let Cart = require('../../server/model/carts');
 let CustomField = require('../../server/model/customFields');
 let helpers = require('../../server/auth/auth_helpers');
-let server = require('../../server');
 let fakeJSONData = require('./test_inventory_data');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let should = chai.should();
 chai.use(chaiHttp);
 chai.use(require('chai-things'));
+
+let nodemailerMock = require('nodemailer-mock');
+let mockery = require('mockery');
+
+var server;
 
 describe('Logging API Test', function () {
   var adminToken;
@@ -32,15 +36,15 @@ describe('Logging API Test', function () {
         should.not.exist(err);
         User.remove({}, (err) => {
           should.not.exist(err);
-          helpers.createNewUser('admin', 'test', 'ADMIN', function(err, user) {
+          helpers.createNewUser('admin', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
             should.not.exist(err);
             adminToken = helpers.createAuthToken(user);
             adminUser = user;
-            helpers.createNewUser('standard', 'test', 'STANDARD', function(err, user) {
+            helpers.createNewUser('standard', 'test', 'standard@email.com', 'STANDARD', function(err, user) {
               should.not.exist(err);
               standardToken = helpers.createAuthToken(user);
               standardUser = user;
-              helpers.createNewUser('manager', 'test', 'MANAGER', function(err, user) {
+              helpers.createNewUser('manager', 'test', 'manager@email.com', 'MANAGER', function(err, user) {
                 should.not.exist(err);
                 managerToken = helpers.createAuthToken(user);
                 managerUser = user;
@@ -59,6 +63,26 @@ describe('Logging API Test', function () {
     });
   });
 
+  before((done) =>{
+    mockery.enable({
+      warnOnUnregistered: false,
+      useCleanCache: true
+    });
+    mockery.registerMock('nodemailer', nodemailerMock);
+
+    server = require('../../server');
+    done();
+  });
+
+  afterEach((done) => {
+    nodemailerMock.mock.reset();
+    done();
+  });
+
+  after(function() {
+    mockery.deregisterAll();
+    mockery.disable();
+  });
 
   describe('Logging adding/removing/disbursing inventory items', () =>{
     it('logs adding an item', (done) => {

@@ -2,54 +2,63 @@
   {
     "username": "test1",
     "is_local": true,
-    "role": "STANDARD"
+    "role": "STANDARD",
+    "email": "test1@email.com"
   },
   {
     "username": "test2",
     "is_local": true,
-    "role": "STANDARD"
+    "role": "STANDARD",
+    "email": "test2@email.com"
   },
   {
     "username": "test3",
     "is_local": true,
-    "role": "MANAGER"
+    "role": "MANAGER",
+    "email": "test3@email.com"
   },
   {
     "username": "Test3",
     "is_local": true,
-    "role": "ADMIN"
+    "role": "ADMIN",
+    "email": "Test3@email.com"
   },
   {
     "username": "test5",
     "is_local": true,
-    "role": "ADMIN"
+    "role": "ADMIN",
+    "email": "test5@email.com"
   },
   {
     "netid": "js1",
     "first_name": "John",
     "last_name": "Smith",
     "is_local": false,
-    "role": "STANDARD"
+    "role": "STANDARD",
+    "email": "js1@duke.edu"
   },
   {
     "netid": "tc15",
     "first_name": "Tim",
     "last_name": "Cook",
     "is_local": false,
-    "role": "ADMIN"
+    "role": "ADMIN",
+    "email": "tc15@duke.edu"
   },
   {
     "netid": "ja12",
     "first_name": "Johnny",
     "last_name": "Appleseed",
     "is_local": false,
-    "role": "STANDARD"
+    "role": "STANDARD",
+    "email": "ja12@duke.edu"
   },
   {
     "netid": "cc66",
     "first_name": "Colin",
     "last_name": "Cookies",
     "is_local": false,
-    "role": "MANAGER"
+    "role": "MANAGER",
+    "email": "cc66@duke.edu"
   }
 ]

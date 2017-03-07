@@ -94,7 +94,7 @@ class AddToCartButton extends Component {
 				      </div>
 
 				      <div className="modal-body">
-						{this.makeTextBox("qty-textbox-" + this.props.itemId, "text", "Quantity", "")}
+						{this.makeTextBox("qty-textbox-" + this.props.itemId, "number", "Quantity", "")}
 					  </div>
 
 				      <div className="modal-footer">

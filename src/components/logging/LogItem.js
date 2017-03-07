@@ -22,7 +22,8 @@ class LogItem extends Component {
      	 showButtons: props.showButtons,
      	 requestId: props.requestId,
      	 logItemId: props.logItemId,
-     	 itemIds: props.itemIds
+     	 itemIds: props.itemIds,
+     	 itemNames: props.itemNames
 		};
 	}
 
@@ -32,7 +33,8 @@ class LogItem extends Component {
 			showButtons: newProps.showButtons,
 			requestId: newProps.requestId,
      		logItemId: newProps.logItemId,
-	     	itemIds: newProps.itemIds
+	     	itemIds: newProps.itemIds,
+	     	itemNames: newProps.itemNames
 		});
 	}
 
@@ -49,7 +51,7 @@ class LogItem extends Component {
 				buttons.push(
 				<ItemDetailView
 					key={"log-detailview-" + this.state.itemIds[i]+ "-" + this.state.logItemId}
-					params={{itemID: this.state.itemIds[i]}}
+					params={{itemID: this.state.itemIds[i], itemName: this.state.itemNames[i]}}
 					isButton={false}
 					allCustomFields={this.state.allCustomFields}/>
 				);

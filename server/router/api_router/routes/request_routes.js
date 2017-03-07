@@ -5,7 +5,8 @@ var User = require('../../../model/users');
 var Cart = require('../../../model/carts');
 var mongoose = require('mongoose');
 var QueryBuilder = require('../../../queries/querybuilder');
-var LogHelpers = require('../../../logging/log_helpers.js');
+var Emailer = require('../../../emails/emailer');
+var Logger = require('../../../logging/logger');
 // fields within the item to return
 var itemFieldsToReturn = 'name model_number description';
 var userFieldsToReturn = 'username netid first_name last_name';
@@ -69,11 +70,11 @@ module.exports.postAPI = function(req,res){
         User.findById(req.body.user, function(error, user) {
           if (error) return res.send({error: error});
           if (!user) return res.send({error: "There is no such user"});
-          processAndPost(request, req.user._id, req.body.user, req, res);
+          processAndPost(request, req.user, user, req, res);
         });
       } else {
         // Post the user's requst as the admin user
-        processAndPost(request, req.user._id, req.user._id, req, res);
+        processAndPost(request, req.user, req.user, req, res);
       }
     } else {
       // Standard user here
@@ -82,14 +83,14 @@ module.exports.postAPI = function(req,res){
         return res.send({error:"You are not authorized to modify another user's request"});
       }
       // Post the user's request as the standard user
-      processAndPost(request, req.user._id, req.user._id, req, res);
+      processAndPost(request, req.user, req.user, req, res);
     }
 
   }
 };
 
 function processAndPost(request, createdBy, createdFor, req, res){
-  request.user = createdFor;
+  request.user = createdFor._id;
   if(!req.body.items || req.body.items.length === 0){
     return res.send({error: "Items not specified in request"});
   } else {
@@ -103,9 +104,12 @@ function processAndPost(request, createdBy, createdFor, req, res){
   request.save(function(err, request){
     if(err) return res.send({error:err});
     Request.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, request){
-      LogHelpers.logRequestCreation(request, createdBy, createdFor, function(error) {
+      Emailer.sendNewRequestEmail(request, createdBy, createdFor, function(error) {
         if (error) return res.send({error: error});
-        return res.json(request);
+        Logger.logRequestCreation(request, createdBy, createdFor, function(error) {
+          if (error) return res.send({error: error});
+          return res.json(request);
+        });
       });
     });
   });
@@ -177,9 +181,15 @@ function saveRequest(oldRequest, changes, res, user){
   var obj = Object.assign(oldRequest, changes);
   obj.save((err,request)=>{
     if(err) return res.send({error:err});
-    LogHelpers.logRequestEdit(oldRequestCopy, changes, user, function(error) {
+    Request.populate(oldRequestCopy, {path: "items.item", select: itemFieldsToReturn}, function(error, populatedRequest){
       if(error) return res.send({error: error});
-      return res.json(request);
+      Emailer.sendRequestChangeEmail(populatedRequest, changes, user, function(error) {
+        if(error) return res.send({error: error});
+        Logger.logRequestEdit(oldRequestCopy, changes, user, function(error) {
+          if(error) return res.send({error: error});
+          return res.json(request);
+        });
+      });
     });
   });
 }
@@ -198,9 +208,15 @@ module.exports.deleteAPI = function(req,res){
         request.is_cancelled = true;
         request.save(function(error, updatedRequest) {
           if(error) return res.send({error: error});
-          LogHelpers.logCancelledRequest(updatedRequest, req.user, function(error) {
+          Request.populate(updatedRequest, {path: "items.item", select: itemFieldsToReturn}, function(error, request){
             if(error) return res.send({error: error});
-            res.json({message: 'Delete successful'});
+            Emailer.sendCancelledRequestEmail(request, req.user, function(error) {
+              if(error) return res.send({error: error});
+              Logger.logCancelledRequest(request, req.user, function(error) {
+                if(error) return res.send({error: error});
+                res.json({message: 'Delete successful'});
+              });
+            });
           });
         });
       } else {
@@ -286,12 +302,15 @@ module.exports.patchAPI = function(req, res) {
       if (err) return res.send({error: err});
       Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
         if (err) res.send({error: err});
-        LogHelpers.logDisbursement(request, cart, req.user, function(err) {
-          if (err) return res.send({error: err});
-          return res.json({
-            message: 'Disbursement successful',
-            request: request,
-            items: cart
+        Emailer.sendDisbursementEmail(request, cart, req.user, function(error) {
+          if (error) return res.send({error: error});
+          Logger.logDisbursement(request, cart, req.user, function(err) {
+            if (err) return res.send({error: err});
+            return res.json({
+              message: 'Disbursement successful',
+              request: request,
+              items: cart
+            });
           });
         });
       })

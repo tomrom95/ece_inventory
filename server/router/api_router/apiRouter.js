@@ -1,4 +1,5 @@
 var inventory_routes = require('./routes/inventory_routes');
+var inventory_import_routes = require('./routes/inventory_import_routes');
 var cart_routes = require('./routes/cart_routes');
 var cart_item_routes = require('./routes/cart_item_routes');
 var instance_routes = require('./routes/instance_routes');
@@ -10,6 +11,7 @@ var restrictToManagers = require('../../auth/auth_helpers').restrictToManagers;
 var tag_routes = require('./routes/tag_routes');
 var field_routes = require('./routes/field_routes');
 var item_field_routes = require('./routes/item_field_routes');
+var email_routes = require('./routes/email_routes');
 
 var express = require('express');
 var router = express.Router();
@@ -20,6 +22,9 @@ router.route('/inventory')
 
 router.route('/inventory/tags')
       .get(tag_routes.getAPI);
+
+router.route('/inventory/import')
+      .post(restrictToAdmins,inventory_import_routes.postAPI);
 
 router.route('/inventory/:item_id')
       .get(inventory_routes.getAPIbyID)
@@ -70,7 +75,7 @@ router.route('/users')
 
 router.route('/users/:user_id')
       .get(user_routes.getAPIbyID)
-      .put(restrictToAdmins, user_routes.putAPI);
+      .put(user_routes.putAPI);
 
 router.route('/logs')
       .get(restrictToManagers, log_routes.getAPI);
@@ -83,5 +88,15 @@ router.route('/customFields/:field_id')
       .get(field_routes.getAPIbyID)
       .put(restrictToAdmins, field_routes.putAPI)
       .delete(restrictToAdmins, field_routes.deleteAPI);
+
+router.route('/emailSettings')
+      .get(restrictToManagers, email_routes.getAPI)
+      .put(restrictToManagers, email_routes.putAPI);
+
+router.route('/emailSettings/loans')
+      .post(restrictToManagers, email_routes.postAPI);
+
+router.route('/emailSettings/loans/:email_id')
+      .delete(restrictToManagers, email_routes.deleteAPI);
 
 module.exports = router;
