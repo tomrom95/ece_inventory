@@ -336,6 +336,7 @@ describe('Email settings API Test', function () {
           action: "DISBURSEMENT"
         });
         newRequest.save(function(error, request) {
+          should.not.exist(error);
           chai.request(server)
             .patch('/api/requests/' + request._id)
             .set('Authorization', adminToken)
