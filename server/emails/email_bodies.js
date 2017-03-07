@@ -46,3 +46,17 @@ module.exports.requestCancelled = function(request, initiatingUser, requestUser)
   text += '.';
   return text;
 }
+
+module.exports.loanReminder = function(loanUser, loans, bodyPrepend) {
+  var text = 'Hello ' + StringHelpers.getDisplayName(loanUser) + ',\n\n';
+  text += bodyPrepend + '\n\n';
+  text += 'The following items are due in your loans: \n\n';
+  loans.forEach(function(loan) {
+    loan.items.forEach(function(itemObj) {
+      if (itemObj.status === 'LENT') {
+        text += ' - ' + StringHelpers.itemQuantityString(itemObj.item.name, itemObj.quantity) + '\n';
+      }
+    });
+  });
+  return text;
+}

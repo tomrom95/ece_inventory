@@ -16,10 +16,13 @@ class DocsView extends Component {
   }
 
   render() {
+    var apikey = JSON.parse(localStorage.getItem('user')).apikey;
     return(
       <div className="container">
         <h1>Documentation</h1>
           <br/>
+        <p>Your API Key: <strong>{apikey}</strong></p>
+        <br/>
         <p>All guides for the ECE458 Inventory Project.</p>
         <br/>
         <div className="row docs-row">
