@@ -316,17 +316,27 @@ module.exports.patchAPI = function(req, res) {
       if (err) return res.send({error: err});
       Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
         if (err) res.send({error: err});
-        Emailer.sendDisbursementEmail(request, cart, req.user, function(error) {
-          if (error) return res.send({error: error});
-          Logger.logDisbursement(request, cart, req.user, function(err) {
-            if (err) return res.send({error: err});
-            return res.json({
-              message: 'Disbursement successful',
-              request: request,
-              items: cart
+
+        if(request.action === 'DISBURSEMENT'){
+          Emailer.sendDisbursementEmail(request, cart, req.user, function(error) {
+            if (error) return res.send({error: error});
+            Logger.logDisbursement(request, cart, req.user, function(err) {
+              if (err) return res.send({error: err});
+              return res.json({
+                message: 'Disbursement successful',
+                request: request,
+                items: cart
+              });
             });
           });
-        });
+        } else if (request.action === 'LOAN'){
+          return res.json({
+            message: 'Loan creation successful',
+            // Should return loan
+            request: request,
+            items: cart
+          });
+        }
       })
     });
   } else {
