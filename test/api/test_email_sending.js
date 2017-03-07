@@ -287,7 +287,8 @@ describe('Email settings API Test', function () {
               quantity: 1
             }
           ],
-          reason: "cuz"
+          reason: "cuz",
+          action: "LOAN"
         });
         newRequest.save(function(error, request) {
           should.not.exist(error);
@@ -329,9 +330,11 @@ describe('Email settings API Test', function () {
             item: allItems["1k resistor"]._id,
             quantity: 2000
           }],
-          reason: "cuz"
+          reason: "cuz",
+          action: "DISBURSEMENT"
         });
         newRequest.save(function(error, request) {
+          should.not.exist(error);
           chai.request(server)
             .patch('/api/requests/' + request._id)
             .set('Authorization', adminToken)
