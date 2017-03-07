@@ -22,7 +22,7 @@ describe('Requests', function() {
       item: '53cb6b9b4f4ddef1ad47f943', // fake valid item id
       user: '53cb6b9b4f4ddef1ad47f943',
       reason: 'dunno',
-      quantity: 2
+      action: 'LOAN'
     };
     var request = new Request(requestJSON);
     request.validate(function (err) {

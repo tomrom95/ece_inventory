@@ -5,6 +5,7 @@
     "reason": "greed",
     "quantity": 2000,
     "status": "APPROVED",
+    "action": "DISBURSEMENT",
     "created": "2019-01-29"
   },
   {
@@ -13,6 +14,7 @@
     "reason": "greed",
     "quantity": 2000,
     "status": "DENIED",
+    "action": "DISBURSEMENT",
     "created": "2019-01-29"
   },
   {
@@ -21,6 +23,7 @@
     "reason": "happiness",
     "quantity": 2000,
     "status": "PENDING",
+    "action": "DISBURSEMENT",
     "created": "2019-01-29"
   },
   {
@@ -29,6 +32,7 @@
     "reason": "happiness",
     "quantity": 2000,
     "status": "PENDING",
+    "action": "DISBURSEMENT",
     "created": "2029-01-29"
   },
   {
@@ -37,6 +41,7 @@
     "reason": "happiness",
     "quantity": 2000,
     "status": "FULFILLED",
+    "action": "DISBURSEMENT",
     "created": "2029-01-29"
   }
 ]

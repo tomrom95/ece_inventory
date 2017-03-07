@@ -452,7 +452,8 @@ describe('Logging API Test', function () {
                 quantity: 1
               }
             ],
-            reason: "cuz"
+            reason: "cuz",
+            action: "DISBURSEMENT"
           });
           newRequest.save(function(error, request) {
             should.not.exist(error);
@@ -500,7 +501,8 @@ describe('Logging API Test', function () {
               item: allItems["1k resistor"]._id,
               quantity: 2000
             }],
-            reason: "cuz"
+            reason: "cuz",
+            action: "DISBURSEMENT"
           });
           newRequest.save(function(error, request) {
             chai.request(server)
@@ -536,7 +538,8 @@ describe('Logging API Test', function () {
                 quantity: 1,
               }
             ],
-            reason: "cuz"
+            reason: "cuz",
+            action: "DISBURSEMENT"
           })
           .end((err, res) => {
             should.not.exist(err);
@@ -577,6 +580,7 @@ describe('Logging API Test', function () {
                 quantity: 1,
               }
             ],
+            action: "DISBURSEMENT",
             reason: "cuz"
           })
           .end((err, res) => {

@@ -101,6 +101,8 @@ function processAndPost(request, createdBy, createdFor, req, res){
   request.status = req.body.status;
   request.requestor_comment = req.body.requestor_comment;
   request.reviewer_comment = req.body.reviewer_comment;
+  if(req.body.action === 'DISBURSEMENT') request.action = 'DISBURSEMENT';
+  if(req.body.action === 'LOAN') request.action = 'LOAN';
   request.save(function(err, request){
     if(err) return res.send({error:err});
     Request.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, request){
@@ -150,11 +152,11 @@ module.exports.putAPI = function(req,res){
         fieldsToEdit.add('reason')
       }
       if (req.user.role === 'MANAGER') {
-        fieldsToEdit.add('status')
-        fieldsToEdit.add('reviewer_comment');
+        ['status', 'reviewer_comment', 'action']
+          .forEach(field => fieldsToEdit.add(field));
       }
       if (req.user.role === 'ADMIN') {
-        ['reason', 'status', 'user', 'items', 'created', 'requestor_comment', 'reviewer_comment']
+        ['reason', 'status', 'user', 'items', 'created', 'requestor_comment', 'reviewer_comment', 'action']
           .forEach(field => fieldsToEdit.add(field));
       }
       // admins and managers can only edit reason if it's their own
