@@ -679,3 +679,70 @@ params: none
 return: {
 	message: "Delete successful"
 }
+
+/api/loans
+GET
+params: {
+	user_id: String,
+	item_name: String,
+	type: String, // ('OUTSTANDING', 'COMPLETE')
+}
+return: [{
+	user: {
+		// user schema
+	},
+	items: [{
+		item: {
+			_id: String,
+			name: String
+		},
+		quantity: Int,
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
+	}],
+	request: String, // the id
+	created: String, // date
+	lastModified: String, // date
+}]
+
+/api/loans/:loan_id
+GET
+return: {
+	user: {
+		// user schema
+	},
+	items: [{
+		item: {
+			_id: String,
+			name: String
+		},
+		quantity: Int,
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
+	}],
+	request: String, // the id
+	created: String, // date
+	lastModified: String, // date
+}
+
+PUT
+params: {
+	items: [{
+		item: String, // id
+		status: String, // new status
+	}]
+}
+return: {
+	user: {
+		// user schema
+	},
+	items: [{
+		item: {
+			_id: String,
+			name: String
+		},
+		quantity: Int,
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
+	}],
+	request: String, // the id
+	created: String, // date
+	lastModified: String, // date
+}
