@@ -10,7 +10,7 @@ const statuses = [
     { value: 'ITEM_EDITED', label: 'Item Edits' },
     { value: 'ITEM_CREATED', label: 'Item Creations' },
     { value: 'ITEM_DELETED', label: 'Item Deletions' },
-    { value: 'REQUEST_DISBURSED', label: 'Request Disbursals' },
+    { value: 'REQUEST_FULFILLED', label: 'Request Disbursals' },
     { value: 'REQUEST_CREATED', label: 'Request Creations' },
     { value: 'REQUEST_EDITED', label: 'Request Edits' },
     { value: 'REQUEST_DELETED', label: 'Request Deletions' },

@@ -85,7 +85,7 @@ module.exports.putAPI = function(req,res){
 
 module.exports.patchAPI = function(req, res){
   if (req.body.action == 'CHECKOUT') {
-    checkout(req.user, req.body.user, req.body.reason, function(err, request){
+    checkout(req.user, req.body, function(err, request){
       if (err) return res.send({error: err});
       // populate cart items in cart object
         res.json({
@@ -97,8 +97,12 @@ module.exports.patchAPI = function(req, res){
     return res.send({error: "Action not recognized"});
   }
 }
-function checkout (initiatingUser, enteredUserID, reasonString, next) {
+function checkout (initiatingUser, body, next) {
+  var enteredUserID = body.user;
+  var reasonString = body.reason;
+  var fulfillType = body.type;
   if(!reasonString) return next('Reason not provided in checkout');
+  if(fulfillType != "DISBURSEMENT" && fulfillType != "LOAN") return next("Invalid fulfilment type entered. Try DISBURSEMENT or LOAN");
   if(initiatingUser.role === 'STANDARD' && enteredUserID) return next('Standard user cannot request for another user');
   var requestingUserID =  (initiatingUser.role !== 'STANDARD' &&
                           enteredUserID &&
@@ -120,8 +124,7 @@ function checkout (initiatingUser, enteredUserID, reasonString, next) {
          user: requestingUserID,
          reason: reasonString,
          status: 'PENDING',
-         // For now, disbursement - to change with frontend choice
-         action: 'DISBURSEMENT'
+         action: fulfillType
        });
        // Copy array of items
        request.items = [];

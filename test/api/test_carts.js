@@ -627,7 +627,8 @@ describe('Cart API Test', function () {
         .set('Authorization', adminToken)
         .send({
           action: 'CHECKOUT',
-          reason: 'Test request'
+          reason: 'Test request',
+          type: 'DISBURSEMENT'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -671,7 +672,8 @@ describe('Cart API Test', function () {
         .set('Authorization', managerToken)
         .send({
           action: 'CHECKOUT',
-          reason: 'Test request'
+          reason: 'Test request',
+          type: 'DISBURSEMENT'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -715,7 +717,8 @@ describe('Cart API Test', function () {
         .set('Authorization', standardToken)
         .send({
           action: 'CHECKOUT',
-          reason: 'Test request'
+          reason: 'Test request',
+          type: 'DISBURSEMENT'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -760,6 +763,7 @@ describe('Cart API Test', function () {
         .send({
           action: 'CHECKOUT',
           reason: 'Test request',
+          type: 'DISBURSEMENT',
           user: standardUser._id
         })
         .end((err, res) => {
@@ -785,6 +789,7 @@ describe('Cart API Test', function () {
         .send({
           action: 'CHECKOUT',
           reason: 'Test request',
+          type: 'DISBURSEMENT',
           user: adminUser._id
         })
         .end((err, res) => {
@@ -805,6 +810,7 @@ describe('Cart API Test', function () {
         .send({
           action: 'CHECKOUT',
           reason: 'Test request',
+          type: 'DISBURSEMENT',
           user: standardUser._id
         })
         .end((err, res) => {
@@ -830,6 +836,7 @@ describe('Cart API Test', function () {
         .send({
           action: 'CHECKOUT',
           reason: 'Test request',
+          type: 'DISBURSEMENT',
           user: '99ae73d23d7d8010a8343a2f'
         })
         .end((err, res) => {
@@ -849,7 +856,8 @@ describe('Cart API Test', function () {
         .set('Authorization', standardToken)
         .send({
           action: 'CHECKOUT',
-          reason: 'Test request'
+          reason: 'Test request',
+          type: 'DISBURSEMENT'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -884,7 +892,8 @@ describe('Cart API Test', function () {
               .set('Authorization', standardToken)
               .send({
                 action: 'CHECKOUT',
-                reason: 'Test request'
+                reason: 'Test request',
+                type: 'DISBURSEMENT'
               })
               .end((err, res) => {
                 should.not.exist(err);
@@ -906,6 +915,7 @@ describe('Cart API Test', function () {
         .set('Authorization', standardToken)
         .send({
           action: 'CHECKOUT',
+          type: 'DISBURSEMENT'
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -954,7 +964,8 @@ describe('Cart API Test', function () {
           .set('Authorization', standardToken)
           .send({
             action: 'CHECKOUT',
-            reason: 'Test request'
+            reason: 'Test request',
+            type: 'DISBURSEMENT'
           })
           .end((err, res) => {
             should.not.exist(err);
