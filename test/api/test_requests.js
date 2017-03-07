@@ -1445,6 +1445,7 @@ describe('Requests API Test', function () {
     });
     it('Does not disburse if first item has insufficient quantity', (done) => {
       var request = new Request(approvedMockRequest);
+      request.action = 'LOAN';
       request.items = [
         {
           item: item1_id,
@@ -1479,7 +1480,10 @@ describe('Requests API Test', function () {
               Request.findById(request._id, function(err, request) {
                 should.not.exist(err);
                 request.status.should.be.eql('APPROVED');
-                done();
+                Loan.find({}, function(error, loans) {
+                  loans.length.should.be.eql(0);
+                  done();
+                });
               });
             });
           });
