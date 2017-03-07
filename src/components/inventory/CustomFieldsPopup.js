@@ -147,8 +147,8 @@ class CustomFieldsPopup extends Component {
 			        {this.makeForm()}
 			      </div>
 			      <div className="modal-footer">
-			        <button onClick={e => {this.onSubmission()}} type="button" className="btn btn-primary">Submit</button>
-              <button onClick={e => {this.clearForm()}} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+              		<button onClick={e => {this.clearForm()}} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+      		     	<button onClick={e => {this.onSubmission()}} type="button" className="btn btn-primary">Submit</button>
 			      </div>
 			    </div>
 			  </div>
