@@ -12,6 +12,7 @@ var tag_routes = require('./routes/tag_routes');
 var field_routes = require('./routes/field_routes');
 var item_field_routes = require('./routes/item_field_routes');
 var email_routes = require('./routes/email_routes');
+var loan_routes = require('./routes/loan_routes');
 
 var express = require('express');
 var router = express.Router();
@@ -98,5 +99,8 @@ router.route('/emailSettings/loans')
 
 router.route('/emailSettings/loans/:email_id')
       .delete(restrictToManagers, email_routes.deleteAPI);
+
+router.route('/loans')
+      .get(loan_routes.getAPI);
 
 module.exports = router;
