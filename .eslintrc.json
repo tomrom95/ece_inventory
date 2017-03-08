@@ -1,0 +1,35 @@
+{
+    "extends": "standard",
+    "plugins": [
+        "standard",
+        "promise"
+    ],
+    "rules": {
+      "semi": "off",
+      "space-before-function-paren": "off",
+      "keyword-spacing": "off",
+      "space-before-blocks": "off",
+      "indent": "off",
+      "quotes": "off",
+      "eqeqeq": "off",
+      "curly": "off",
+      "camelcase": "off",
+      "key-spacing": "off",
+      "comma-spacing": "off",
+      "comma-dangle": "off",
+      "prefer-promise-reject-errors": "off",
+      "arrow-spacing": "off",
+      "no-unused-vars": "off",
+      "operator-linebreak": "off",
+      "space-infix-ops": "off",
+      "padded-blocks": "off",
+      "no-multi-spaces": "off",
+      "brace-style": "off",
+      "no-multiple-empty-lines": "off",
+      "block-spacing": "off",
+      "spaced-comment": "off",
+      "use-isnan": "off",
+      "standard/object-curly-even-spacing": "off",
+      "no-unneeded-ternary": "off"
+    }
+}
