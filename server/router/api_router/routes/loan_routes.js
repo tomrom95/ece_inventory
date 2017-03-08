@@ -22,16 +22,3 @@ module.exports.getAPI = function(req, res) {
         return res.json(loans);
       });
 }
-
-module.exports.getAPIbyID = function(req, res) {
-  Loan.findById(req.params.loan_id)
-      .populate('items.item', ITEM_FIELDS)
-      .populate('user', USER_FIELDS)
-      .exec(function(error, loan) {
-        if (error) return res.send({error: error});
-        if (req.user.role === 'STANDARD' && !req.user._id.equals(loan.user._id)) {
-          return res.status(403).send({error: 'You cannot view another user\'s loan'});
-        }
-        return res.json(loan);
-      });
-}

@@ -103,7 +103,4 @@ router.route('/emailSettings/loans/:email_id')
 router.route('/loans')
       .get(loan_routes.getAPI);
 
-router.route('/loans/:loan_id')
-      .get(loan_routes.getAPIbyID);
-
 module.exports = router;
