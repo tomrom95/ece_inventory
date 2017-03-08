@@ -1,0 +1,72 @@
+[
+  {
+    "user": "STANDARD",
+    "items": [
+      {
+        "item": "1k resistor",
+        "quantity": 10,
+        "status": "LENT"
+      },
+      {
+        "item": "2k resistor",
+        "quantity": 5,
+        "status": "RETURNED"
+      }
+    ],
+    "request": "444444444444444444444444"
+  },
+  {
+    "user": "STANDARD",
+    "items": [
+      {
+        "item": "10k resistor",
+        "quantity": 10,
+        "status": "LENT"
+      },
+      {
+        "item": "Oscilloscope",
+        "quantity": 5,
+        "status": "RETURNED"
+      }
+    ],
+    "request": "333333333333333333333333"
+  },
+  {
+    "user": "STANDARD",
+    "items": [
+      {
+        "item": "2k resistor",
+        "quantity": 10,
+        "status": "DISBURSED"
+      },
+      {
+        "item": "5k resistor",
+        "quantity": 5,
+        "status": "RETURNED"
+      }
+    ],
+    "request": "222222222222222222222222"
+  },
+  {
+    "user": "MANAGER",
+    "items": [
+      {
+        "item": "Oscilloscope",
+        "quantity": 10,
+        "status": "LENT"
+      }
+    ],
+    "request": "111111111111111111111111"
+  },
+  {
+    "user": "MANAGER",
+    "items": [
+      {
+        "item": "1k resistor",
+        "quantity": 10,
+        "status": "LENT"
+      }
+    ],
+    "request": "666666666666666666666666"
+  }
+]

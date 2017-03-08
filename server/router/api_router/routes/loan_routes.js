@@ -29,7 +29,7 @@ module.exports.getAPIbyID = function(req, res) {
       .populate('user', USER_FIELDS)
       .exec(function(error, loan) {
         if (error) return res.send({error: error});
-        if (req.user.role === 'STANDARD' && !req.user._id.equals(loan.user)) {
+        if (req.user.role === 'STANDARD' && !req.user._id.equals(loan.user._id)) {
           return res.status(403).send({error: 'You cannot view another user\'s loan'});
         }
         return res.json(loan);
