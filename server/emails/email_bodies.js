@@ -15,7 +15,7 @@ module.exports.requestCreated = function(request, createdBy, createdFor) {
   return text;
 }
 
-module.exports.requestDisbursed = function(request, items, initiator, createdFor) {
+module.exports.requestFulfilled = function(request, items, initiator, createdFor) {
   var requestItemMap = {};
   request.items.forEach(function(item) {
     requestItemMap[item.item] = item.quantity;
@@ -23,7 +23,8 @@ module.exports.requestDisbursed = function(request, items, initiator, createdFor
 
   var text = 'Hello ' + StringHelpers.getDisplayName(createdFor) + ',\n\n';
   text += 'Your request for ' + StringHelpers.createRequestItemString(requestItemMap, items);
-  text += ' has been disbursed by ' + StringHelpers.getDisplayName(initiator) + '.';
+  text += ' has been fulfilled as a ' + request.action.toLowerCase();
+  text += ' to you by ' + StringHelpers.getDisplayName(initiator) + '.';
   return text;
 }
 
@@ -43,5 +44,19 @@ module.exports.requestCancelled = function(request, initiatingUser, requestUser)
     text += ' by ' + StringHelpers.getDisplayName(initiatingUser);
   }
   text += '.';
+  return text;
+}
+
+module.exports.loanReminder = function(loanUser, loans, bodyPrepend) {
+  var text = 'Hello ' + StringHelpers.getDisplayName(loanUser) + ',\n\n';
+  text += bodyPrepend + '\n\n';
+  text += 'The following items are due in your loans: \n\n';
+  loans.forEach(function(loan) {
+    loan.items.forEach(function(itemObj) {
+      if (itemObj.status === 'LENT') {
+        text += ' - ' + StringHelpers.itemQuantityString(itemObj.item.name, itemObj.quantity) + '\n';
+      }
+    });
+  });
   return text;
 }

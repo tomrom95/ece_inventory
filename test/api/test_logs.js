@@ -452,7 +452,8 @@ describe('Logging API Test', function () {
                 quantity: 1
               }
             ],
-            reason: "cuz"
+            reason: "cuz",
+            action: "DISBURSEMENT"
           });
           newRequest.save(function(error, request) {
             should.not.exist(error);
@@ -466,7 +467,7 @@ describe('Logging API Test', function () {
         chai.request(server)
           .patch('/api/requests/' + testRequest._id)
           .set('Authorization', adminToken)
-          .send({action: "DISBURSE"})
+          .send({action: "FULFILL"})
           .end((err, res) => {
             should.not.exist(err);
             res.should.have.status(200);
@@ -479,7 +480,7 @@ describe('Logging API Test', function () {
                 ([allItems['1k resistor']._id, allItems['2k resistor']._id, allItems['Oscilloscope']._id])
                   .should.include(item);
               })
-              log.type.should.be.eql('REQUEST_DISBURSED');
+              log.type.should.be.eql('REQUEST_FULFILLED');
               log.initiating_user.should.be.eql(adminUser._id);
               log.affected_user.should.be.eql(standardUser._id);
               log.description.should.include('(2) 1k resistors');
@@ -500,13 +501,14 @@ describe('Logging API Test', function () {
               item: allItems["1k resistor"]._id,
               quantity: 2000
             }],
-            reason: "cuz"
+            reason: "cuz",
+            action: "DISBURSEMENT"
           });
           newRequest.save(function(error, request) {
             chai.request(server)
               .patch('/api/requests/' + request._id)
               .set('Authorization', adminToken)
-              .send({action: "DISBURSE"})
+              .send({action: "FULFILL"})
               .end((err, res) => {
                 should.not.exist(err);
                 res.should.have.status(200);
@@ -536,7 +538,8 @@ describe('Logging API Test', function () {
                 quantity: 1,
               }
             ],
-            reason: "cuz"
+            reason: "cuz",
+            action: "DISBURSEMENT"
           })
           .end((err, res) => {
             should.not.exist(err);
@@ -577,6 +580,7 @@ describe('Logging API Test', function () {
                 quantity: 1,
               }
             ],
+            action: "DISBURSEMENT",
             reason: "cuz"
           })
           .end((err, res) => {
@@ -621,6 +625,7 @@ describe('Logging API Test', function () {
               .set('Authorization', adminToken)
               .send({
                 action: 'CHECKOUT',
+                type: 'DISBURSEMENT',
                 reason: 'I want them'
               })
               .end((err, res) => {
@@ -668,6 +673,7 @@ describe('Logging API Test', function () {
               .set('Authorization', adminToken)
               .send({
                 action: 'CHECKOUT',
+                type: 'DISBURSEMENT',
                 reason: 'I want them',
                 user: standardUser._id
               })
@@ -717,6 +723,7 @@ describe('Logging API Test', function () {
               .set('Authorization', managerToken)
               .send({
                 action: 'CHECKOUT',
+                type: 'DISBURSEMENT',
                 reason: 'I want them',
                 user: adminUser._id
               })
@@ -1097,7 +1104,7 @@ describe('Logging API Test', function () {
           initiating_user: managerUser._id,
           affected_user: standardUser._id,
           items: [allItems["Oscilloscope"]._id, allItems["120V"]._id],
-          type: 'REQUEST_DISBURSED',
+          type: 'REQUEST_FULFILLED',
           description: 'Disbursed oscilloscope and 120V',
           time_stamp: new Date('2017-02-13'),
         },
@@ -1105,7 +1112,7 @@ describe('Logging API Test', function () {
           initiating_user: adminUser._id,
           affected_user: managerUser._id,
           items: [allItems["Oscilloscope"]._id, allItems["100k resistor"]._id],
-          type: 'REQUEST_DISBURSED',
+          type: 'REQUEST_FULFILLED',
           description: 'Disbursed oscilloscope and 100k resistor',
           time_stamp: new Date('2017-02-14'),
         },

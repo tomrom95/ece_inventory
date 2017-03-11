@@ -833,7 +833,7 @@
 								}
 							]
 						},
-						"description": "You can query by field \"type\" with the following enums: 'ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED', 'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED'"
+						"description": "You can query by field \"type\" with the following enums: 'ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED', 'REQUEST_FULFILLED', 'REQUEST_CREATED', 'REQUEST_EDITED'"
 					},
 					"response": []
 				}

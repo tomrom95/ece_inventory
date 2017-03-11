@@ -27,7 +27,7 @@ var LogSchema = new mongoose.Schema({
   type: {
     type: String,
     enum: ['ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
-      'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED',
+      'REQUEST_FULFILLED', 'REQUEST_CREATED', 'REQUEST_EDITED',
       'REQUEST_DELETED', 'FIELD_CREATED', 'FIELD_EDITED', 'FIELD_DELETED'],
     required: true,
   },

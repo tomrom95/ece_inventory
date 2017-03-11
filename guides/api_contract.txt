@@ -332,6 +332,7 @@ PATCH
 body: {
 	user: String // user id
 	action: "CHECKOUT"
+	type: String ["DISBURSEMENT", "LOAN"]
 	reason: String
 }
 return {
@@ -383,6 +384,7 @@ params:
 	reviewer_comment: String [optional],
 	requestor_comment: String [optional],
 	reason: String [optional],
+	action: String [optional], // ('DISBURSEMENT', 'LOAN')
 	status: String [optional],
 	created: Date [optional],
 	items: [String] [optional], // query with array of item names
@@ -407,6 +409,7 @@ return:
     reason: String,
     created: String,
     status: String,
+		action: String, // ('DISBURSEMENT', 'LOAN')
     requestor_comment: String,
     reviewer_comment: String
   }
@@ -424,6 +427,7 @@ body:
   reason: String [optional],
   created: String [optional],
   status: String,
+	action: String [required], // ('DISBURSEMENT', 'LOAN')
   requestor_comment: String [optional],
   reviewer_comment: String [optional]
 }
@@ -442,6 +446,7 @@ return:
   reason: String,
   time_stamp: String,
   status: String,
+	action: String, // ('DISBURSEMENT', 'LOAN')
   comment: String
 }
 
@@ -461,6 +466,7 @@ return:
   reason: String,
   created: String,
   status: String,
+	action: String, // ('DISBURSEMENT', 'LOAN')
   comment: String
 }
 
@@ -476,6 +482,7 @@ body:
   reason: String [optional],
   created: String [optional],
   status: String [optional],
+	action: String [optional], // ('DISBURSEMENT', 'LOAN')
   comment: String [optional]
 }
 
@@ -493,6 +500,7 @@ return:
   reason: String,
   created: String,
   status: String,
+	action: String, // ('DISBURSEMENT', 'LOAN')
   comment: String
 }
 
@@ -503,10 +511,10 @@ return:
 }
 
 PATCH
-// if you use the action "DISBURSE" it will update the item quantity by subtracting
+// if you use the action "FULFILL" it will update the item quantity by subtracting
 // the requested amount and then set the request status to "FULFILLED"
 params: {
-	action: "DISBURSE" // for now this is the only action
+	action: "FULFILL" // for now this is the only action
 }
 return {
 	items: [
@@ -526,7 +534,7 @@ params:
 	item_id: String,
 	item_name: String,
 	type: String, // ('ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
-		'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED',
+		'REQUEST_FULFILLED', 'REQUEST_CREATED', 'REQUEST_EDITED',
 		'REQUEST_DELETED', 'FIELD_CREATED', 'FIELD_EDITED', 'FIELD_DELETED')
 	user_id: String,
 	start_date: String, // in full date format '2017-02-27T00:00:00-05:00' (encoded)
@@ -562,7 +570,7 @@ return:
 			}
 		],
   	type: String, // ('ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
-      'REQUEST_DISBURSED', 'REQUEST_CREATED', 'REQUEST_EDITED',
+      'REQUEST_FULFILLED', 'REQUEST_CREATED', 'REQUEST_EDITED',
       'REQUEST_DELETED', 'FIELD_CREATED', 'FIELD_EDITED', 'FIELD_DELETED')
     time_stamp: String,
 		description: String
@@ -677,4 +685,71 @@ DELETE
 params: none
 return: {
 	message: "Delete successful"
+}
+
+/api/loans
+GET
+params: {
+	user_id: String,
+	item_name: String,
+	type: String, // ('OUTSTANDING', 'COMPLETE')
+}
+return: [{
+	user: {
+		// user schema
+	},
+	items: [{
+		item: {
+			_id: String,
+			name: String
+		},
+		quantity: Int,
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
+	}],
+	request: String, // the id
+	created: String, // date
+	lastModified: String, // date
+}]
+
+/api/loans/:loan_id
+GET
+return: {
+	user: {
+		// user schema
+	},
+	items: [{
+		item: {
+			_id: String,
+			name: String
+		},
+		quantity: Int,
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
+	}],
+	request: String, // the id
+	created: String, // date
+	lastModified: String, // date
+}
+
+PUT
+params: {
+	items: [{
+		item: String, // id
+		status: String, // new status
+	}]
+}
+return: {
+	user: {
+		// user schema
+	},
+	items: [{
+		item: {
+			_id: String,
+			name: String
+		},
+		quantity: Int,
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
+	}],
+	request: String, // the id
+	created: String, // date
+	lastModified: String, // date
 }

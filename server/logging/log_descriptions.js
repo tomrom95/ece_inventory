@@ -31,13 +31,14 @@ module.exports.deletedRequest = function(request, initiatingUser, requestUser) {
   return description;
 }
 
-module.exports.disbursedItem = function(request, items, disbursedFrom, disbursedTo) {
+module.exports.fulfilledItem = function(request, items, disbursedFrom, disbursedTo) {
   var description = 'The user ' + StringHelpers.getDisplayName(disbursedFrom) + ' disbursed';
   var requestItemMap = {};
   request.items.forEach(function(item) {
     requestItemMap[item.item] = item.quantity;
   });
   description += StringHelpers.createRequestItemString(requestItemMap, items);
+  description += ' as a ' + request.action.toLowerCase();
   description += ' to the user ' + StringHelpers.getDisplayName(disbursedTo) + '.';
   return description;
 }
