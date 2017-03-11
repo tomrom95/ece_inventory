@@ -80,8 +80,8 @@ var createOrUpdateField = function(itemId, fieldId, value, user, next) {
 
 module.exports.deleteAPI = function(req, res){
   CustomField.findById(req.params.field_id, function(error, field) {
-    if (error) return next(error);
-    if (!field) return next('Invalid field id');
+    if (error) return res.send({error: error});
+    if (!field) return res.send({error: 'Invalid field id'});
     Item.findByIdAndUpdate(
       req.params.item_id,
       {

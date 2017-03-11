@@ -12,6 +12,10 @@
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
     "chai-things": "^0.2.0",
+    "eslint": "^3.17.1",
+    "eslint-config-standard": "^7.0.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^2.1.1",
     "express": "^4.14.0",
     "foreman": "^2.0.0",
     "fs": "0.0.1-security",
@@ -61,6 +65,7 @@
     "start-prod": "react-scripts build && forever start server.js",
     "build": "react-scripts build",
     "test": "mocha --recursive",
+    "lint-server": "./node_modules/.bin/eslint server/*",
     "eject": "react-scripts eject"
   }
 }

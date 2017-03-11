@@ -3,7 +3,6 @@ var jwt = require('jsonwebtoken');
 var axios = require('axios');
 var User = require('../../../model/users');
 var helpers = require('../../../auth/auth_helpers');
-var User = require('../../../model/users');
 
 const API_KEY = 'ece-inventory-colab-sbx-125'; // Works with any of our API keys
 
@@ -46,7 +45,7 @@ function loginWithOAuth(oauthToken, next) {
           role: user.role
         }
       );
-      var user = User({
+      user = User({
         netid: userInfo.netid,
         first_name: userInfo.firstName,
         last_name: userInfo.lastName,
@@ -76,7 +75,7 @@ function loginWithOAuth(oauthToken, next) {
 function loginWithUsername(username, password, next) {
   User.findOne({ username: username }, function(error, user) {
     if (error != null) {
-      return next(err);
+      return next(error);
     } else if (user == null) {
       return next('User does not exist');
     } else{
