@@ -9,6 +9,9 @@ import EditUsers from '../components/user/EditUsers.js';
 import DocsView from '../components/docs/DocsView.js';
 import Transactions from '../components/transactions/Transactions.js';
 import LogPage from '../components/logging/LogPage.js';
+import LoanEmailReminders from '../components/emailing/LoanEmailReminders.js';
+import AllRemindersPage from '../components/emailing/AllRemindersPage.js';
+
 import { Route} from 'react-router';
 
 class InventoryWrapper extends Component {
@@ -58,9 +61,21 @@ class DocsWrapper extends Component {
 
 
 class LogPageWrapper extends Component {
-    render() {
-        return (<LogPage showFilterBox={true} showButtons={true} id="log-page" />);
-    }
+  render() {
+    return (<LogPage showFilterBox={true} showButtons={true} id="log-page" />);
+  }
+}
+
+class LoanEmailRemindersWrapper extends Component {
+  render() {
+    return (<LoanEmailReminders/>);
+  }
+}
+
+class AllRemindersPageWrapper extends Component {
+  render() {
+    return(<AllRemindersPage/>);
+  }
 }
 
 export default (
@@ -74,5 +89,7 @@ export default (
     <Route path="Docs" component={DocsWrapper}></Route>
     <Route path="Transactions" component={TransactionsWrapper}></Route>
     <Route path="Log" component={LogPageWrapper}></Route>
+    <Route path="LoanEmailReminders" component={LoanEmailRemindersWrapper}></Route>
+    <Route path="AllRemindersPage" component={AllRemindersPageWrapper}></Route>
   </Route>
 );

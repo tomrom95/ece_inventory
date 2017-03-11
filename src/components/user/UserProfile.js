@@ -17,7 +17,7 @@ class UserProfile extends Component {
       username: props.username,
       role: props.role,
       email: props.email,
-      subscribed: props.subscribed,
+      subscribed: props.subscribed ? props.subscribed : false,
     }
   }
 
@@ -78,7 +78,12 @@ class UserProfile extends Component {
             <h6 className="card-title row">
               {this.state.email}
             </h6>
-            <div className="card-title row"> {subscribed} </div>
+            <div className="card-title row">
+              <label>
+              {subscribed}
+              {" Subscribed"}
+              </label>
+            </div>
           </div>
         </div>);
     }
