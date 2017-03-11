@@ -29,6 +29,7 @@ class CreateUser extends React.Component {
       username: this.refs.username.value,
       password: this.refs.password.value,
       role: this.refs.role.value,
+      email: this.refs.email.value
     };
     var passwordConfirm = this.refs.passwordConfirm.value;
 
@@ -66,6 +67,7 @@ class CreateUser extends React.Component {
     this.refs.username.value = '';
     this.refs.password.value = '';
     this.refs.role.value = 'STANDARD';
+    this.refs.email.value = '';
     this.refs.passwordConfirm.value = '';
   }
 
@@ -97,6 +99,15 @@ class CreateUser extends React.Component {
                 ref="username"
                 defaultValue=""
                 id={"username-field"}/>
+            </div>
+            <div className="row form-group">
+              <label htmlFor={"username-field"}>Email *</label>
+              <input
+                className="form-control"
+                type="text"
+                ref="email"
+                defaultValue=""
+                id={"email-field"}/>
             </div>
             <div className="row form-group">
               <label htmlFor={"pw-field"}>Password *</label>
