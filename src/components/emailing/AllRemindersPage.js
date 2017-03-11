@@ -1,59 +1,9 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import axios from 'axios';
 import {TextInput} from 'react-native';
 
-var meta;
-
-function getPrefill(data) {
-  return ({
-    "Date": data["Date"],
-    "Body": data["Body"],
-  });
-}
-
-function getEmptyPrefill() {
-  return ({
-    "Date": "",
-    "Body": "",
-  });
-}
-
-function getKeys(data) {
-
-  if (data.length === 0)
-    return;
-
-  var keys = Object.keys(data[0]);
-  var i;
-  var ret = [];
-  for (i=0; i<keys.length; i++) {
-    if (keys[i] === "meta") {
-      meta = keys[i];
-      continue;
-    }
-
-    if (["Date", "Body"].includes(keys[i])) {
-      ret.push(keys[i]);
-    }
-  }
-  return ret;
-}
-
-function getValues(data, keys) {
-  var i; var j;
-  var vals = [];
-  for (i=0; i<data.length; i++) {
-    var row = [];
-    for (j=0; j<keys.length; j++) {
-      row.push(String(data[i][keys[j]]).replace(/,/g,', '));
-    }
-    vals.push(row);
-  }
-  return vals;
-}
 
 class AllRemindersPage extends Component {
 
@@ -73,7 +23,7 @@ class AllRemindersPage extends Component {
         }
         else{
           this.setState({
-            reminders: response.data.load_emails,
+            reminders: response.data.loan_emails,
             subject: response.data.subject_tag,
           });
 
@@ -89,7 +39,7 @@ class AllRemindersPage extends Component {
     var text = event.target.value;
     this.setState({
       subject: text
-    })
+    });
   }
 
 
@@ -111,14 +61,130 @@ class AllRemindersPage extends Component {
   makeRows(){
     var list = [];
     for(var i = 0; i < this.state.reminders.length; i++){
-      list.push(<th key={this.state.reminders[i].loan_emails.date+"-reminderrow"}> {this.state.reminders[i].loan_emails.date} </th>);
-      list.push(<th key={this.state.reminders[i].loan_emails.body+"-reminderrow"}> {this.state.reminders[i].loan_emails.body} </th>);
+      var row =
+      (<tr key={"reminder-"+i} className="subtable-row">
+        <th key={this.state.reminders[i].date+"-daterow"}> {this.state.reminders[i].date} </th>
+        {this.makeEditButton(i)}
+        {this.makeDeleteButton(i)}
+      </tr>);
+      list.push(row);
+
     }
     return list;
   }
 
-  onSubmission(){
+  makeEditButton(i){
+    return(
+      <td key={"edit-td-"+i} >
+        <button
+          type="button"
+          data-toggle="modal"
+          data-target={"#editModal-"+this.state.reminders[i]._id}
+          className="btn btn-sm btn-outline-primary"
+          key={"editbutton-"+ i}>
+            See Body Text
+        </button>
+        <div className="modal fade"
+          id={"editModal-"+this.state.reminders[i]._id}
+          tabIndex="-1" role="dialog"
+          aria-labelledby="editLabel"
+          aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="editLabel">Email body text</h5>
+              </div>
+              <div className="modal-body">
+                {this.makeTextBox(i)}
+              </div>
+            </div>
+          </div>
+        </div>
+     </td>
+    );
+  }
 
+  makeTextBox(i){
+    return(
+      <TextInput
+          className="email-text"
+          multiline={true}
+          numberOfLines={20}
+          value={this.state.reminders[i].body}
+          key={"email-body"}
+          readonly>
+      </TextInput>
+    );
+  }
+
+  handleBodyChange(text, i){
+    var data = this.state.reminders;
+    data[i].body = text;
+    this.setState({
+      reminders: data
+    });
+  }
+
+  makeDeleteButton(i){
+    return(
+      <td key={"delete-td-"+i} className="subtable-row">
+        <button onClick={()=>this.deleteEmail(i)} key={"delete-button-"+i}
+          type="button"
+          className="btn btn-sm btn-danger">
+            <span className="fa fa-trash"></span>
+        </button>
+      </td>);
+  }
+
+  deleteEmail(i){
+    this.instance.delete('/api/emailSettings/loans/' + this.state.reminders[i]._id)
+      .then(function(response) {
+        if(response.data.error){
+          console.log(response);
+        }
+        else{
+          this.loadData();
+
+        }
+      }.bind(this))
+      .catch(function(error){
+        console.log(error);
+      });
+  }
+
+  submitEmailEdit(i){
+    var body = this.state.reminders[i];
+    this.instance.put('/api/emailSettings/loans/' + this.state.reminders[i]._id, body)
+      .then(function(response) {
+        if(response.data.error){
+          console.log(response);
+        }
+        else{
+          this.loadData();
+
+        }
+      }.bind(this))
+      .catch(function(error){
+        console.log(error);
+      });
+  }
+
+  submitSubjectEdit(){
+    var body = {
+      subject_tag: this.state.subject
+    };
+    this.instance.put('/api/emailSettings/', body)
+      .then(function(response) {
+        if(response.data.error){
+          console.log(response);
+        }
+        else{
+          console.log(response)
+        }
+      }.bind(this))
+      .catch(function(error){
+        console.log(error);
+      });
   }
 
   render() {
@@ -142,6 +208,7 @@ class AllRemindersPage extends Component {
                   value={this.state.subject}
                   key={"email-subject"}>
               </input>
+              <button onClick={() => this.submitSubjectEdit()} type="button" className="btn btn-primary">Apply</button>
             </div>
             <div className="reminder-table">
       				<table className="table table-sm maintable-body">
