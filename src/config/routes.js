@@ -9,6 +9,7 @@ import EditUsers from '../components/user/EditUsers.js';
 import DocsView from '../components/docs/DocsView.js';
 import Transactions from '../components/transactions/Transactions.js';
 import LogPage from '../components/logging/LogPage.js';
+import LoanTable from '../components/loans/LoanTable.js';
 import { Route} from 'react-router';
 
 class InventoryWrapper extends Component {
@@ -71,6 +72,7 @@ export default (
     <Route path="GlobalRequests" component={GlobalRequestsWrapper}></Route>
     <Route path="CreateUser" component={CreateUserWrapper}></Route>
     <Route path="EditUsers" component={EditUsers}></Route>
+    <Route path="Loans" component={LoanTable}></Route>
     <Route path="Docs" component={DocsWrapper}></Route>
     <Route path="Transactions" component={TransactionsWrapper}></Route>
     <Route path="Log" component={LogPageWrapper}></Route>

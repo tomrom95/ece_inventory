@@ -113,7 +113,6 @@ class InventoryTable extends Component {
       });
 	}
 
-
 	render() {
 		return (
 			<div className="maintable-container">
