@@ -7,7 +7,9 @@ module.exports.getFilteredChanges = function(oldObject, changes) {
       return String(oldObject[key]) != String(changes[key]);
     })
   var filteredChanges = {};
-  filteredKeys.forEach(key => filteredChanges[key] = changes[key]);
+  filteredKeys.forEach((key) => {
+    filteredChanges[key] = changes[key]
+  });
   if (Object.keys(filteredChanges).length === 0) {
     return null;
   }

@@ -106,9 +106,10 @@ function processAndPost(request, createdBy, createdFor, req, res){
     return res.send({error: 'Action must either be DISBURSEMENT or LOAN'});
   }
   request.action = req.body.action
-  request.save(function(err, request){
-    if(err) return res.send({error:err});
-    Request.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, request){
+  request.save(function(error, request){
+    if(error) return res.send({error:error});
+    Request.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(error, request){
+      if (error) return res.send({error: error})
       Emailer.sendNewRequestEmail(request, createdBy, createdFor, function(error) {
         if (error) return res.send({error: error});
         Logger.logRequestCreation(request, createdBy, createdFor, function(error) {
@@ -234,7 +235,7 @@ module.exports.deleteAPI = function(req,res){
 var addCheckQuantityPromise = function(checkQuantityPromises, request, i) {
   checkQuantityPromises.push(new Promise((resolve, reject) => {
     Item.findById(request.items[i].item, function(err, item) {
-      if(err) return next(err);
+      if(err) return reject(err);
       // Check that all items have sufficient quantity
       if (item.quantity < request.items[i].quantity) {
         return reject('Insufficient quantity of item: '+item.name);
@@ -247,11 +248,13 @@ var addCheckQuantityPromise = function(checkQuantityPromises, request, i) {
 var addFulfillPromise = function(fulfillPromises, updatedCart, request, i) {
   fulfillPromises.push(new Promise((resolve, reject) => {
     Item.findById(request.items[i].item, function(err, item) {
+      if (err) return reject(err);
       item.quantity -= request.items[i].quantity;
       item.save(function(err, updatedItem) {
         if (err) return reject(err);
         if (!updatedItem) return reject('Item does not exist');
         Item.populate(updatedItem,{path: "item", select: itemFieldsToReturn}, function(err, item){
+          if (err) return reject(err);
           updatedCart.push(updatedItem);
           resolve();
         })

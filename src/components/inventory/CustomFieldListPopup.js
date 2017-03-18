@@ -19,8 +19,8 @@ class CustomFieldListPopup extends Component {
   mapFields(fields) {
     return fields.map(function(field) {
       return {
-        name: field.name, 
-        type: field.type, 
+        name: field.name,
+        type: field.type,
         isPrivate: field.isPrivate,
         _id: field._id
        };
@@ -31,9 +31,18 @@ class CustomFieldListPopup extends Component {
     var data = this.mapFields(newProps.allCustomFields);
     this.setState({
       data: data,
+
       activated: this.state.justApplied ? true : false
     });
   }
+
+	componentWillMount(){
+
+
+
+    //this.loadData();
+	}
+
 
   loadData() {
     this.props.api.get('/api/customFields')
@@ -111,7 +120,7 @@ class CustomFieldListPopup extends Component {
                       key={"button-add-field"+row}
                       onClick={e => this.onSubmission(field._id)}>
                       Apply
-                    </button> : null 
+                    </button> : null
                   }
               </div>
             </div>
@@ -222,6 +231,7 @@ class CustomFieldListPopup extends Component {
               console.log(response.data.error);
             } else {
   						this.props.callback();
+
               var changed = this.state.changed;
               for (var i=0; i<this.state.data.length; i++) {
                 if (this.state.data[i]._id === field_id) {
@@ -237,6 +247,8 @@ class CustomFieldListPopup extends Component {
   	      .catch(function(error) {
   	        console.log(error);
   	      }.bind(this));
+
+
 
     }
   }

@@ -155,8 +155,11 @@ class Home extends Component {
       let children = null;
       if (this.props.children) {
         children = React.cloneElement(this.props.children, {
+          _id: this.state.user._id,
           username: this.state.user.username,
           isAdmin: this.state.user.is_admin,
+          email: this.state.user.email,
+          subscribed: this.state.user.subscribed,
           role: this.state.user.role,
           token: this.state.token,
         });
