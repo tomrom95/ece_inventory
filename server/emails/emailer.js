@@ -150,3 +150,48 @@ module.exports.checkForLoanEmailAndSendAll = function(next) {
     }
   });
 }
+
+var sendBackupEmail = function(subject, body, next) {
+  User.findOne({username: 'admin'}, function(error, adminUser) {
+    if (error) return next(error);
+    var builder = new EmailBuilder();
+    builder
+      .setToEmails([adminUser.email])
+      .setSubject(subject)
+      .setBody(body)
+      .send(function(error, info) {
+        if (error) return next(error);
+        return next(null, info);
+      });
+  });
+}
+
+module.exports.sendBackupFailureEmail = function(backupError, stderr, next) {
+  User.findOne({username: 'admin'}, function(error, adminUser) {
+    if (error) return next(error);
+    var builder = new EmailBuilder();
+    builder
+      .setToEmails([adminUser.email])
+      .setSubject('ECE Inventory Database Backup Failed')
+      .setBody(EmailBodies.backupFailure(backupError, stderr))
+      .send(function(error, info) {
+        if (error) return next(error);
+        return next(null, info);
+      });
+  });
+}
+
+module.exports.sendBackupSuccessEmail = function(filename, expiry, next) {
+  User.findOne({username: 'admin'}, function(error, adminUser) {
+    if (error) return next(error);
+    var builder = new EmailBuilder();
+    builder
+      .setToEmails([adminUser.email])
+      .setSubject('ECE Inventory Database Backup Taken Successfully')
+      .setBody(EmailBodies.backupSuccess(adminUser, filename, expiry))
+      .send(function(error, info) {
+        if (error) return next(error);
+        return next(null, info);
+      });
+  });
+}

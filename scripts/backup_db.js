@@ -1,14 +1,25 @@
+'use strict'
+
 var exec = require('child_process').exec;
 var fs = require('fs');
 var moment = require('moment');
+var mongoose = require('mongoose');
+var emailer = require('../server/emails/emailer');
 
 const BACKUP_VM = 'bitnami@colab-sbx-135.oit.duke.edu';
 const BACKUP_FOLDER = '~/archives/';
 const REMOVE_SCRIPT = '~/remove_old_backups.sh';
 
-function handleError() {
+mongoose.connect('mongodb://admin:ece458duke@localhost/inventory');
+
+function handleError(error, stderr) {
   console.log(error);
-  process.exit();
+  console.log('sending error email');
+  emailer.sendBackupFailureEmail(error, stderr, (error) => {
+    if (error) console.log(error);
+    console.log('Backup failure email sent to admin user');
+    process.exit();
+  });
 }
 
 function getExpiryLength() {
@@ -28,7 +39,7 @@ function mongoDump(next) {
   var mongoDumpCommand = 'mongodump --archive=' + filename;
 
   exec(mongoDumpCommand, function(error, stdout, stderr) {
-    if (error) return handleError();
+    if (error) return handleError(error, stderr);
     return next(filename);
   });
 }
@@ -36,7 +47,7 @@ function mongoDump(next) {
 function scp(filename, vm, folder, next) {
   var scpCommand = 'scp -i ~/.ssh/id_rsa ' + filename + ' ' + vm + ':' + folder;
   exec(scpCommand, function(error, stdout, stderr) {
-    if (error) return handleError();
+    if (error) return handleError(error, stderr);
     return next();
   });
 }
@@ -44,21 +55,22 @@ function scp(filename, vm, folder, next) {
 function executeVMScript(vm, script, next) {
   var removeOldCommand = 'ssh -i ~/.ssh/id_rsa ' + vm + ' ' + script;
   exec(removeOldCommand, function(error, stdout, stderr) {
-    if(error) return handleError();
+    if(error) return handleError(error, stderr);
     return next();
   });
 }
 
 function removeLocalCopy(filename, next) {
   fs.unlink(filename, function(error){
-    if(error) return handleError();
+    if(error) return handleError(error);
     return next();
   });
 }
 
 // Create archive with mongodump
 mongoDump((filename) => {
-  console.log('Archive created with expiry of ' + getExpiryLength() + ' days');
+  var expiry = getExpiryLength();
+  console.log('Archive created with expiry of ' + expiry + ' days');
 
   // Copy archive to backup vm
   scp(filename, BACKUP_VM, BACKUP_FOLDER, () => {
@@ -71,7 +83,13 @@ mongoDump((filename) => {
       // remove local copy here
       removeLocalCopy(filename, () => {
         console.log('Local archive file deleted');
-        process.exit();
+
+        // Send email to admin user on success
+        emailer.sendBackupSuccessEmail(filename, expiry, (error) => {
+          if (error) return handleError(error);
+          console.log('Backup success email sent to admin user');
+          process.exit();
+        });
       });
     });
   });
