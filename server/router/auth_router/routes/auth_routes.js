@@ -49,6 +49,7 @@ function loginWithOAuth(oauthToken, next) {
         netid: userInfo.netid,
         first_name: userInfo.firstName,
         last_name: userInfo.lastName,
+        email: userInfo.netid + '@duke.edu',
         is_local: false,
       });
       // otherwise, create new user
@@ -60,6 +61,7 @@ function loginWithOAuth(oauthToken, next) {
           {
             _id: user._id,
             netid: user.netid,
+            email: user.email,
             first_name: user.first_name,
             last_name: user.last_name,
             apikey: user.apikey,
