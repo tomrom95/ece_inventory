@@ -151,21 +151,6 @@ module.exports.checkForLoanEmailAndSendAll = function(next) {
   });
 }
 
-var sendBackupEmail = function(subject, body, next) {
-  User.findOne({username: 'admin'}, function(error, adminUser) {
-    if (error) return next(error);
-    var builder = new EmailBuilder();
-    builder
-      .setToEmails([adminUser.email])
-      .setSubject(subject)
-      .setBody(body)
-      .send(function(error, info) {
-        if (error) return next(error);
-        return next(null, info);
-      });
-  });
-}
-
 module.exports.sendBackupFailureEmail = function(backupError, stderr, next) {
   User.findOne({username: 'admin'}, function(error, adminUser) {
     if (error) return next(error);
