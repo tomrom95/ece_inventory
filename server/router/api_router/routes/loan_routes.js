@@ -68,12 +68,13 @@ module.exports.putAPI = function (req, res){
   var newItems = req.body.items;
   // Error checking with items array;
   if(newItems instanceof Array === false) return res.send({error:'Items must be an array'});
-  if(newItems.length <= 0 ) return res.send({error: 'You must enter at least one item to change'});
+  if(newItems.length <= 0) return res.send({error: 'You must enter at least one item to change'});
   Loan.findById(req.params.loan_id, function(err, loan){
+    if(err) return res.send({error:err});
     // list of items to return by promises
     var returnPromises = [];
     // Iterate through items array provided in the body
-    for(var i = 0; i < newItems.length ; i++){
+    for(var i = 0; i < newItems.length; i++){
       // Find in the loan item array the id
       var matchedIndex = loan.items.findIndex(function(element){
         return element.item.toString() === newItems[i].item.toString();
