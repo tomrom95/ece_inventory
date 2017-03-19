@@ -14,11 +14,10 @@ module.exports.getAPI = function(req, res) {
   } else {
     query = query.searchForObjectId('user', req.query.user_id)
   }
-  if(req.query.item_name && req.query.type){
-    // TODO
-    findLoan(query, res);
-
-  } else if (req.query.item_name){
+  if(req.query.type){
+    appendItemTypeQuery(query, req.query.item_type);
+  }
+  if(req.query.item_name){
     var itemQuery = new QueryBuilder();
     itemQuery.searchCaseInsensitive('name',req.query.item_name);
     Item.find(itemQuery.toJSON(), function(err, items){
@@ -30,20 +29,18 @@ module.exports.getAPI = function(req, res) {
       query = query.searchInArrayByMatchingField("items","item",itemIDs);
       findLoan(query, res);
     });
-
-  } else if(req.query.item_type){
-    // TODO: Call   searchInArrayByMatchingTags method
-    if(req.query.item_type === 'OUTSTANDING'){
-      //query.queryObject['items'] = {$elemMatch: {'status':{$all: 'LENT'}}};
-      query.queryObject['items.status'] = {$all: 'LENT'};
-    } else if (req.query.item_type === 'COMPLETE'){
-      query.queryObject['items.status'] = {$nin: 'LENT'};
-    }
-    console.log(query.toJSON());
-    findLoan(query, res);
   } else {
     findLoan(query, res);
-  };
+  }
+}
+
+function appendItemTypeQuery(query, item_type){
+  if(item_type === 'OUTSTANDING'){
+    //query.queryObject['items'] = {$elemMatch: {'status':{$all: 'LENT'}}};
+    query.queryObject['items.status'] = {$all: 'LENT'};
+  } else if (item_type === 'COMPLETE'){
+    query.queryObject['items.status'] = {$nin: 'LENT'};
+  }
 }
 
 function findLoan(query, res){
