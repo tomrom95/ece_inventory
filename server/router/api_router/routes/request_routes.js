@@ -302,6 +302,7 @@ function fulfill(requestID, next) {
               });
               loan.save(function(err, updatedLoan){
                 if (err) return next(err);
+                console.log("Loan saved");
                 next(null, updatedRequest, updatedCart);
               })
             } else if (request.action === "DISBURSEMENT"){
