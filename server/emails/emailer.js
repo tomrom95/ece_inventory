@@ -150,3 +150,33 @@ module.exports.checkForLoanEmailAndSendAll = function(next) {
     }
   });
 }
+
+module.exports.sendBackupFailureEmail = function(backupError, stderr, next) {
+  User.findOne({username: 'admin'}, function(error, adminUser) {
+    if (error) return next(error);
+    var builder = new EmailBuilder();
+    builder
+      .setToEmails([adminUser.email])
+      .setSubject('ECE Inventory Database Backup Failed')
+      .setBody(EmailBodies.backupFailure(adminUser, backupError, stderr))
+      .send(function(error, info) {
+        if (error) return next(error);
+        return next(null, info);
+      }, false);
+  });
+}
+
+module.exports.sendBackupSuccessEmail = function(filename, expiry, next) {
+  User.findOne({username: 'admin'}, function(error, adminUser) {
+    if (error) return next(error);
+    var builder = new EmailBuilder();
+    builder
+      .setToEmails([adminUser.email])
+      .setSubject('ECE Inventory Database Backup Taken Successfully')
+      .setBody(EmailBodies.backupSuccess(adminUser, filename, expiry))
+      .send(function(error, info) {
+        if (error) return next(error);
+        return next(null, info);
+      }, false);
+  });
+}
