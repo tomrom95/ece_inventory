@@ -63,5 +63,55 @@ module.exports.getAPIbyID = function (req,res){
 }
 
 module.exports.putAPI = function (req, res){
-    // Create list of items to disburse, list of items to return, promises?
+  var newItems = req.body.items;
+  // Error checking with items array;
+  if(newItems instanceof Array === false) return res.send({error:'Items must be an array'});
+  if(newItems.length <= 0 ) return res.send({error: 'You must enter at least one item to change'});
+  Loan.findById(req.params.loan_id, function(err, loan){
+    // list of items to return by promises
+    var returnPromises = [];
+    // Iterate through items array provided in the body
+    for(var i = 0; i < newItems.length ; i++){
+      // Find in the loan item array the id
+      var matchedIndex = loan.items.findIndex(function(element){
+        console.log(element);
+        return element.item.toString() === newItems[i].item.toString();
+      })
+      if(matchedIndex === -1) return res.send({error: 'Item at index '+i+' does not exist'});
+      if(newItems[i].status === 'DISBURSED') {
+        loan.items[matchedIndex].status = 'DISBURSED';
+      } else if (newItems[i].status === 'RETURNED'){
+        loan.items[matchedIndex].status = 'RETURNED';
+        addReturnPromises(returnPromises, loan, matchedIndex);
+      }
+    }
+    Promise.all(returnPromises).then(function() {
+      loan.save(function(error, loan){
+        if (error) return res.send({error: error});
+        Loan.populate(loan, {path: "items.item", select: ITEM_FIELDS}, function(error, populatedLoan){
+          if (error) return res.send({error: error});
+          return res.json(populatedLoan);
+        })
+      });
+    }, function(error){
+      return res.send({error: error});
+    });
+  })
+}
+
+function addReturnPromises(returnPromises, loan, index){
+  returnPromises.push(new Promise((resolve, reject) => {
+    Item.findById(loan.items[index].item, function(err, item) {
+      if (err) return reject(err);
+      item.quantity += loan.items[index].quantity;
+      item.save(function(err, updatedItem) {
+        if (err) return reject(err);
+        if (!updatedItem) return reject('Item does not exist');
+        Item.populate(updatedItem,{path: "item", select: ITEM_FIELDS}, function(err, item){
+          if (err) return reject(err);
+          resolve();
+        })
+      });
+    });
+  }));
 }
