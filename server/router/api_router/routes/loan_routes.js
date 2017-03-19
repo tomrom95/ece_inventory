@@ -14,7 +14,7 @@ module.exports.getAPI = function(req, res) {
   } else {
     query = query.searchForObjectId('user', req.query.user_id)
   }
-  if(req.query.type){
+  if(req.query.item_type){
     appendItemTypeQuery(query, req.query.item_type);
   }
   if(req.query.item_name){
@@ -37,9 +37,11 @@ module.exports.getAPI = function(req, res) {
 function appendItemTypeQuery(query, item_type){
   if(item_type === 'OUTSTANDING'){
     //query.queryObject['items'] = {$elemMatch: {'status':{$all: 'LENT'}}};
-    query.queryObject['items.status'] = {$all: 'LENT'};
+    //query.searchExact("items.status", {$all: 'LENT'});
+    query.searchExact("items.status",  'LENT');
+
   } else if (item_type === 'COMPLETE'){
-    query.queryObject['items.status'] = {$nin: 'LENT'};
+    query.searchExact("items.status", {$nin: 'LENT'});
   }
 }
 

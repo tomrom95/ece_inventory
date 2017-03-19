@@ -119,33 +119,8 @@ QueryBuilder.prototype.searchInArrayByMatchingField = function(arrayName, fieldN
   } else {
     this.queryObject[arrayName] = {$elemMatch: {[fieldName]: match}};
   }
-  console.log(this);
   return this;
 }
-
-QueryBuilder.prototype.searchInArrayByMatchingTags = function(arrayName, fieldName, requiredItems, excludedItems, trim=true) {
-  var requiredRegex;
-  var excludedRegex;
-  if (requiredItems) {
-    requiredRegex = createArrayMatchingRegex(trimArray(requiredItems.split(',')));
-  }
-  if (excludedItems) {
-    excludedRegex = createArrayMatchingRegex(trimArray(excludedItems.split(',')));
-  }
-  console.log(requiredRegex);
-  console.log(excludedRegex);
-  // TODO: Test after implement PUT method
-  if(requiredItems && excludedItems) {
-    this.queryObject[arrayName] = {$elemMatch:{[fieldName]:{$all : requiredRegex, $nin : excludedRegex}}};
-  } else if(requiredItems) {
-    this.queryObject[arrayName] = {$elemMatch:{[fieldName]:{$all : requiredRegex}}};
-  } else if(excludedItems) {
-    this.queryObject[arrayName] = {$elemMatch:{[fieldName]:{$nin : excludedRegex}}};
-  }
-  console.log(this.toJSON());
-  return this;
-};
-
 
 QueryBuilder.prototype.searchNotEqual = function(name, value) {
   if (value) {
