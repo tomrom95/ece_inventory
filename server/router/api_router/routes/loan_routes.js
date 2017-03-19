@@ -33,8 +33,7 @@ module.exports.getAPI = function(req, res) {
     });
 
   } else if(req.query.item_type){
-    // TODO
-    
+    // TODO: Call   searchInArrayByMatchingTags method
 
 
     findLoan(query, res);
@@ -61,4 +60,8 @@ module.exports.getAPIbyID = function (req,res){
         if (error) return res.send({error: error});
         return res.json(loan);
       });
+}
+
+module.exports.putAPI = function (req, res){
+    // Create list of items to disburse, list of items to return, promises?
 }

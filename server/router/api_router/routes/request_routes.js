@@ -245,8 +245,8 @@ var addCheckQuantityPromise = function(checkQuantityPromises, request, i) {
   }));
 }
 
-var addFulfillPromise = function(fulfillPromises, updatedCart, request, i) {
-  fulfillPromises.push(new Promise((resolve, reject) => {
+var addDisbursePromise = function(disbursePromises, updatedCart, request, i) {
+  disbursePromises.push(new Promise((resolve, reject) => {
     Item.findById(request.items[i].item, function(err, item) {
       if (err) return reject(err);
       item.quantity -= request.items[i].quantity;
@@ -282,18 +282,21 @@ function fulfill(requestID, next) {
       Promise.all(checkQuantityPromises).then(function(obj) {
         // returned
         var updatedCart = [];
-        var fulfillPromises = [];
-        for (var i = 0; i < request.items.length; i++){
-          // Pass down index i into the closure for async call
-          addFulfillPromise(fulfillPromises, updatedCart, request, i);
+        var disbursePromises = [];
+        if(request.action==='DISBURSEMENT'){
+          for (var i = 0; i < request.items.length; i++){
+            // Pass down index i into the closure for async call
+            addDisbursePromise(disbursePromises, updatedCart, request, i);
+          }
         }
-        Promise.all(fulfillPromises).then(function(){
+        Promise.all(disbursePromises).then(function(){
           // Only update request if item quantity change was successful.
           // This prevents a request from being fulfilled if there isn't enough
           // of a certain item in the cart to disburse.
           request.status = "FULFILLED";
           request.save(function(err, updatedRequest) {
             if (err) return next(err);
+            // TODO: Skip fulfill promises made for LOAN - do not remove quantity
             if(request.action === "LOAN") {
               var loan = new Loan({
                 user: updatedRequest.user,
