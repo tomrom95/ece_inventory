@@ -31,20 +31,12 @@ function loginWithOAuth(oauthToken, next) {
     User.findOne({netid: userInfo.netid}, function(err, user) {
       if (err) return next(err);
       // If user already exists, log him in
-      if (user) return next(
-        null,
-        helpers.createAuthToken(user),
-        {
-          _id: user._id,
-          netid: user.netid,
-          email: user.netid + '@duke.edu',
-          first_name: user.first_name,
-          last_name: user.last_name,
-          apikey: user.apikey,
-          is_admin: user.role !== 'STANDARD', // keep until role migration complete
-          role: user.role
-        }
-      );
+      if (user) {
+        var token = helpers.createAuthToken(user)
+        delete user.password_hash;
+        user.is_admin = user.role !== 'STANDARD';
+        return next(null, token, user);
+      }
       user = User({
         netid: userInfo.netid,
         first_name: userInfo.firstName,
@@ -54,19 +46,10 @@ function loginWithOAuth(oauthToken, next) {
       // otherwise, create new user
       user.save(function(error, user) {
         if (error) return next(error);
-        return next(
-          null,
-          helpers.createAuthToken(user),
-          {
-            _id: user._id,
-            netid: user.netid,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            apikey: user.apikey,
-            is_admin: user.role !== 'STANDARD', // keep until role migration complete
-            role: user.role
-          }
-        );
+        var token = helpers.createAuthToken(user)
+        delete user.password_hash;
+        user.is_admin = user.role !== 'STANDARD';
+        return next(null, token, user);
       });
     });
   });
@@ -86,15 +69,8 @@ function loginWithUsername(username, password, next) {
           return next('Incorrect password');
         } else {
           var jwtToken = helpers.createAuthToken(user);
-          return next(null, jwtToken, {
-            _id: user._id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            username: user.username,
-            role: user.role,
-            apikey: user.apikey,
-            is_admin: user.role !== 'STANDARD'
-          });
+          delete user.password_hash;
+          return next(null, jwtToken, user);
         }
       })
     }
