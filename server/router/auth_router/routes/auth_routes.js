@@ -41,6 +41,7 @@ function loginWithOAuth(oauthToken, next) {
         netid: userInfo.netid,
         first_name: userInfo.firstName,
         last_name: userInfo.lastName,
+        email: userInfo.netid + '@duke.edu',
         is_local: false,
       });
       // otherwise, create new user
