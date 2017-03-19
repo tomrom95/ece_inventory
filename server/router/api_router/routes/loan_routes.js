@@ -14,7 +14,6 @@ module.exports.getAPI = function(req, res) {
   } else {
     query = query.searchForObjectId('user', req.query.user_id)
   }
-
   if(req.query.item_name && req.query.type){
     // TODO
     findLoan(query, res);
@@ -34,8 +33,13 @@ module.exports.getAPI = function(req, res) {
 
   } else if(req.query.item_type){
     // TODO: Call   searchInArrayByMatchingTags method
-
-
+    if(req.query.item_type === 'OUTSTANDING'){
+      //query.queryObject['items'] = {$elemMatch: {'status':{$all: 'LENT'}}};
+      query.queryObject['items.status'] = {$all: 'LENT'};
+    } else if (req.query.item_type === 'COMPLETE'){
+      query.queryObject['items.status'] = {$nin: 'LENT'};
+    }
+    console.log(query.toJSON());
     findLoan(query, res);
   } else {
     findLoan(query, res);
@@ -63,6 +67,7 @@ module.exports.getAPIbyID = function (req,res){
 }
 
 module.exports.putAPI = function (req, res){
+  if(req.user.role === 'STANDARD') return res.send({error: "You are not authorized"});
   var newItems = req.body.items;
   // Error checking with items array;
   if(newItems instanceof Array === false) return res.send({error:'Items must be an array'});
@@ -74,7 +79,6 @@ module.exports.putAPI = function (req, res){
     for(var i = 0; i < newItems.length ; i++){
       // Find in the loan item array the id
       var matchedIndex = loan.items.findIndex(function(element){
-        console.log(element);
         return element.item.toString() === newItems[i].item.toString();
       })
       if(matchedIndex === -1) return res.send({error: 'Item at index '+i+' does not exist'});

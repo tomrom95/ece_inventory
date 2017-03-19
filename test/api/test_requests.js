@@ -1365,7 +1365,6 @@ describe('Requests API Test', function () {
           res.body.request.status.should.be.eql('FULFILLED');
           res.body.message.should.be.eql("Fulfillment successful");
           res.body.items.should.be.a('array');
-          console.log(res.body);
           res.body.items.length.should.be.eql(2);
           Item.findById(item2_id, function(err, item) {
             should.not.exist(err);

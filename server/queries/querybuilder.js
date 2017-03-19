@@ -132,6 +132,8 @@ QueryBuilder.prototype.searchInArrayByMatchingTags = function(arrayName, fieldNa
   if (excludedItems) {
     excludedRegex = createArrayMatchingRegex(trimArray(excludedItems.split(',')));
   }
+  console.log(requiredRegex);
+  console.log(excludedRegex);
   // TODO: Test after implement PUT method
   if(requiredItems && excludedItems) {
     this.queryObject[arrayName] = {$elemMatch:{[fieldName]:{$all : requiredRegex, $nin : excludedRegex}}};
@@ -140,6 +142,7 @@ QueryBuilder.prototype.searchInArrayByMatchingTags = function(arrayName, fieldNa
   } else if(excludedItems) {
     this.queryObject[arrayName] = {$elemMatch:{[fieldName]:{$nin : excludedRegex}}};
   }
+  console.log(this.toJSON());
   return this;
 };
 
