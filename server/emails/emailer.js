@@ -158,11 +158,11 @@ module.exports.sendBackupFailureEmail = function(backupError, stderr, next) {
     builder
       .setToEmails([adminUser.email])
       .setSubject('ECE Inventory Database Backup Failed')
-      .setBody(EmailBodies.backupFailure(backupError, stderr))
+      .setBody(EmailBodies.backupFailure(adminUser, backupError, stderr))
       .send(function(error, info) {
         if (error) return next(error);
         return next(null, info);
-      });
+      }, false);
   });
 }
 
@@ -177,6 +177,6 @@ module.exports.sendBackupSuccessEmail = function(filename, expiry, next) {
       .send(function(error, info) {
         if (error) return next(error);
         return next(null, info);
-      });
+      }, false);
   });
 }
