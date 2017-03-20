@@ -64,5 +64,68 @@ Note that we can match the app id with any url you choose. If your site is www.D
 11) Run in development using
 > sudo npm run start-dev
 
+When in development mode, you can find your site at:
+http://YOUR_VM_URL:3000
+The frontend is hosted on a different port here to allow for some of our development
+tools
+
 Run in production using
 > sudo npm run start-prod
+
+When in production mode, you can find your site at:
+https://YOUR_VM_URL
+
+Note that sudo is used here because we are running the server on port 443, which
+requires root access.
+
+12) [Optional] You can also setup our code to run with a reverse proxy server, Nginx.
+This setup will mostly follow [these steps](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-16-04#set-up-nginx-as-a-reverse-proxy-server). So, first install Nginx:
+
+> sudo apt-get install nginx
+
+Open the nginx server configuration:
+
+> sudo nano /etc/nginx/sites-available/default
+
+Replace the file with this configuration:
+
+```
+server {
+        listen 443;
+        server_name YOUR_VM_URL;
+
+        ssl on;
+        # Use certificate and key provided by Let's Encrypt:
+        ssl_certificate /etc/letsencrypt/live/YOUR_VM_URL/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/YOUR_VM_URL/privkey.pem;
+        ssl_session_timeout 5m;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_prefer_server_ciphers on;
+        ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+
+        location / {
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-NginX-Proxy true;
+                proxy_pass http://localhost:3001/;
+                proxy_ssl_session_reuse off;
+                proxy_set_header Host $http_host;
+                proxy_cache_bypass $http_upgrade;
+                proxy_redirect off;
+        }
+}
+```
+
+Save the file. Restart nginx using:
+
+> sudo systemctl restart nginx
+
+Once nginx is set up, you need to tell our server to use a different port, since
+nginx is using 443. So, set the environment variable `USE_PROXY` to `TRUE`. You can
+do this simply by typing:
+
+> export USE_PROXY=TRUE
+
+Then, you can run the server using `npm run start-dev` or `npm run start-prod`. Note
+that you no longer need root privileges since the server is actually running on port
+3001, with nginx running on 443.
