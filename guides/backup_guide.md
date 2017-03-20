@@ -1,9 +1,11 @@
 Backup Guide
 ===================
 
-Backup VM: colab-sbx-135.oit.duke.edu
-Username: backupadmin
-Password: nullstrings
+**Backup VM**: colab-sbx-135.oit.duke.edu
+
+**Username**: backupadmin
+
+**Password**: nullstrings
 
 ## About the system
 
@@ -20,7 +22,7 @@ database and is archived into a file. This file name includes a time stamp and
 a date of expiry. If the backup is a daily backup then its expiry is 7 days, if it's
 a weekly backup then its expiry is 28 days, and if it's a yearly backup, its expiry
 is 365 days. The file format looks like `YEAR-MONTH-DAY-exp-EXPIRY-days.archive`.
-For example, 2017-03-20-exp-28-days.archive is a weekly backup (28 day expiry) that
+For example, `2017-03-20-exp-28-days.archive` is a weekly backup (28 day expiry) that
 was created on March 20th, 2017.
 
 Then, the backup is copied to a separate VM with separate credentials through `scp`.
@@ -61,7 +63,8 @@ if you would like to use ours. If you would like to change the backup VM, change
 top of the `backup_db.js` file as well. When you are logged into the backup vm, create
 a directory called `archives` to store all the archives. Additionally, copy over the
 `remove_old_backups.sh` bash script from the `scripts` directory. This is the file
-run to delete expired backups.
+run to delete expired backups. Both the remove backups script and the archive folder
+should be located in the home directory of your user on the backup VM (i.e. `~/`).
 
 Lastly, you will need to authenticate the production VM to copy files and run the script.
 To do this, first create an ssh key on the production VM:

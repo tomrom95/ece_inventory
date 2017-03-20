@@ -116,7 +116,7 @@ server {
 }
 ```
 
-Save the file. Restart nginx using:
+Replace any instance of YOUR_VM_URL with your vm url. Save the file. Restart nginx using:
 
 > sudo systemctl restart nginx
 
