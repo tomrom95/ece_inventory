@@ -23,7 +23,7 @@ db.open(function(err, db) {
           }
         }
         mongoose.connect('mongodb://admin:ece458duke@localhost/inventory');
-        helpers.createNewUser('admin', 'ece458duke', 'ADMIN', function(err, user) {
+        helpers.createNewUser('admin', 'ece458duke', 'admin@email.com', 'ADMIN', function(err, user) {
           if (!err) {
             console.log("inserted user");
           } else {
