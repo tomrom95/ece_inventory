@@ -36,10 +36,7 @@ module.exports.getAPI = function(req, res) {
 
 function appendItemTypeQuery(query, item_type){
   if(item_type === 'OUTSTANDING'){
-    //query.queryObject['items'] = {$elemMatch: {'status':{$all: 'LENT'}}};
-    //query.searchExact("items.status", {$all: 'LENT'});
     query.searchExact("items.status",  'LENT');
-
   } else if (item_type === 'COMPLETE'){
     query.searchExact("items.status", {$nin: 'LENT'});
   }
