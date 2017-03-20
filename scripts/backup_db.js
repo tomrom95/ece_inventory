@@ -36,7 +36,7 @@ function getExpiryLength() {
 function mongoDump(next) {
   var expiry = getExpiryLength();
   var filename = moment().format('YYYY-MM-DD') + '-exp-' + expiry + '-days.archive';
-  var mongoDumpCommand = 'mongodump --archive=' + filename;
+  var mongoDumpCommand = 'mongodump --db inventory --archive=' + filename;
 
   exec(mongoDumpCommand, function(error, stdout, stderr) {
     if (error) return handleError(error, stderr);
