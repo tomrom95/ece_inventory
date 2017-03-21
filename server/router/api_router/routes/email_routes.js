@@ -37,7 +37,9 @@ module.exports.postAPI = function(req, res) {
     if (error) return res.send({error: error});
     // Two loan emails cannot exist on the same day
     var sameDay = settings.loan_emails.some(function(email) {
-      return email.date.toDateString() === date.toDateString();
+      return email.date.getUTCDate() === date.getUTCDate()
+        && email.date.getUTCMonth() === date.getUTCMonth()
+        && email.date.getUTCFullYear() === date.getUTCFullYear();
     });
     if (sameDay) return res.send({error: 'A loan email is already being sent that day'});
 
