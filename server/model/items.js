@@ -29,8 +29,12 @@ var ItemSchema = new mongoose.Schema({
     field: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'CustomField',
+      required: true,
     },
-    value:    mongoose.Schema.Types.Mixed,
+    value: {
+      type: mongoose.Schema.Types.Mixed,
+      required: true
+    }
   }],
   is_deleted: {
     type: Boolean,

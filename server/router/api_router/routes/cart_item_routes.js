@@ -29,6 +29,7 @@ module.exports.postAPI = function (req, res){
       oldCart.save(function(err, cart){
         if(err) return res.send({error: err});
         Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
+          if (err) return res.send({error: err});
           res.json(cart);
         })
       })
@@ -52,6 +53,7 @@ module.exports.putAPI = function (req, res){
         cart.save((err, cart) => {
           if(err) return res.send({error: err});
           Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
+            if (err) return res.send({error: err});
             res.json(cart);
           })
         });

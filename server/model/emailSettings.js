@@ -43,6 +43,7 @@ Pre save hook to make sure that no new documents are ever added
 */
 EmailSettingsSchema.pre('save', function (next) {
     this.model('EmailSettings').find({}, function(err, settings) {
+      if (err) return next(err);
       if (settings.length) {
         if (String(settings[0]._id) === String(this._id)) {
           return next();

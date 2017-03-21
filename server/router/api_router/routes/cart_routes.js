@@ -12,10 +12,10 @@ module.exports.getAPI = function (req, res) {
 };
 
 var createCartIfNotExistent = function(user_id, res, next){
-  Cart.findOne({user:user_id}, function(err, cart){
-    if(err) return res.send({error:error});
+  Cart.findOne({user:user_id}, function(error, cart){
+    if(error) return res.send({error:error});
     if(!cart){
-      var cart = new Cart({
+      cart = new Cart({
         user: user_id
       });
       return cart.save().then(function(value){
@@ -76,6 +76,7 @@ module.exports.putAPI = function(req,res){
       oldCart.save(function(err, cart){
         if(err) return res.send({error:err});
         Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
+          if (err) return res.send({error: err});
           res.json(cart);
         })
       });
@@ -136,6 +137,7 @@ function checkout (initiatingUser, body, next) {
          if (err) return next(err);
          // populate cart items in requests object
          Cart.populate(request,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
+           if (err) return next(err);
            Emailer.sendNewRequestEmail(request, initiatingUser, requestingUser, function(error) {
              if (error) return next(error);
              // Log request creation using populated items
