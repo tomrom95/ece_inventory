@@ -64,6 +64,20 @@ class NavBar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link to="/LoanEmailReminders"
+                      className={"nav-link" + (this.state.activeTab === "/LoanEmailReminders" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/LoanEmailReminders")}>
+                      ADD EMAIL
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/AllRemindersPage"
+                      className={"nav-link" + (this.state.activeTab === "/AllRemindersPage" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/AllRemindersPage")}>
+                      REMINDERS
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/CreateUser"
                       className={"nav-link" + (this.state.activeTab === "/CreateUser" ? " active" : "")}
                       onClick={() => this.setActiveTab("/CreateUser")}>
@@ -78,7 +92,7 @@ class NavBar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/Docs" 
+                <Link to="/Docs"
                       className={"nav-link" + (this.state.activeTab === "/Docs" ? " active" : "")}
                       onClick={() => this.setActiveTab("/Docs")}>
                       DOCS
@@ -110,14 +124,14 @@ class NavBar extends Component {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <Link to="/UserProfile" 
+                <Link to="/UserProfile"
                       className={"nav-link" + (this.state.activeTab === "/UserProfile" ? " active" : "")}
                       onClick={() => this.setActiveTab("/UserProfile")}>
                       PROFILE
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/Inventory" 
+                <Link to="/Inventory"
                       className={"nav-link" + (this.state.activeTab === "/Inventory" ? " active" : "")}
                       onClick={() => this.setActiveTab("/Inventory")}>
                       INVENTORY
@@ -144,7 +158,20 @@ class NavBar extends Component {
                       LOG
                 </Link>
               </li>
-
+              <li className="nav-item">
+                <Link to="/LoanEmailReminders"
+                      className={"nav-link" + (this.state.activeTab === "/LoanEmailReminders" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/LoanEmailReminders")}>
+                      ADD EMAIL
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/AllRemindersPage"
+                      className={"nav-link" + (this.state.activeTab === "/AllRemindersPage" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/AllRemindersPage")}>
+                      REMINDERS
+                </Link>
+              </li>
               <div className="navbar-right-panel">
                 <li className="nav-item welcome-message">
                   Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>
