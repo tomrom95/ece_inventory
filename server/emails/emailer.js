@@ -136,8 +136,9 @@ module.exports.checkForLoanEmailAndSendAll = function(next) {
     // check if there's a loan email to send today
     var today = new Date();
     var loanEmailObj = settings.loan_emails.find((loanObj) => {
-      // comparing date strings only compares day, not time
-      return loanObj.date.toDateString() === today.toDateString()
+      return loanObj.date.getUTCDate() === today.getUTCDate()
+        && loanObj.date.getUTCMonth() === today.getUTCMonth()
+        && loanObj.date.getUTCFullYear() === today.getUTCFullYear();
     });
 
     if (loanEmailObj) {
