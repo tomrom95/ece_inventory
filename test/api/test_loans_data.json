@@ -21,7 +21,7 @@
       {
         "item": "10k resistor",
         "quantity": 10,
-        "status": "LENT"
+        "status": "RETURNED"
       },
       {
         "item": "Oscilloscope",
@@ -63,6 +63,11 @@
     "items": [
       {
         "item": "1k resistor",
+        "quantity": 10,
+        "status": "LENT"
+      },
+      {
+        "item": "Oscilloscope",
         "quantity": 10,
         "status": "LENT"
       }

@@ -83,7 +83,7 @@ module.exports.putAPI = function(req, res) {
   }
   var update = {};
   fields.forEach(function(field) {
-    if (req.body[field]) {
+    if (req.body.hasOwnProperty(field)) {
       update[field] = req.body[field];
     }
   });

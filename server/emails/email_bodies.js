@@ -60,3 +60,23 @@ module.exports.loanReminder = function(loanUser, loans, bodyPrepend) {
   });
   return text;
 }
+
+module.exports.backupFailure = function(adminUser, backupError, stderr) {
+  var text = 'Hello ' + StringHelpers.getDisplayName(adminUser) + ',\n\n';
+  text += 'A backup failed to be taken today. The following error was returned ';
+  text += 'during the backup process. \nError: \n';
+  text += backupError + '\n\n';
+  if (stderr) {
+    text += 'stderr: \n';
+    text += stderr + '\n\n';
+  }
+  return text;
+}
+
+module.exports.backupSuccess = function(adminUser, filename, expiry) {
+  var text = 'Hello ' + StringHelpers.getDisplayName(adminUser) + ',\n\n';
+  text += 'A backup was successfully taken today and transferred to the backup vm.\n\n';
+  text += 'Filename: ' + filename + '\n';
+  text += 'Expiry: ' + expiry + ' days\n';
+  return text;
+}

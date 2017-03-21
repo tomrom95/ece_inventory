@@ -25,7 +25,7 @@ app.use(passport.initialize());
 app.use(function (error, req, res, next) {
   console.error(error);
   res.status(500);
-  res.render('error', { error: 'A server error has occured.' });
+  res.send({error: 'A server error has occured.' });
 });
 
 app.use(function(req, res, next) {

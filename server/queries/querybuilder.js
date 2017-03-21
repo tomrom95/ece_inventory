@@ -112,6 +112,16 @@ QueryBuilder.prototype.searchInArray = function(name, requiredItems, excludedIte
   return this;
 }
 
+QueryBuilder.prototype.searchInArrayByMatchingField = function(arrayName, fieldName, match){
+  // Search for a field value within an array that is a field of the schema
+  if(match instanceof Array){
+    this.queryObject[arrayName] = {$elemMatch: {[fieldName]: {$in: match}}};
+  } else {
+    this.queryObject[arrayName] = {$elemMatch: {[fieldName]: match}};
+  }
+  return this;
+}
+
 QueryBuilder.prototype.searchNotEqual = function(name, value) {
   if (value) {
     this.queryObject[name] = {$ne: value};
