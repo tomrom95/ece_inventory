@@ -4,7 +4,7 @@ import FileInput from 'react-file-input';
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
 import validator from 'validator';
-
+import Popup from 'react-popup';
 
 class BulkImportButton extends Component {
 
@@ -64,51 +64,45 @@ class BulkImportButton extends Component {
 	render() {
 		var button =
 			<button type="button"
-				className="btn btn-outline-primary add-button"
+				className="btn btn-primary"
 				data-toggle="modal"
 				data-target={"#bulkImportModal"}>
 				Import
 			</button>;
 
-
-
 		return (
-		<th>
-			{button}
-			<div className="modal fade"
-				id={"bulkImportModal"}
-				tabIndex="-1"
-				role="dialog"
-				aria-labelledby="createLabel"
-				aria-hidden="true">
-			  <div className="modal-dialog" role="document">
-			    <div className="modal-content">
-			      <div className="modal-header">
-			        <h5 className="modal-title" id="createLabel">Import from .json file</h5>
-			      </div>
-			      <div className="modal-body">
-			        {this.makeForm()}
-			      </div>
-			      <div className="modal-footer">
-			        <button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-			        <button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Submit</button>
-			      </div>
-			    </div>
-			  </div>
+			<div >
+				{button}
+				<div className="modal fade"
+					id={"bulkImportModal"}
+					tabIndex="-1"
+					role="dialog"
+					aria-labelledby="createLabel"
+					aria-hidden="true">
+				  <div className="modal-dialog" role="document">
+				    <div className="modal-content">
+				      <div className="modal-header">
+				        <h5 className="modal-title" id="createLabel">Import from .json file</h5>
+				      </div>
+				      <div className="modal-body">
+				        {this.makeForm()}
+				      </div>
+				      <div className="modal-footer">
+								<button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				        <button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Submit</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
 			</div>
-		</th>
 		);
 	}
-
-
-
 
 	handleChange(event) {
    this.setState({
      selectedFile: event.target.files,
    });
 	}
-
 
 
 	onSubmission() {

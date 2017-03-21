@@ -163,12 +163,7 @@ class InventoryTable extends Component {
 	          			callback={this.props.callback}
 									allCustomFields={this.state.allCustomFields}/>
 	          	);
-			list.push(
-					<BulkImportButton
-									key={"bulkimport-button"}
-									api={this.props.api}
-									callback={this.props.callback}/>
-			);
+			
 
 		}
 		else {
