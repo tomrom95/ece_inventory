@@ -71,11 +71,11 @@ To do this, first create an ssh key on the production VM:
 
 > ssh-keygen -t rsa
 
-Then copy the public key created (found in ~/.ssh/id_rsa.pub unless otherwise
-specified). On the backup VM, create a file called `authorized_keys` and copy this
-public key into the file. Save it, and you're done. This now authenticates the production
-server. You may need to run the script on the production VM once first, because it
-sometimes still just asks if you trust the VM the first time.
+Then copy the public key created (found in `~/.ssh/id_rsa.pub` unless otherwise
+specified). On the backup VM, create a file called `authorized_keys` in the `~/.ssh/` directory
+and copy this public key into the file. Save it, and you're done. This now authenticates
+the production server. You will need to run the script on the production VM once first,
+because it sometimes still just asks if you trust the VM the first time.
 
 ## Restoring from a backup
 
