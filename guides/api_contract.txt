@@ -698,6 +698,7 @@ return: [{
 	user: {
 		// user schema
 	},
+	_id: String // loan ID,
 	items: [{
 		item: {
 			_id: String,
