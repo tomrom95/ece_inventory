@@ -62,6 +62,7 @@ class LoanTableRow extends Component {
 			      <td key={key + "-col2"}>{items[i].quantity}</td>
 			      { 
 			      	(this.state.controlBarVisible[i]) === true ? this.makeControlBar(i) :
+				      items[i].status === "LENT" ? 
 				      (<td className="status-cell" key={key + "-col3"}>
 				      	<a href="#" 
 					      	onClick={this.makeOnClickShow(i)}
@@ -69,7 +70,11 @@ class LoanTableRow extends Component {
 				      		{items[i].status}
 				      	</a>
 				      </td>
-				      )
+				      ) :
+				      (<a key = {key + "-status"}>
+			      		{items[i].status}
+			      	  </a>
+			      	  )
 			  	  }
 			  	  <td key={key+"-col-4"}></td>
 			    </tr>
