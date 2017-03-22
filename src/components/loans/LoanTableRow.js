@@ -28,12 +28,25 @@ class LoanTableRow extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			_id: props.params._id,
 			user: props.params.user,
 			created: props.params.created,
 			modified: props.params.modified,
 			items: props.params.items,
+			itemsModified: props.params.items,
 			controlBarVisible: {}
 		}
+	}
+
+	componentWillReceiveProps(newProps) {
+		this.setState({
+			_id: newProps.params._id,
+			user: newProps.params.user,
+			created: newProps.params.created,
+			modified: newProps.params.modified,
+			items: newProps.params.items,
+			itemsModified: newProps.params.items,
+		});
 	}
 
 	makeItemRows() {
@@ -49,9 +62,9 @@ class LoanTableRow extends Component {
 			      <td key={key + "-col2"}>{items[i].quantity}</td>
 			      { 
 			      	(this.state.controlBarVisible[i]) === true ? this.makeControlBar(i) :
-				      (<td key={key + "-col3"}>
+				      (<td className="status-cell" key={key + "-col3"}>
 				      	<a href="#" 
-					      	onClick={this.makeOnClick(i)}
+					      	onClick={this.makeOnClickShow(i)}
 					      	key={key + "-status"}> 
 				      		{items[i].status}
 				      	</a>
@@ -65,7 +78,7 @@ class LoanTableRow extends Component {
 		return list;
 	}
 
-	makeOnClick(i) {  
+	makeOnClickShow(i) {  
 		var func = this.showControlBar;
 		var context = this;
 	    return function() {  
@@ -74,13 +87,35 @@ class LoanTableRow extends Component {
 	    };  
 	} 
 
+	makeOnClickHide(i) {
+		var func = this.hideControlBar;
+		var context = this;
+	    return function() {
+	      func(i, context);
+	      return false;
+	    };  
+	}
+
 	showControlBar(itemRow, context) {
-		console.log(itemRow);
 		var controlBar = context.state.controlBarVisible;
 		controlBar[itemRow] = true;
 		context.setState({
 			controlBarVisible: controlBar
 		});
+	}
+
+	hideControlBar(itemRow, context) {
+		var controlBar = context.state.controlBarVisible;
+		controlBar[itemRow] = false;
+
+		var items = context.state.itemsModified;
+		items[itemRow].status = context.state.items[itemRow].status;
+
+		context.setState({
+			controlBarVisible: controlBar,
+			itemsModified: items
+		});
+		context.props.callback();
 	} 
 
 	makeControlBar(rowIndex) {
@@ -88,8 +123,8 @@ class LoanTableRow extends Component {
 		list.push(
 			<td className="control-bar-cell" key={"controlBar-status-"+rowIndex}>
 				<div className="btn-group request-type-dropdown">
-			        <button type="button" className="btn btn-sm btn-secondary dropdown-toggle  loan-status-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			          {this.state.items[rowIndex].status}
+			        <button type="button" className="btn btn-sm btn-secondary dropdown-toggle  loan-status-dropdown" data-toggle="dropdown">
+			          {this.state.itemsModified[rowIndex].status}
 			        </button>
 			        <div className="dropdown-menu form-control">
 			          	<a onClick={() => this.setDropdownStatus(rowIndex, "LENT")} 
@@ -109,44 +144,61 @@ class LoanTableRow extends Component {
 			</td>);
 
 		list.push(
-			<td className="control-bar-cell" key={"controlBar-button-"+rowIndex}>
+			<td className="control-bar-button" key={"controlBar-button-"+rowIndex}>
 				<button onClick={() => this.updateItemStatus(rowIndex)} 
 						type="button" 
 						className="btn btn-sm btn-primary">
-					Apply Change
+					Apply
+				</button>
+			</td>);
+
+		list.push(
+			<td className="control-bar-button" key={"controlBar-cancel-"+rowIndex}>
+				<button onClick={this.makeOnClickHide(rowIndex)} 
+						type="button" 
+						className="btn btn-sm btn-outline-danger">
+					Cancel
 				</button>
 			</td>);
 		return list;
 	}
 
 	setDropdownStatus(rowIndex, newStatus) {
-		var items = this.state.items;
+		var items = this.state.itemsModified;
 		items[rowIndex].status = newStatus;
 		this.setState({
-			items: items
+			itemsModified: items
 		});
 	}
 
 	updateItemStatus(rowIndex) {
-		var items = this.state.items;
+		var items = this.state.itemsModified;
 		var itemId = items[rowIndex].item._id;
+		var loanId = this.state._id;
 		var param = {items: []};
+
 		for (var i=0; i<items.length; i++) {
 			param.items.push({item: itemId, status: items[i].status});
 		}
-		console.log(param);
-		this.props.api.put("api/loans/"+itemId, param)
-		.then(response => console.log(response));
 
+		this.props.api.put("api/loans/"+loanId, param)
+		.then(response => {
+				console.log(response);
+				this.props.callback();
+			});
 
 		var controlBar = this.state.controlBarVisible;
 		controlBar[rowIndex] = false;
+
 		this.setState({
 			controlBarVisible: controlBar
 		});
 	}
 
 	render() {
+		console.log(this.state.items);
+		console.log(this.state.itemsModified);
+		console.log(this.state.modified);
 		return (
 		    <li className="list-group-item">
 				<div className="container">

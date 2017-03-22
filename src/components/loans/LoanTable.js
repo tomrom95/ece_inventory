@@ -32,6 +32,7 @@ class LoanTable extends Component {
 		for (var i=0; i<this.state.data.length; i++) {
 			var loanItem = this.state.data[i];
 			var params = {
+				_id: loanItem._id,
 				user: loanItem.user.username,
 				created: loanItem.created,
 				modified: loanItem.modified,
@@ -39,7 +40,10 @@ class LoanTable extends Component {
 			};
 
 			list.push(
-				<LoanTableRow key={"loan-table-row-"+i} api={this.props.api} params={params}/>
+				<LoanTableRow key={"loan-table-row-"+i} 
+							  api={this.props.api} 
+							  params={params}
+							  callback={this.props.callback}/>
 			);
 		}
 		return list;
@@ -47,9 +51,9 @@ class LoanTable extends Component {
 
 	render() {
 		return (
-		<div className="card">
+		<div className="card loan-table">
 		  <ul className="list-group list-group-flush">
-		  	{this.makeRows()}
+		  	{this.state.rerender === true ? null : this.makeRows()}
 		  </ul>
 		</div>);
 	}

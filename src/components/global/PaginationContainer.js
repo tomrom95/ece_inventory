@@ -100,7 +100,6 @@ class PaginationContainer extends Component {
 	}
 
 	loadData(page, justDeleted) {
-		console.log(this.getURL(page, this.state.rowsPerPage));
 	  this.instance.get(this.getURL(page, this.state.rowsPerPage))
 	  .then(function (response) {
 	    if (this.state.initialLoad) {
@@ -342,7 +341,7 @@ class PaginationContainer extends Component {
     if (this.state.initialLoad) {
       table = (<div></div>);
     } else if (this.state.items.length === 0) {
-      table = (<div className="center-text">No items found.</div>);
+      table = (<div className="center-text"> No items found. </div>);
     } else {
       table = (<TableComp
         data={this.state.items}

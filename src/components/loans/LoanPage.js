@@ -12,6 +12,7 @@ class LoanPage extends Component {
 	    for (i=0; i<loans.length; i++) {
 	      var obj = loans[i];
 	        var loan = {
+	        	_id: obj._id,
 	        	user: obj.user,
 	        	request_id: obj.request,
 	        	created: obj.created,
