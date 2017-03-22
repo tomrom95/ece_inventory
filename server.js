@@ -21,13 +21,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 
-// Places a try catch around all requests. The server never stops
-app.use(function (error, req, res, next) {
-  console.error(error);
-  res.status(500);
-  res.send({error: 'A server error has occured.' });
-});
-
 app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -87,8 +80,15 @@ passport.use(new passportLocalAPI.Strategy(
 app.use('/api', passport.authenticate(['jwt', 'localapikey'], { session: false }), api_router);
 app.use('/auth', auth_router);
 
+// Places a try catch around all requests. The server never stops
+app.use(function (error, req, res, next) {
+  console.error(error);
+  res.status(500);
+  res.send({error: 'A server error has occured.'});
+});
+
 // Set up static paths
-app.use('/guides', express.static(path.resolve(__dirname, 'guides')));
+app.use('/docs', express.static(path.resolve(__dirname, 'docs')));
 
 var buildPath = path.resolve(__dirname, 'build');
 app.use(express.static(buildPath));
