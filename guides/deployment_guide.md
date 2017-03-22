@@ -126,6 +126,9 @@ do this simply by typing:
 
 > export USE_PROXY=TRUE
 
-Then, you can run the server using `npm run start-dev` or `npm run start-prod`. Note
-that you no longer need root privileges since the server is actually running on port
-3001, with nginx running on 443.
+This environment variable is very important, and make sure you either save it or
+you set it every time you run the server scripts. Then, you can run the server using `npm run start-dev` or `npm run start-prod`. Note that you no longer need root privileges since the
+server is actually running on port 3001, with nginx running on 443. To remember to always
+set the `USE_PROXY` variable, you can make the production command
+
+>  USE_PROXY=TRUE npm run start-prod

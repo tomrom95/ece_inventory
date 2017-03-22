@@ -8,13 +8,6 @@ class DocsView extends Component {
     super(props);
   }
 
-  componentWillReceiveProps(newProps) {
-    // this.setState({
-    //   username: newProps.username,
-    //   role: newProps.role
-    // });
-  }
-
   render() {
     var apikey = JSON.parse(localStorage.getItem('user')).apikey;
     return(
@@ -77,6 +70,16 @@ class DocsView extends Component {
           <div className="docs-title">
             <h3>Postman API Collection
             </h3>
+          </div>
+          </a>
+        </div>
+        <div className="row docs-row">
+          <a href="/guides/backup_guide.md" download>
+          <div className="docs-glyph">
+            <span className="fa fa-database" aria-hidden="true"></span>
+          </div>
+          <div className="docs-title">
+            <h3>Backup Guide</h3>
           </div>
           </a>
         </div>
