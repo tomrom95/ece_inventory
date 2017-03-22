@@ -30,9 +30,25 @@ module.exports.requestFulfilled = function(request, items, initiator, createdFor
 
 module.exports.requestChanged = function(request, changes, initiator, affectedUser) {
   var text = 'Hello ' + StringHelpers.getDisplayName(affectedUser) + ',\n\n';
-  text += 'Your request for' +  StringHelpers.createPopulatedRequestItemString(request);
+  text += 'Your request for ' +  StringHelpers.createPopulatedRequestItemString(request);
   text += ' has been updated by ' + StringHelpers.getDisplayName(initiator);
   text += ' by changing ' + StringHelpers.createChangesString(request, changes) + '.';
+  return text;
+}
+
+module.exports.loanChanged = function(oldLoan, changes, initiator, affectedUser) {
+  var text = 'Hello ' + StringHelpers.getDisplayName(affectedUser) + ',\n\n';
+  text += 'Your loan for' + StringHelpers.createPopulatedRequestItemString(oldLoan);
+  text += ' has been updated by ' + StringHelpers.getDisplayName(initiator);
+  text += ' by changing the statuses of:\n';
+  changes.forEach(function(change) {
+    var itemObj = oldLoan.items.find(function(item) {
+      return String(item.item._id) === change.item;
+    });
+    if (!itemObj) return;
+    text += ' - ' + StringHelpers.itemQuantityString(itemObj.item.name, itemObj.quantity);
+    text += ' from ' + itemObj.status + ' to ' + change.status + '\n';
+  });
   return text;
 }
 
