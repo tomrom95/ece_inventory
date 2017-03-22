@@ -16,25 +16,30 @@ class LoanTable extends Component {
 
 	constructor(props) {
 		super(props);
+		this.state = {
+			data: props.data
+		}
+	}
+
+	componentWillReceiveProps(newProps) {
+		this.setState({
+			data: newProps.data
+		});
 	}
 
 	makeRows() {
-		// dummy data!
-		var user = "michael";
-		var created = "March 3, 2017";
-		var modified = "March 7, 2017";
-		var items = [{name: "Oscilloscope", quantity: 10, status: "Returned"}];
-		var params = {
-			user: user,
-			created: created,
-			modified: modified,
-			items: items
-		};
-
 		var list = [];
-		for (var i=0; i<5; i++) {
+		for (var i=0; i<this.state.data.length; i++) {
+			var loanItem = this.state.data[i];
+			var params = {
+				user: loanItem.user.username,
+				created: loanItem.created,
+				modified: loanItem.modified,
+				items: loanItem.items
+			};
+
 			list.push(
-				<LoanTableRow key={"loan-table-row-"+i} params={params}/>
+				<LoanTableRow key={"loan-table-row-"+i} api={this.props.api} params={params}/>
 			);
 		}
 		return list;

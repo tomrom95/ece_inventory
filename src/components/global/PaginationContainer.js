@@ -100,6 +100,7 @@ class PaginationContainer extends Component {
 	}
 
 	loadData(page, justDeleted) {
+		console.log(this.getURL(page, this.state.rowsPerPage));
 	  this.instance.get(this.getURL(page, this.state.rowsPerPage))
 	  .then(function (response) {
 	    if (this.state.initialLoad) {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import LoanTable from './LoanTabl.js';
+import LoanTable from './LoanTable.js';
 import PaginationContainer from '../global/PaginationContainer.js';
 
 class LoanPage extends Component {
@@ -18,9 +18,8 @@ class LoanPage extends Component {
 	        	modified: obj.lastModified,
 	        	items: obj.items
 	        }
-	      };
-	      items.push(loan);
-	    }
+	        loanList.push(loan);
+	      }
 	    return loanList;
   	}
 

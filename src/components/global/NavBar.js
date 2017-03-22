@@ -57,6 +57,13 @@ class NavBar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link to="/Loans"
+                      className={"nav-link" + (this.state.activeTab === "/Loans" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/Loans")}>
+                      LOANS
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/Log"
                       className={"nav-link" + (this.state.activeTab === "/Log" ? " active" : "")}
                       onClick={() => this.setActiveTab("/Log")}>

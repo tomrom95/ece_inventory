@@ -237,7 +237,7 @@ class RequestTable extends Component {
   fulfillRequest(index){
     this.props.api.patch('/api/requests/' + this.state.raw_data[index]._id,
       {
-        action: "DISBURSE",
+        action: "FULFILL",
       }
     )
     .then(function(response) {

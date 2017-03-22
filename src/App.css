@@ -472,6 +472,19 @@
   margin-top: 0.5%;
 }
 
+.request-type-dropdown {
+  width: 65%;
+}
+
+.control-bar-cell {
+  width: 12%;
+}
+
+.loan-status-dropdown {
+  min-width: 140%;
+  text-align: left;
+}
+
 .description {
   float: left;
   padding-left: 0.3%;
