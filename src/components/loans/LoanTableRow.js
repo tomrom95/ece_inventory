@@ -34,8 +34,24 @@ class LoanTableRow extends Component {
 			modified: props.params.modified,
 			items: props.params.items,
 			itemsModified: props.params.items,
+			reviewer_comment: props.reviewer_comment,
 			controlBarVisible: {}
 		}
+	}
+
+	componentWillMount() {
+		this.props.api.get("api/requests/"+ this.props.params.request_id)
+		.then( response => {
+			if (response.data.error) {
+				alert(response.data.error);
+			}
+			else {
+				console.log(response.data.reviewer_comment);
+				this.setState({
+					reviewer_comment: response.data.reviewer_comment
+				});
+			}
+		});
 	}
 
 	componentWillReceiveProps(newProps) {
@@ -46,6 +62,7 @@ class LoanTableRow extends Component {
 			modified: newProps.params.modified,
 			items: newProps.params.items,
 			itemsModified: newProps.params.items,
+			reviewer_comment: newProps.reviewer_comment,
 		});
 	}
 
@@ -71,9 +88,11 @@ class LoanTableRow extends Component {
 				      	</a>
 				      </td>
 				      ) :
-				      (<a key = {key + "-status"}>
-			      		{items[i].status}
-			      	  </a>
+				      (<td className="status-cell" key={key + "-col3"}>
+				      	<a key = {key + "-status"}>
+			      			{items[i].status}
+			      	  	</a>
+			      	  </td>
 			      	  )
 			  	  }
 			  	  <td key={key+"-col-4"}></td>
@@ -201,20 +220,20 @@ class LoanTableRow extends Component {
 	}
 
 	render() {
-		console.log(this.state.items);
-		console.log(this.state.itemsModified);
-		console.log(this.state.modified);
 		return (
 		    <li className="list-group-item">
-				<div className="container">
+				<div className="container loan-details">
 		    		<div className="row">
-		    			<strong>User: </strong> {this.state.user}
+		    			<strong>User:  </strong> {this.state.user}
 		    		</div>
 		    		<div className="row">
-		    			<strong>Date Created: </strong> {formatDate(new Date(this.state.created).toString())}
+		    			<strong>Date Created:  </strong> {formatDate(new Date(this.state.created).toString())}
 		    		</div>
 		    		<div className="row">
-		    			<strong>Last Modified: </strong> {formatDate(new Date(this.state.modified).toString())}
+		    			<strong>Last Modified:  </strong> {formatDate(new Date(this.state.modified).toString())}
+		    		</div>
+		    		<div className="row">
+		    			<strong>Reviewer Comment:  </strong> {this.state.reviewer_comment ? this.state.reviewer_comment : "N/A"}
 		    		</div>
 		    		<br></br>
 		    		<div className="row">

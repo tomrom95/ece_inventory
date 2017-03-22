@@ -508,6 +508,10 @@
   color: black;
 }
 
+.loan-details {
+  white-space: pre-wrap;
+}
+
 .tooltip-inner {
   background-color: rgba(80,80,80,1)!important;
   border-left:solid;
