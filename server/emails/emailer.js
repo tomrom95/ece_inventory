@@ -80,6 +80,7 @@ var sendSingleLoanEmail = function(userId, loans, loanEmailObj, next) {
   var builder = new EmailBuilder();
   User.findById(userId, function(error, loanUser) {
     if (error) return next(error);
+    if (!loanUser) return next();
     builder
       .setToEmails([loanUser.email])
       .setSubject('ECE Inventory Loans Reminder')
