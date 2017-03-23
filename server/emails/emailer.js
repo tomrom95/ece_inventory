@@ -58,6 +58,36 @@ module.exports.sendRequestChangeEmail = function(oldRequest, changes, initiator,
   });
 }
 
+var filterLoanChanges = function(oldLoan, changes) {
+  changes = changes.filter(function(itemObj) {
+    var oldItem = oldLoan.items.find(function(item) {
+      return String(item.item._id) === itemObj.item;
+    });
+    if (!oldItem) return false;
+    return oldItem.status !== itemObj.status;
+  });
+  if (changes.length === 0) return null;
+  return changes;
+}
+
+module.exports.sendLoanChangeEmail = function(oldLoan, changes, initiator, next) {
+  var filteredChanges = filterLoanChanges(oldLoan, changes);
+  if (!filteredChanges) return next();
+  var builder = new EmailBuilder();
+  User.findById(oldLoan.user, function(error, affectedUser) {
+    if (error) return next(error);
+    builder
+      .setToEmails([affectedUser.email])
+      .setCCEmails([initiator.email])
+      .setSubject('Inventory Loan Updated')
+      .setBody(EmailBodies.loanChanged(oldLoan, filteredChanges, initiator, affectedUser))
+      .send(function(error, info) {
+        if (error) return next(error);
+        return next(null, info);
+      });
+  });
+}
+
 module.exports.sendCancelledRequestEmail = function(request, initiatingUser, next) {
   var builder = new EmailBuilder();
   User.findById(request.user, function(error, requestUser) {

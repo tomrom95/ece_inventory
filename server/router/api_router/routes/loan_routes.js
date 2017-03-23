@@ -3,6 +3,8 @@ var Loan = require('../../../model/loans');
 var Item = require('../../../model/items');
 
 var QueryBuilder = require('../../../queries/querybuilder');
+var Emailer = require('../../../emails/emailer');
+
 const ITEM_FIELDS = 'name';
 const USER_FIELDS = 'username netid first_name last_name';
 
@@ -71,6 +73,7 @@ module.exports.putAPI = function (req, res){
   Loan.findById(req.params.loan_id, function(err, loan){
     if(err) return res.send({error:err});
     if (!loan) return res.send({error: 'Loan does not exist'});
+    var oldLoanCopy = JSON.parse(JSON.stringify(loan));
     // list of items to return by promises
     var returnPromises = [];
     // Iterate through items array provided in the body
@@ -92,7 +95,13 @@ module.exports.putAPI = function (req, res){
         if (error) return res.send({error: error});
         Loan.populate(loan, {path: "items.item", select: ITEM_FIELDS}, function(error, populatedLoan){
           if (error) return res.send({error: error});
-          return res.json(populatedLoan);
+          Loan.populate(oldLoanCopy, {path: "items.item", select: ITEM_FIELDS}, function(error, populatedOldLoan) {
+            if (error) return res.send({error: error});
+            Emailer.sendLoanChangeEmail(populatedOldLoan, newItems, req.user, function(error) {
+              if (error) return res.send({error: error});
+              return res.json(populatedLoan);
+            });
+          });
         })
       });
     }, function(error){
