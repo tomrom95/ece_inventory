@@ -70,7 +70,20 @@ var getManagerEmails = function(next) {
   });
 }
 
-EmailBuilder.prototype.send = function(next) {
+var sendHelper = function(next) {
+  this.transport.sendMail(this.message, (error, info) => {
+    try {
+      // If transport is not mocked, close it
+      this.transport.close();
+    } catch (e) {
+      // don't do anything
+    }
+    if (error) return next(error);
+    return next(null, info.response);
+  });
+}
+
+EmailBuilder.prototype.send = function(next, ccManagers=true) {
   var error = validateMessage(this.message);
   if (error) {
     return next(error);
@@ -79,25 +92,20 @@ EmailBuilder.prototype.send = function(next) {
     if (error) return next(error);
     // Add global message subject tag
     this.message.subject = settings.subject_tag + ' ' + this.message.subject;
-    getManagerEmails((error, managerEmails) => {
-      if (error) return next(error);
-      // add all subscribed managers in bcc
-      if (this.message.bcc) {
-        this.message.bcc += ',' + managerEmails.join();
-      } else {
-        this.message.bcc = managerEmails.join();
-      }
-      this.transport.sendMail(this.message, (error, info) => {
-        try {
-          // If transport is not mocked, close it
-          this.transport.close();
-        } catch (e) {
-          // don't do anything
-        }
+    if (ccManagers) {
+      getManagerEmails((error, managerEmails) => {
         if (error) return next(error);
-        return next(null, info.response);
+        // add all subscribed managers in bcc
+        if (this.message.bcc) {
+          this.message.bcc += ',' + managerEmails.join();
+        } else {
+          this.message.bcc = managerEmails.join();
+        }
+        return sendHelper.call(this, next);
       });
-    });
+    } else {
+      return sendHelper.call(this, next);
+    }
   });
 }
 

@@ -8,13 +8,6 @@ class DocsView extends Component {
     super(props);
   }
 
-  componentWillReceiveProps(newProps) {
-    // this.setState({
-    //   username: newProps.username,
-    //   role: newProps.role
-    // });
-  }
-
   render() {
     var apikey = JSON.parse(localStorage.getItem('user')).apikey;
     return(
@@ -26,7 +19,7 @@ class DocsView extends Component {
         <p>All guides for the ECE458 Inventory Project.</p>
         <br/>
         <div className="row docs-row">
-          <a href="/guides/deployment_guide.md" download>
+          <a href="/docs/deployment_guide.md" download>
           <div className="docs-glyph">
             <span className="fa fa-upload" aria-hidden="true"></span>
           </div>
@@ -37,7 +30,7 @@ class DocsView extends Component {
           </a>
         </div>
         <div className="row docs-row">
-          <a href="/guides/developer_guide.md" download>
+          <a href="/docs/developer_guide.md" download>
           <div className="docs-glyph">
             <span className="fa fa-flask" aria-hidden="true"></span>
           </div>
@@ -48,7 +41,7 @@ class DocsView extends Component {
           </a>
         </div>
         <div className="row docs-row">
-          <a href="/guides/api_guide.md" download>
+          <a href="/docs/api_guide.md" download>
           <div className="docs-glyph">
             <span className="fa fa-list-alt" aria-hidden="true"></span>
           </div>
@@ -59,7 +52,7 @@ class DocsView extends Component {
           </a>
         </div>
         <div className="row docs-row">
-          <a href="/guides/api_contract.txt" download>
+          <a href="/docs/api_contract.txt" download>
           <div className="docs-glyph">
             <span className="fa fa-bars" aria-hidden="true"></span>
           </div>
@@ -70,13 +63,23 @@ class DocsView extends Component {
           </a>
         </div>
         <div className="row docs-row">
-          <a href="/guides/ECE458.postman_collection.json" download>
+          <a href="/docs/ECE458.postman_collection.json" download>
           <div className="docs-glyph">
             <span className="fa fa-wrench" aria-hidden="true"></span>
           </div>
           <div className="docs-title">
             <h3>Postman API Collection
             </h3>
+          </div>
+          </a>
+        </div>
+        <div className="row docs-row">
+          <a href="/docs/backup_guide.md" download>
+          <div className="docs-glyph">
+            <span className="fa fa-database" aria-hidden="true"></span>
+          </div>
+          <div className="docs-title">
+            <h3>Backup Guide</h3>
           </div>
           </a>
         </div>

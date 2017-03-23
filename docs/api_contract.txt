@@ -709,6 +709,7 @@ return: [{
 	request: String, // the id
 	created: String, // date
 	lastModified: String, // date
+	_id: String // loan id
 }]
 
 /api/loans/:loan_id
@@ -728,6 +729,7 @@ return: {
 	request: String, // the id
 	created: String, // date
 	lastModified: String, // date
+	_id: String
 }
 
 PUT
