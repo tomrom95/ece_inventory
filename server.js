@@ -88,7 +88,7 @@ app.use(function (error, req, res, next) {
 });
 
 // Set up static paths
-app.use('/guides', express.static(path.resolve(__dirname, 'guides')));
+app.use('/docs', express.static(path.resolve(__dirname, 'docs')));
 
 var buildPath = path.resolve(__dirname, 'build');
 app.use(express.static(buildPath));
