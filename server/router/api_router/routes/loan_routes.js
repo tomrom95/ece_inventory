@@ -27,10 +27,10 @@ module.exports.getAPI = function(req, res) {
         itemIDs.push(element._id);
       })
       query = query.searchInArrayByMatchingField("items","item",itemIDs);
-      findLoan(query, res);
+      returnLoans(query, req, res);
     });
   } else {
-    findLoan(query, res);
+    returnLoans(query, req, res);
   }
 }
 
@@ -42,14 +42,26 @@ function appendItemTypeQuery(query, item_type){
   }
 }
 
-function findLoan(query, res){
-  Loan.find(query.toJSON())
-      .populate('items.item', ITEM_FIELDS)
-      .populate('user', USER_FIELDS)
-      .exec(function(error, loans) {
-        if (error) return res.send({error: error});
-        return res.json(loans);
-  });
+function returnLoans(query, req, res){
+  if(req.query.page && req.query.per_page && !isNaN(req.query.per_page)){
+    let paginateOptions = {
+      page: req.query.page,
+      limit: Number(req.query.per_page),
+      populate: [{path:'items.item', select: ITEM_FIELDS}, {path:'user', select: USER_FIELDS}]
+    }
+    Loan.paginate(query.toJSON(), paginateOptions, function(err,obj){
+      if(err) return res.send({error:err});
+      res.json(obj.docs);
+    })
+  } else {
+    Loan.find(query.toJSON())
+        .populate('items.item', ITEM_FIELDS)
+        .populate('user', USER_FIELDS)
+        .exec(function(error, loans) {
+          if (error) return res.send({error: error});
+          return res.json(loans);
+    });
+  }
 }
 
 module.exports.getAPIbyID = function (req,res){
