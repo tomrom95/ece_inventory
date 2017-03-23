@@ -86,7 +86,6 @@
 
 .maintable-container {
   width: 95%;
-  margin-left: 17px;
 }
 
 .page-control-bar {
@@ -512,6 +511,9 @@
   margin-bottom: 4%;
 }
 
+.button-space {
+  margin-right: 5px;
+}
 .customfield-editor-modal {
   max-width: 86.5%;
   margin-left: 10%;

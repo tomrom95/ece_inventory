@@ -5,6 +5,7 @@ import FilterBox from './FilterBox.js';
 import ErrorMessage from './ErrorMessage.js';
 import StatusFilterBox from '../requests/StatusFilterBox.js';
 import BulkImportButton from '../inventory/BulkImportButton.js';
+import ImportHelpButton from '../inventory/ImportHelpButton.js';
 
 var filterNames = ["name", "model_number", "required_tags", "excluded_tags", "status", "user"];
 
@@ -282,10 +283,29 @@ class PaginationContainer extends Component {
 	      );
 	}
 
+	makeImportRow(){
+		return(
+			<div className="row page-control-bar">
+				<div>
+					<nav aria-label="page-buttons">
+						<ul className="pagination">
+							<li className="page-item button-space" >
+								<BulkImportButton api={this.props.api} callback={this.props.callback}  />
+							</li>
+							<li className="page-item">
+								<ImportHelpButton />
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		)
+	}
+
 	makePageControlBar() {
 		var pageControlBar =  this.state.items.length === 0 ? null :
 			(<div className="row page-control-bar">
-				<div className="col-md-6">
+				<div>
 	                <nav aria-label="page-buttons">
 	                  <ul className="pagination">
 	                  	<li className="page-item">
@@ -361,7 +381,7 @@ class PaginationContainer extends Component {
 	        <div className="col-md-9">
 
 	          {this.makePageControlBar()}
-						<div className="row page-control-bar"><BulkImportButton api={this.props.api} callback={this.props.callback}/></div>
+						{this.makeImportRow()}
 	          <div className="row">
 	            {table}
 	          </div>
