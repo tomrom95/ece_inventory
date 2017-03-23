@@ -67,7 +67,7 @@ class NavBar extends Component {
                 <Link to="/LoanEmailReminders"
                       className={"nav-link" + (this.state.activeTab === "/LoanEmailReminders" ? " active" : "")}
                       onClick={() => this.setActiveTab("/LoanEmailReminders")}>
-                      REMINDERS
+                      EMAILS
                 </Link>
               </li>
 
@@ -156,7 +156,7 @@ class NavBar extends Component {
                 <Link to="/LoanEmailReminders"
                       className={"nav-link" + (this.state.activeTab === "/LoanEmailReminders" ? " active" : "")}
                       onClick={() => this.setActiveTab("/LoanEmailReminders")}>
-                      REMINDERS
+                      EMAILS
                 </Link>
               </li>
 

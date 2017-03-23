@@ -54,9 +54,10 @@ class LoanEmailReminders extends Component {
   makeRows(){
     var list = [];
     for(var i = 0; i < this.state.reminders.length; i++){
+      var date = this.state.reminders[i].date.split('T');
       var row =
       (<tr key={"reminder-"+i} className="subtable-row">
-        <th key={this.state.reminders[i].date+"-daterow"}> {this.state.reminders[i].date} </th>
+        <th key={this.state.reminders[i].date+"-daterow"}> {date[0]} </th>
         {this.makeEditButton(i)}
         {this.makeDeleteButton(i)}
       </tr>);
