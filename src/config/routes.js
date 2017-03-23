@@ -8,9 +8,10 @@ import UsersTab from '../components/user/UsersTab.js';
 import DocsView from '../components/docs/DocsView.js';
 import Transactions from '../components/transactions/Transactions.js';
 import LogPage from '../components/logging/LogPage.js';
+import LoanPage from '../components/loans/LoanPage.js';
+import MyLoansPage from '../components/loans/MyLoansPage.js';
+import {Route} from 'react-router';
 import LoanEmailReminders from '../components/emailing/LoanEmailReminders.js';
-
-import { Route} from 'react-router';
 
 class InventoryWrapper extends Component {
     render() {
@@ -71,6 +72,8 @@ export default (
     <Route path="Inventory" component={InventoryWrapper}></Route>
     <Route path="CurrentOrders" component={CurrentOrdersWrapper}></Route>
     <Route path="GlobalRequests" component={GlobalRequestsWrapper}></Route>
+    <Route path="Loans" component={LoanPage}></Route>
+    <Route path="MyLoans" component={MyLoansPage}></Route>
     <Route path="Users" component={UsersTab}></Route>
     <Route path="Docs" component={DocsWrapper}></Route>
     <Route path="Transactions" component={TransactionsWrapper}></Route>
