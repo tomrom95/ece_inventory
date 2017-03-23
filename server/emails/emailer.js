@@ -5,6 +5,7 @@ var EmailSettings = require('../model/emailSettings');
 var Loan = require('../model/loans');
 var Item = require('../model/items');
 var StringHelpers = require('../logging/string_helpers');
+var LogHelpers = require('../logging/log_helpers');
 var EmailBuilder = require('./emailbuilder');
 var EmailBodies = require('./email_bodies');
 
@@ -58,20 +59,8 @@ module.exports.sendRequestChangeEmail = function(oldRequest, changes, initiator,
   });
 }
 
-var filterLoanChanges = function(oldLoan, changes) {
-  changes = changes.filter(function(itemObj) {
-    var oldItem = oldLoan.items.find(function(item) {
-      return String(item.item._id) === itemObj.item;
-    });
-    if (!oldItem) return false;
-    return oldItem.status !== itemObj.status;
-  });
-  if (changes.length === 0) return null;
-  return changes;
-}
-
 module.exports.sendLoanChangeEmail = function(oldLoan, changes, initiator, next) {
-  var filteredChanges = filterLoanChanges(oldLoan, changes);
+  var filteredChanges = LogHelpers.filterLoanChanges(oldLoan, changes);
   if (!filteredChanges) return next();
   var builder = new EmailBuilder();
   User.findById(oldLoan.user, function(error, affectedUser) {
