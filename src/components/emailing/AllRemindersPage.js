@@ -11,8 +11,14 @@ class AllRemindersPage extends Component {
     super(props);
     this.state = {
       subject: "",
-      reminders: [],
+      reminders: props.reminders,
     }
+  }
+
+  componentWillReceiveProps(newProps){
+    this.setState({
+      reminders: newProps.reminders,
+    });
   }
 
   loadData(){
@@ -22,8 +28,8 @@ class AllRemindersPage extends Component {
           console.log(response);
         }
         else{
+          console.log(response.data.loan_emails);
           this.setState({
-            reminders: response.data.loan_emails,
             subject: response.data.subject_tag,
           });
 
@@ -112,7 +118,7 @@ class AllRemindersPage extends Component {
           numberOfLines={20}
           value={this.state.reminders[i].body}
           key={"email-body"}
-          readonly>
+          readOnly>
       </TextInput>
     );
   }
@@ -197,32 +203,31 @@ class AllRemindersPage extends Component {
     }
     else{
       return(
-        <div className="row inventory-page">
-          <div className="col-md-9" >
 
-            <h5 className="card-header email-header">Edit global subject tag</h5>
-            <div className="email-box">
-              <input type="text"
-                  className="email-subject-text"
-                  onChange={this.handleSubjectChange.bind(this)}
-                  value={this.state.subject}
-                  key={"email-subject"}>
-              </input>
-              <button onClick={() => this.submitSubjectEdit()} type="button" className="btn btn-primary">Apply</button>
-            </div>
-            <div className="reminder-table">
-      				<table className="table table-sm maintable-body">
-      				  <thead className="thread">
-      				    <tr>
-      			    	  {this.makeColumnKeyElements()}
-      				    </tr>
-      				  </thead>
-      				  <tbody>
-      				  	{this.makeRows()}
-      				  </tbody>
-      				</table>
-      			</div>
+        <div>
+          <h5 className="card-header email-header">Edit global subject tag</h5>
+          <div className="email-box">
+            <input type="text"
+                className="email-subject-text"
+                onChange={this.handleSubjectChange.bind(this)}
+                value={this.state.subject}
+                key={"email-subject"}>
+            </input>
+            <button onClick={() => this.submitSubjectEdit()} type="button" className="btn btn-primary">Apply</button>
           </div>
+          <div className="reminder-table">
+    				<table className="table table-sm maintable-body">
+    				  <thead className="thread">
+    				    <tr>
+    			    	  {this.makeColumnKeyElements()}
+    				    </tr>
+    				  </thead>
+    				  <tbody>
+    				  	{this.makeRows()}
+    				  </tbody>
+    				</table>
+    			</div>
+
 
         </div>
       );

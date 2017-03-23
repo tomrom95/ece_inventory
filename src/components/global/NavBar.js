@@ -67,16 +67,10 @@ class NavBar extends Component {
                 <Link to="/LoanEmailReminders"
                       className={"nav-link" + (this.state.activeTab === "/LoanEmailReminders" ? " active" : "")}
                       onClick={() => this.setActiveTab("/LoanEmailReminders")}>
-                      ADD EMAIL
+                      EMAILS
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link to="/AllRemindersPage"
-                      className={"nav-link" + (this.state.activeTab === "/AllRemindersPage" ? " active" : "")}
-                      onClick={() => this.setActiveTab("/AllRemindersPage")}>
-                      REMINDERS
-                </Link>
-              </li>
+
               <li className="nav-item">
                 <Link to="/Users"
                       className={"nav-link" + (this.state.activeTab === "/Users" ? " active" : "")}
@@ -155,16 +149,10 @@ class NavBar extends Component {
                 <Link to="/LoanEmailReminders"
                       className={"nav-link" + (this.state.activeTab === "/LoanEmailReminders" ? " active" : "")}
                       onClick={() => this.setActiveTab("/LoanEmailReminders")}>
-                      ADD EMAIL
+                      EMAILS
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link to="/AllRemindersPage"
-                      className={"nav-link" + (this.state.activeTab === "/AllRemindersPage" ? " active" : "")}
-                      onClick={() => this.setActiveTab("/AllRemindersPage")}>
-                      REMINDERS
-                </Link>
-              </li>
+
               <div className="navbar-right-panel">
                 <li className="nav-item welcome-message">
                   Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>

@@ -9,7 +9,6 @@ import DocsView from '../components/docs/DocsView.js';
 import Transactions from '../components/transactions/Transactions.js';
 import LogPage from '../components/logging/LogPage.js';
 import LoanEmailReminders from '../components/emailing/LoanEmailReminders.js';
-import AllRemindersPage from '../components/emailing/AllRemindersPage.js';
 
 import { Route} from 'react-router';
 
@@ -65,11 +64,6 @@ class LoanEmailRemindersWrapper extends Component {
   }
 }
 
-class AllRemindersPageWrapper extends Component {
-  render() {
-    return(<AllRemindersPage/>);
-  }
-}
 
 export default (
   <Route path="/" component={Home}>
@@ -82,6 +76,5 @@ export default (
     <Route path="Transactions" component={TransactionsWrapper}></Route>
     <Route path="Log" component={LogPageWrapper}></Route>
     <Route path="LoanEmailReminders" component={LoanEmailRemindersWrapper}></Route>
-    <Route path="AllRemindersPage" component={AllRemindersPageWrapper}></Route>
   </Route>
 );
