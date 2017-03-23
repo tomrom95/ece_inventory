@@ -89,7 +89,32 @@ describe('Logging API Test', function () {
           done();
         });
     });
-
+    it('returns loans for page 2 with 2 items per page', (done) => {
+      chai.request(server)
+        .get('/api/loans?page=2&per_page=2')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(2);
+          res.body[0].request.should.be.eql("222222222222222222222222");
+          res.body[1].request.should.be.eql("111111111111111111111111");
+          done();
+        });
+    });
+    it('returns no loans for page 2 with 100 items per page', (done) => {
+      chai.request(server)
+        .get('/api/loans?page=2&per_page=100')
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(0);
+          done();
+        });
+    })
     it('returns all loans for a manager with no filters', (done) => {
       chai.request(server)
         .get('/api/loans')
