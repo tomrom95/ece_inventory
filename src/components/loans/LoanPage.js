@@ -45,7 +45,7 @@ class LoanPage extends Component {
 			if (this.state.filters.user_id)
 				url += ("user_id=" + this.state.filters.user_id);
 			if (this.state.filters.type)
-				url += ("&type=" + this.state.filters.type);
+				url += ("&item_type=" + this.state.filters.type);
 			if (this.state.filters.item_name)
 				url += ("&item_name=" + this.state.filters.item_name);
 		}
