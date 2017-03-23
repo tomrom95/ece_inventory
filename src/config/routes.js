@@ -4,8 +4,7 @@ import Home from '../components/home/Home.js';
 import CurrentOrders from '../components/requests/CurrentOrders.js';
 import UserProfile from '../components/user/UserProfile.js';
 import GlobalRequests from '../components/requests/GlobalRequests.js';
-import CreateUser from '../components/user/CreateUser.js';
-import EditUsers from '../components/user/EditUsers.js';
+import UsersTab from '../components/user/UsersTab.js';
 import DocsView from '../components/docs/DocsView.js';
 import Transactions from '../components/transactions/Transactions.js';
 import LogPage from '../components/logging/LogPage.js';
@@ -37,12 +36,6 @@ class GlobalRequestsWrapper extends Component {
         showStatusFilterBox={true}
         hasOtherParams={false}
         api={"something"}/>;
-    }
-}
-
-class CreateUserWrapper extends Component {
-    render() {
-        return <CreateUser api={"something"}/>;
     }
 }
 
@@ -78,8 +71,7 @@ export default (
     <Route path="Inventory" component={InventoryWrapper}></Route>
     <Route path="CurrentOrders" component={CurrentOrdersWrapper}></Route>
     <Route path="GlobalRequests" component={GlobalRequestsWrapper}></Route>
-    <Route path="CreateUser" component={CreateUserWrapper}></Route>
-    <Route path="EditUsers" component={EditUsers}></Route>
+    <Route path="Users" component={UsersTab}></Route>
     <Route path="Docs" component={DocsWrapper}></Route>
     <Route path="Transactions" component={TransactionsWrapper}></Route>
     <Route path="Log" component={LogPageWrapper}></Route>
