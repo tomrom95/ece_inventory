@@ -64,6 +64,14 @@ class NavBar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
+                <Link to="/LoanEmailReminders"
+                      className={"nav-link" + (this.state.activeTab === "/LoanEmailReminders" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/LoanEmailReminders")}>
+                      EMAILS
+                </Link>
+              </li>
+
+              <li className="nav-item">
                 <Link to="/CreateUser"
                       className={"nav-link" + (this.state.activeTab === "/CreateUser" ? " active" : "")}
                       onClick={() => this.setActiveTab("/CreateUser")}>
@@ -78,7 +86,7 @@ class NavBar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/Docs" 
+                <Link to="/Docs"
                       className={"nav-link" + (this.state.activeTab === "/Docs" ? " active" : "")}
                       onClick={() => this.setActiveTab("/Docs")}>
                       DOCS
@@ -110,14 +118,14 @@ class NavBar extends Component {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
-                <Link to="/UserProfile" 
+                <Link to="/UserProfile"
                       className={"nav-link" + (this.state.activeTab === "/UserProfile" ? " active" : "")}
                       onClick={() => this.setActiveTab("/UserProfile")}>
                       PROFILE
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/Inventory" 
+                <Link to="/Inventory"
                       className={"nav-link" + (this.state.activeTab === "/Inventory" ? " active" : "")}
                       onClick={() => this.setActiveTab("/Inventory")}>
                       INVENTORY
@@ -142,6 +150,13 @@ class NavBar extends Component {
                       className={"nav-link" + (this.state.activeTab === "/Log" ? " active" : "")}
                       onClick={() => this.setActiveTab("/Log")}>
                       LOG
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/LoanEmailReminders"
+                      className={"nav-link" + (this.state.activeTab === "/LoanEmailReminders" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/LoanEmailReminders")}>
+                      EMAILS
                 </Link>
               </li>
 

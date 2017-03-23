@@ -4,6 +4,7 @@ node_modules
 cert.pem
 key.pem
 npm-debug.log*
+test.js
 # testing
 coverage
 

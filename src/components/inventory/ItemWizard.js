@@ -375,12 +375,12 @@ class ItemWizard extends Component {
 		var object = {
 			name: this.refs.Name.value,
 	  		quantity: this.refs.Quantity.value,
-	 		model_number: this.refs["Model Number"].value,
+	 			model_number: this.refs["Model Number"].value,
 	  		description: this.refs.Description.value,
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
 	  		has_instance_objects: false,
-			custom_fields: fields
+				custom_fields: fields
   		}
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
@@ -428,7 +428,7 @@ class ItemWizard extends Component {
   	}
 
   	render() {
-		var button = 
+		var button =
 			<button type="button"
 				className="btn btn-outline-primary add-button"
 				data-toggle="modal"

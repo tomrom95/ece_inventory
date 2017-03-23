@@ -17,18 +17,16 @@ class UserProfile extends Component {
       username: props.username,
       role: props.role,
       email: props.email,
-      subscribed: props.subscribed,
+      subscribed: props.subscribed ? props.subscribed : false,
+
     }
   }
 
   componentWillReceiveProps(newProps) {
     this.setState({
-      _id: newProps._id,
-      username: newProps.username,
-      role: newProps.role,
-      email: newProps.email,
-      subscribed: newProps.subscribed,
+      _id: newProps._id
     });
+    this.loadUser();
   }
 
   componentWillMount(){
@@ -36,20 +34,33 @@ class UserProfile extends Component {
 		  baseURL: 'https://' + location.hostname,
 		  headers: {'Authorization': localStorage.getItem('token')}
 		});
+    this.loadUser();
+  }
+
+  loadUser() {
+    this.instance.get('/api/users/' + this.state._id).then(function(response) {
+      if (response.error) {
+        console.log(response.error);
+      }
+      this.setState(response.data);
+    }.bind(this)).catch(function(error) {
+      console.log(error);
+    });
   }
 
   handleChange(event){
-    this.setState({
-      subscribed: !this.state.subscribed,
-    })
+    var isChecked = event.target.checked;
     this.instance.put('/api/users/' + this.state._id, {
-      subscribed: this.state.subscribed,
+      subscribed: isChecked,
     }).then(function(response){
       if (response.data.error) {
         console.log(response.data.error);
       }
       else{
-        alert("successfully changed subscribe status");
+        this.setState({
+          subscribed: isChecked,
+        });
+        alert("Successfully changed subscribe status.");
       }
     }.bind(this)).catch(function(error) {
       console.log(error);
@@ -57,14 +68,15 @@ class UserProfile extends Component {
   }
 
   subscribeToEmails(){
-    var subscribed = <input type="checkbox"
-          checked={this.state.subscribed}
-          onChange={e=>this.handleChange(e)}
-          ref={"subcribe-checkbox"}
-          key={"subcribe-checkbox"}>
-          </input>
+    var subscribed = (<input
+      type="checkbox"
+      checked={this.state.subscribed}
+      onChange={e=>this.handleChange(e)}
+      ref={"subcribe-checkbox"}
+      key={"subcribe-checkbox"}
+    />);
     if(this.state.role === "STANDARD"){
-      return(<div></div>);
+      return null;
     }
     else{
 
@@ -78,7 +90,13 @@ class UserProfile extends Component {
             <h6 className="card-title row">
               {this.state.email}
             </h6>
-            <div className="card-title row"> {subscribed} </div>
+            <div className="card-title row">
+              <label>
+              {subscribed}
+              {" Subscribed"}
+              </label>
+            </div>
+
           </div>
         </div>);
     }
@@ -96,7 +114,10 @@ class UserProfile extends Component {
             <h5 className="card-title row">Privilege Level:</h5>
             <p className="card-title row"> {this.state.role} </p>
           </div>
-
+          <div className="card-block">
+            <h5 className="card-title row">Email:</h5>
+            <p className="card-title row"> {this.state.email} </p>
+          </div>
         </div>
         {this.subscribeToEmails()}
       </div>

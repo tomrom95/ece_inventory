@@ -89,6 +89,10 @@
   margin-left: 17px;
 }
 
+.reminder-table {
+  max-width: 100%;
+  margin-top: 20px;
+}
 .page-control-bar {
   margin-left: 0px;
 }
@@ -470,6 +474,50 @@
 .user-select-box {
   margin-bottom: 2.5%;
   margin-top: 0.5%;
+}
+
+.date-select {
+  margin-top: 10px;
+  margin-left: 3%;
+  text-align: center;
+}
+
+.date-card {
+  height: 300px;
+  max-width: 250px;
+  margin-left: 1%;
+  margin-top: 15px;
+  border: none;
+  border-left: solid;
+  border-color: rgba(0,150,255,1);
+  border-width: 4px;
+}
+
+.email-header {
+  margin-top: 15px;
+  margin-left: 15px;
+  min-width: 70%;
+}
+
+.email-box {
+  margin-left: 15px;
+}
+
+.email-text {
+  height: 200px;
+  background-color: white;
+  min-width: 100%;
+}
+
+.email-subject-header {
+  margin-top: 15px;
+  margin-left: 15px;
+  max-width: 60%;
+}
+
+.email-subject-text {
+  background-color: white;
+  min-width: 100%;
 }
 
 .description {

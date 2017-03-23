@@ -6,8 +6,8 @@ var moment = require('moment');
 var mongoose = require('mongoose');
 var emailer = require('../server/emails/emailer');
 
-const BACKUP_VM = 'bitnami@colab-sbx-135.oit.duke.edu';
-const BACKUP_FOLDER = '~/archives/';
+const BACKUP_VM = 'backupadmin@colab-sbx-135.oit.duke.edu';
+const BACKUP_FOLDER = '~/archives';
 const REMOVE_SCRIPT = '~/remove_old_backups.sh';
 
 mongoose.connect('mongodb://admin:ece458duke@localhost/inventory');
@@ -36,7 +36,7 @@ function getExpiryLength() {
 function mongoDump(next) {
   var expiry = getExpiryLength();
   var filename = moment().format('YYYY-MM-DD') + '-exp-' + expiry + '-days.archive';
-  var mongoDumpCommand = 'mongodump --archive=' + filename;
+  var mongoDumpCommand = 'mongodump --db inventory --archive=' + filename;
 
   exec(mongoDumpCommand, function(error, stdout, stderr) {
     if (error) return handleError(error, stderr);
