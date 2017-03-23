@@ -447,6 +447,89 @@ describe('Email settings API Test', function () {
 
   });
 
+  describe('Sending emails after loan changes', function() {
+    var testLoan;
+    beforeEach((done) => {
+      Loan.remove({}, (err) => {
+        should.not.exist(err);
+        var newLoan = new Loan({
+          user: standardUser._id,
+          request: '111111111111111111111111',
+          items: [
+            {
+              item: allItems["1k resistor"]._id,
+              quantity: 2,
+              status: 'LENT'
+            },
+            {
+              item: allItems["2k resistor"]._id,
+              quantity: 5,
+              status: 'RETURNED'
+            },
+            {
+              item: allItems["Oscilloscope"]._id,
+              quantity: 1,
+              status: 'DISBURSED'
+            }
+          ],
+        });
+        newLoan.save(function(error, loan) {
+          should.not.exist(error);
+          testLoan = loan;
+          done();
+        });
+      });
+    });
+
+    it('emails after editing a loan', (done) => {
+      chai.request(server)
+        .put('/api/loans/' + testLoan._id)
+        .set('Authorization', adminToken)
+        .send({
+          items: [
+            {item: allItems["1k resistor"]._id, status: 'DISBURSED'},
+            {item: allItems["2k resistor"]._id, status: 'DISBURSED'}
+          ]
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          var sentMail = nodemailerMock.mock.sentMail();
+          sentMail.length.should.be.eql(1);
+          var email = sentMail[0];
+          email.to.should.be.eql(standardUser.email);
+          email.cc.should.be.eql(adminUser.email);
+          email.bcc.should.be.eql(managerUser.email);
+          email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'Inventory Loan Updated');
+          email.text.should.include('Hello standard,');
+          email.text.should.include('has been updated by admin by changing the statuses of:');
+          email.text.should.include('- (2) 1k resistors from LENT to DISBURSED');
+          email.text.should.include('- (5) 2k resistors from RETURNED to DISBURSED');
+          email.text.should.not.include('- (1) Oscilloscope from DISBURSED');
+          done();
+        });
+    });
+
+    it('does not email after editing a loan if nothing changed', (done) => {
+      chai.request(server)
+        .put('/api/loans/' + testLoan._id)
+        .set('Authorization', adminToken)
+        .send({
+          items: [
+            {item: allItems["1k resistor"]._id, status: 'LENT'}
+          ]
+        })
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          var sentMail = nodemailerMock.mock.sentMail();
+          sentMail.length.should.be.eql(0);
+          done();
+        });
+    });
+
+  });
+
   describe('Sending loan reminder emails', function() {
     var Emailer;
     before(() => {

@@ -5,7 +5,7 @@ The production server is located at https://colab-sbx-186.oit.duke.edu. Note tha
 
 The parameters, body and expected return payloads are all specified in the API contract.
 
-[API Contract](https://colab-sbx-115.oit.duke.edu:3000/guides/api_contract.txt)
+[API Contract](https://colab-sbx-186.oit.duke.edu/docs/api_contract.txt)
 ==
 
 How do I issue requests to the API?

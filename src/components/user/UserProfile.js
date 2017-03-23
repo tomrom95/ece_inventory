@@ -14,6 +14,11 @@ class UserProfile extends Component {
     super(props);
     this.state = {
       _id: props._id,
+      username: props.username,
+      role: props.role,
+      email: props.email,
+      subscribed: props.subscribed ? props.subscribed : false,
+
     }
   }
 
@@ -82,7 +87,16 @@ class UserProfile extends Component {
             <h6 className="card-title row">
               Subscribing will cause an email to be sent to your account whenever a user request is filed.
             </h6>
-            <div className="card-title row"> {subscribed} </div>
+            <h6 className="card-title row">
+              {this.state.email}
+            </h6>
+            <div className="card-title row">
+              <label>
+              {subscribed}
+              {" Subscribed"}
+              </label>
+            </div>
+
           </div>
         </div>);
     }
