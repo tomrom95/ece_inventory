@@ -10,6 +10,7 @@ import DocsView from '../components/docs/DocsView.js';
 import Transactions from '../components/transactions/Transactions.js';
 import LogPage from '../components/logging/LogPage.js';
 import LoanPage from '../components/loans/LoanPage.js';
+import MyLoansPage from '../components/loans/MyLoansPage.js';
 import {Route} from 'react-router';
 
 class InventoryWrapper extends Component {
@@ -73,6 +74,7 @@ export default (
     <Route path="CreateUser" component={CreateUserWrapper}></Route>
     <Route path="EditUsers" component={EditUsers}></Route>
     <Route path="Loans" component={LoanPage}></Route>
+    <Route path="MyLoans" component={MyLoansPage}></Route>
     <Route path="Docs" component={DocsWrapper}></Route>
     <Route path="Transactions" component={TransactionsWrapper}></Route>
     <Route path="Log" component={LogPageWrapper}></Route>

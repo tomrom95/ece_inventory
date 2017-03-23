@@ -46,7 +46,6 @@ class LoanTableRow extends Component {
 				alert(response.data.error);
 			}
 			else {
-				console.log(response.data.reviewer_comment);
 				this.setState({
 					reviewer_comment: response.data.reviewer_comment
 				});
@@ -207,7 +206,10 @@ class LoanTableRow extends Component {
 
 		this.props.api.put("api/loans/"+loanId, param)
 		.then(response => {
-				console.log(response);
+			if (response.data.error) {
+				alert(response.data.error);
+			}
+			else
 				this.props.callback();
 			});
 

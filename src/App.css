@@ -500,6 +500,7 @@
   border-width: 4px;
   border-color: rgba(0,150,255,1);
   color: gray;
+  max-width: 94%;
 }
 
 .description {
@@ -555,15 +556,10 @@
 .page-link {
   background-color: white!important;
   color: rgba(0,120,255,1)!important;
-  border: solid;
-  border-color: gray;
-  border-width: 1px;
   margin-top: 1px;
 }
 
 .page-link:hover {
-  border: solid;
-  border-width: 1px;
   background-color: rgba(255,255,255, 0.7)!important;
 }
 
