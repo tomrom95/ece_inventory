@@ -87,7 +87,7 @@ class CreateUser extends React.Component {
         <div className="offset-md-4 col-md-4 container">
           <div>
             <div className="center-text">
-              <h4>Create New User</h4>
+              <h3>Create New User</h3>
             </div>
           </div>
           <div className="form-fields">
