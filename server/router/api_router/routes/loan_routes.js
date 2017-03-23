@@ -73,7 +73,7 @@ module.exports.putAPI = function (req, res){
   Loan.findById(req.params.loan_id, function(err, loan){
     if(err) return res.send({error:err});
     if (!loan) return res.send({error: 'Loan does not exist'});
-    var loanCopy = JSON.parse(JSON.stringify(loan));
+    var oldLoanCopy = JSON.parse(JSON.stringify(loan));
     // list of items to return by promises
     var returnPromises = [];
     // Iterate through items array provided in the body
@@ -95,9 +95,9 @@ module.exports.putAPI = function (req, res){
         if (error) return res.send({error: error});
         Loan.populate(loan, {path: "items.item", select: ITEM_FIELDS}, function(error, populatedLoan){
           if (error) return res.send({error: error});
-          Loan.populate(loanCopy, {path: "items.item", select: ITEM_FIELDS}, function(error, populatedCopy) {
+          Loan.populate(oldLoanCopy, {path: "items.item", select: ITEM_FIELDS}, function(error, populatedOldLoan) {
             if (error) return res.send({error: error});
-            Emailer.sendLoanChangeEmail(populatedCopy, newItems, req.user, function(error) {
+            Emailer.sendLoanChangeEmail(populatedOldLoan, newItems, req.user, function(error) {
               if (error) return res.send({error: error});
               return res.json(populatedLoan);
             });
