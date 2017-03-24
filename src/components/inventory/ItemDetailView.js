@@ -4,6 +4,7 @@ import GlobalRequests from '../requests/GlobalRequests';
 import CurrentOrders from '../requests/CurrentOrders.js';
 import CustomFieldsPopup from './CustomFieldsPopup.js';
 import LogPage from '../logging/LogPage.js';
+import LoanPage from '../loans/LoanPage.js';
 
 function getString(str) {
   if (str === undefined || str === null || str.length === 0) {
@@ -37,8 +38,6 @@ class ItemDetailView extends React.Component {
     this.setState({
       itemId: newProps.params.itemID,
       itemName: newProps.params.itemName
-    }, function() {
-      //this.loadData();
     });
   }
 
@@ -223,6 +222,31 @@ class ItemDetailView extends React.Component {
     );
   }
 
+  makeLoanView() {
+    var filters = {
+      item_name: this.state.item.name
+    }
+
+     if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
+        return (
+          <div className="item-detail-view-loans">
+            <LoanPage isGlobal={true} 
+                           showFilterBox={false}
+                           rowsPerPage={5}
+                           filters={filters} />
+          </div>);
+     }
+     else {
+        return (
+          <div className="item-detail-view-loans">
+            <LoanPage isGlobal={false} 
+                           showFilterBox={false}
+                           rowsPerPage={5}
+                           filters={filters} />
+          </div>);
+     }
+  }
+
   jankRefresh() {
     this.setState({
       requestsVisible: false
@@ -236,6 +260,7 @@ class ItemDetailView extends React.Component {
   makeCollapsibleItems() {
     return (
     <div id="accordion" role="tablist" aria-multiselectable="true">
+
       <div className="card">
         <div className="card-header" role="tab" id="headingOne">
           <h7 className="mb-0">
@@ -244,13 +269,28 @@ class ItemDetailView extends React.Component {
             </a>
           </h7>
         </div>
-
         <div id={"requestsCollapse-"+this.state.itemId} className="collapse" role="tabpanel">
           <div className="card-block">
             {this.state.requestsVisible ? this.addRequests() : null}
           </div>
         </div>
       </div>
+
+      <div className="card">
+        <div className="card-header" role="tab" id="headingThree">
+          <h7 className="mb-0">
+            <a data-toggle="collapse" data-parent="#accordion" href={"#loansCollapse-"+this.state.itemId} aria-expanded="true">
+              <strong>OUTSTANDING LOANS OF THIS ITEM</strong>
+            </a>
+          </h7>
+        </div>
+        <div id={"loansCollapse-"+this.state.itemId} className="collapse" role="tabpanel">
+          <div className="card-block">
+            {this.state.requestsVisible ? this.makeLoanView() : null}
+          </div>
+        </div>
+      </div>  
+
       {JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER" ?
       (<div className="card">
         <div className="card-header" role="tab" id="headingTwo">

@@ -113,6 +113,12 @@
   border-color: rgba(0,150,255,1);
   color: gray;
   font-size: 85%;
+  max-width: 93%;
+}
+
+.log-table-mini {
+  margin-left: 2.9%;
+  max-width: 80%!important;
 }
 
 .log-detailview-links {
@@ -134,12 +140,16 @@
 
 .item-detail-view-logs {
   margin-left: -3.4%;
-  min-width: 105%;
+  max-width:80%;
 }
 
 .item-detail-view-requests {
   margin-left: -6.5%;
   min-width: 115%;
+}
+
+.item-detail-view-loans {
+  margin-left: -5.3%;
 }
 
 .add-to-cart-title {
@@ -531,7 +541,12 @@
 
 .loan-table {
   margin-left: 2.5%;
-  width: 94%;
+  max-width: 95%;
+}
+
+.loan-table-mini {
+  margin-left: 2.5%;
+  max-width:55%;
 }
 
 .tooltip-inner {

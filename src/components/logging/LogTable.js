@@ -76,20 +76,18 @@ class LogTable extends Component {
 	render() {
 		var rows = this.makeLogItems(this.state.items.data);
 		return (
-				<div className="logtable-container">
-					<table className="table table-sm table-striped log-table">
-					  <thead>
-					    <tr>
-					      <th>Timestamp</th>
-					      <th>Description</th>
-					      {this.state.showButtons ? <th>Details</th> : null}
-					    </tr>
-					  </thead>
-					  <tbody>
-					  	{rows}
-					  </tbody>
-					</table>
-				</div>
+				<table className={"table table-sm table-striped " + (this.props.showFilterBox ? "log-table" : "log-table-mini")}>
+				  <thead>
+				    <tr>
+				      <th>Timestamp</th>
+				      <th>Description</th>
+				      {this.state.showButtons ? <th>Details</th> : null}
+				    </tr>
+				  </thead>
+				  <tbody>
+				  	{rows}
+				  </tbody>
+				</table>
 		);
 	}
 }

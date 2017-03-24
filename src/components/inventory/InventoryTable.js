@@ -200,6 +200,7 @@ class InventoryTable extends Component {
 
 	makeInventoryButtons(data, id) {
 		var list = [];
+		list.push(<td key="blank-space-inventory"></td>);
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
 			list.push(
 					<AddToCartButton
