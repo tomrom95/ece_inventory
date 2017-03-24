@@ -33,6 +33,14 @@
   padding-left: 50px;
 }
 
+.inventory-button {
+  margin-right: 8%;
+}
+
+.buttons-cell {
+  min-width: 200px;
+}
+
 .inventory-table-heading {
   background-color: gray!important;
   color: white!important;
