@@ -5,7 +5,6 @@ var EmailSettings = require('../model/emailSettings');
 var Loan = require('../model/loans');
 var Item = require('../model/items');
 var StringHelpers = require('../logging/string_helpers');
-var LogHelpers = require('../logging/log_helpers');
 var EmailBuilder = require('./emailbuilder');
 var EmailBodies = require('./email_bodies');
 
