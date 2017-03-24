@@ -170,17 +170,6 @@ describe('Instance API Test', function() {
         done();
       });
     });
-    it('GETs NO instances by truncated item id', (done) => {
-      chai.request(server)
-      .get('/api/inventory/'+'11111111'+'/instances?status=LOST&condition=NEEDS_REPAIR')
-      .set('Authorization', token)
-      .end((err, res) => {
-        should.exist(err);
-        res.should.have.status(500);
-        res.body.should.be.a('object');
-        done();
-      });
-    });
     it('GETs NO instances by invalid, full-length item id', (done) => {
       chai.request(server)
       .get('/api/inventory/'+'900000000000000000000000'+'/instances?status=LOST&condition=NEEDS_REPAIR')

@@ -28,7 +28,7 @@ var LogSchema = new mongoose.Schema({
     type: String,
     enum: ['ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',
       'REQUEST_FULFILLED', 'REQUEST_CREATED', 'REQUEST_EDITED',
-      'REQUEST_DELETED', 'FIELD_CREATED', 'FIELD_EDITED', 'FIELD_DELETED'],
+      'REQUEST_DELETED', 'FIELD_CREATED', 'FIELD_EDITED', 'FIELD_DELETED', 'LOAN_EDITED'],
     required: true,
   },
   time_stamp: {

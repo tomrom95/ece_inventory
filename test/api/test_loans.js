@@ -202,6 +202,26 @@ describe('Logging API Test', function () {
           done();
         });
     });
+    it('returns loans with query item_id', (done) => {
+      Item.findOne({"name":"1k resistor"}, function(err, item){
+        chai.request(server)
+          .get('/api/loans?item_id='+item._id)
+          .set('Authorization', adminToken)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body.length.should.be.eql(2);
+            res.body.should.satisfy(function(loans){
+              return loans.every(function(loan){
+                  return ['666666666666666666666666','444444444444444444444444'].should.include(loan.request);
+              });
+            });
+            done();
+          });
+      })
+    });
+
     it('returns loans with query item_name and item_type', (done) => {
       chai.request(server)
         .get('/api/loans?item_name=2k resistor&item_type=OUTSTANDING')

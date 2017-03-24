@@ -4,7 +4,7 @@ var Item = require('../../../model/items');
 
 var QueryBuilder = require('../../../queries/querybuilder');
 var Emailer = require('../../../emails/emailer');
-
+var Logger = require('../../../logging/logger');
 const ITEM_FIELDS = 'name';
 const USER_FIELDS = 'username netid first_name last_name';
 
@@ -19,7 +19,14 @@ module.exports.getAPI = function(req, res) {
   if(req.query.item_type){
     appendItemTypeQuery(query, req.query.item_type);
   }
-  if(req.query.item_name){
+  if(req.query.item_id){
+    // You do not need item name query if searching by itemID
+    Item.findById(req.query.item_id, function(err, item){
+      if(err) return res.send({error: err});
+      query = query.searchInArrayByMatchingField("items","item", item._id);
+      returnLoans(query, req, res);
+    });
+  } else if(req.query.item_name){
     var itemQuery = new QueryBuilder();
     itemQuery.searchCaseInsensitive('name',req.query.item_name);
     Item.find(itemQuery.toJSON(), function(err, items){
@@ -102,6 +109,7 @@ module.exports.putAPI = function (req, res){
         addReturnPromises(returnPromises, loan, matchedIndex);
       }
     }
+    loan.lastModified = new Date();
     Promise.all(returnPromises).then(function() {
       loan.save(function(error, loan){
         if (error) return res.send({error: error});
@@ -111,7 +119,10 @@ module.exports.putAPI = function (req, res){
             if (error) return res.send({error: error});
             Emailer.sendLoanChangeEmail(populatedOldLoan, newItems, req.user, function(error) {
               if (error) return res.send({error: error});
-              return res.json(populatedLoan);
+              Logger.logLoanEditing(populatedOldLoan, newItems, req.user, function(error){
+                if (error) return res.send({error: error});
+                return res.json(populatedLoan);
+              })
             });
           });
         })
