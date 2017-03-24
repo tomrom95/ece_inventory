@@ -547,6 +547,15 @@
   white-space: pre-wrap;
 }
 
+.loan-status-dropdown {
+  margin-right: 3%;
+  margin-left: 1%;
+}
+
+.loantable-button {
+  margin-right: 3%;
+}
+
 .loan-table {
   margin-left: 2.5%;
   max-width: 95%;
