@@ -60,7 +60,7 @@ module.exports.sendRequestChangeEmail = function(oldRequest, changes, initiator,
 }
 
 module.exports.sendLoanChangeEmail = function(oldLoan, changes, initiator, next) {
-  var filteredChanges = LogHelpers.filterLoanChanges(oldLoan, changes);
+  var filteredChanges = StringHelpers.filterLoanChanges(oldLoan, changes);
   if (!filteredChanges) return next();
   var builder = new EmailBuilder();
   User.findById(oldLoan.user, function(error, affectedUser) {

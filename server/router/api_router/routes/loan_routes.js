@@ -4,7 +4,7 @@ var Item = require('../../../model/items');
 
 var QueryBuilder = require('../../../queries/querybuilder');
 var Emailer = require('../../../emails/emailer');
-
+var Logger = require('../../../logging/logger');
 const ITEM_FIELDS = 'name';
 const USER_FIELDS = 'username netid first_name last_name';
 
@@ -111,7 +111,10 @@ module.exports.putAPI = function (req, res){
             if (error) return res.send({error: error});
             Emailer.sendLoanChangeEmail(populatedOldLoan, newItems, req.user, function(error) {
               if (error) return res.send({error: error});
-              return res.json(populatedLoan);
+              Logger.logLoanEditing(populatedOldLoan, newItems, req.user, function(error){
+                if (error) return res.send({error: error});
+                return res.json(populatedLoan);
+              })
             });
           });
         })

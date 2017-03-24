@@ -16,6 +16,18 @@ module.exports.getFilteredChanges = function(oldObject, changes) {
   return filteredChanges;
 }
 
+module.exports.filterLoanChanges = function(oldLoan, changes) {
+  changes = changes.filter(function(itemObj) {
+    var oldItem = oldLoan.items.find(function(item) {
+      return String(item.item._id) === itemObj.item;
+    });
+    if (!oldItem) return false;
+    return oldItem.status !== itemObj.status;
+  });
+  if (changes.length === 0) return null;
+  return changes;
+}
+
 module.exports.getDisplayName = function(user) {
   if (user.first_name && user.last_name) {
     return user.first_name + ' ' + user.last_name;
@@ -89,6 +101,7 @@ module.exports.createChangesString = function(oldObject, changes) {
   let quantity_reason = changes.quantity_reason;
   delete changes.quantity_reason;
   Object.keys(changes).forEach(function(key, index, keyArray) {
+    console.log("key" +key)
     if (index !== 0 && keyArray.length !== 2) {
       changesString += ',';
     }
@@ -100,4 +113,21 @@ module.exports.createChangesString = function(oldObject, changes) {
     if(key === "quantity") changesString += processQuantityChange(quantity_reason);
   });
   return changesString;
+}
+
+module.exports.createLoanEditString = function(oldLoan, changes){
+  var changesString = "";
+  changes.forEach(function(element, index, array){
+    if (index !== 0 && array.length !== 2) {
+      changesString += ',';
+    }
+    if (index === array.length -1 && index !== 0) {
+      changesString += ' and';
+    }
+    let itemObject = oldLoan.items.find(i=> String(i.item._id)=== String(element.item));
+    let itemName = itemObject.item.name;
+    let oldStatus = itemObject.status;
+    changesString += ' item ' + module.exports.getValueString(itemName) + ' from ' + module.exports.getValueString(oldStatus) + ' to ' + module.exports.getValueString(element.status);
+  })
+  return changesString
 }

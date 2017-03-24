@@ -18,19 +18,6 @@ var getFilteredChanges = function(oldObject, changes) {
   return filteredChanges;
 }
 
-
-module.exports.filterLoanChanges = function(oldLoan, changes) {
-  changes = changes.filter(function(itemObj) {
-    var oldItem = oldLoan.items.find(function(item) {
-      return String(item.item._id) === itemObj.item;
-    });
-    if (!oldItem) return false;
-    return oldItem.status !== itemObj.status;
-  });
-  if (changes.length === 0) return null;
-  return changes;
-}
-
 module.exports.logNewItem = function(item, user, next) {
   var newLog = new Log({
     initiating_user: user._id,

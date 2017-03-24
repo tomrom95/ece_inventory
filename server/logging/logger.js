@@ -46,6 +46,27 @@ module.exports.logEditing = function(oldItem, changes, user, next) {
   });
 }
 
+module.exports.logLoanEditing = function(oldLoan, changes, user, next) {
+  // First filter changes to remove fields that haven't actually changed
+  var filteredChanges = StringHelpers.filterLoanChanges(oldLoan, changes);
+  // If nothing actually changed, don't log
+  if (!filteredChanges) {
+    return next();
+  }
+  var itemIds = oldLoan.items.map(i => i.item);
+  console.log(LogDescriptions.editedLoan(oldLoan, filteredChanges, user));
+  var newLog = new Log({
+    initiating_user: user._id,
+    items: itemIds,
+    type: 'LOAN_EDITED',
+    description: LogDescriptions.editedLoan(oldLoan, filteredChanges, user)
+  });
+  newLog.save(function(error) {
+    if (error) return next(error);
+    next();
+  });
+}
+
 module.exports.logItemCustomFieldEdit = function(item, field, oldValue, newValue, user, next) {
   if (oldValue === newValue) {
     return next();
