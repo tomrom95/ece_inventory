@@ -542,6 +542,10 @@
 .loan-table {
   margin-left: 2.5%;
   max-width: 95%;
+  border:none;
+  border-left:solid;
+  border-width: 4px;
+  border-color: rgba(0,150,255,1);
 }
 
 .loan-table-mini {
