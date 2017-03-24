@@ -41,6 +41,10 @@
   min-width: 200px;
 }
 
+.userprofile-side-panel {
+  margin-top: 4.2%;
+}
+
 .userprofile-table {
   min-width: 102%;
   margin-top: 2%;

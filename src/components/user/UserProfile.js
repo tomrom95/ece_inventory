@@ -160,7 +160,8 @@ class UserProfile extends Component {
             <div className="col-md-9">
               {this.makeTableView()}
             </div>
-            <div className="col-md-3">
+
+            <div className="col-md-3 userprofile-side-panel">
               <div className="card user-info center-text">
               <h4 className="card-header">{this.state.username}</h4>
               <div className="card-block">
