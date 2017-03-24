@@ -109,6 +109,7 @@ module.exports.putAPI = function (req, res){
         addReturnPromises(returnPromises, loan, matchedIndex);
       }
     }
+    loan.lastModified = new Date();
     Promise.all(returnPromises).then(function() {
       loan.save(function(error, loan){
         if (error) return res.send({error: error});
