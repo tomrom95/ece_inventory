@@ -331,7 +331,6 @@
   margin-top: 1px;
   margin-left: 5px;
   margin-right: 5px;
-  border:none;
 }
 
 .detail-view {
@@ -526,6 +525,15 @@
   color: black;
 }
 
+.loan-details {
+  white-space: pre-wrap;
+}
+
+.loan-table {
+  margin-left: 2.5%;
+  width: 94%;
+}
+
 .tooltip-inner {
   background-color: rgba(80,80,80,1)!important;
   border-left:solid;
@@ -569,7 +577,6 @@
 .page-link {
   background-color: white!important;
   color: rgba(0,120,255,1)!important;
-  border: none;
   margin-top: 1px;
 }
 
@@ -599,6 +606,15 @@
 
 .table > thead > tr > th {
   vertical-align: middle;
+}
+
+thead {
+  color: black;
+}
+
+tbody {
+  color: gray;
+  font-weight: bold;
 }
 
 a {

@@ -137,7 +137,7 @@ class RequestTable extends Component {
   denyButton(index){
     return(
 			<td key={"delete-td-"+index} className="subtable-row">
-	      <button key={"deny"+index} className="btn btn-danger btn-sm" onClick={e => this.denyRequest(index)}>
+	      <button key={"deny"+index} className="btn btn-outline-danger btn-sm" onClick={e => this.denyRequest(index)}>
 	        Deny
 	      </button>
 			</td>
@@ -147,7 +147,7 @@ class RequestTable extends Component {
   approveButton(index){
     return(
 			<td key={"approve-td-"+index} className="subtable-row">
-	      <button key={"approve"+index} className="btn btn-success btn-sm" onClick={e => this.approveRequest(index)}>
+	      <button key={"approve"+index} className="btn btn-outline-success btn-sm" onClick={e => this.approveRequest(index)}>
 	        Approve
 	      </button>
 			</td>
@@ -157,7 +157,7 @@ class RequestTable extends Component {
   fulfillButton(index){
     return(
 			<td key={"fulfill-td-"+index} className="subtable-row">
-		    <button key={"fulfill"+index} className="btn btn-success btn-sm" onClick={e => this.fulfillRequest(index)}>
+		    <button key={"fulfill"+index} className="btn btn-outline-success btn-sm" onClick={e => this.fulfillRequest(index)}>
 		      Fulfill
 		    </button>
 			</td>
@@ -237,7 +237,7 @@ class RequestTable extends Component {
   fulfillRequest(index){
     this.props.api.patch('/api/requests/' + this.state.raw_data[index]._id,
       {
-        action: "DISBURSE",
+        action: "FULFILL",
       }
     )
     .then(function(response) {

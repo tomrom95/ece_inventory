@@ -85,7 +85,11 @@ class EditUsers extends Component {
 
   	makeUserProfile() {
   		if (this.state.usernameSelected!==null)
-  			return (<UserProfile username={this.state.usernameSelected} role={this.state.actualRole}/>);
+  			return (<UserProfile
+					_id={this.state.userIdSelected}
+					username={this.state.usernameSelected}
+					role={this.state.actualRole}
+				/>);
   	}
 
 	handleUserChange(id) {
@@ -173,7 +177,9 @@ class EditUsers extends Component {
 		return (
 			<div className="container">
 				<div className="row form-group">
-					<h3>Edit User Credentials</h3>
+					<div className="center-text">
+						<h3>Edit Users</h3>
+					</div>
 				</div>
 				<div className="row">
 					<div className="col-md-8">
