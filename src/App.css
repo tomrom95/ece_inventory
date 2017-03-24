@@ -41,6 +41,12 @@
   min-width: 200px;
 }
 
+.userprofile-table {
+  min-width: 102%;
+  margin-top: 2%;
+  margin-left: 2%;
+}
+
 .inventory-table-heading {
   background-color: gray!important;
   color: white!important;
@@ -271,15 +277,38 @@
 }
 
 .user-info {
-  height: 300px;
-  max-width: 200px;
+  height: 270px;
+  max-width: 90%;
   margin-left: 20px;
   margin-top: 15px;
   border: none;
   border-left: solid;
   border-color: rgba(0,150,255,1);
   border-width: 4px;
+}
 
+.userprofile-page {
+  margin-top: 1%;
+}
+
+.userpage-tab {
+  background-color: rgba(255,255,255,0.87);
+  font-weight: bold;
+  color: gray;
+  margin-right: 20px;
+  text-align: center;
+}
+
+.userpage-tab-container {
+  min-width: 15%;
+  margin-top: -1.8%;
+  border-left: solid;
+  border-color: rgba(0,150,255,1);
+  border-width: 4px;
+}
+
+.userpage-tabs-container {
+  border: none;
 }
 
 .login-form {
@@ -559,6 +588,10 @@
 .loan-table {
   margin-left: 2.5%;
   max-width: 95%;
+  border:none;
+  border-left:solid;
+  border-width: 4px;
+  border-color: rgba(0,150,255,1);
 }
 
 .loan-table-mini {
