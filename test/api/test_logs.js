@@ -4,11 +4,13 @@ let mongoose = require("mongoose");
 let Item = require('../../server/model/items');
 let User = require('../../server/model/users');
 let Log = require('../../server/model/logs');
+let Loan = require('../../server/model/loans');
 let Request = require('../../server/model/requests');
 let Cart = require('../../server/model/carts');
 let CustomField = require('../../server/model/customFields');
 let helpers = require('../../server/auth/auth_helpers');
 let fakeJSONData = require('./test_inventory_data');
+let fakeLoanData = require('./test_loans_data');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let should = chai.should();
@@ -32,8 +34,10 @@ describe('Logging API Test', function () {
 
   beforeEach((done) => { //Before each test we empty the database
     Log.remove({}, (err) => {
+      should.not.exist(err);
       Item.remove({}, (err) => {
         should.not.exist(err);
+        Loan.remove({}, (err)=> {
         User.remove({}, (err) => {
           should.not.exist(err);
           helpers.createNewUser('admin', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
@@ -48,20 +52,36 @@ describe('Logging API Test', function () {
                 should.not.exist(err);
                 managerToken = helpers.createAuthToken(user);
                 managerUser = user;
-                Item.insertMany(fakeJSONData).then(function(array) {
+                Item.insertMany(fakeJSONData, function(err, array) {
+                  should.not.exist(err);
                   allItems = {};
                   array.forEach(function(item) {
                     allItems[item.name] = item;
                   });
-                  done();
+                  var loanDataCopy = JSON.parse(JSON.stringify(fakeLoanData));
+                  loanDataCopy.forEach(function(loan) {
+                    if (loan.user === 'STANDARD') {
+                      loan.user = standardUser._id;
+                    } else {
+                      loan.user = managerUser._id;
+                    }
+                    loan.items.forEach(function(itemObj) {
+                      itemObj.item = allItems[itemObj.item]._id;
+                    });
+                  });
+                  Loan.insertMany(loanDataCopy, function(err, array){
+                    should.not.exist(err);
+                    done();
+                  });
                 });
               });
             });
           });
         });
+        });
+      });
       });
     });
-  });
 
   before((done) =>{
     mockery.enable({
@@ -295,6 +315,52 @@ describe('Logging API Test', function () {
           });
         });
     });
+
+    describe('Logging loans', () =>{
+      it('logs editing a loan', (done) => {
+        Loan.findOne({"request": "444444444444444444444444"}, function(err, loan){
+          should.not.exist(err);
+          console.log(loan);
+          Item.findOne({"name":"1k resistor"},function(err, item1){
+            should.not.exist(err);
+            Item.findOne({"name": "2k resistor"}, function(err, item2){
+              should.not.exist(err);
+              var itemsArray = [
+                {
+                  "item": item1._id,
+                  "status": "DISBURSED"
+                },
+                {
+                  "item": item2._id,
+                  "status": "DISBURSED"
+                }
+              ];
+              chai.request(server)
+                .put('/api/loans/'+loan._id)
+                .set('Authorization', adminToken)
+                .send({
+                  items: itemsArray,
+                })
+                .end((err, res) => {
+                  should.not.exist(err);
+                  res.should.have.status(200);
+                  Log.find({}, function(err, logs) {
+                    should.not.exist(err);
+                    var log = logs[0];
+                    log.items.length.should.be.eql(2);
+                    log.items[0].should.be.eql(item1._id);
+                    log.items[1].should.be.eql(item2._id);
+                    log.type.should.be.eql('LOAN_EDITED');
+                    should.not.exist(log.affected_user);
+                    log.description.should.be.eql('The loan '+ loan._id +' was edited by changing item "1k resistor" from "LENT" to "DISBURSED" and item "2k resistor" from "RETURNED" to "DISBURSED".');
+                    done();
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
 
     describe('Logging editing custom fields in inventory items', () =>{
       var testField;
