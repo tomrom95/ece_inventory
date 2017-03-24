@@ -101,7 +101,6 @@ module.exports.createChangesString = function(oldObject, changes) {
   let quantity_reason = changes.quantity_reason;
   delete changes.quantity_reason;
   Object.keys(changes).forEach(function(key, index, keyArray) {
-    console.log("key" +key)
     if (index !== 0 && keyArray.length !== 2) {
       changesString += ',';
     }
