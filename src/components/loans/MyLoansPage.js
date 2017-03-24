@@ -25,7 +25,6 @@ class MyLoansPage extends Component {
   	}
 
 	render() {
-		console.log(JSON.parse(localStorage.getItem('user')));
 	    var url = "api/loans/?user_id=" + JSON.parse(localStorage.getItem('user'))._id;
 	    console.log(url);
 	    var table = LoanTable;

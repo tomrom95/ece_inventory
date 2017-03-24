@@ -18,6 +18,7 @@ class LoanFilterBox extends Component {
       user: null,
       itemName: null,
       type: null,
+      showUserBox: props.showUserBox
     }
   }
 
@@ -66,10 +67,14 @@ class LoanFilterBox extends Component {
                           options={statuses}
                           onChange={val => this.handleTypeChange(val)} />
                       </div>
-                      <div className="form-group row">
-                        <label>User</label>
-                        <UserSelect callback={id => this.handleUserChange(id)} ref="userSelectBox" api={this.props.api}/>
-                      </div>
+
+                      {this.state.showUserBox === true ?
+                        (<div className="form-group row">
+                          <label>User</label>
+                          <UserSelect callback={id => this.handleUserChange(id)} ref="userSelectBox" api={this.props.api}/>
+                        </div>) : null 
+                      }
+
                       <div className="form-group row">
                           <label>Item Name</label>
                           <input className="form-control" type="text" defaultValue="" ref="itemName"/>

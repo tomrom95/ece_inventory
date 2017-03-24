@@ -52,7 +52,7 @@ class LoanTable extends Component {
 
 	render() {
 		return (
-		<div className="card loan-table">
+		<div className={this.props.showFilterBox ? "card loan-table" : "card loan-table-mini"}>
 		  <ul className="list-group list-group-flush">
 		  	{this.state.rerender === true ? null : this.makeRows()}
 		  </ul>
