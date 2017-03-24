@@ -19,7 +19,14 @@ module.exports.getAPI = function(req, res) {
   if(req.query.item_type){
     appendItemTypeQuery(query, req.query.item_type);
   }
-  if(req.query.item_name){
+  if(req.query.item_id){
+    // You do not need item name query if searching by itemID
+    Item.findById(req.query.item_id, function(err, item){
+      if(err) return res.send({error: err});
+      query = query.searchInArrayByMatchingField("items","item", item._id);
+      returnLoans(query, req, res);
+    });
+  } else if(req.query.item_name){
     var itemQuery = new QueryBuilder();
     itemQuery.searchCaseInsensitive('name',req.query.item_name);
     Item.find(itemQuery.toJSON(), function(err, items){
