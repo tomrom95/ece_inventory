@@ -114,7 +114,13 @@ class UserProfile extends Component {
     }
 
     else if (this.state.tabSelected === "loans") {
-      table = (<LoanPage isGlobal={true} showFilterBox={true}/>);
+      var filters = {
+        user_id: JSON.parse(localStorage.getItem('user'))._id
+      }
+
+      table = (<LoanPage isGlobal={false} 
+                         showFilterBox={true} 
+                         filters={filters}/>);
     }
 
     return (<div className="userprofile-table"> 

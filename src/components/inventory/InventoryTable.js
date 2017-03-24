@@ -200,7 +200,6 @@ class InventoryTable extends Component {
 
 	makeInventoryButtons(data, id) {
 		var list = [];
-		
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
 			list.push(
 				<div key={"cart-"+id} className="inventory-button">
@@ -235,7 +234,7 @@ class InventoryTable extends Component {
 									isButton={true}
 									allCustomFields={this.state.allCustomFields}/>
 				</div>);
-			return <td colSpan="8" className="row buttons-cell"> {list} </td>;
+			return <td className="row buttons-cell"> {list} </td>;
 		}
 
 		else  {

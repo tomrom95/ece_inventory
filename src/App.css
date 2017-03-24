@@ -133,6 +133,9 @@
 .log-table-mini {
   margin-left: 2.9%;
   max-width: 80%!important;
+  border-left: solid;
+  border-width: 4px;
+  border-color: rgba(0,150,255,1);
 }
 
 .log-detailview-links {
@@ -229,6 +232,8 @@
   min-width: 120%;
   margin-top: -50px;
   font-weight: normal;
+  font-size: 85%;
+
 }
 
 .request-button {
@@ -592,6 +597,8 @@
   border-left:solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
+  font-size: 85%;
+  color: gray;
 }
 
 .loan-table-mini {
