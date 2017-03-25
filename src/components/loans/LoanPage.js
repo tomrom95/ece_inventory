@@ -13,9 +13,11 @@ class LoanPage extends Component {
 		  baseURL: 'https://' + location.hostname,
 		  headers: {'Authorization': localStorage.getItem('token')}
 		});
+
 		this.state = {
       		filters: props.filters,
-      		showFilterBox: props.showFilterBox
+      		showFilterBox: props.showFilterBox,
+      		isGlobal: props.isGlobal
 		};
 	}
 
@@ -42,7 +44,10 @@ class LoanPage extends Component {
 		var url = 'api/loans/';
 		if (this.state.filters) {
 			url += '?';
-			if (this.state.filters.user_id)
+			if (this.state.isGlobal === false) {
+				url += "user_id=" + JSON.parse(localStorage.getItem('user'))._id;
+			}
+			else if (this.state.filters.user_id)
 				url += ("user_id=" + this.state.filters.user_id);
 			if (this.state.filters.type)
 				url += ("&item_type=" + this.state.filters.type);
@@ -67,18 +72,21 @@ class LoanPage extends Component {
 	}
 
 	render() {
-		//console.log(JSON.parse(localStorage.getItem('user')));
 	    var url = this.makeURL();
 	    var table = LoanTable;
 
 	    return (
 	    	<div className="row">
-				<div className="col-md-3">
+	    	{ this.state.showFilterBox ?
+				(<div className="col-md-3">
 							<LoanFilterBox api={this.instance}
-										  filterRequests={(type, id, itemName) => 
-										  	this.setFilters(type, id, itemName)}/>
-				</div>
-				<div className="col-md-9">
+											showUserBox={this.state.isGlobal}
+										  	filterRequests={(type, id, itemName) => 
+										  		this.setFilters(type, id, itemName)}/>
+				</div>) : null
+			}
+
+				<div className={this.state.showFilterBox ? "col-md-9" : ""}>
 			    	<PaginationContainer
 			            url={url}
 			            processData={data => this.processData(data)}
@@ -87,7 +95,8 @@ class LoanPage extends Component {
 			            showStatusFilterBox={false}
 			            hasOtherParams={this.state.filters ? true : false}
 			            id={'loan-page'}
-			            rowsPerPage={10} />
+			            rowsPerPage={this.props.rowsPerPage}
+			            extraProps={{showFilterBox: this.state.showFilterBox}} />
 		         </div>
 
 	        </div>);

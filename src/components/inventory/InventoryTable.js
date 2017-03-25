@@ -202,6 +202,7 @@ class InventoryTable extends Component {
 		var list = [];
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
 			list.push(
+				<div key={"cart-"+id} className="inventory-button">
 					<AddToCartButton
 						itemName={data.Name}
 						modelName={data.Model}
@@ -210,20 +211,30 @@ class InventoryTable extends Component {
 						ref={data.meta.id}
 						role={JSON.parse(localStorage.getItem('user')).role}
 						key={"request-popup-button-"+id}/>
+				</div>
 			);
-			list.push(this.makeEditButton(data,id));
+
+			list.push(
+				<div key={"edit-"+id} className="inventory-button">
+					{this.makeEditButton(data,id)}
+				</div>
+			);
 			if (JSON.parse(localStorage.getItem('user')).role === "ADMIN") {
-				list.push(this.makeDeleteButton(id));
+				list.push(
+					<div key={"delete-"+id} className="inventory-button">
+						{this.makeDeleteButton(id)}
+					</div>
+				);
 			}
 
-			list.push(<td className="subtable-row" key={"detail-view-" + id}>
-						<ItemDetailView key={"detail-view-button-" + id}
-								params={{itemID: id}}
-								isButton={true}
-								allCustomFields={this.state.allCustomFields}/>
-					  </td>);
-
-			return list;
+			list.push(
+				<div key={"detail-"+id} className="inventory-button">
+					<ItemDetailView key={"detail-view-button-" + id}
+									params={{itemID: id}}
+									isButton={true}
+									allCustomFields={this.state.allCustomFields}/>
+				</div>);
+			return <td className="row buttons-cell"> {list} </td>;
 		}
 
 		else  {
@@ -251,7 +262,7 @@ class InventoryTable extends Component {
 
 	makeDeleteButton(id) {
 		return (
-			<td key={"delete-td-"+id} className="subtable-row">
+			<div key={"delete-td-"+id}>
 				<button data-toggle="modal" data-target={"#delete-"+id} key={"delete-button-"+id}
 					type="button"
 					className="btn btn-sm btn-danger">
@@ -261,13 +272,12 @@ class InventoryTable extends Component {
 					"This will delete the selected item and all of its instances. Proceed?",
 					"delete",
 					id)}
-			</td>
+			</div>
 		);
 	}
 
 	makeEditButton(data, id) {
 		return (
-			<td key={"edit-td-"+id} className="subtable-row">
 				<ItemEditor data={getPrefill(data)}
 		          api={this.props.api}
 		          callback={this.props.callback}
@@ -276,7 +286,6 @@ class InventoryTable extends Component {
 		          key={"editbutton-"+ id}
 		          ref={"edit-"+id}
 							allCustomFields={this.state.allCustomFields}/>
-	         </td>
         );
 	}
 

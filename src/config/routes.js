@@ -59,6 +59,12 @@ class LogPageWrapper extends Component {
   }
 }
 
+class LoanPageWrapper extends Component {
+    render() {
+        return (<LoanPage isGlobal={true} showFilterBox={true} />);
+    }
+}
+
 class LoanEmailRemindersWrapper extends Component {
   render() {
     return (<LoanEmailReminders/>);
@@ -72,7 +78,7 @@ export default (
     <Route path="Inventory" component={InventoryWrapper}></Route>
     <Route path="CurrentOrders" component={CurrentOrdersWrapper}></Route>
     <Route path="GlobalRequests" component={GlobalRequestsWrapper}></Route>
-    <Route path="Loans" component={LoanPage}></Route>
+    <Route path="Loans" component={LoanPageWrapper}></Route>
     <Route path="MyLoans" component={MyLoansPage}></Route>
     <Route path="Users" component={UsersTab}></Route>
     <Route path="Docs" component={DocsWrapper}></Route>

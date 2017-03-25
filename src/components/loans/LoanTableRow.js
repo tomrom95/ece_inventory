@@ -94,7 +94,6 @@ class LoanTableRow extends Component {
 			      	  </td>
 			      	  )
 			  	  }
-			  	  <td key={key+"-col-4"}></td>
 			    </tr>
 			);
 		}
@@ -144,8 +143,7 @@ class LoanTableRow extends Component {
 	makeControlBar(rowIndex) {
 		var list = [];
 		list.push(
-			<td className="control-bar-cell" key={"controlBar-status-"+rowIndex}>
-				<div className="btn-group request-type-dropdown">
+				<div key={"controlBar-status-"+rowIndex} className="btn-group loan-status-dropdown">
 			        <button type="button" className="btn btn-sm btn-secondary dropdown-toggle  loan-status-dropdown" data-toggle="dropdown">
 			          {this.state.itemsModified[rowIndex].status}
 			        </button>
@@ -163,26 +161,21 @@ class LoanTableRow extends Component {
 			            	RETURNED
 			          	</a>
 			        </div>
-			    </div>
-			</td>);
+			    </div>);
 
 		list.push(
-			<td className="control-bar-button" key={"controlBar-button-"+rowIndex}>
-				<button onClick={() => this.updateItemStatus(rowIndex)} 
+				<button key={"controlBar-button-"+rowIndex} onClick={() => this.updateItemStatus(rowIndex)} 
 						type="button" 
-						className="btn btn-sm btn-primary">
+						className="btn btn-sm btn-primary loantable-button">
 					Apply
-				</button>
-			</td>);
+				</button>);
 
 		list.push(
-			<td className="control-bar-button" key={"controlBar-cancel-"+rowIndex}>
-				<button onClick={this.makeOnClickHide(rowIndex)} 
+				<button key={"controlBar-cancel-"+rowIndex} onClick={this.makeOnClickHide(rowIndex)} 
 						type="button" 
 						className="btn btn-sm btn-outline-danger">
 					Cancel
-				</button>
-			</td>);
+				</button>);
 		return list;
 	}
 
@@ -245,7 +238,6 @@ class LoanTableRow extends Component {
 						      <th>Item Name</th>
 						      <th>Quantity Loaned</th>
 						      <th>Status</th>
-						      <th></th>
 						    </tr>
 						  </thead>
 						  <tbody>
