@@ -585,11 +585,15 @@
 
 .loan-status-dropdown {
   margin-right: 3%;
-  margin-left: 1%;
+  margin-left: -0.9%;
 }
 
 .loantable-button {
   margin-right: 3%;
+}
+
+.loan-control-bar {
+  width: 260px;
 }
 
 .loan-table {
