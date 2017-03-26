@@ -10,7 +10,9 @@ class ShoppingCart extends Component {
 		this.state = {
 			items: [],
 			checked: null,
-			actionType: "Assign to User"
+			actionType: "Assign to User",
+			requestType: "DISBURSEMENT",
+			requestTypeDisplay: "Request for Disbursement"
 		}
 	}
 
@@ -56,7 +58,7 @@ class ShoppingCart extends Component {
 		var params = {
 			action: "CHECKOUT",
 			reason: reason,
-			type: "DISBURSEMENT"
+			type: this.state.requestType
 		}
 
 		var role = JSON.parse(localStorage.getItem('user')).role;
@@ -77,7 +79,6 @@ class ShoppingCart extends Component {
 			}
 			else {
 				var requestId = response.data.request._id;
-				//this.props.callback();
 				if (this.state.checked === true && this.state.actionType === "Disburse to User") {
 					this.props.api.patch('/api/requests/' + requestId, { action: "FULFILL" })
 	    			.then(function(response) {
@@ -184,6 +185,37 @@ class ShoppingCart extends Component {
 	  		);
 	}
 
+	makeRequestTypeDropdown() {
+		if (this.state.items.length === 0) {
+			return null;
+		}
+		return (
+			<div className="row form-group">
+				<div className="btn-group request-type-dropdown">
+			        <button type="button" className="btn btn-secondary dropdown-toggle cart-actiontype-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			          {this.state.requestTypeDisplay}
+			        </button>
+			        <div className="dropdown-menu form-control">
+			          	<a onClick={()=>this.setRequestType("LOAN")} className="dropdown-item" href="#">
+			            	Request for Loan
+			          	</a>
+		          		<a onClick={()=>this.setRequestType("DISBURSEMENT")} className="dropdown-item" href="#">
+			            	Request for Disbursement
+			          	</a>
+			        </div>
+
+			    </div>
+		    </div>
+	    );
+	}
+
+	setRequestType(type) {
+		this.setState({
+			requestType: type,
+			requestTypeDisplay: (type === "DISBURSEMENT" ? "Request for Disbursement" : "Request for Loan")
+		});
+	}
+
 	clearCheckbox() {
 		this.setState({
 			checked: false
@@ -217,8 +249,9 @@ class ShoppingCart extends Component {
 				      		{this.makeCartItems()}
 			        	</div>
 			        	<div className="container">
-			        		{this.makeReasonBox()}
+			       			{this.makeReasonBox()}			       			
 			       			{this.makeDirectRequestRegion()}
+			       			{this.makeRequestTypeDropdown()}
 	                    </div>
 
 				      </div>

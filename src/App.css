@@ -33,6 +33,24 @@
   padding-left: 50px;
 }
 
+.inventory-button {
+  margin-right: 8%;
+}
+
+.buttons-cell {
+  min-width: 200px;
+}
+
+.userprofile-side-panel {
+  margin-top: 4.2%;
+}
+
+.userprofile-table {
+  min-width: 102%;
+  margin-top: 2%;
+  margin-left: 2%;
+}
+
 .inventory-table-heading {
   background-color: gray!important;
   color: white!important;
@@ -112,6 +130,15 @@
   border-color: rgba(0,150,255,1);
   color: gray;
   font-size: 85%;
+  max-width: 93%;
+}
+
+.log-table-mini {
+  margin-left: 2.9%;
+  max-width: 80%!important;
+  border-left: solid;
+  border-width: 4px;
+  border-color: rgba(0,150,255,1);
 }
 
 .log-detailview-links {
@@ -133,12 +160,16 @@
 
 .item-detail-view-logs {
   margin-left: -3.4%;
-  min-width: 105%;
+  max-width:80%;
 }
 
 .item-detail-view-requests {
   margin-left: -6.5%;
   min-width: 115%;
+}
+
+.item-detail-view-loans {
+  margin-left: -5.3%;
 }
 
 .add-to-cart-title {
@@ -204,6 +235,8 @@
   min-width: 120%;
   margin-top: -50px;
   font-weight: normal;
+  font-size: 85%;
+
 }
 
 .request-button {
@@ -252,15 +285,36 @@
 }
 
 .user-info {
-  height: 300px;
-  max-width: 200px;
+  height: 270px;
+  max-width: 90%;
   margin-left: 20px;
   margin-top: 15px;
   border: none;
   border-left: solid;
   border-color: rgba(0,150,255,1);
   border-width: 4px;
+}
 
+.userprofile-page {
+  margin-top: 1%;
+}
+
+.userpage-tab {
+  background-color: rgba(255,255,255,0.87);
+  font-weight: bold;
+  color: gray;
+  margin-right: 20px;
+  text-align: center;
+}
+
+.userpage-tab-container {
+  min-width: 15%;
+  margin-top: -23px;
+  margin-left: 5px;
+}
+
+.userpage-tabs-container {
+  border: none;
 }
 
 .login-form {
@@ -330,7 +384,6 @@
   margin-top: 1px;
   margin-left: 5px;
   margin-right: 5px;
-  border:none;
 }
 
 .detail-view {
@@ -525,6 +578,35 @@
   color: black;
 }
 
+.loan-details {
+  white-space: pre-wrap;
+}
+
+.loan-status-dropdown {
+  margin-right: 3%;
+  margin-left: 1%;
+}
+
+.loantable-button {
+  margin-right: 3%;
+}
+
+.loan-table {
+  margin-left: 2.5%;
+  max-width: 95%;
+  border:none;
+  border-left:solid;
+  border-width: 4px;
+  border-color: rgba(0,150,255,1);
+  font-size: 85%;
+  color: gray;
+}
+
+.loan-table-mini {
+  margin-left: 2.5%;
+  max-width:55%;
+}
+
 .tooltip-inner {
   background-color: rgba(80,80,80,1)!important;
   border-left:solid;
@@ -571,7 +653,6 @@
 .page-link {
   background-color: white!important;
   color: rgba(0,120,255,1)!important;
-  border: none;
   margin-top: 1px;
 }
 
@@ -601,6 +682,15 @@
 
 .table > thead > tr > th {
   vertical-align: middle;
+}
+
+thead {
+  color: black;
+}
+
+tbody {
+  color: gray;
+  font-weight: bold;
 }
 
 a {

@@ -692,7 +692,8 @@ GET
 params: {
 	user_id: String,
 	item_name: String,
-	type: String, // ('OUTSTANDING', 'COMPLETE')
+	item_type: String, // ('OUTSTANDING', 'COMPLETE'),
+	item_id: String
 }
 return: [{
 	user: {

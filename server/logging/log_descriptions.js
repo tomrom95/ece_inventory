@@ -62,6 +62,13 @@ module.exports.editedItem = function(oldItem, changes, user) {
   return description;
 }
 
+module.exports.editedLoan = function(oldLoan, changes, user){
+  var description = 'The loan ' + oldLoan._id + ' was edited by changing';
+  description += StringHelpers.createLoanEditString(oldLoan, changes);
+  description += '.';
+  return description;
+}
+
 module.exports.editedItemCustomField = function(item, field, oldValue, newValue) {
   return 'The item ' + item.name + ' was edited by changing the custom field '
     + field.name + ' from ' + oldValue + ' to ' + newValue + '.';

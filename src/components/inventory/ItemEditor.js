@@ -224,6 +224,9 @@ class ItemEditor extends Component {
 						} else {
 							this.clearForm();
 							this.props.callback();
+			        		this.setState({
+			        			justApplied: true
+			        		});							
 						}
 					}.bind(this))
 					.catch(function(error) {
@@ -252,6 +255,9 @@ class ItemEditor extends Component {
 						alert(response.data.error);
 					} else {
 						this.props.callback();
+						this.setState({
+		        			justApplied: true
+			        	});	
 					}
 				}.bind(this))
 				.catch(function(error) {

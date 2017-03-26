@@ -70,7 +70,7 @@ class AddToCartButton extends Component {
 
 	render() {
 		return (
-			<td className="subtable-row">
+			<div>
 				<button type="button" className="btn btn-sm btn-outline-primary request-button" data-toggle="modal"
 					data-target={"#requestPopup-"+this.props.itemId}>
 						<div>
@@ -105,7 +105,7 @@ class AddToCartButton extends Component {
 				    </div>
 				  </div>
 				</div>
-			</td>
+			</div>
 		);
 	}
 }
