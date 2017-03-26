@@ -176,7 +176,7 @@ class LoanTableRow extends Component {
 						className="btn btn-sm btn-outline-danger">
 					Cancel
 				</button>);
-		return list;
+		return (<td className="loan-control-bar"> {list} </td>);
 	}
 
 	setDropdownStatus(rowIndex, newStatus) {

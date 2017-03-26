@@ -361,7 +361,7 @@ class PaginationContainer extends Component {
 
 	          {this.makePageControlBar()}
 
-	          <div className="row">
+	          <div>
 	            {table}
 	          </div>
 	        </div>

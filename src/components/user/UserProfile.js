@@ -20,7 +20,8 @@ class UserProfile extends Component {
       role: props.role,
       email: props.email,
       subscribed: props.subscribed ? props.subscribed : false,
-      tabSelected: "requests"
+      tabSelected: props.showDetailedPage ? "requests" : "profile_info",
+      showDetailedPage: props.showDetailedPage
     }
   }
 
@@ -104,7 +105,7 @@ class UserProfile extends Component {
 
   }
 
-  makeTableView() {
+  makeActiveView() {
     var table = null;
     if (this.state.tabSelected === "requests") {
       table = (<CurrentOrders
@@ -123,6 +124,23 @@ class UserProfile extends Component {
                          filters={filters}/>);
     }
 
+    else if (this.state.tabSelected === "profile_info") {
+      return (<div className="col-md-3 userprofile-side-panel">
+                <div className="card user-info center-text">
+                  <h4 className="card-header">{this.state.username}</h4>
+                  <div className="card-block">
+                    <h5 className="card-title row">Privilege Level:</h5>
+                    <p className="card-title row"> {this.state.role} </p>
+                  </div>
+                  <div className="card-block">
+                    <h5 className="card-title row">Email:</h5>
+                    <p className="card-title row"> {this.state.email} </p>
+                  </div>
+                </div>
+                {this.subscribeToEmails()}
+              </div>);
+    }
+
     return (<div className="userprofile-table"> 
               {table}
             </div>);
@@ -138,9 +156,16 @@ class UserProfile extends Component {
 
   render() {
     return(
-      <div className="row">
-        <div className="col-md-12">
+      <div>
+        { this.state.showDetailedPage ? 
           <ul className="nav nav-links userpage-tabs-container">
+            <li className="nav-item userpage-tab-container">
+              <a className="nav-link userpage-tab" 
+                  href="#"
+                  onClick={e => this.setActiveTab("profile_info")}>
+                  User Profile
+              </a>
+            </li>
             <li className="nav-item userpage-tab-container">
               <a className="nav-link userpage-tab" 
                   href="#"
@@ -156,27 +181,11 @@ class UserProfile extends Component {
               </a>
             </li>
           </ul>
-          <div className="row userprofile-page">
-            <div className="col-md-9">
-              {this.makeTableView()}
-            </div>
+        : null }
 
-            <div className="col-md-3 userprofile-side-panel">
-              <div className="card user-info center-text">
-              <h4 className="card-header">{this.state.username}</h4>
-              <div className="card-block">
-                <h5 className="card-title row">Privilege Level:</h5>
-                <p className="card-title row"> {this.state.role} </p>
-              </div>
-              <div className="card-block">
-                <h5 className="card-title row">Email:</h5>
-                <p className="card-title row"> {this.state.email} </p>
-              </div>
-            </div>
-            {this.subscribeToEmails()}
-              </div>
-            </div>
-        </div>
+          <div className="row userprofile-page">
+              {this.makeActiveView()}
+          </div>
 
 
       </div>

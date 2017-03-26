@@ -86,10 +86,10 @@ class EditUsers extends Component {
   	makeUserProfile() {
   		if (this.state.usernameSelected!==null)
   			return (<UserProfile
+  					showDetailedPage={false}
 					_id={this.state.userIdSelected}
 					username={this.state.usernameSelected}
-					role={this.state.actualRole}
-				/>);
+					role={this.state.actualRole}/>);
   	}
 
 	handleUserChange(id) {
@@ -182,7 +182,7 @@ class EditUsers extends Component {
 					</div>
 				</div>
 				<div className="row">
-					<div className="col-md-8">
+					<div className="col-md-6">
 						{this.makeUserSelectDropdown()}
 						{this.makeRoleSelectDropdown()}
 
@@ -195,7 +195,7 @@ class EditUsers extends Component {
 							</div>
 			            </div>
 					</div>
-					<div className="col-md-4">
+					<div className="col-md-6">
 						{this.makeUserProfile()}
 					</div>
 				</div>

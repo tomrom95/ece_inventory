@@ -224,7 +224,8 @@ class ItemDetailView extends React.Component {
 
   makeLoanView() {
     var filters = {
-      item_name: this.state.item.name
+      item_name: this.state.item.name,
+      type: "OUTSTANDING"
     }
 
      if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
