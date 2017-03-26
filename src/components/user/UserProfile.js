@@ -14,13 +14,11 @@ class UserProfile extends Component {
 
   constructor(props) {
     super(props);
+    var user = JSON.parse(localStorage.getItem('user'));
     this.state = {
-      _id: props._id,
-      username: props.username,
-      role: props.role,
-      email: props.email,
-      subscribed: props.subscribed ? props.subscribed : false,
-      tabSelected: "requests"
+      _id: user._id,
+      tabSelected: "requests",
+      editMode: false
     }
   }
 
@@ -41,67 +39,23 @@ class UserProfile extends Component {
 
   loadUser() {
     this.instance.get('/api/users/' + this.state._id).then(function(response) {
-      if (response.error) {
-        console.log(response.error);
-      }
-      this.setState(response.data);
-    }.bind(this)).catch(function(error) {
-      console.log(error);
-    });
-  }
-
-  handleChange(event){
-    var isChecked = event.target.checked;
-    this.instance.put('/api/users/' + this.state._id, {
-      subscribed: isChecked,
-    }).then(function(response){
       if (response.data.error) {
         console.log(response.data.error);
       }
-      else{
-        this.setState({
-          subscribed: isChecked,
-        });
-        alert("Successfully changed subscribe status.");
-      }
+      var user = response.data;
+      this.setState({
+        _id: user._id,
+        netid: user.netid,
+        username: user.username,
+        role: user.role,
+        email: user.email,
+        subscribed: user.subscribed ? user.subscribed : false,
+        firstName: user.first_name,
+        lastName: user.last_name,
+      });
     }.bind(this)).catch(function(error) {
       console.log(error);
     });
-  }
-
-  subscribeToEmails(){
-    var subscribed = (<input
-      type="checkbox"
-      checked={this.state.subscribed}
-      onChange={e=>this.handleChange(e)}
-      ref={"subcribe-checkbox"}
-      key={"subcribe-checkbox"} />);
-    if(this.state.role === "STANDARD"){
-      return null;
-    }
-    else{
-
-      return(
-        <div className="card user-info">
-          <h4 className="card-header">Subscribe?</h4>
-          <div className="card-block">
-            <h6 className="card-title row">
-              Subscribing will cause an email to be sent to your account whenever a user request is filed.
-            </h6>
-            <h6 className="card-title row">
-              <strong> {this.state.email} </strong>
-            </h6>
-            <div className="card-title row">
-              <label>
-              {subscribed}
-              {" Subscribed"}
-              </label>
-            </div>
-
-          </div>
-        </div>);
-    }
-
   }
 
   makeTableView() {
@@ -118,16 +72,14 @@ class UserProfile extends Component {
         user_id: JSON.parse(localStorage.getItem('user'))._id
       }
 
-      table = (<LoanPage isGlobal={false} 
-                         showFilterBox={true} 
+      table = (<LoanPage isGlobal={false}
+                         showFilterBox={true}
                          filters={filters}/>);
     }
 
-    return (<div className="userprofile-table"> 
+    return (<div className="userprofile-table">
               {table}
             </div>);
-
-
   }
 
   setActiveTab(tab) {
@@ -136,20 +88,193 @@ class UserProfile extends Component {
     });
   }
 
+  editButtonClick() {
+    this.setState({editMode: true});
+  }
+
+  cancelButtonClick() {
+    ['email', 'firstName', 'lastName'].forEach(function(field) {
+      this.refs[field].value = this.state[field];
+    }.bind(this));
+    this.refs.subscribedCheckbox.checked = this.state.subscribed;
+    this.setState({editMode: false});
+  }
+
+  submitButtonClick() {
+    this.instance.put('/api/users/' + this.state._id, {
+      subscribed: this.refs.subscribedCheckbox.checked,
+      email: this.refs.email.value,
+      first_name: this.refs.firstName.value,
+      last_name: this.refs.lastName.value
+    }).then(function(response){
+      if (response.data.error) {
+        console.log(response.data.error);
+      }
+      else{
+        var user = response.data;
+        localStorage.setItem('user', JSON.stringify(user));
+        this.setState({
+          _id: user._id,
+          username: user.username,
+          netid: user.netid,
+          role: user.role,
+          email: user.email,
+          subscribed: user.subscribed ? user.subscribed : false,
+          firstName: user.first_name,
+          lastName: user.last_name,
+          editMode: false
+        });
+        alert("Successfully edited your profile.");
+      }
+    }.bind(this)).catch(function(error) {
+      console.log(error);
+    });
+  }
+
+  renderEditMode() {
+    var subscribed = null;
+    if (this.state.role !== 'STANDARD') {
+      subscribed = (
+        <div className="card-block">
+          <h5 className="card-title row">Subscribed to Emails:</h5>
+          <p className="card-title row"> {this.state.subscribed} </p>
+        </div>
+      )
+    }
+
+    return(
+      <div className="col-md-3 userprofile-side-panel">
+        <div className="card user-info center-text">
+          <div className="card-block user-card-block">
+            <h5 className="card-title row">Email:</h5>
+            <input
+              className="form-control"
+              type="text"
+              ref="email"
+              defaultValue={this.state.email}
+              id={"email-field"}/>
+          </div>
+          <div className="card-block user-card-block">
+            <h5 className="card-title row">First Name:</h5>
+            <input
+              className="form-control"
+              type="text"
+              ref="firstName"
+              defaultValue={this.state.firstName}
+              id={"first-name-field"}/>
+          </div>
+          <div className="card-block user-card-block">
+            <h5 className="card-title row">Last Name:</h5>
+            <input
+              className="form-control"
+              type="text"
+              ref="lastName"
+              defaultValue={this.state.lastName}
+              id={"last-name-field"}/>
+          </div>
+          <div className="card-block user-card-block">
+            <h5 className="card-title row">Subscribed:</h5>
+            <input
+              type="checkbox"
+              ref={"subscribedCheckbox"}
+              key={"subscribedCheckbox"}
+              defaultChecked={this.state.subscribed}
+            />
+          </div>
+          <div className="card-block user-card-block">
+            <button
+              className="btn btn-primary"
+              onClick={this.submitButtonClick.bind(this)}
+            >
+              Submit
+            </button>
+          </div>
+          <div className="card-block user-card-block">
+            <button
+              className="btn btn-primary"
+              onClick={this.cancelButtonClick.bind(this)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderViewMode() {
+    var subscribed = null;
+    if (this.state.role !== 'STANDARD') {
+      var subscribedText = this.state.subscribed ? 'Yes' : 'No';
+      subscribed = (
+        <div className="card-block user-card-block">
+          <h5 className="card-title row">Subscribed to Emails:</h5>
+          <p className="card-title row"> {subscribedText} </p>
+        </div>
+      )
+    }
+
+    var userNameField = null;
+    if (this.state.username) {
+      userNameField = (
+        <div className="card-block user-card-block">
+          <h5 className="card-title row">Username:</h5>
+          <p className="card-title row"> {this.state.username} </p>
+        </div>
+      );
+    } else {
+      userNameField = (
+        <div className="card-block user-card-block">
+          <h5 className="card-title row">Net ID:</h5>
+          <p className="card-title row"> {this.state.netid} </p>
+        </div>
+      );
+    }
+
+    return(
+      <div className="col-md-3 userprofile-side-panel">
+        <div className="card user-info center-text">
+          {userNameField}
+          <div className="card-block user-card-block">
+            <h5 className="card-title row">Name:</h5>
+            <p className="card-title row"> {this.state.firstName + ' ' + this.state.lastName} </p>
+          </div>
+          <div className="card-block user-card-block">
+            <h5 className="card-title row">Email:</h5>
+            <p className="card-title row"> {this.state.email} </p>
+          </div>
+          <div className="card-block user-card-block">
+            <h5 className="card-title row">Privilege Level:</h5>
+            <p className="card-title row"> {this.state.role} </p>
+          </div>
+          {subscribed}
+          <div className="card-block user-card-block">
+            <button
+              className="btn btn-primary"
+              onClick={this.editButtonClick.bind(this)}
+            >
+              Edit
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return(
       <div className="row">
         <div className="col-md-12">
           <ul className="nav nav-links userpage-tabs-container">
             <li className="nav-item userpage-tab-container">
-              <a className="nav-link userpage-tab" 
+              <a className="nav-link userpage-tab"
                   href="#"
                   onClick={e => this.setActiveTab("requests")}>
                   My Requests
               </a>
             </li>
             <li className="nav-item userpage-tab-container">
-              <a className="nav-link userpage-tab" 
+              <a className="nav-link userpage-tab"
                   href="#"
                   onClick={e => this.setActiveTab("loans")}>
                   My Loans
@@ -160,22 +285,8 @@ class UserProfile extends Component {
             <div className="col-md-9">
               {this.makeTableView()}
             </div>
-
-            <div className="col-md-3 userprofile-side-panel">
-              <div className="card user-info center-text">
-              <h4 className="card-header">{this.state.username}</h4>
-              <div className="card-block">
-                <h5 className="card-title row">Privilege Level:</h5>
-                <p className="card-title row"> {this.state.role} </p>
-              </div>
-              <div className="card-block">
-                <h5 className="card-title row">Email:</h5>
-                <p className="card-title row"> {this.state.email} </p>
-              </div>
-            </div>
-            {this.subscribeToEmails()}
-              </div>
-            </div>
+            {this.state.editMode ? this.renderEditMode() : this.renderViewMode()}
+          </div>
         </div>
 
 

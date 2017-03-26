@@ -83,15 +83,6 @@ class EditUsers extends Component {
   		return null;
   	}
 
-  	makeUserProfile() {
-  		if (this.state.usernameSelected!==null)
-  			return (<UserProfile
-					_id={this.state.userIdSelected}
-					username={this.state.usernameSelected}
-					role={this.state.actualRole}
-				/>);
-  	}
-
 	handleUserChange(id) {
 		if (id === null) {
 			this.setState({
@@ -175,14 +166,14 @@ class EditUsers extends Component {
 		}
 
 		return (
-			<div className="container">
+			<div>
 				<div className="row form-group">
 					<div className="center-text">
 						<h3>Edit Users</h3>
 					</div>
 				</div>
 				<div className="row">
-					<div className="col-md-8">
+					<div className="offset-md-4 col-md-4 container">
 						{this.makeUserSelectDropdown()}
 						{this.makeRoleSelectDropdown()}
 
@@ -193,10 +184,7 @@ class EditUsers extends Component {
 							<div className="col-xs-6">
 								{this.makeCancelButton()}
 							</div>
-			            </div>
-					</div>
-					<div className="col-md-4">
-						{this.makeUserProfile()}
+			      </div>
 					</div>
 				</div>
 			</div>
