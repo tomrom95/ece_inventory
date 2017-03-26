@@ -14,20 +14,21 @@ class UserProfile extends Component {
 
   constructor(props) {
     super(props);
-    var user = JSON.parse(localStorage.getItem('user'));
     this.state = {
-      _id: user._id,
+      _id: props._id,
       editMode: false,
       tabSelected: props.showDetailedPage ? "requests" : "profile_info",
-      showDetailedPage: props.showDetailedPage
+      showDetailedPage: props.showDetailedPage,
+      disableEditing: props.disableEditing || false
     }
   }
 
   componentWillReceiveProps(newProps) {
     this.setState({
       _id: newProps._id
+    }, () => {
+      this.loadUser();
     });
-    this.loadUser();
   }
 
   componentWillMount(){
@@ -236,12 +237,14 @@ class UserProfile extends Component {
     }
 
     return(
-      <div className="col-md-3 userprofile-side-panel">
+      <div className="userprofile-side-panel">
         <div className="card user-info center-text">
           {userNameField}
           <div className="card-block user-card-block">
             <h5 className="card-title row">Name:</h5>
-            <p className="card-title row"> {this.state.firstName + ' ' + this.state.lastName} </p>
+            <p className="card-title row">
+              {(this.state.firstName || '') + ' ' + (this.state.lastName || '')}
+            </p>
           </div>
           <div className="card-block user-card-block">
             <h5 className="card-title row">Email:</h5>
@@ -252,14 +255,16 @@ class UserProfile extends Component {
             <p className="card-title row"> {this.state.role} </p>
           </div>
           {subscribed}
-          <div className="card-block user-card-block">
-            <button
-              className="btn btn-primary"
-              onClick={this.editButtonClick.bind(this)}
-            >
-              Edit
-            </button>
-          </div>
+          { this.state.disableEditing ? null :
+            <div className="card-block user-card-block">
+              <button
+                className="btn btn-primary"
+                onClick={this.editButtonClick.bind(this)}
+              >
+                Edit
+              </button>
+            </div>
+          }
         </div>
       </div>
     );
