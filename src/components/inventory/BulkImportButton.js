@@ -63,17 +63,14 @@ class BulkImportButton extends Component {
 
 	render() {
 		var button =
-			<button type="button"
-				className="btn btn-outline-primary add-button"
+      <a className="nav-link userpage-tab" href="#"
 				data-toggle="modal"
 				data-target={"#bulkImportModal"}>
 				Import
-			</button>;
-
-
+			</a>;
 
 		return (
-		<th>
+		<div>
 			{button}
 			<div className="modal fade"
 				id={"bulkImportModal"}
@@ -96,7 +93,7 @@ class BulkImportButton extends Component {
 			    </div>
 			  </div>
 			</div>
-		</th>
+		</div>
 		);
 	}
 

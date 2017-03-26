@@ -32,7 +32,6 @@ class SubtableRow extends Component {
 			<tr>
 				{this.makeList(this.state.data)}
 				{this.makeButtons()}
-
 			</tr>
 		);
 	}
@@ -47,16 +46,11 @@ class SubtableRow extends Component {
 				value = "N/A";
 			htmlList.push(<td className="subtable-row" key={columnTag}> {value} </td>);
 		}
-		htmlList.push(<td key={"space-1"}></td>);
-		htmlList.push(<td key={"space-2"}></td>);
-		htmlList.push(<td key={"space-3"}></td>);
-		htmlList.push(<td key={"space-4"}></td>);
 		return htmlList;
 	}
 
 	makeButtons() {
 			if(this.props.request_buttons){
-
 				return this.props.request_buttons;
 			}
 

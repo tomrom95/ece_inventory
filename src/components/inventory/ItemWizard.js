@@ -430,7 +430,7 @@ class ItemWizard extends Component {
   	render() {
 		var button =
 			<button type="button"
-				className="btn btn-outline-primary add-button"
+				className="btn btn-outline-primary add-button align-right"
 				data-toggle="modal"
 				data-target={"#createModal"}
 				onMouseOver={() => this.activateView()}>

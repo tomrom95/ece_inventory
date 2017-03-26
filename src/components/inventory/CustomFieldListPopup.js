@@ -255,21 +255,20 @@ class CustomFieldListPopup extends Component {
 
   render() {
     var button =
-      <button type="button"
-        className="btn btn-outline-primary add-button"
+      <a className="nav-link userpage-tab" href="#"
         data-toggle="modal"
         data-target={"#editCustomFieldModal"}
         onMouseOver={() => this.loadData()}
         onClick={() => this.loadData()}>
         Edit Fields
-      </button>
+      </a>
 
     if (this.state.activated === false) {
-      return (<th>{button}</th>);
+      return (<div>{button}</div>);
     }
 
     return (
-    <th>
+    <div>
       {button}
       <div className="modal fade"
         id={"editCustomFieldModal"}
@@ -304,7 +303,7 @@ class CustomFieldListPopup extends Component {
           </div>
         </div>
       </div>
-    </th>
+    </div>
     );
   }
 }

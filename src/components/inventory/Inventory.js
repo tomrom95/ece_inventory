@@ -33,15 +33,16 @@ class Inventory extends Component {
     var url = "api/inventory/";
     var table = InventoryTable;
 
-    return (<PaginationContainer
-            url={url}
-            processData={data => this.processData(data)}
-            renderComponent={table}
-            showFilterBox={true}
-            showStatusFilterBox={false}
-            hasOtherParams={false}
-            id={'inventory-page'}
-            rowsPerPage={15} />);
+    return (
+          <PaginationContainer
+              url={url}
+              processData={data => this.processData(data)}
+              renderComponent={table}
+              showFilterBox={true}
+              showStatusFilterBox={false}
+              hasOtherParams={false}
+              id={'inventory-page'}
+              rowsPerPage={15} />);
 
   }
 }
