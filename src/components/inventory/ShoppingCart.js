@@ -225,14 +225,13 @@ class ShoppingCart extends Component {
 	render() {
 		var submitDisabled = (this.state.items.length===0) ? "disabled" : "";
  		return (
-			<th>
-				<button data-toggle="modal"
+ 			<div>
+                <a className="nav-link userpage-tab" href="#"
+                		data-toggle="modal"
 						data-target={"#cart-button"}
-						type="button"
-						className="btn btn-outline-primary"
 						onClick={() => this.loadData()}>
-							My Cart <span className="fa fa-shopping-cart"></span>
-				</button>
+						My Cart <span className="fa fa-shopping-cart"></span>
+				</a>
 				<div className="modal fade" id="cart-button">
 				  <div className="modal-dialog" role="document">
 				    <div className="modal-content cart-modal">
@@ -272,7 +271,7 @@ class ShoppingCart extends Component {
 				    </div>
 				  </div>
 				</div>
-			</th>
+			</div>
 		);
 	}
 }

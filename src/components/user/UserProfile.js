@@ -17,8 +17,9 @@ class UserProfile extends Component {
     var user = JSON.parse(localStorage.getItem('user'));
     this.state = {
       _id: user._id,
-      tabSelected: "requests",
-      editMode: false
+      editMode: false,
+      tabSelected: props.showDetailedPage ? "requests" : "profile_info",
+      showDetailedPage: props.showDetailedPage
     }
   }
 
@@ -58,7 +59,7 @@ class UserProfile extends Component {
     });
   }
 
-  makeTableView() {
+  makeActiveView() {
     var table = null;
     if (this.state.tabSelected === "requests") {
       table = (<CurrentOrders
@@ -75,6 +76,9 @@ class UserProfile extends Component {
       table = (<LoanPage isGlobal={false}
                          showFilterBox={true}
                          filters={filters}/>);
+    }
+    else if (this.state.tabSelected === "profile_info") {
+      return this.state.editMode ? this.renderEditMode() : this.renderViewMode();
     }
 
     return (<div className="userprofile-table">
@@ -263,9 +267,16 @@ class UserProfile extends Component {
 
   render() {
     return(
-      <div className="row">
-        <div className="col-md-12">
+      <div>
+        { this.state.showDetailedPage ?
           <ul className="nav nav-links userpage-tabs-container">
+            <li className="nav-item userpage-tab-container">
+              <a className="nav-link userpage-tab"
+                  href="#"
+                  onClick={e => this.setActiveTab("profile_info")}>
+                  User Profile
+              </a>
+            </li>
             <li className="nav-item userpage-tab-container">
               <a className="nav-link userpage-tab"
                   href="#"
@@ -281,15 +292,11 @@ class UserProfile extends Component {
               </a>
             </li>
           </ul>
+        : null }
+
           <div className="row userprofile-page">
-            <div className="col-md-9">
-              {this.makeTableView()}
-            </div>
-            {this.state.editMode ? this.renderEditMode() : this.renderViewMode()}
+              {this.makeActiveView()}
           </div>
-        </div>
-
-
       </div>
     );
   }

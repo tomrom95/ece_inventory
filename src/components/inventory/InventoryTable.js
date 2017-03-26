@@ -115,18 +115,59 @@ class InventoryTable extends Component {
 	}
 
 	render() {
+
+		var isManager = JSON.parse(localStorage.getItem('user')).role === "ADMIN" 
+				|| JSON.parse(localStorage.getItem('user')).role === "MANAGER";
+
 		return (
-			<div className="maintable-container">
-				<table className="table table-sm maintable-body">
-				  <thead className="thread">
-				    <tr>
-			    	  {this.makeColumnKeyElements(this.state.columnKeys)}
-				    </tr>
-				  </thead>
-				  <tbody>
-				  	{this.makeRows(this.state.rows)}
-				  </tbody>
-				</table>
+			<div className="row">
+				<div className="col-md-12">
+		            <ul className="nav nav-links inventorypage-tabs-container">
+		            { isManager === false ? null :
+		              <li className="nav-item userpage-tab-container">
+		                    <CustomFieldsPopup
+										api={this.props.api}
+										key={"makefields-button"}
+										callback={this.setCustomFields.bind(this)}/>
+		              </li>
+		          	}
+
+	            	{ isManager === false ? null :
+		              <li className="nav-item userpage-tab-container">
+		                    <CustomFieldListPopup
+										api={this.props.api}
+										key={"editfields-button"}
+										callback={this.setCustomFields.bind(this)}
+										allCustomFields={this.state.allCustomFields}/>
+		              </li>
+		          	}
+
+		            { isManager === false ? null :
+		              <li className="nav-item userpage-tab-container">
+		                    <BulkImportButton
+									key={"bulkimport-button"}
+									api={this.props.api}
+									callback={this.props.callback}/>
+		              </li>
+		          	}
+		              <li className="nav-item userpage-tab-container">
+	                    	<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>
+		              </li>
+		            </ul>
+		        </div>
+
+				<div className="maintable-container">
+					<table className="table table-sm maintable-body">
+					  <thead className="thread">
+					    <tr>
+				    	  {this.makeColumnKeyElements(this.state.columnKeys)}
+					    </tr>
+					  </thead>
+					  <tbody>
+					  	{this.makeRows(this.state.rows)}
+					  </tbody>
+					</table>
+				</div>
 			</div>
 		);
 	}
@@ -139,22 +180,6 @@ class InventoryTable extends Component {
 		}
 
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
-			if(JSON.parse(localStorage.getItem('user')).role === "ADMIN"){
-				list.push(
-						<CustomFieldListPopup
-										api={this.props.api}
-										key={"editfields-button"}
-										callback={this.setCustomFields.bind(this)}
-										allCustomFields={this.state.allCustomFields}/>
-								);
-				list.push(
-						<CustomFieldsPopup
-										api={this.props.api}
-										key={"makefields-button"}
-										callback={this.setCustomFields.bind(this)}/>
-								);
-			}
-			list.push(<ShoppingCart callback={this.props.callback} api={this.props.api} key={"shopping-cart-button"}/>);
 			list.push(
 					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
@@ -162,19 +187,7 @@ class InventoryTable extends Component {
 	          			callback={this.props.callback}
 									allCustomFields={this.state.allCustomFields}/>
 	          	);
-			list.push(
-					<BulkImportButton
-									key={"bulkimport-button"}
-									api={this.props.api}
-									callback={this.props.callback}/>
-			);
-
 		}
-		else {
-    		list.push(<th key={"buttonSpace-1"}></th>);
-			list.push(<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>);
-		}
-
 		return list;
 	}
 
@@ -234,7 +247,7 @@ class InventoryTable extends Component {
 									isButton={true}
 									allCustomFields={this.state.allCustomFields}/>
 				</div>);
-			return <td className="row buttons-cell"> {list} </td>;
+			return <td className="row buttons-cell"> <div className="row align-right-inventory"> {list} </div> </td>;
 		}
 
 		else  {

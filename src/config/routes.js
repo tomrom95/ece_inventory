@@ -13,6 +13,12 @@ import MyLoansPage from '../components/loans/MyLoansPage.js';
 import {Route} from 'react-router';
 import LoanEmailReminders from '../components/emailing/LoanEmailReminders.js';
 
+class UserProfileWrapper extends Component {
+    render() {
+        return (<UserProfile {...this.props} showDetailedPage ={true} />);
+    }
+}
+
 class InventoryWrapper extends Component {
     render() {
         return <Inventory api={"something"}/>;
@@ -74,7 +80,7 @@ class LoanEmailRemindersWrapper extends Component {
 
 export default (
   <Route path="/" component={Home}>
-    <Route path="UserProfile" component={UserProfile}></Route>
+    <Route path="UserProfile" component={UserProfileWrapper}></Route>
     <Route path="Inventory" component={InventoryWrapper}></Route>
     <Route path="CurrentOrders" component={CurrentOrdersWrapper}></Route>
     <Route path="GlobalRequests" component={GlobalRequestsWrapper}></Route>

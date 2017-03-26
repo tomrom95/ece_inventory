@@ -83,6 +83,15 @@ class EditUsers extends Component {
   		return null;
   	}
 
+  	makeUserProfile() {
+  		if (this.state.usernameSelected!==null)
+  			return (<UserProfile
+  					showDetailedPage={false}
+					_id={this.state.userIdSelected}
+					username={this.state.usernameSelected}
+					role={this.state.actualRole}/>);
+  	}
+
 	handleUserChange(id) {
 		if (id === null) {
 			this.setState({
@@ -173,7 +182,7 @@ class EditUsers extends Component {
 					</div>
 				</div>
 				<div className="row">
-					<div className="offset-md-4 col-md-4 container">
+					<div className="col-md-6">
 						{this.makeUserSelectDropdown()}
 						{this.makeRoleSelectDropdown()}
 
@@ -184,7 +193,10 @@ class EditUsers extends Component {
 							<div className="col-xs-6">
 								{this.makeCancelButton()}
 							</div>
-			      </div>
+			            </div>
+					</div>
+					<div className="col-md-6">
+						{this.makeUserProfile()}
 					</div>
 				</div>
 			</div>
