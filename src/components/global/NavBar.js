@@ -19,7 +19,6 @@ class NavBar extends Component {
   render() {
 
     if(this.props.role === "ADMIN" ){
-
       return (
         <nav className="navbar fixed-top navbar-toggleable-md navbar-light bg-faded">
           <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,12 +97,9 @@ class NavBar extends Component {
                   </button>
                 </li>
             </ul>
-
-
           </div>
         </nav>
       );
-
     }
     else if(this.props.role === "MANAGER"){
       return (
@@ -136,13 +132,6 @@ class NavBar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/CurrentOrders"
-                      className={"nav-link" + (this.state.activeTab === "/CurrentOrders" ? " active" : "")}
-                      onClick={() => this.setActiveTab("/CurrentOrders")}>
-                      MY REQUESTS
-                </Link>
-              </li>
-              <li className="nav-item">
                 <Link to="/Log"
                       className={"nav-link" + (this.state.activeTab === "/Log" ? " active" : "")}
                       onClick={() => this.setActiveTab("/Log")}>
@@ -156,18 +145,21 @@ class NavBar extends Component {
                       EMAILS
                 </Link>
               </li>
-
-              <div className="navbar-right-panel">
-                <li className="nav-item welcome-message">
-                  Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>
-                </li>
-                <li className="nav-item btn-nav signout-button">
-                  <button className="btn btn-outline-primary" onClick={this.props.onClick}>
-                    Sign Out
-                  </button>
-                </li>
-              </div>
             </ul>
+
+            <ul className="navbar-nav">   
+              <li className="nav-item">
+                <div className="welcome-message"> 
+                  Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong> 
+                </div>
+              </li>
+              <li className="nav-item">
+                <button className="btn btn-outline-primary" onClick={this.props.onClick}>
+                  Sign Out
+                </button>
+              </li>
+            </ul>
+
           </div>
         </nav>
       );
@@ -203,17 +195,21 @@ class NavBar extends Component {
                       MY REQUESTS
                 </Link>
               </li>
-              <div className="navbar-right-panel">
-                <li className="nav-item welcome-message">
-                  Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>
-                </li>
-                <li className="nav-item btn-nav signout-button">
-                  <button className="btn btn-outline-primary" onClick={this.props.onClick}>
-                    Sign Out
-                  </button>
-                </li>
-              </div>
             </ul>
+
+            <ul className="navbar-nav">   
+              <li className="nav-item">
+                <div className="welcome-message"> 
+                  Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong> 
+                </div>
+              </li>
+              <li className="nav-item">
+                <button className="btn btn-outline-primary" onClick={this.props.onClick}>
+                  Sign Out
+                </button>
+              </li>
+            </ul>
+            
           </div>
         </nav>
     );

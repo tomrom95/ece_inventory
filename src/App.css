@@ -35,7 +35,6 @@
 
 .inventorypage-padded {
   margin-top: 2%;
-  margin-left: 2%;
 }
 
 .inventory-button {
@@ -53,7 +52,7 @@
 }
 
 .userprofile-table {
-  min-width: 102%;
+  min-width: 95%;
   margin-top: 2%;
   margin-left: 2%;
 }
@@ -103,7 +102,6 @@
 
 .maintable-body {
   background-color: white;
-  margin-left: 12px;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
@@ -296,7 +294,7 @@
 
 .user-info {
   height: 270px;
-  max-width: 90%;
+  max-width: 310px;
   margin-left: 20px;
   margin-top: 15px;
   border: none;
@@ -328,7 +326,7 @@
 }
 
 .inventorypage-tabs-container {
-  margin-left: 22px;
+  margin-left: 10px;
   margin-top: 2%;
   margin-bottom: 0.2%;
 }
