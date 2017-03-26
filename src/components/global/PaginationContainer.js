@@ -358,6 +358,10 @@ class PaginationContainer extends Component {
 							<StatusFilterBox filterRequests={this.filterRequests.bind(this)}/>
 						</div>)
 						: null;
+		var importRow = null;
+		if(JSON.parse(localStorage.getItem('user')).role !== "STANDARD"){
+			importRow = this.makeImportRow();
+		}
 
     if (this.state.initialLoad) {
       table = (<div></div>);
@@ -381,7 +385,7 @@ class PaginationContainer extends Component {
 	        <div className="col-md-9">
 
 	          {this.makePageControlBar()}
-						{this.makeImportRow()}
+						{importRow}
 	          <div className="row">
 	            {table}
 	          </div>
