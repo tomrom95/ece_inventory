@@ -85,17 +85,21 @@ class NavBar extends Component {
                       DOCS
                 </Link>
               </li>
-              <div className="navbar-right-panel">
-                <li className="nav-item welcome-message">
-                Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>
+            </ul> 
+            <ul className="navbar-nav">   
+                <li className="nav-item">
+                  <div className="welcome-message"> 
+                    Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong> 
+                  </div>
                 </li>
-                <li className="nav-item btn-nav signout-button">
+                <li className="nav-item">
                   <button className="btn btn-outline-primary" onClick={this.props.onClick}>
                     Sign Out
                   </button>
                 </li>
-              </div>
             </ul>
+
+
           </div>
         </nav>
       );

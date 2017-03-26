@@ -349,11 +349,15 @@
   display: inline-block;
 }
 
-.navbar-right-panel > .welcome-message {
-  display:inline-block;
+.welcome-message {
   padding-right: 20px;
   color: gray;
   font-size: 90%;
+  margin-top: 3.3%;
+}
+
+.welcome-area {
+  margin-left: 400px;
 }
 
 .navbar-brand {
