@@ -40,7 +40,8 @@ var ItemSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: false
-  }
+  },
+  import_id: mongoose.Schema.Types.ObjectId
 })
 ItemSchema.plugin(mongoosePaginate);
 

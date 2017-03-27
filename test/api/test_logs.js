@@ -320,7 +320,6 @@ describe('Logging API Test', function () {
       it('logs editing a loan', (done) => {
         Loan.findOne({"request": "444444444444444444444444"}, function(err, loan){
           should.not.exist(err);
-          console.log(loan);
           Item.findOne({"name":"1k resistor"},function(err, item1){
             should.not.exist(err);
             Item.findOne({"name": "2k resistor"}, function(err, item2){

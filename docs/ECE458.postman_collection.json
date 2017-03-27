@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "ECE458",
-		"_postman_id": "fe644c8d-36da-5407-7bd0-0f68415dce80",
+		"_postman_id": "141a2d4c-0fff-6c2a-33f5-889471621cb3",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -534,6 +534,142 @@
 			]
 		},
 		{
+			"name": "Email Settings",
+			"description": "",
+			"item": [
+				{
+					"name": "/api/emailSettings",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu/api/emailSettings",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "password",
+									"value": "ece458duke",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/emailSettings",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu/api/emailSettings",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "subject_tag",
+									"value": "[my tag]",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/emailSettings/loans",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu/api/emailSettings/loans",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "body",
+									"value": "This is a sample loan body.",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "date",
+									"value": "2016-03-23",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/emailSettings/loans copy",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu/api/emailSettings/loans/58d90e6ce8e66f55c2a769ec",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Instances",
 			"description": "",
 			"item": [
@@ -790,6 +926,145 @@
 							"raw": ""
 						},
 						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/inventory/import",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu/api/inventory/import",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"1999k resistor\",\n    \"vendor_info\": \"Microsoft\",\n    \"custom_fields\": [],\n    \"has_instance_objects\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Loan",
+			"description": "",
+			"item": [
+				{
+					"name": "/api/loans",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu/api/loans",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "password",
+									"value": "ece458duke",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": "params: {\n\tuser_id: String,\n\titem_name: String,\n\titem_type: String, // ('OUTSTANDING', 'COMPLETE'),\n\titem_id: String\n}"
+					},
+					"response": []
+				},
+				{
+					"name": "/api/loans/:loan_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu/api/loans/58d86fa67e29334f867671b1",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text",
+									"enabled": true
+								},
+								{
+									"key": "password",
+									"value": "ece458duke",
+									"type": "text",
+									"enabled": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "/api/loans/:loan_id",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu/api/loans/58d86fa67e29334f867671b1",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"enabled": false
+								}
+							]
+						},
+						"description": "params: {\n\titems: [{\n\t\titem: String, // id\n\t\tstatus: String, // new status\n\t}]\n}"
 					},
 					"response": []
 				}
