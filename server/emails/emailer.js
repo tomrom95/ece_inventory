@@ -7,6 +7,7 @@ var Item = require('../model/items');
 var StringHelpers = require('../logging/string_helpers');
 var EmailBuilder = require('./emailbuilder');
 var EmailBodies = require('./email_bodies');
+var moment = require('moment');
 
 module.exports.sendNewRequestEmail = function(request, createdBy, createdFor, next) {
   var builder = new EmailBuilder();
@@ -153,19 +154,21 @@ module.exports.checkForLoanEmailAndSendAll = function(next) {
   EmailSettings.getSingleton(function(error, settings) {
     if (error) return next(error);
     // check if there's a loan email to send today
-    var today = new Date();
+    var today = new moment();
     var loanEmailObj = settings.loan_emails.find((loanObj) => {
-      return loanObj.date.getUTCDate() === today.getUTCDate()
-        && loanObj.date.getUTCMonth() === today.getUTCMonth()
-        && loanObj.date.getUTCFullYear() === today.getUTCFullYear();
+      return loanObj.date.getUTCDate() === today.get('date')
+        && loanObj.date.getUTCMonth() === today.get('month')
+        && loanObj.date.getUTCFullYear() === today.get('year');
     });
 
     if (loanEmailObj) {
+      console.log("email for today");
       sendAllLoanEmails(loanEmailObj, function(error) {
        if (error) return next(error);
        next();
       });
     } else {
+      console.log("no emails for today");
       return next();
     }
   });
