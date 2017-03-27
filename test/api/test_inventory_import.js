@@ -97,6 +97,41 @@ var multipleItemJSON = [{
   ]
 }];
 
+var multipleItemJSONwithDupKey = [{
+  "quantity": 1000,
+  "name": "112k resistor",
+  "has_instance_objects": false,
+  "vendor_info": "IBM",
+  "model_number": "A123",
+  "tags": [
+    "component",
+    "electric",
+    "cheap"
+  ]
+},{
+  "quantity": 1000,
+  "name": "112k resistor",
+  "has_instance_objects": true,
+  "vendor_info": "IBM",
+  "model_number": "A123",
+  "tags": [
+    "component",
+    "electric",
+    "cheap"
+  ]
+},{
+  "quantity": 1000,
+  "name": "200000k resistor",
+  "has_instance_objects": false,
+  "vendor_info": "IBM",
+  "model_number": "A123",
+  "tags": [
+    "component",
+    "electric",
+    "cheap"
+  ]
+}];
+
 describe('Inventory Import API Test', function () {
   var adminToken;
   var adminUser;
@@ -222,6 +257,20 @@ describe('Inventory Import API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.body.error.should.be.eql('The entered custom field dkjfh was not found in list of current custom fields');
+          Item.find({}, function(err, items){
+            items.length.should.be.eql(0);
+            done();
+          });
+        });
+    });
+    it('Does not POST multiple items with duplicate key',(done)=> {
+      chai.request(server)
+        .post('/api/inventory/import')
+        .set('Authorization', adminToken)
+        .send(multipleItemJSONwithDupKey)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.body.error.should.be.eql('Import unsuccessful. More than one item with the same name 112k resistor was found.');
           Item.find({}, function(err, items){
             items.length.should.be.eql(0);
             done();
