@@ -4,6 +4,8 @@ import FileInput from 'react-file-input';
 import Dropzone from 'react-dropzone';
 import axios from 'axios';
 import validator from 'validator';
+import Popup from 'react-popup';
+import JSONLint from './jsonlint.js';
 
 
 class BulkImportButton extends Component {
@@ -16,7 +18,6 @@ class BulkImportButton extends Component {
       preview: "",
 		}
 	}
-
   onDrop(acceptedFiles, rejectedFiles) {
     axios.get(acceptedFiles[0].preview).then(function(response){
       if(typeof response.data === "object"){
@@ -27,11 +28,10 @@ class BulkImportButton extends Component {
         });
       }
       else if(typeof response.data === "string"){
-        try{
-          JSON.parse(response.data);
-        } catch(error){
-          alert(error);
-        }
+        var lint = JSONLint(response.data);
+				if(lint.error){
+					alert(lint.error);
+				}
       }
 
     }.bind(this));
@@ -63,6 +63,7 @@ class BulkImportButton extends Component {
 
 	render() {
 		var button =
+
       <a className="nav-link userpage-tab" href="#"
 				data-toggle="modal"
 				data-target={"#bulkImportModal"}>
@@ -97,9 +98,6 @@ class BulkImportButton extends Component {
 		);
 	}
 
-
-
-
 	handleChange(event) {
    this.setState({
      selectedFile: event.target.files,
@@ -107,12 +105,12 @@ class BulkImportButton extends Component {
 	}
 
 
-
 	onSubmission() {
     this.props.api.post('/api/inventory/import', this.state.selectedFile)
       .then(function(response) {
         if (response.data.error) {
-          alert(response.data.error);
+					console.log(response.data.error);
+          alert(response.data.error.errmsg);
         } else {
           this.props.callback()
           alert("items added successfully");

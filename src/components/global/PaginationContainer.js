@@ -4,6 +4,7 @@ import axios from 'axios';
 import FilterBox from './FilterBox.js';
 import ErrorMessage from './ErrorMessage.js';
 import StatusFilterBox from '../requests/StatusFilterBox.js';
+import BulkImportButton from '../inventory/BulkImportButton.js';
 
 var filterNames = ["name", "model_number", "required_tags", "excluded_tags", "status", "user"];
 
@@ -208,11 +209,11 @@ class PaginationContainer extends Component {
 
 	makePageBox() {
     	return (
-      	<input 
+      	<input
       		type="text"
-      		onChange={e => this.onPageTextEdit(e)} 
-      		value={this.state.pageBox} 
-      		className="form-control pagenum-textbox" 
+      		onChange={e => this.onPageTextEdit(e)}
+      		value={this.state.pageBox}
+      		className="form-control pagenum-textbox"
       		ref={"pageNum-"+this.state.id}
       		id={"pageNum-"+this.state.id}>
   		</input>
@@ -281,10 +282,25 @@ class PaginationContainer extends Component {
 	      );
 	}
 
+	makeImportRow(){
+		return(
+			<div className="row page-control-bar">
+				<div>
+					<nav aria-label="page-buttons">
+						<ul className="pagination">
+
+
+						</ul>
+					</nav>
+				</div>
+			</div>
+		)
+	}
+
 	makePageControlBar() {
 		var pageControlBar =  this.state.items.length === 0 ? null :
 			(<div className="row page-control-bar">
-				<div className="col-md-6">
+				<div>
 	                <nav aria-label="page-buttons">
 	                  <ul className="pagination">
 	                  	<li className="page-item">
@@ -337,6 +353,10 @@ class PaginationContainer extends Component {
 							<StatusFilterBox filterRequests={this.filterRequests.bind(this)}/>
 						</div>)
 						: null;
+		var importRow = null;
+		if(JSON.parse(localStorage.getItem('user')).role !== "STANDARD"){
+			importRow = this.makeImportRow();
+		}
 
     if (this.state.initialLoad) {
       table = (<div></div>);
@@ -360,8 +380,9 @@ class PaginationContainer extends Component {
 	        <div className="col-md-9">
 
 	          {this.makePageControlBar()}
+						{importRow}
+	          <div className="row">
 
-	          <div>
 	            {table}
 	          </div>
 	        </div>
