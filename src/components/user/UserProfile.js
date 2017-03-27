@@ -45,18 +45,22 @@ class UserProfile extends Component {
         console.log(response.data.error);
       }
       var user = response.data;
-      this.setState({
-        _id: user._id,
-        netid: user.netid,
-        username: user.username,
-        role: user.role,
-        email: user.email,
-        subscribed: user.subscribed ? user.subscribed : false,
-        firstName: user.first_name,
-        lastName: user.last_name,
-      });
+      this.setUser(user);
     }.bind(this)).catch(function(error) {
       console.log(error);
+    });
+  }
+
+  setUser(user) {
+    this.setState({
+      _id: user._id,
+      netid: user.netid,
+      username: user.username,
+      role: user.role,
+      email: user.email,
+      subscribed: user.subscribed ? user.subscribed : false,
+      firstName: user.first_name,
+      lastName: user.last_name,
     });
   }
 
@@ -118,17 +122,7 @@ class UserProfile extends Component {
       else{
         var user = response.data;
         localStorage.setItem('user', JSON.stringify(user));
-        this.setState({
-          _id: user._id,
-          username: user.username,
-          netid: user.netid,
-          role: user.role,
-          email: user.email,
-          subscribed: user.subscribed ? user.subscribed : false,
-          firstName: user.first_name,
-          lastName: user.last_name,
-          editMode: false
-        });
+        this.setUser(user);
         alert("Successfully edited your profile.");
       }
     }.bind(this)).catch(function(error) {
@@ -140,11 +134,16 @@ class UserProfile extends Component {
     var subscribed = null;
     if (this.state.role !== 'STANDARD') {
       subscribed = (
-        <div className="card-block">
-          <h5 className="card-title row">Subscribed to Emails:</h5>
-          <p className="card-title row"> {this.state.subscribed} </p>
+        <div className="card-block user-card-block">
+          <h5 className="card-title row">Subscribed:</h5>
+          <input
+            type="checkbox"
+            ref={"subscribedCheckbox"}
+            key={"subscribedCheckbox"}
+            defaultChecked={this.state.subscribed}
+          />
         </div>
-      )
+      );
     }
 
     return(
@@ -177,15 +176,7 @@ class UserProfile extends Component {
               defaultValue={this.state.lastName}
               id={"last-name-field"}/>
           </div>
-          <div className="card-block user-card-block">
-            <h5 className="card-title row">Subscribed:</h5>
-            <input
-              type="checkbox"
-              ref={"subscribedCheckbox"}
-              key={"subscribedCheckbox"}
-              defaultChecked={this.state.subscribed}
-            />
-          </div>
+          {subscribed}
           <div className="card-block user-card-block">
             <button
               className="btn btn-primary"
