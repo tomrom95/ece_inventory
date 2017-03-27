@@ -61,6 +61,7 @@ class UserProfile extends Component {
       subscribed: user.subscribed ? user.subscribed : false,
       firstName: user.first_name,
       lastName: user.last_name,
+      editMode: false
     });
   }
 
