@@ -29,8 +29,10 @@ class BulkImportButton extends Component {
       }
       else if(typeof response.data === "string"){
         var lint = JSONLint(response.data);
+				console.log(lint);
 				if(lint.error){
-					alert(lint.error);
+					var error_string = lint.error + " at line " + lint.line + ", character " + lint.character;
+					alert(error_string);
 				}
       }
 
@@ -109,8 +111,7 @@ class BulkImportButton extends Component {
     this.props.api.post('/api/inventory/import', this.state.selectedFile)
       .then(function(response) {
         if (response.data.error) {
-					console.log(response.data.error);
-          alert(response.data.error.errmsg);
+          alert(JSON.stringify(response.data.error, null, 2));
         } else {
           this.props.callback()
           alert("items added successfully");
