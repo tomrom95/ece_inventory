@@ -88,6 +88,7 @@ class ItemWizard extends Component {
 					}
 					if(label !== ""){
 						list.push(this.makeCustomTextBox(i, j, field, label));
+
 						list.push(
 							<button
 								key={i + "delete-field" + j}
@@ -227,14 +228,20 @@ class ItemWizard extends Component {
 	}
 
 	deleteCustomField(row, field){
-		var id = "createform-row-"+row;
-		this.state.formIds.splice(0,id);
+
 		var data = this.state.data;
-		data.custom_fields.splice(0, row);
+		var custom_fields = [];
+		for(var j = 0; j < data.custom_fields.length; j++){
+			console.log(data.custom_fields[j]);
+
+			if(data.custom_fields[j] != field){
+				custom_fields.push(data.custom_fields[j]);
+			}
+		}
+		data.custom_fields = custom_fields;
 		this.setState({
 			data: data
-		})
-
+		});
 	}
 
 	addField(value, already_exists, type_mismatch, field_params, invalid_length){
@@ -375,12 +382,12 @@ class ItemWizard extends Component {
 		var object = {
 			name: this.refs.Name.value,
 	  		quantity: this.refs.Quantity.value,
-	 			model_number: this.refs["Model Number"].value,
+	 		model_number: this.refs["Model Number"].value,
 	  		description: this.refs.Description.value,
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
 	  		has_instance_objects: false,
-				custom_fields: fields
+			custom_fields: fields
   		}
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
