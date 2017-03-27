@@ -212,8 +212,9 @@ class RequestTable extends Component {
 
       /* Make the cell where you can change what type of request it is */
       var status = this.state.raw_data[i]["Status"];
+      var role = JSON.parse(localStorage.getItem('user')).role;
       var type = 
-      (status !== "PENDING") ? 
+      (status !== "PENDING" || role === "STANDARD") ? 
             (<td key={"request-type-fixed"+i}>
                 <a key={"request-type-fixed"+i}> 
                   { this.state.raw_data[i]["Request Type"] ? this.state.raw_data[i]["Request Type"] : "DISBURSEMENT" } 
