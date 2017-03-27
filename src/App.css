@@ -457,6 +457,10 @@
   font-size: 95%;
 }
 
+.cart-actiontype-dropdown {
+  width: 250px;
+}
+
 .page-dropdown {
   max-height: 175px;
   overflow-y: scroll;
@@ -630,6 +634,10 @@
 
 .loan-control-bar {
   width: 260px;
+}
+
+.request-control-bar {
+  width: 300px;
 }
 
 .loan-table {
