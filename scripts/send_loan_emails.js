@@ -27,6 +27,8 @@ var removeOldEmails = function(next) {
   });
 }
 
+console.log(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+
 Emailer.checkForLoanEmailAndSendAll(function(error) {
   if (error) {
     console.log(error);
