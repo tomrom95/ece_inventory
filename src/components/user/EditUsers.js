@@ -84,12 +84,17 @@ class EditUsers extends Component {
   	}
 
   	makeUserProfile() {
-  		if (this.state.usernameSelected!==null)
-  			return (<UserProfile
+  		if (this.state.usernameSelected!==null){
+				return (
+					<UserProfile
   					showDetailedPage={false}
-					_id={this.state.userIdSelected}
-					username={this.state.usernameSelected}
-					role={this.state.actualRole}/>);
+						_id={this.state.userIdSelected}
+						username={this.state.usernameSelected}
+						role={this.state.actualRole}
+						disableEditing={true}
+					/>
+				);
+			}
   	}
 
 	handleUserChange(id) {
