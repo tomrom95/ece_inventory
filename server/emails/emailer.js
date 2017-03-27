@@ -154,7 +154,7 @@ module.exports.checkForLoanEmailAndSendAll = function(next) {
   EmailSettings.getSingleton(function(error, settings) {
     if (error) return next(error);
     // check if there's a loan email to send today
-    var today = new moment();
+    var today = moment();
     var loanEmailObj = settings.loan_emails.find((loanObj) => {
       return loanObj.date.getUTCDate() === today.get('date')
         && loanObj.date.getUTCMonth() === today.get('month')
