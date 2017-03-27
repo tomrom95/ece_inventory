@@ -365,7 +365,12 @@
 
 .center-text {
   width: 100%;
-  text-align: center;
+  text-align: center!important;
+}
+
+.center-text-fixed {
+  width: 500px;
+  text-align: center!important;
 }
 
 .signout-button {
@@ -456,6 +461,10 @@
   color: gray;
   text-align: left;
   font-size: 95%;
+}
+
+.cart-actiontype-dropdown {
+  width: 250px;
 }
 
 .page-dropdown {
@@ -616,6 +625,10 @@
   white-space: pre-wrap;
 }
 
+.loantable-constrained {
+  max-width: 100%;
+}
+
 .loan-status-dropdown {
   margin-right: 3%;
   margin-left: -0.9%;
@@ -627,6 +640,10 @@
 
 .loan-control-bar {
   width: 260px;
+}
+
+.request-control-bar {
+  width: 300px;
 }
 
 .loan-table {
@@ -641,8 +658,8 @@
 }
 
 .loan-table-mini {
-  margin-left: 2.5%;
-  max-width:55%;
+  margin-left: 4.5%;
+  min-width: 98%;
 }
 
 .tooltip-inner {
