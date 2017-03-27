@@ -98,8 +98,6 @@ describe('Logging API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(2);
-          res.body[0].request.should.be.eql("222222222222222222222222");
-          res.body[1].request.should.be.eql("111111111111111111111111");
           done();
         });
     });

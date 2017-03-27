@@ -5,7 +5,6 @@ import FilterBox from './FilterBox.js';
 import ErrorMessage from './ErrorMessage.js';
 import StatusFilterBox from '../requests/StatusFilterBox.js';
 import BulkImportButton from '../inventory/BulkImportButton.js';
-import ImportHelpButton from '../inventory/ImportHelpButton.js';
 
 var filterNames = ["name", "model_number", "required_tags", "excluded_tags", "status", "user"];
 
@@ -289,12 +288,8 @@ class PaginationContainer extends Component {
 				<div>
 					<nav aria-label="page-buttons">
 						<ul className="pagination">
-							<li className="page-item button-space" >
-								<BulkImportButton api={this.props.api} callback={this.props.callback}  />
-							</li>
-							<li className="page-item">
-								<ImportHelpButton />
-							</li>
+
+
 						</ul>
 					</nav>
 				</div>
@@ -387,6 +382,7 @@ class PaginationContainer extends Component {
 	          {this.makePageControlBar()}
 						{importRow}
 	          <div className="row">
+
 	            {table}
 	          </div>
 	        </div>

@@ -5,6 +5,8 @@ import Dropzone from 'react-dropzone';
 import axios from 'axios';
 import validator from 'validator';
 import Popup from 'react-popup';
+import JSONLint from './jsonlint.js';
+
 
 class BulkImportButton extends Component {
 
@@ -16,7 +18,6 @@ class BulkImportButton extends Component {
       preview: "",
 		}
 	}
-
   onDrop(acceptedFiles, rejectedFiles) {
     axios.get(acceptedFiles[0].preview).then(function(response){
       if(typeof response.data === "object"){
@@ -27,11 +28,10 @@ class BulkImportButton extends Component {
         });
       }
       else if(typeof response.data === "string"){
-        try{
-          JSON.parse(response.data);
-        } catch(error){
-          alert(error);
-        }
+        var lint = JSONLint(response.data);
+				if(lint.error){
+					alert(lint.error);
+				}
       }
 
     }.bind(this));
@@ -63,38 +63,38 @@ class BulkImportButton extends Component {
 
 	render() {
 		var button =
-			<button type="button"
-				className="btn btn-primary"
+
+      <a className="nav-link userpage-tab" href="#"
 				data-toggle="modal"
 				data-target={"#bulkImportModal"}>
 				Import
-			</button>;
+			</a>;
 
 		return (
-			<div >
-				{button}
-				<div className="modal fade"
-					id={"bulkImportModal"}
-					tabIndex="-1"
-					role="dialog"
-					aria-labelledby="createLabel"
-					aria-hidden="true">
-				  <div className="modal-dialog" role="document">
-				    <div className="modal-content">
-				      <div className="modal-header">
-				        <h5 className="modal-title" id="createLabel">Import from .json file</h5>
-				      </div>
-				      <div className="modal-body">
-				        {this.makeForm()}
-				      </div>
-				      <div className="modal-footer">
-								<button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-				        <button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Submit</button>
-				      </div>
-				    </div>
-				  </div>
-				</div>
+		<div>
+			{button}
+			<div className="modal fade"
+				id={"bulkImportModal"}
+				tabIndex="-1"
+				role="dialog"
+				aria-labelledby="createLabel"
+				aria-hidden="true">
+			  <div className="modal-dialog" role="document">
+			    <div className="modal-content">
+			      <div className="modal-header">
+			        <h5 className="modal-title" id="createLabel">Import from .json file</h5>
+			      </div>
+			      <div className="modal-body">
+			        {this.makeForm()}
+			      </div>
+			      <div className="modal-footer">
+			        <button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			        <button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Submit</button>
+			      </div>
+			    </div>
+			  </div>
 			</div>
+		</div>
 		);
 	}
 
@@ -109,7 +109,8 @@ class BulkImportButton extends Component {
     this.props.api.post('/api/inventory/import', this.state.selectedFile)
       .then(function(response) {
         if (response.data.error) {
-          alert(response.data.error);
+					console.log(response.data.error);
+          alert(response.data.error.errmsg);
         } else {
           this.props.callback()
           alert("items added successfully");
