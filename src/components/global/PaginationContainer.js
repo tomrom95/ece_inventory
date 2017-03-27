@@ -341,7 +341,7 @@ class PaginationContainer extends Component {
     if (this.state.initialLoad) {
       table = (<div></div>);
     } else if (this.state.items.length === 0) {
-      table = (<div className="center-text"> No items found. </div>);
+      table = (<div className="center-text-fixed"> No items found. </div>);
     } else {
       table = (<TableComp
         data={this.state.items}
