@@ -40,7 +40,7 @@ class NavBar extends Component {
                       onClick={() => this.setActiveTab("/Inventory")}>
                       INVENTORY
                 </Link>
-              </li>             
+              </li>
               <li className="nav-item">
                 <Link to="/GlobalRequests"
                       className={"nav-link" + (this.state.activeTab === "/GlobalRequests" ? " active" : "")}
@@ -84,11 +84,11 @@ class NavBar extends Component {
                       DOCS
                 </Link>
               </li>
-            </ul> 
-            <ul className="navbar-nav">   
+            </ul>
+            <ul className="navbar-nav">
                 <li className="nav-item">
-                  <div className="welcome-message"> 
-                    Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong> 
+                  <div className="welcome-message">
+                    Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>
                   </div>
                 </li>
                 <li className="nav-item">
@@ -147,10 +147,10 @@ class NavBar extends Component {
               </li>
             </ul>
 
-            <ul className="navbar-nav">   
+            <ul className="navbar-nav">
               <li className="nav-item">
-                <div className="welcome-message"> 
-                  Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong> 
+                <div className="welcome-message">
+                  Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>
                 </div>
               </li>
               <li className="nav-item">
@@ -188,19 +188,12 @@ class NavBar extends Component {
                       INVENTORY
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link to="/CurrentOrders"
-                      className={"nav-link" + (this.state.activeTab === "/CurrentOrders" ? " active" : "")}
-                      onClick={() => this.setActiveTab("/CurrentOrders")}>
-                      MY REQUESTS
-                </Link>
-              </li>
             </ul>
 
-            <ul className="navbar-nav">   
+            <ul className="navbar-nav">
               <li className="nav-item">
-                <div className="welcome-message"> 
-                  Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong> 
+                <div className="welcome-message">
+                  Welcome back, <strong>{this.props.first_name ? this.props.first_name: this.props.username}</strong>
                 </div>
               </li>
               <li className="nav-item">
@@ -209,7 +202,7 @@ class NavBar extends Component {
                 </button>
               </li>
             </ul>
-            
+
           </div>
         </nav>
     );
