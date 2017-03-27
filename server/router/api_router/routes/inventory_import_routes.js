@@ -46,23 +46,25 @@ var importSingleItem = function(data, next) {
 var importMultipleItems = function(data, next){
   CustomField.find({}).then(function(fieldArray){
     var itemArray = [];
-    var nameSet = new Set();
+    let importId = mongoose.Types.ObjectId();
     for(var i in data){
       if(data[i].custom_fields){
           var result = updateCustomFields(data[i].custom_fields, fieldArray, next);
           if(result.error) return next(result.error, null);
           data[i].custom_fields = result;
       }
-      if(!nameSet.has(data[i].name)){
-        nameSet.add(data[i].name);
-      } else {
-        return next("Import unsuccessful. More than one item with the same name " + data[i].name + " was found.", null);
-      }
+      data[i].import_id = importId;
       itemArray.push(new Item(data[i]));
     }
     Item.insertMany(itemArray, function(err, items){
-      if(err) return next(err,null);
-      return next(null, items); // successfully inserted array
+      if(err){
+        // Rollback
+        Item.remove({import_id: importId}, function(rollBackErr){
+          return rollBackErr ? next(rollBackErr, null) : next(err,null);
+        })
+      } else {
+        return next(null, items); // successfully inserted array
+      }
     })
   })
 };

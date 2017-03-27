@@ -270,7 +270,7 @@ describe('Inventory Import API Test', function () {
         .send(multipleItemJSONwithDupKey)
         .end((err, res) => {
           should.not.exist(err);
-          res.body.error.should.be.eql('Import unsuccessful. More than one item with the same name 112k resistor was found.');
+          res.body.error.code.should.be.eql(11000); // Duplicate key error code
           Item.find({}, function(err, items){
             items.length.should.be.eql(0);
             done();
