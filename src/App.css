@@ -79,8 +79,7 @@
 
 .requesttable {
   margin-left: 2.7%;
-  max-width: 95%;
-  min-width: 95%;
+  max-width: 90%;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
@@ -115,6 +114,7 @@
 .reminder-table {
   max-width: 100%;
   margin-top: 20px;
+  margin-left: 1.5%;
 }
 .page-control-bar {
   margin-left: 0px;
@@ -137,11 +137,12 @@
   color: gray;
   font-size: 85%;
   max-width: 93%;
+  font-weight: normal!important;
 }
 
 .log-table-mini {
   margin-left: 2.9%;
-  max-width: 80%!important;
+  max-width: 50%!important;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
@@ -175,7 +176,7 @@
 }
 
 .item-detail-view-loans {
-  margin-left: -5.3%;
+  margin-left: -4.5%;
 }
 
 .add-to-cart-title {
@@ -242,7 +243,6 @@
   margin-top: -50px;
   font-weight: normal;
   font-size: 85%;
-
 }
 
 .request-button {
@@ -425,7 +425,7 @@
 }
 
 .detail-view {
-  min-width: 43%;
+  min-width: 50%;
   min-height: 325px;
 }
 
@@ -571,9 +571,7 @@
 }
 
 .date-select {
-  margin-top: 10px;
-  margin-left: 3%;
-  text-align: center;
+  margin: 8%;
 }
 
 .date-card {
@@ -593,14 +591,19 @@
   min-width: 70%;
 }
 
+.email-apply {
+  width: 100%;
+}
+
 .email-box {
   margin-left: 15px;
 }
 
 .email-text {
-  height: 200px;
+  max-height: 200px!important;
   background-color: white;
   min-width: 100%;
+  padding: 2%;
 }
 
 .email-subject-header {
@@ -612,6 +615,8 @@
 .email-subject-text {
   background-color: white;
   min-width: 100%;
+  padding-left: 1%;
+  padding-right: 1%;
 }
 
 .description {
@@ -657,7 +662,7 @@
 }
 
 .loan-table-mini {
-  margin-left: 4.5%;
+  margin-left: 4%;
   min-width: 98%;
 }
 
@@ -744,7 +749,6 @@ thead {
 
 tbody {
   color: gray;
-  font-weight: bold;
 }
 
 a {
