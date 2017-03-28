@@ -132,3 +132,5 @@ server is actually running on port 3001, with nginx running on 443. To remember 
 set the `USE_PROXY` variable, you can make the production command
 
 >  USE_PROXY=TRUE npm run start-prod
+
+13) [Optional] If you would like to instead deploy from scratch with a backup archive, follow the steps in `backup_guide.md`. It explains how to take a backup archive and restore the database with it.
