@@ -38,7 +38,7 @@
 }
 
 .inventory-button {
-  margin-right: 8%;
+  margin-right: 4%;
 }
 
 .buttons-cell {
@@ -116,6 +116,7 @@
 .reminder-table {
   max-width: 100%;
   margin-top: 20px;
+  margin-left: 15px;
 }
 .page-control-bar {
   margin-left: 0px;
@@ -364,12 +365,7 @@
 
 .center-text {
   width: 100%;
-  text-align: center!important;
-}
-
-.center-text-fixed {
-  width: 500px;
-  text-align: center!important;
+  text-align: center;
 }
 
 .signout-button {
@@ -460,10 +456,6 @@
   color: gray;
   text-align: left;
   font-size: 95%;
-}
-
-.cart-actiontype-dropdown {
-  width: 250px;
 }
 
 .page-dropdown {
@@ -612,6 +604,7 @@
 .email-subject-text {
   background-color: white;
   min-width: 100%;
+  margin-bottom: 5px;
 }
 
 .description {
@@ -622,10 +615,6 @@
 
 .loan-details {
   white-space: pre-wrap;
-}
-
-.loantable-constrained {
-  max-width: 100%;
 }
 
 .loan-status-dropdown {
@@ -639,10 +628,6 @@
 
 .loan-control-bar {
   width: 260px;
-}
-
-.request-control-bar {
-  width: 300px;
 }
 
 .loan-table {
