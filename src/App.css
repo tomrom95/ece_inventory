@@ -137,7 +137,6 @@
   color: gray;
   font-size: 85%;
   max-width: 93%;
-  font-weight: normal!important;
 }
 
 .log-table-mini {
@@ -155,6 +154,7 @@
   min-width: 200px;
   text-overflow: ellipsis;
   display: block;
+  font-weight: bold;
 }
 
 .log-description {
