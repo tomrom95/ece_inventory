@@ -30,7 +30,7 @@ class ImportHelpButton extends Component {
         "tags": "[String]",
         "custom_fields": [
           {
-            "field": "String",
+            "name": "String",
             "value": "String"
           }
         ]
@@ -54,10 +54,10 @@ class ImportHelpButton extends Component {
 		return (
       <div>
         <button type="button"
-          className="btn btn-primary"
+          className="nav-link userpage-tab"
           data-toggle="modal"
           data-target={"#helpModal"}>
-          Help?
+          Bulk Import Help
         </button>
         <div className="modal fade"
           id={"helpModal"}
