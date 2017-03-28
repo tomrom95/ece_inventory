@@ -108,8 +108,7 @@
 }
 
 .maintable-container {
-  width: 95%;
-
+  min-width: 95%;
   margin-left: 30px;
 }
 

@@ -147,24 +147,24 @@ class InventoryTable extends Component {
 		              <li className="nav-item userpage-tab-container">
 	                    	<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>
 		              </li>
-									{ isManager === false ? null :
-										<li className="nav-item userpage-tab-container">
-													<BulkImportButton
-										key={"bulkimport-button"}
-										api={this.props.api}
-										callback={this.props.callback}/>
-										</li>
+						{ isManager === false ? null :
+							<li className="nav-item userpage-tab-container">
+										<BulkImportButton
+							key={"bulkimport-button"}
+							api={this.props.api}
+							callback={this.props.callback}/>
+							</li>
 
-									}
-									{ isManager === false ? null :
-										<li className="nav-item userpage-tab-container">
-											<ImportHelpButton />
-										</li>
-									}
+						}
+						{ isManager === false ? null :
+							<li className="nav-item userpage-tab-container">
+								<ImportHelpButton />
+							</li>
+						}
 		            </ul>
 		        </div>
 
-				<div className="maintable-container">
+				<div className="row maintable-container">
 					<table className="table table-sm maintable-body">
 					  <thead className="thread">
 					    <tr>
