@@ -162,6 +162,8 @@ class Home extends Component {
           subscribed: this.state.user.subscribed,
           role: this.state.user.role,
           token: this.state.token,
+          firstName: this.state.first_name,
+          lastName: this.state.last_name
         });
       }
       return (

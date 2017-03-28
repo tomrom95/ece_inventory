@@ -41,6 +41,7 @@ module.exports.getAPI = function (req, res) {
       // page number (not offset)
       page: req.query.page,
       limit: Number(req.query.per_page),
+      sort: {"created": -1},
       populate: [{path:'items.item', select: itemFieldsToReturn}, {path:'user', select: userFieldsToReturn}]
     }
     Request.paginate(query.toJSON(), paginateOptions, function(err, obj){
@@ -51,6 +52,7 @@ module.exports.getAPI = function (req, res) {
     Request.find(query.toJSON())
     .populate('items.item', itemFieldsToReturn)
     .populate('user', userFieldsToReturn)
+    .sort({"created": -1})
     .exec(function(err, requests){
       if(err) return res.send({error:err});
       res.json(requests);

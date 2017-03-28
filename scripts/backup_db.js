@@ -67,6 +67,8 @@ function removeLocalCopy(filename, next) {
   });
 }
 
+console.log(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+
 // Create archive with mongodump
 mongoDump((filename) => {
   var expiry = getExpiryLength();

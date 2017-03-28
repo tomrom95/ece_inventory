@@ -54,7 +54,6 @@ module.exports.logLoanEditing = function(oldLoan, changes, user, next) {
     return next();
   }
   var itemIds = oldLoan.items.map(i => i.item);
-  console.log(LogDescriptions.editedLoan(oldLoan, filteredChanges, user));
   var newLog = new Log({
     initiating_user: user._id,
     items: itemIds,

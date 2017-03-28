@@ -367,7 +367,7 @@ describe('Requests API Test', function () {
         done();
       });
     });
-    it('GETs 2nd page with 3 items per page', (done)=>{
+    it('GETs 2nd page with 2 items per page', (done)=>{
         chai.request(server)
         .get('/api/requests?page=2&per_page=2')
         .set('Authorization', token)
@@ -376,10 +376,6 @@ describe('Requests API Test', function () {
           res.should.have.status(200);
           res.body.should.be.a('array');
           res.body.length.should.be.eql(2);
-          res.body[0].should.have.property("reviewer_comment", "Bye");
-          res.body[0].should.have.property("requestor_comment", "Hello");
-          res.body[1].should.have.property("reviewer_comment", "Fine");
-          res.body[1].should.have.property("requestor_comment", "Urgent");
           res.body.should.satisfy(function(requests){
             return requests.every(function(request){
               return request.items.every(function(element){

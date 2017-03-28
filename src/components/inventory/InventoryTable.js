@@ -9,6 +9,7 @@ import CustomFieldsPopup from './CustomFieldsPopup.js';
 import CustomFieldListPopup from './CustomFieldListPopup.js';
 import ShoppingCart from './ShoppingCart.js';
 import BulkImportButton from './BulkImportButton.js';
+import ImportHelpButton from './ImportHelpButton.js';
 
 var meta;
 
@@ -116,7 +117,7 @@ class InventoryTable extends Component {
 
 	render() {
 
-		var isManager = JSON.parse(localStorage.getItem('user')).role === "ADMIN" 
+		var isManager = JSON.parse(localStorage.getItem('user')).role === "ADMIN"
 				|| JSON.parse(localStorage.getItem('user')).role === "MANAGER";
 
 		return (
@@ -142,17 +143,24 @@ class InventoryTable extends Component {
 		              </li>
 		          	}
 
-		            { isManager === false ? null :
-		              <li className="nav-item userpage-tab-container">
-		                    <BulkImportButton
-									key={"bulkimport-button"}
-									api={this.props.api}
-									callback={this.props.callback}/>
-		              </li>
-		          	}
+
 		              <li className="nav-item userpage-tab-container">
 	                    	<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>
 		              </li>
+									{ isManager === false ? null :
+										<li className="nav-item userpage-tab-container">
+													<BulkImportButton
+										key={"bulkimport-button"}
+										api={this.props.api}
+										callback={this.props.callback}/>
+										</li>
+
+									}
+									{ isManager === false ? null :
+										<li className="nav-item userpage-tab-container">
+											<ImportHelpButton />
+										</li>
+									}
 		            </ul>
 		        </div>
 
@@ -187,6 +195,7 @@ class InventoryTable extends Component {
 	          			callback={this.props.callback}
 									allCustomFields={this.state.allCustomFields}/>
 	          	);
+
 		}
 		return list;
 	}

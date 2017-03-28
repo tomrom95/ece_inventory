@@ -78,7 +78,7 @@
 }
 
 .requesttable {
-  margin-left: 2.7%;
+  margin-left: 1.5%;
   max-width: 95%;
   min-width: 95%;
   border-left: solid;
@@ -109,6 +109,7 @@
 
 .maintable-container {
   width: 95%;
+
   margin-left: 30px;
 }
 
@@ -170,12 +171,11 @@
 }
 
 .item-detail-view-requests {
-  margin-left: -6.5%;
-  min-width: 115%;
+  margin-left: -5%;
 }
 
 .item-detail-view-loans {
-  margin-left: -5.3%;
+  margin-left: -2%;
 }
 
 .add-to-cart-title {
@@ -293,14 +293,19 @@
 }
 
 .user-info {
-  height: 270px;
   max-width: 310px;
   margin-left: 20px;
   margin-top: 15px;
+  margin-bottom: 15px;
   border: none;
   border-left: solid;
   border-color: rgba(0,150,255,1);
   border-width: 4px;
+}
+
+.user-card-block {
+  padding-top: 8px;
+  padding-bottom: 2px;
 }
 
 .userprofile-page {
@@ -652,7 +657,7 @@
 }
 
 .loan-table-mini {
-  margin-left: 4.5%;
+  margin-left: 2%;
   min-width: 98%;
 }
 
@@ -690,6 +695,9 @@
   margin-bottom: 4%;
 }
 
+.button-space {
+  margin-right: 5px;
+}
 .customfield-editor-modal {
   max-width: 86.5%;
   margin-left: 10%;

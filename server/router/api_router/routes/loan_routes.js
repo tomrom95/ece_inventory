@@ -56,6 +56,7 @@ function returnLoans(query, req, res){
     let paginateOptions = {
       page: req.query.page,
       limit: Number(req.query.per_page),
+      sort: {"created": -1},
       populate: [{path:'items.item', select: ITEM_FIELDS}, {path:'user', select: USER_FIELDS}]
     }
     Loan.paginate(query.toJSON(), paginateOptions, function(err,obj){
@@ -66,6 +67,7 @@ function returnLoans(query, req, res){
     Loan.find(query.toJSON())
         .populate('items.item', ITEM_FIELDS)
         .populate('user', USER_FIELDS)
+        .sort({"created": -1})
         .exec(function(error, loans) {
           if (error) return res.send({error: error});
           return res.json(loans);
