@@ -220,15 +220,16 @@ describe('Inventory Import API Test', function () {
           });
         });
     });
-    it('Does not POST for manager', (done) => {
+    it('Does POST for manager', (done) => {
       chai.request(server)
         .post('/api/inventory/import')
         .set('Authorization', managerToken)
         .send(singleItemJSON)
         .end((err, res) => {
-          res.should.have.status(403);
+          should.not.exist(err);
+          res.should.have.status(200);
           Item.find({}, function(err, items){
-            items.length.should.be.eql(0);
+            items.length.should.be.eql(1);
             done();
           });
         });
