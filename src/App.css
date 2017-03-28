@@ -38,7 +38,7 @@
 }
 
 .inventory-button {
-  margin-right: 8%;
+  margin-right: 4%;
 }
 
 .buttons-cell {
@@ -364,7 +364,7 @@
 
 .center-text {
   width: 100%;
-  text-align: center!important;
+  text-align: center;
 }
 
 .center-text-fixed {
@@ -617,6 +617,7 @@
   min-width: 100%;
   padding-left: 1%;
   padding-right: 1%;
+  margin-bottom: 5px;
 }
 
 .description {

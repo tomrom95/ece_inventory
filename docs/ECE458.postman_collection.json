@@ -101,9 +101,9 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"HelloMoto1\",\n\t\"password\": \"motorola\",\n\t\"role\": \"ADMIN\"\n}"
+							"raw": "{\n\t\"username\": \"HelloMoto1\",\n\t\"password\": \"motorola\",\n\t\"role\": \"ADMIN\",\n\t\"email\": \"hello@hello.com\"\n}"
 						},
-						"description": "role: String ('ADMIN', 'MANAGER', 'STANDARD')"
+						"description": "role: String ('ADMIN', 'MANAGER', 'STANDARD')\nemail: String // required"
 					},
 					"response": []
 				},
@@ -232,9 +232,9 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"action\": \"CHECKOUT\",\n\t\"reason\": \"I want to\"\n}"
+							"raw": "{\n\t\"action\": \"CHECKOUT\",\n\t\"reason\": \"I want to\",\n\t\"type\": \"LOAN\"\n}"
 						},
-						"description": "Field \"action\" accepts only \"CHECKOUT\"."
+						"description": "Field \"action\" accepts only \"CHECKOUT\".\n\ntype: String [\"DISBURSEMENT\", \"LOAN\"] // required"
 					},
 					"response": []
 				}
