@@ -68,6 +68,7 @@ class RequestTable extends Component {
 		}
 		list.push(<th key={"buttonSpace-" + 1}> </th>);
     list.push(<th key={"buttonSpace-" + 2}> </th>);
+    list.push(<th key={"buttonSpace-" + 5}> </th>);
 
     // in global requests page, we have more buttons
     if (this.state.global === true) {
