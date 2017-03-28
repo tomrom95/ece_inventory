@@ -106,7 +106,8 @@ class UserProfile extends Component {
     ['email', 'firstName', 'lastName'].forEach(function(field) {
       this.refs[field].value = this.state[field];
     }.bind(this));
-    this.refs.subscribedCheckbox.checked = this.state.subscribed;
+    if (this.state.checked)
+      this.refs.subscribedCheckbox.checked = this.state.subscribed;
     this.setState({editMode: false});
   }
 
@@ -178,21 +179,19 @@ class UserProfile extends Component {
               id={"last-name-field"}/>
           </div>
           {subscribed}
-          <div className="card-block user-card-block">
-            <button
-              className="btn btn-primary"
-              onClick={this.submitButtonClick.bind(this)}
-            >
-              Submit
-            </button>
-          </div>
-          <div className="card-block user-card-block">
-            <button
-              className="btn btn-primary"
-              onClick={this.cancelButtonClick.bind(this)}
-            >
-              Cancel
-            </button>
+          <div className="row card-block">
+
+              <button
+                className="btn btn-primary"
+                onClick={this.submitButtonClick.bind(this)} >
+                Submit
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={this.cancelButtonClick.bind(this)} >
+                Cancel
+              </button>
+
           </div>
         </div>
       </div>
