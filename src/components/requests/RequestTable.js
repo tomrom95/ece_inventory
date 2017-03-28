@@ -174,14 +174,14 @@ class RequestTable extends Component {
       var button_list = [];
 
       if(this.state.global ){
-        if(rowData[i][3] === 'PENDING'){
+        if (rowData[i][3] === 'PENDING') {
           button_list=[this.denyButton(i), this.approveButton(i), this.commentButton(i)];
         }
         else if (rowData[i][3] === 'APPROVED') {
-          button_list=[this.denyButton(i), this.fulfillButton(i),this.commentButton(i)];
+          button_list=[this.denyButton(i), this.fulfillButton(i), this.commentButton(i)];
         }
         else if (rowData[i][3] === 'DENIED') {
-          button_list=[this.blankSpace(i , 1), this.approveButton(i , 2),this.commentButton(i)];
+          button_list=[this.blankSpace(i , 1), this.approveButton(i , 2), this.commentButton(i)];
         }
         else if (rowData[i][3] === 'FULFILLED') {
           button_list=[this.blankSpace(i , 1), this.blankSpace(i , 2), this.commentButton(i)];
@@ -214,7 +214,7 @@ class RequestTable extends Component {
       var status = this.state.raw_data[i]["Status"];
       var role = JSON.parse(localStorage.getItem('user')).role;
       var type = 
-      (status !== "PENDING" || role === "STANDARD") ? 
+      (status !== "PENDING" && status !== "DENIED" || role === "STANDARD") ? 
             (<td key={"request-type-fixed"+i}>
                 <a key={"request-type-fixed"+i}> 
                   { this.state.raw_data[i]["Request Type"] ? this.state.raw_data[i]["Request Type"] : "DISBURSEMENT" } 
@@ -327,7 +327,8 @@ class RequestTable extends Component {
         alert(response.data.error);
       }
       else{
-        this.state.rows[index][3] = 'APPROVED'
+        this.state.rows[index][3] = 'APPROVED';
+        this.props.callback();
         this.forceUpdate();
       }
     }.bind(this))
@@ -348,7 +349,8 @@ class RequestTable extends Component {
         console.log("error denying request");
       }
       else{
-        this.state.rows[index][3] = 'DENIED'
+        this.state.rows[index][3] = 'DENIED';
+        this.props.callback();
         this.forceUpdate();
       }
     }.bind(this))
@@ -369,7 +371,8 @@ class RequestTable extends Component {
         alert(response.data.error);
       }
       else{
-        this.state.rows[index][3] = 'FULFILLED'
+        this.state.rows[index][3] = 'FULFILLED';
+        this.props.callback();
         this.forceUpdate();
       }
     }.bind(this))
@@ -401,25 +404,6 @@ class RequestTable extends Component {
       console.log(error);
     }.bind(this));
 
-  }
-
-  commentRequest(index) {
-    this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
-      {
-        reviewer_comment: "for real",
-      }
-    )
-    .then(function(response) {
-      if(response.data.error){
-        alert(console.data.error);
-      }
-      else{
-
-      }
-    }.bind(this))
-    .catch(function(error) {
-      console.log(error);
-    }.bind(this));
   }
 
   render() {

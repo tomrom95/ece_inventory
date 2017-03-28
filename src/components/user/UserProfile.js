@@ -232,12 +232,13 @@ class UserProfile extends Component {
       <div className="userprofile-side-panel">
         <div className="card user-info center-text">
           {userNameField}
-          <div className="card-block user-card-block">
-            <h5 className="card-title row">Name:</h5>
-            <p className="card-title row">
-              {(this.state.firstName || '') + ' ' + (this.state.lastName || '')}
-            </p>
-          </div>
+          { this.state.firstName || this.state.lastName ? 
+            (<div className="card-block user-card-block">
+              <h5 className="card-title row">Name:</h5>
+              <p className="card-title row">
+                {(this.state.firstName || '') + ' ' + (this.state.lastName || '')}
+              </p>
+            </div>) : null }
           <div className="card-block user-card-block">
             <h5 className="card-title row">Email:</h5>
             <p className="card-title row"> {this.state.email} </p>

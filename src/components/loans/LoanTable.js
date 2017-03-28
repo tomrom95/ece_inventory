@@ -30,10 +30,24 @@ class LoanTable extends Component {
 	makeRows() {
 		var list = [];
 		for (var i=0; i<this.state.data.length; i++) {
-			var loanItem = this.state.data[i];
+			  var loanItem = this.state.data[i];
+
+			  var user = loanItem.user;
+			  var label = user.username;
+			  if (user.first_name && user.last_name) {
+			    label = user.first_name + ' ' + user.last_name;
+			    if (user.netid) {
+			      label += ' (' + user.netid + ')';
+			    } else {
+			      label += ' (' + user.username + ')';
+			    }
+			  } else if (user.netid) {
+			    label = user.netid;
+			  }
+
 			var params = {
 				_id: loanItem._id,
-				user: loanItem.user.username,
+				user: label,
 				created: loanItem.created,
 				modified: loanItem.modified,
 				items: loanItem.items,
