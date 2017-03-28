@@ -88,7 +88,6 @@ class ItemWizard extends Component {
 					}
 					if(label !== ""){
 						list.push(this.makeCustomTextBox(i, j, field, label));
-						console.log(field);
 						list.push(this.makeDeleteButton(i, j, field));
 						}
 
@@ -170,13 +169,17 @@ class ItemWizard extends Component {
 		}
 		for(var i = 0; i < this.state.data.custom_fields.length; i++){
 			for(var j = 0; j < this.state.allCustomFields.length; j++){
-				var type = this.state.allCustomFields[j].type;
-				var type_mismatch = this.checkMismatch(type, this.state.data.custom_fields[i].value);
-				var invalid_length = this.checkInvalidLength(type, this.state.data.custom_fields[i].value);
-				if(type_mismatch || invalid_length){
-					alert("Incorrect value for custom field " + this.state.allCustomFields[i].name);
-					return;
+			
+				if(this.state.data.custom_fields[i].field === this.state.allCustomFields[j]._id){
+					var type = this.state.allCustomFields[j].type;
+					var type_mismatch = this.checkMismatch(type, this.state.data.custom_fields[i].value);
+					var invalid_length = this.checkInvalidLength(type, this.state.data.custom_fields[i].value);
+					if(type_mismatch || invalid_length){
+						alert("Incorrect value for custom field " + this.state.allCustomFields[j].name);
+						return;
+					}
 				}
+
 			}
 		}
 		return true;
@@ -242,8 +245,6 @@ class ItemWizard extends Component {
 	}
 
 	deleteCustomField(field){
-		console.log(this.state.data.custom_fields);
-		console.log(field);
 		var data = this.state.data;
 		var custom_fields = [];
 		for(var a = 0; a < data.custom_fields.length; a++){
