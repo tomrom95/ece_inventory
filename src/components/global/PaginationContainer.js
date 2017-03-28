@@ -299,8 +299,8 @@ class PaginationContainer extends Component {
 
 	makePageControlBar() {
 		var pageControlBar =  this.state.items.length === 0 ? null :
-			(<div className="page-control-bar">
-				<div className="row">
+			(<div className="row page-control-bar">
+				<div className="col-md-6">
 	                <nav aria-label="page-buttons">
 	                  <ul className="pagination">
 	                  	<li className="page-item">
