@@ -264,6 +264,42 @@ describe('Inventory Import API Test', function () {
           });
         });
     });
+    it('Does not POST single item with an incorrect custom field type FLOAT', (done) => {
+      singleItemJSON.custom_fields = [{
+        "name": "float_number",
+        "value": "hi"
+      }];
+      chai.request(server)
+        .post('/api/inventory/import')
+        .set('Authorization', adminToken)
+        .send(singleItemJSON)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.body.error.should.be.eql('The entered custom field float_number has a value hi not matching type FLOAT');
+          Item.find({}, function(err, items){
+            items.length.should.be.eql(0);
+            done();
+          });
+        });
+    });
+    it('Does not POST single item with an incorrect custom field type INT', (done) => {
+      singleItemJSON.custom_fields = [{
+        "name": "int_number",
+        "value": "hi"
+      }];
+      chai.request(server)
+        .post('/api/inventory/import')
+        .set('Authorization', adminToken)
+        .send(singleItemJSON)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.body.error.should.be.eql('The entered custom field int_number has a value hi not matching type INT');
+          Item.find({}, function(err, items){
+            items.length.should.be.eql(0);
+            done();
+          });
+        });
+    });
     it('Does not POST multiple items with duplicate key',(done)=> {
       chai.request(server)
         .post('/api/inventory/import')
