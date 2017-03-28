@@ -29,7 +29,7 @@ class LoanPage extends Component {
 	      var obj = loans[i];
 	        var loan = {
 	        	_id: obj._id,
-	        	user: obj.user,
+	        	user: obj.user ? obj.user : obj.netid,
 	        	request_id: obj.request,
 	        	created: obj.created,
 	        	modified: obj.lastModified,

@@ -132,6 +132,12 @@ class UserProfile extends Component {
                     <h5 className="card-title row">Privilege Level:</h5>
                     <p className="card-title row"> {this.state.role} </p>
                   </div>
+                  { this.props.first_name && this.props.last_name ? 
+                    (<div className="card-block">
+                      <h5 className="card-title row">Name:</h5>
+                      <p className="card-title row"> {this.props.first_name + " " + this.props.last_name} </p>
+                    </div>) : null  
+                  }             
                   <div className="card-block">
                     <h5 className="card-title row">Email:</h5>
                     <p className="card-title row"> {this.state.email} </p>
