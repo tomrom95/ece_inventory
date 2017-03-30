@@ -30,7 +30,7 @@ module.exports.putAPI = function(req,res) {
         if (foundField) {
           foundField.value = newFieldObj.value;
         } else {
-          instances.custom_fields.push(newFieldObj);
+          instance.custom_fields.push(newFieldObj);
         }
       });
     }
