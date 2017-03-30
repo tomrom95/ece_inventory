@@ -18,7 +18,7 @@ module.exports.requestCreated = function(request, createdBy, createdFor) {
 module.exports.requestFulfilled = function(request, items, initiator, createdFor) {
   var requestItemMap = {};
   request.items.forEach(function(item) {
-    requestItemMap[item.item] = item.quantity;
+    requestItemMap[item.item._id] = item.quantity;
   });
 
   var text = 'Hello ' + StringHelpers.getDisplayName(createdFor) + ',\n\n';

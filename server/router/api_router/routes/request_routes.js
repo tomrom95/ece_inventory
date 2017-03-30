@@ -1,6 +1,7 @@
 'use strict';
 var Request = require('../../../model/requests');
 var Item = require('../../../model/items');
+var Instance = require('../../../model/instances');
 var User = require('../../../model/users');
 var Cart = require('../../../model/carts');
 var Loan = require('../../../model/loans');
@@ -247,7 +248,7 @@ var addCheckQuantityPromise = function(checkQuantityPromises, request, i) {
   }));
 }
 
-var addFulfillPromise = function(fulfillPromises, updatedCart, request, i) {
+var addFulfillPromise = function(fulfillPromises, updatedCart, request, instanceMap, i) {
   fulfillPromises.push(new Promise((resolve, reject) => {
     Item.findById(request.items[i].item, function(err, item) {
       if (err) return reject(err);
@@ -258,15 +259,51 @@ var addFulfillPromise = function(fulfillPromises, updatedCart, request, i) {
         Item.populate(updatedItem,{path: "item", select: itemFieldsToReturn}, function(err, item){
           if (err) return reject(err);
           updatedCart.push(updatedItem);
-          resolve();
+          var itemId = String(item._id);
+
+          // Take care of assets
+          if (item.is_asset) {
+            if (request.action === 'DISBURSEMENT') {
+              // If disbursement, remove the instances from the system
+              Instance.remove({_id: {$in: instanceMap[itemId]}}, function(error) {
+                if (error) return reject(error);
+                resolve();
+              });
+            } else {
+              // If loan, just change the instances to be not in stock
+              Instance.update(
+                {_id: {$in: instanceMap[itemId]}},
+                {$set: {in_stock: false}},
+                function(error) {
+                  if (error) return reject(error);
+                  resolve();
+                }
+              );
+            }
+          } else {
+            resolve();
+          }
         })
       });
     });
   }));
 }
 
-function fulfill(requestID, next) {
-  Request.findById(requestID, function(err, request) {
+function instancesSupplied(request, instanceMap) {
+  // Check to make sure the number of instances supplied match the number requested
+  request.items.forEach(function(itemObj) {
+    if (itemObj.item.is_asset) {
+      var itemId = String(itemObj.item._id);
+      if (!instanceMap[itemId] || new Set(instanceMap[itemId]).length !== itemObj.quantity) {
+        return false;
+      }
+    }
+  });
+  return true;
+}
+
+function fulfill(requestID, instanceMap, next) {
+  Request.findById(requestID).populate('items.item', 'is_asset').exec(function(err, request) {
     if (err) return next(err);
     if (!request) return next('Request does not exist');
     if (request.status === 'FULFILLED') {
@@ -274,6 +311,9 @@ function fulfill(requestID, next) {
     }
     if (request.is_cancelled) {
       return next('You cannot fulfill a cancelled request');
+    }
+    if (!instancesSupplied(request, instanceMap)) {
+      return next('Incorrect number of instances supplied');
     }
       var checkQuantityPromises = [];
       for (var i = 0; i < request.items.length; i++){
@@ -287,7 +327,7 @@ function fulfill(requestID, next) {
         var fulfillPromises = [];
         for (var i = 0; i < request.items.length; i++){
           // Pass down index i into the closure for async call
-          addFulfillPromise(fulfillPromises, updatedCart, request, i);
+          addFulfillPromise(fulfillPromises, updatedCart, request, instanceMap, i);
         }
         Promise.all(fulfillPromises).then(function(){
           // Only update request if item quantity change was successful.
@@ -297,6 +337,16 @@ function fulfill(requestID, next) {
           request.save(function(err, updatedRequest) {
             if (err) return next(err);
             if(request.action === "LOAN") {
+              var items = updatedRequest.items;
+
+              // Give it the instances if applicable
+              if (instanceMap) {
+                items.forEach(function(itemObj) {
+                  if (instanceMap[itemObj.item]) {
+                    itemObj.instances = instanceMap[itemObj.item];
+                  }
+                })
+              }
               var loan = new Loan({
                 user: updatedRequest.user,
                 items: updatedRequest.items,
@@ -321,7 +371,7 @@ function fulfill(requestID, next) {
 
 module.exports.patchAPI = function(req, res) {
   if (req.body.action == 'FULFILL') {
-    fulfill(req.params.request_id, function(err, request, cart) {
+    fulfill(req.params.request_id, req.body.instances, function(err, request, cart) {
       if (err) return res.send({error: err});
       Cart.populate(cart,{path: "items.item", select: itemFieldsToReturn}, function(err, cart){
         if (err) res.send({error: err});

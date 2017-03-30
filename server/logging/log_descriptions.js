@@ -35,7 +35,7 @@ module.exports.fulfilledItem = function(request, items, disbursedFrom, disbursed
   var description = 'The user ' + StringHelpers.getDisplayName(disbursedFrom) + ' disbursed';
   var requestItemMap = {};
   request.items.forEach(function(item) {
-    requestItemMap[item.item] = item.quantity;
+    requestItemMap[item.item._id] = item.quantity;
   });
   description += StringHelpers.createRequestItemString(requestItemMap, items);
   description += ' as a ' + request.action.toLowerCase();
