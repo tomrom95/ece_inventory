@@ -226,7 +226,7 @@ class ItemEditor extends Component {
 							this.props.callback();
 			        		this.setState({
 			        			justApplied: true
-			        		});							
+			        		});
 						}
 					}.bind(this))
 					.catch(function(error) {
@@ -257,7 +257,7 @@ class ItemEditor extends Component {
 						this.props.callback();
 						this.setState({
 		        			justApplied: true
-			        	});	
+			        	});
 					}
 				}.bind(this))
 				.catch(function(error) {
@@ -447,7 +447,7 @@ class ItemEditor extends Component {
 	  		description: this.refs.Description.value,
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
-	  		has_instance_objects: false
+	  		is_asset: false
   		}
 
   		if (this.validItem(object) === true) {
@@ -482,7 +482,7 @@ class ItemEditor extends Component {
   	}
 
   	render() {
-  		var button = 
+  		var button =
   				(<button type="button"
 					className="btn btn-sm btn-outline-primary"
 					data-toggle="modal"

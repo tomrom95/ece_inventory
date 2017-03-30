@@ -2,7 +2,7 @@
   {
     "quantity": 1000,
     "name": "1k resistor",
-    "has_instance_objects": false,
+    "is_asset": false,
     "vendor_info": "IBM",
     "model_number": "A123",
     "tags": [
@@ -14,7 +14,7 @@
   {
     "quantity": 1000,
     "name": "2k resistor",
-    "has_instance_objects": false,
+    "is_asset": false,
     "vendor_info": "IBM",
     "model_number": "A123",
     "tags": [
@@ -26,7 +26,7 @@
   {
     "quantity": 1000,
     "name": "5k resistor",
-    "has_instance_objects": false,
+    "is_asset": false,
     "vendor_info": "IBM",
     "model_number": "A123",
     "tags": [
@@ -38,7 +38,7 @@
   {
     "quantity": 1000,
     "name": "10k resistor",
-    "has_instance_objects": false,
+    "is_asset": false,
     "vendor_info": "IBM",
     "model_number": "A123",
     "tags": [
@@ -50,7 +50,7 @@
   {
     "quantity": 1000,
     "name": "100k resistor",
-    "has_instance_objects": false,
+    "is_asset": false,
     "vendor_info": "Qualcomm",
     "model_number": "A123",
     "tags": [
@@ -62,7 +62,7 @@
   {
     "quantity": 1000,
     "name": "100k inductor",
-    "has_instance_objects": false,
+    "is_asset": false,
     "vendor_info": "Qualcomm",
     "model_number": "A123",
     "tags": [
@@ -75,7 +75,7 @@
   {
     "quantity": 1000,
     "name": "150k inductor",
-    "has_instance_objects": false,
+    "is_asset": false,
     "vendor_info": "Qualcomm",
     "model_number": "A123",
     "tags": [
@@ -88,7 +88,7 @@
   {
     "quantity": 1000,
     "name": "1m Wire",
-    "has_instance_objects": false,
+    "is_asset": false,
     "vendor_info": "Qualcomm",
     "model_number": "A123",
     "tags": [
@@ -99,7 +99,7 @@
   {
     "quantity": 1000,
     "name": "5M Wire",
-    "has_instance_objects": false,
+    "is_asset": false,
     "vendor_info": "Qualcomm",
     "model_number": "A123",
     "tags": [
@@ -110,7 +110,7 @@
   {
     "quantity": 1000,
     "name": "240V PSU",
-    "has_instance_objects": false,
+    "is_asset": false,
     "vendor_info": "Qualcomm",
     "model_number": "A123",
     "tags": [
@@ -122,7 +122,7 @@
   {
     "quantity": 1000,
     "name": "120V PSU",
-    "has_instance_objects": false,
+    "is_asset": false,
     "vendor_info": "Qualcomm",
     "model_number": "A123",
     "tags": [
@@ -135,35 +135,13 @@
     "model_number": "123",
     "quantity": 1000,
     "name": "Oscilloscope",
-    "has_instance_objects": true,
+    "is_asset": true,
     "vendor_info": "Qualcomm",
     "model_number": "A123",
     "tags": [
       "Power",
       "expensive",
       "heavy"
-    ],
-    "instances": [
-      {
-        "serial_number": "11111",
-        "status": "IN_USE",
-        "condition": "GOOD"
-      },
-      {
-        "serial_number": "22222",
-        "status": "LOST",
-        "condition": "GOOD"
-      },
-      {
-        "serial_number": "33333",
-        "status": "AVAILABLE",
-        "condition": "GOOD"
-      },
-      {
-        "serial_number": "44444",
-        "status": "AVAILABLE",
-        "condition": "NEEDS_REPAIR"
-      }
-      ]
+    ]
   }
 ]

@@ -3,6 +3,7 @@ process.env.NODE_ENV = 'test';
 let mongoose = require("mongoose");
 let moment = require('moment');
 let Item = require('../../server/model/items');
+let Instance = require('../../server/model/instances');
 let User = require('../../server/model/users');
 let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
@@ -18,6 +19,8 @@ describe('Inventory API Test', function () {
   var standardToken;
   var managerToken
   beforeEach((done) => { //Before each test we empty the database
+    Instance.remove({}, (err) => {
+      should.not.exist(err);
       Item.remove({}, (err) => {
         should.not.exist(err);
         User.remove({}, (err) => {
@@ -40,6 +43,7 @@ describe('Inventory API Test', function () {
           });
         });
       });
+  });
 
 
   describe('GET /inventory', () =>{

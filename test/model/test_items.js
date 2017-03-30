@@ -29,7 +29,7 @@ describe('Items', function() {
       quantity: 2,
       model_numer: '1234',
       tags: ['thing', 'other'],
-      has_instance_objects: false
+      is_asset: false
     });
     item.validate(function (err) {
       assert.isNull(err, 'Valid object');
@@ -46,7 +46,7 @@ describe('Items', function() {
       quantity: 2,
       model_numer: '1234',
       tags: ['thing', 'other'],
-      has_instance_objects: true,
+      is_asset: true,
       instances: [instance]
     });
     item.validate(function (err) {
