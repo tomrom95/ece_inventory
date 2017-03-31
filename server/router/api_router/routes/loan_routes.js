@@ -149,6 +149,7 @@ function addReturnPromises(returnPromises, loan, index){
           Instance.update(
             {_id: {$in: loan.items[index].instances}},
             {$set: {in_stock: true}},
+            {multi: true},
             function(error) {
               if (error) return reject(error);
               resolve();

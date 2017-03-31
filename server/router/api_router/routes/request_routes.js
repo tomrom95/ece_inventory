@@ -274,6 +274,7 @@ var addFulfillPromise = function(fulfillPromises, updatedCart, request, instance
               Instance.update(
                 {_id: {$in: instanceMap[itemId]}},
                 {$set: {in_stock: false}},
+                {multi: true},
                 function(error) {
                   if (error) return reject(error);
                   resolve();
@@ -338,19 +339,20 @@ function fulfill(requestID, instanceMap, next) {
           request.save(function(err, updatedRequest) {
             if (err) return next(err);
             if(request.action === "LOAN") {
-              var items = updatedRequest.items;
+              var items = [];
 
-              // Give it the instances if applicable
-              if (instanceMap) {
-                items.forEach(function(itemObj) {
-                  if (instanceMap[itemObj.item]) {
-                    itemObj.instances = instanceMap[itemObj.item];
-                  }
-                })
-              }
+              updatedRequest.items.forEach(function(itemObj) {
+                var newItemObj = {quantity: itemObj.quantity, item: itemObj.item._id};
+                // if instance, assign instances
+                if (instanceMap && instanceMap[newItemObj.item] && itemObj.item.is_asset) {
+                  newItemObj.instances = instanceMap[newItemObj.item];
+                }
+                items.push(newItemObj)
+              });
+
               var loan = new Loan({
                 user: updatedRequest.user,
-                items: updatedRequest.items,
+                items: items,
                 request: updatedRequest._id,
               });
               loan.save(function(err, updatedLoan){

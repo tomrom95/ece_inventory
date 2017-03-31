@@ -1672,6 +1672,63 @@ describe('Requests API Test', function () {
         });
       });
 
+      it('fulfills a loan request for asset items with instances', (done) => {
+        mockInstanceRequest.action = 'LOAN';
+        var request = new Request(mockInstanceRequest);
+        var body = {
+          action: 'FULFILL',
+          instances: {}
+        };
+        body.instances[allItems['Laptop']._id] = [allInstances['1']._id, allInstances['2']._id];
+        body.instances[allItems['scopey']._id] = [allInstances['4']._id];
+        request.save(function(error, request) {
+          should.not.exist(error);
+          chai.request(server)
+          .patch('/api/requests/'+request._id)
+          .set('Authorization', token)
+          .send(body)
+          .end((error, res) => {
+            should.not.exist(error);
+            res.should.have.status(200);
+            Request.findById(request._id, function(err, request) {
+              should.not.exist(err);
+              request.status.should.be.eql('FULFILLED');
+              Instance.find(
+                {tag: {$in: ['1', '2', '4']}},
+                function(error, instances) {
+                  should.not.exist(error);
+                  instances.length.should.be.eql(3);
+                  instances.should.all.have.property('in_stock', false);
+                  Item.findById(allItems['Laptop']._id, function(error, item) {
+                    item.quantity.should.be.eql(0);
+                    Loan.findOne({}, function(error, loan) {
+                      var foundItems = 0;
+                      loan.items.forEach(function(itemObj) {
+                        if (String(itemObj.item) === String(allItems['Laptop']._id)) {
+                          itemObj.quantity.should.be.eql(2);
+                          itemObj.instances.length.should.be.eql(2);
+                          itemObj.instances.should.include(allInstances['1']._id)
+                          itemObj.instances.should.include(allInstances['2']._id)
+                          foundItems += 1;
+                        }
+                        if (String(itemObj.item) === String(allItems['scopey']._id)) {
+                          itemObj.quantity.should.be.eql(1);
+                          itemObj.instances.length.should.be.eql(1);
+                          itemObj.instances.should.include(allInstances['4']._id)
+                          foundItems += 1;
+                        }
+                      });
+                      foundItems.should.be.eql(2);
+                      done();
+                    });
+                  });
+                }
+              );
+            });
+          });
+        });
+      });
+
     });
   });
 
