@@ -584,6 +584,34 @@ describe('Inventory API Test', function () {
           });
         });
       });
+
+      it('creates instances when is_asset is changed to true from false', (done) => {
+        let item = new Item({
+          "quantity": 5,
+          "name": "Laptop",
+          "has_instance_objects": true,
+          "vendor_info" : "Microsoft",
+          is_asset: false
+        });
+        item.save((err, item) =>{
+          should.not.exist(err);
+          chai.request(server)
+          .put('/api/inventory/'+item._id)
+          .set('Authorization', token)
+          .send({is_asset: true})
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.is_asset.should.be.eql(true);
+            Instance.find({item: item._id}, function(error, instances) {
+              should.not.exist(error);
+              instances.length.should.be.eql(5);
+              done();
+            });
+          });
+        });
+      });
     });
 
     it('disallows is_deleted from being updated', (done) => {
