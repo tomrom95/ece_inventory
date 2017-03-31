@@ -291,15 +291,16 @@ var addFulfillPromise = function(fulfillPromises, updatedCart, request, instance
 
 function instancesSupplied(request, instanceMap) {
   // Check to make sure the number of instances supplied match the number requested
+  var enough = true;
   request.items.forEach(function(itemObj) {
     if (itemObj.item.is_asset) {
       var itemId = String(itemObj.item._id);
-      if (!instanceMap[itemId] || new Set(instanceMap[itemId]).length !== itemObj.quantity) {
-        return false;
+      if (!instanceMap[itemId] || new Set(instanceMap[itemId]).size !== itemObj.quantity) {
+        enough = false;
       }
     }
   });
-  return true;
+  return enough;
 }
 
 function fulfill(requestID, instanceMap, next) {

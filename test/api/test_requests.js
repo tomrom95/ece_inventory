@@ -4,10 +4,12 @@ let mongoose = require("mongoose");
 let Item = require('../../server/model/items');
 let User = require('../../server/model/users');
 let Request = require('../../server/model/requests');
+let Instance = require('../../server/model/instances');
 let Loan = require('../../server/model/loans');
 let helpers = require('../../server/auth/auth_helpers');
 let fakeItemData = require('./test_inventory_data');
 let fakeRequestData = require('./test_requests_data');
+let fakeInstanceData = require('./test_instances_data');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let should = chai.should();
@@ -44,43 +46,45 @@ describe('Requests API Test', function () {
   var user_id;
   var itemsArray;
   beforeEach((done) => { //Before each test we empty the database
-    Loan.remove({}, (err) => {
-      should.not.exist(err);
-      Item.remove({}, (err) => {
+    Instance.remove({}, (err) => {
+      Loan.remove({}, (err) => {
         should.not.exist(err);
-        Request.remove({}, (err)=>{
+        Item.remove({}, (err) => {
           should.not.exist(err);
-          User.remove({}, (err) => {
+          Request.remove({}, (err)=>{
             should.not.exist(err);
-            helpers.createNewUser('test_user', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
+            User.remove({}, (err) => {
               should.not.exist(err);
-              token = helpers.createAuthToken(user);
-              user_id = user._id;
-              Item.insertMany(fakeItemData).then(function(obj){
-                // Get the id from one item
-                Item.findOne({'name':'1k resistor'}, function(err,item1){
-                  should.not.exist(err);
-                  item1_id = item1._id;
-                  Item.findOne({'name':'2k resistor'}, function(err,item2){
+              helpers.createNewUser('test_user', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
+                should.not.exist(err);
+                token = helpers.createAuthToken(user);
+                user_id = user._id;
+                Item.insertMany(fakeItemData).then(function(obj){
+                  // Get the id from one item
+                  Item.findOne({'name':'1k resistor'}, function(err,item1){
                     should.not.exist(err);
-                    item2_id = item2._id;
-                    // Add the user id manually, and the item associated
-                    fakeRequestData.forEach(function(obj){
-                      itemsArray = [
-                        {
-                          item: item1_id,
-                          quantity: 1000
-                        },
-                        {
-                          item: item2_id,
-                          quantity: 2000
-                        }
-                      ];
-                      obj.items = itemsArray;
-                      obj.user = user._id;
-                    });
-                    Request.insertMany(fakeRequestData, function(error, obj){
-                      done();
+                    item1_id = item1._id;
+                    Item.findOne({'name':'2k resistor'}, function(err,item2){
+                      should.not.exist(err);
+                      item2_id = item2._id;
+                      // Add the user id manually, and the item associated
+                      fakeRequestData.forEach(function(obj){
+                        itemsArray = [
+                          {
+                            item: item1_id,
+                            quantity: 1000
+                          },
+                          {
+                            item: item2_id,
+                            quantity: 2000
+                          }
+                        ];
+                        obj.items = itemsArray;
+                        obj.user = user._id;
+                      });
+                      Request.insertMany(fakeRequestData, function(error, obj){
+                        done();
+                      });
                     });
                   });
                 });
@@ -1558,6 +1562,116 @@ describe('Requests API Test', function () {
           });
         });
       });
+    });
+
+    describe('fulfilling requests with instances', () => {
+      var allItems;
+      var allInstances;
+      var mockInstanceRequest;
+
+      beforeEach((done) => {
+        Item.insertMany(fakeInstanceData.items, function(error, items) {
+          should.not.exist(error);
+          allItems = {};
+          items.forEach(function(item) {
+            allItems[item.name] = item;
+          });
+          Instance.insertMany(fakeInstanceData.instances, function(error, instances) {
+            should.not.exist(error);
+            allInstances = {};
+            instances.forEach(function(instance) {
+              allInstances[instance.tag] = instance;
+            });
+            mockInstanceRequest = {
+              user: user_id,
+              reason: "reason",
+              status: "APPROVED",
+              items: [
+                {item: allItems['Laptop']._id, quantity: 2},
+                {item: allItems['scopey']._id, quantity: 1},
+                {item: allItems['Not an asset']._id, quantity: 50}
+              ]
+            };
+            done();
+          });
+        });
+      });
+
+      it('fulfills a disbursement request for asset items with instances', (done) => {
+        mockInstanceRequest.action = 'DISBURSEMENT';
+        var request = new Request(mockInstanceRequest);
+        var body = {
+          action: 'FULFILL',
+          instances: {}
+        };
+        body.instances[allItems['Laptop']._id] = [allInstances['1']._id, allInstances['2']._id];
+        body.instances[allItems['scopey']._id] = [allInstances['4']._id];
+        request.save(function(error, request) {
+          should.not.exist(error);
+          chai.request(server)
+          .patch('/api/requests/'+request._id)
+          .set('Authorization', token)
+          .send(body)
+          .end((error, res) => {
+            should.not.exist(error);
+            res.should.have.status(200);
+            Request.findById(request._id, function(err, request) {
+              should.not.exist(err);
+              request.status.should.be.eql('FULFILLED');
+              Instance.find(
+                {tag: {$in: ['1', '2', '4']}},
+                function(error, instances) {
+                  should.not.exist(error);
+                  instances.length.should.be.eql(0);
+                  Item.findById(allItems['Laptop']._id, function(error, item) {
+                    item.quantity.should.be.eql(0);
+                    done();
+                  });
+                }
+              );
+            });
+          });
+        });
+      });
+
+      it('does not fulfill a disbursement request if not enough instances provided', (done) => {
+        mockInstanceRequest.action = 'DISBURSEMENT';
+        var request = new Request(mockInstanceRequest);
+        var body = {
+          action: 'FULFILL',
+          instances: {}
+        };
+        body.instances[allItems['Laptop']._id] = [allInstances['1']._id];
+        body.instances[allItems['scopey']._id] = [allInstances['4']._id];
+        request.save(function(error, request) {
+          should.not.exist(error);
+          chai.request(server)
+          .patch('/api/requests/'+request._id)
+          .set('Authorization', token)
+          .send(body)
+          .end((error, res) => {
+            should.not.exist(error);
+            res.should.have.status(200);
+            res.body.error.should.be.eql('Incorrect number of instances supplied');
+            Request.findById(request._id, function(err, request) {
+              should.not.exist(err);
+              request.status.should.be.eql('APPROVED');
+              Instance.find(
+                {tag: {$in: ['1', '2', '4']}},
+                function(error, instances) {
+                  should.not.exist(error);
+                  instances.length.should.be.eql(3);
+                  Item.findById(allItems['Laptop']._id, function(error, item) {
+                    item.quantity.should.be.eql(2);
+                    done();
+                  });
+                }
+              );
+            });
+          });
+        });
+      });
+
     });
   });
 
