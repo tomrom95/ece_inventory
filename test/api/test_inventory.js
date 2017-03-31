@@ -674,8 +674,11 @@ describe('Inventory API Test', function () {
           res.body.should.have.property("name","TEST_ITEM");
           res.body.should.have.property("quantity",100);
           res.body.should.have.property("vendor_info", "Microsoft");
-          done();
-        })
+          Instance.find({item: res.body._id}, function(error, instances) {
+            instances.length.should.be.eql(100);
+            done();
+          });
+        });
 
     })
     it('POSTs item with untrimmed tags, then GET successful by required tag', (done)=>{
