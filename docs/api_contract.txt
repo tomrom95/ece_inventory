@@ -162,8 +162,7 @@ return: {
 /api/inventory/:item_id/instances
 GET
 params:{
-	in_stock: Boolean,
-	item: String, // the item id
+	in_stock: Boolean
 }
 
 return:

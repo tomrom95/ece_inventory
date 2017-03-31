@@ -8,7 +8,7 @@ module.exports.getAPI = function (req, res) {
   var query = new QueryBuilder();
   query
     .searchBoolean('in_stock', req.query.in_stock)
-    .searchForObjectId('item', req.query.item);
+    .searchForObjectId('item', req.params.item_id);
 
   Instance.find(query.toJSON(), function(error, instances) {
     if (error) return res.send({error: error});
@@ -43,9 +43,14 @@ module.exports.putAPI = function(req,res) {
 };
 
 module.exports.postAPI = function(req, res) {
-  Item.findById(req.body.item, function(error, item) {
+  Item.findById(req.params.item_id, function(error, item) {
     if (error) return res.send({error: error});
     if (!item) return res.send({error: 'Item specified does not exist'});
+    if (!item.is_asset) return res.send({error: 'This item is not an asset'});
+    if (req.body.in_stock === false) return res.send({error: 'You cannot add an instance that is not in stock'});
+
+    // assign item id to the instance from the url params
+    req.body.item = req.params.item_id;
     var instance = new Instance(req.body);
     instance.save(function(error, instance) {
       if (error) return res.send({error: error});
@@ -66,7 +71,7 @@ module.exports.deleteAPI = function(req, res){
     instance.remove(function(error) {
       if (error) return res.send({error: error});
       Item.findByIdAndUpdate(
-        req.params.user_id,
+        req.params.item_id,
         {$inc: {quantity: -1}},
         function(error, item) {
           if (error) return res.send({error: error});
