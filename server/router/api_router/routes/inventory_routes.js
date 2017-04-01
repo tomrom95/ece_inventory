@@ -1,5 +1,6 @@
 'use strict';
 var Item = require('../../../model/items');
+var Instance = require('../../../model/instances');
 var CustomField = require('../../../model/customFields');
 var QueryBuilder = require('../../../queries/querybuilder');
 var Logger = require('../../../logging/logger');
@@ -107,6 +108,15 @@ module.exports.getAPIbyID = function(req,res){
   });
 };
 
+var autoCreateInstances = function(quantity, itemID, next) {
+  var instances = new Array(quantity);
+  for (var i = 0; i < quantity; i++) {
+    var newInstance = new Instance({item: itemID});
+    instances[i] = newInstance;
+  }
+  Instance.insertMany(instances, next);
+}
+
 module.exports.postAPI = function(req, res){
   var item = new Item();
   item.name = req.body.name;
@@ -115,14 +125,17 @@ module.exports.postAPI = function(req, res){
   item.vendor_info = req.body.vendor_info;
   item.description = req.body.description;
   item.tags = trimTags(req.body.tags);
-  item.has_instance_objects = req.body.has_instance_objects;
+  item.is_asset = req.body.is_asset;
   item.custom_fields = req.body.custom_fields;
   item.save(function(err, newItem){
     if(err)
     return res.send({error: err});
-    Logger.logNewItem(newItem, req.user, function(error) {
+    autoCreateInstances(newItem.quantity, newItem._id, function(error, instances) {
       if (error) return res.send({error: error});
-      return res.json(newItem);
+      Logger.logNewItem(newItem, req.user, function(error) {
+        if (error) return res.send({error: error});
+        return res.json(newItem);
+      });
     });
   })
 };
@@ -172,9 +185,11 @@ module.exports.putAPI = function(req, res){
   }
   Item.findById(req.params.item_id, function (err, old_item){
     if(err) return res.send({error: err});
-    if(!old_item || old_item.is_deleted)
+    if(!old_item || old_item.is_deleted) {
       return res.send({error: 'Item does not exist or has been deleted'});
-    else if (isQuantityProvidedWithoutReason(req.body.quantity, old_item.quantity, req.body.quantity_reason)){
+    } else if (req.body.quantity !== old_item.quantity && old_item.is_asset) {
+      return res.send({error: 'You cannot directly edit the quantity of an asset'});
+    } else if (isQuantityProvidedWithoutReason(req.body.quantity, old_item.quantity, req.body.quantity_reason)){
       return res.send({error:'Reason for quantity change not provided'});
     } else if (isQuantityReasonProvidedWithoutQuantity(req.body.quantity, req.body.quantity_reason)){
       return res.send({error:'Quantity not provided with reason'});
@@ -184,15 +199,23 @@ module.exports.putAPI = function(req, res){
       var oldItemCopy = new Item(old_item);
       // Filter out invalid body fields
       var changes = filterFieldsByArray(req.body, Object.keys(Item.schema.paths));
+      var createInstances = oldItemCopy.is_asset === false && changes.is_asset === true;
       // Pass forward the quantity reason
       changes.quantity_reason = req.body.quantity_reason;
       var obj = Object.assign(old_item, changes);
       obj.tags = trimTags(req.body.tags);
       obj.save((err,item) => {
         if(err) return res.send({error: err});
-          Logger.logEditing(oldItemCopy, changes, req.user, function(err) {
+        Logger.logEditing(oldItemCopy, changes, req.user, function(err) {
           if(err) return res.send({error: err});
-          res.json(item);
+          if (createInstances){
+            autoCreateInstances(item.quantity, item._id, function(error, instances) {
+              if(error) return res.send({error: error});
+              res.json(item);
+            });
+          } else {
+            res.json(item);
+          }
         });
       });
     }

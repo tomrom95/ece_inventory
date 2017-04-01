@@ -1,10 +1,80 @@
 {
-  "quantity": 1000,
-  "name": "1k resistor",
-  "has_instance_objects": false,
-  "tags": [
-    "component",
-    "electric",
-    "cheap"
+  "items": [
+    {
+      "_id": "111111111111111111111111",
+      "quantity": 2,
+      "name": "Laptop",
+      "is_asset": true,
+      "vendor_info": "Microsoft",
+      "tags": [
+        "component",
+        "electric",
+        "cheap"
+      ]
+    },
+    {
+      "_id": "222222222222222222222222",
+      "quantity": 1,
+      "name": "Oscilloscope",
+      "is_asset": true,
+      "vendor_info": "Microsoft",
+      "tags": [
+        "component",
+        "electric",
+        "cheap"
+      ]
+    },
+    {
+      "_id": "333333333333333333333333",
+      "quantity": 1,
+      "name": "Steve",
+      "is_asset": true,
+      "vendor_info": "New Jersey",
+      "tags": [
+        "cheap"
+      ]
+    },
+    {
+      "_id": "444444444444444444444444",
+      "quantity": 1000,
+      "name": "Not an asset",
+      "is_asset": false,
+      "vendor_info": "New Jersey",
+      "tags": [
+        "cheap"
+      ]
+    }
+  ],
+  "instances": [
+    {
+      "tag": "1",
+      "item": "111111111111111111111111",
+      "in_stock": true
+    },
+    {
+      "tag": "2",
+      "item": "111111111111111111111111",
+      "in_stock": true
+    },
+    {
+      "tag": "3",
+      "item": "111111111111111111111111",
+      "in_stock": false
+    },
+    {
+      "tag": "4",
+      "item": "222222222222222222222222",
+      "in_stock": true
+    },
+    {
+      "tag": "5",
+      "item": "333333333333333333333333",
+      "in_stock": false
+    },
+    {
+      "tag": "6",
+      "item": "333333333333333333333333",
+      "in_stock": true
+    }
   ]
 }

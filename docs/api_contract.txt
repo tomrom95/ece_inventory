@@ -18,7 +18,7 @@ returns: // does not return instance objects
     model_number: String,
     description: String,
     tags: [String],
-    has_instance_objects: Boolean,
+    is_asset: Boolean,
     custom_fields: [
     {
         field: String,
@@ -48,7 +48,7 @@ return:
   model_number: String,
   description: String,
   tags: [String],
-  has_instance_objects: Boolean,
+  is_asset: Boolean,
   custom_fields: [
     {
         field: String,
@@ -85,7 +85,7 @@ return:
   model_number: String,
   description: String,
   tags: String array,
-  has_instance_objects: Boolean,
+  is_asset: Boolean,
   custom_fields:[
     {
         field: String,
@@ -118,7 +118,7 @@ return:
   model_number: String,
   description: String,
   tags: String array,
-  has_instance_objects: Boolean,
+  is_asset: Boolean,
   custom_fields:[
     {
         field: String,
@@ -162,58 +162,63 @@ return: {
 /api/inventory/:item_id/instances
 GET
 params:{
-	serial_number: String [optional],
-	condition: String [optional],
-	status: String [optional]
+	in_stock: Boolean
 }
 
 return:
 [
   {
   	_id: String,
-    serial_number: String,
-    condition: String,
-    status: String,
+    tag: String,
+		item: String, // The item id
+		custom_fields: [{
+			field: String, // field id
+			value: String
+		}]
   }
 ]
+
 POST
 body:
 {
-  serial_number: String,
-  condition: String [optional],
-  status: String [optional],
+	tag: String [optional],
+	item: String [required], // The item id
+	custom_fields: [{
+		field: String, // field id
+		value: String
+	}]
 }
+
 return:
 {
-  _id: String,
-  serial_number: String,
-  condition: String,
-  status: String,
+	_id: String,
+	tag: String,
+	item: String, // The item id
+	custom_fields: [{
+		field: String, // field id
+		value: String
+	}]
 }
 
 /api/inventory/:item_id/:instance_id
-GET
-return:
-{
-  _id: String,
-  serial_number: String,
-  condition: String,
-  status: String,
-}
-
 PUT
 body:
 {
-  serial_number: String [optional],
-  condition: String [optional],
-  status: String [optional],
+	tag: String,
+	custom_fields: [{
+		field: String, // field id
+		value: String
+	}]
 }
 return:
 {
-  _id: String,
-  serial_number: String,
-  condition: String,
-  status: String,
+	_id: String,
+	tag: String,
+	item: String, // The item id
+	custom_fields: [{
+		field: String, // field id
+		value: String
+	}]
 }
 
 DELETE

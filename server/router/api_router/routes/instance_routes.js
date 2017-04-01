@@ -5,115 +5,79 @@ var mongoose = require('mongoose');
 var QueryBuilder = require('../../../queries/querybuilder');
 
 module.exports.getAPI = function (req, res) {
-  // queryable by serial number, condition and status
   var query = new QueryBuilder();
   query
-    .searchExact('instances.serial_number', req.query.serial_number, true)
-    .searchExact('instances.condition', req.query.condition, true)
-    .searchExact('instances.status', req.query.status, true);
+    .searchBoolean('in_stock', req.query.in_stock)
+    .searchForObjectId('item', req.params.item_id);
 
-  var item_id = req.params.item_id;
-  Item.aggregate(
-    // Find the Item
-    [{$match: { _id: mongoose.Types.ObjectId(item_id)}},
-    // Separate item for each instance it has
-    {$unwind: '$instances'},
-    // Filter out each separated item according to instance query
-    {$match: query.toJSON()},
-    // Regroup separated items into one object with list of instances
-    {$group: {_id:'$_id', filteredList:{$push: '$instances'}}}],
-    function(err, result){
-      if(err) return res.send({error: err});
-      else {
-          // Result is Array with 1 object
-          res.json(result.length ? result[0].filteredList : []);
-      }
+  Instance.find(query.toJSON(), function(error, instances) {
+    if (error) return res.send({error: error});
+    return res.json(instances);
   });
 };
 
-// Route: /inventory/:item_id/:instance_id
-module.exports.getAPIbyID = function(req,res){
-  Item.findById(req.params.item_id, function (err, item){
-    if(err) return res.send({error: err});
-    if(!item){
-      res.send({error: 'Item does not exist'});
-    } else {
-      // find instance from contained schema
-      // Handle if the id doesn't exist
-      var instance = item.instances.id(req.params.instance_id);
-      res.json(instance ? instance : {error: "Instance does not exist in item"});
-    }
-  });
-};
+module.exports.putAPI = function(req,res) {
+  Instance.findById(req.params.instance_id, function(error, instance) {
+    if (error) return res.send({error: error});
+    if (!instance) return res.send({error: 'Could not find instance'});
 
-// Route: /inventory/:item_id/:instance_id
-module.exports.putAPI = function(req,res){
-  Item.findById(req.params.item_id, function (err, item){
-    if(err) return res.send({error: err});
-    if(!item){
-      return res.send({error: 'Item does not exist'});
-    } else {
-      // find instance from contained schema
-      // Handle if the id doesn't exist
-      var instance = item.instances.id(req.params.instance_id);
-      if(!instance){
-        return res.send({error: "Instance does not exist in item"});
-      } else {
-        Object.assign(instance, req.body);
-        item.save((err, item) => {
-          if(err) return res.send({error:err});
-          res.json(instance);
-        })
-      }
-    }
-  });
-};
-
-module.exports.postAPI = function(req, res){
-  Item.findById(req.params.item_id, function (err, item){
-    if(err) return res.send({error: err});
-    if (!item) return res.send({error: 'Item does not exist'})
-    else {
-      var instance = new Instance();
-      var serial_number = req.body.serial_number;
-      var condition = req.body.condition;
-      var status = req.body.status;
-      if (!serial_number){
-        return res.send({error: 'Serial number is required'});
-      } else {
-        instance.serial_number = serial_number;
-      }
-      instance.condition = req.body.condition;
-      instance.status = req.body.status;
-      if(!item.instances.length) item.has_instance_objects = true;
-      item.instances.push(instance);
-      item.save(function(err, item){
-        if(err) return res.send({error:err});
-        res.json(item.instances.id(instance.id));
+    if (req.body.tag) instance.tag = req.body.tag;
+    if (req.body.custom_fields) {
+      req.body.custom_fields.forEach(function(newFieldObj) {
+        var foundField = instance.custom_fields.find(function(existingFieldObj) {
+          return String(existingFieldObj.field) === newFieldObj.field;
+        });
+        if (foundField) {
+          foundField.value = newFieldObj.value;
+        } else {
+          instance.custom_fields.push(newFieldObj);
+        }
       });
     }
+
+    instance.save(function(error, newInstance) {
+      if (error) return res.send({error: error});
+      return res.json(newInstance);
+    });
+  });
+};
+
+module.exports.postAPI = function(req, res) {
+  Item.findById(req.params.item_id, function(error, item) {
+    if (error) return res.send({error: error});
+    if (!item) return res.send({error: 'Item specified does not exist'});
+    if (!item.is_asset) return res.send({error: 'This item is not an asset'});
+    if (req.body.in_stock === false) return res.send({error: 'You cannot add an instance that is not in stock'});
+
+    // assign item id to the instance from the url params
+    req.body.item = req.params.item_id;
+    var instance = new Instance(req.body);
+    instance.save(function(error, instance) {
+      if (error) return res.send({error: error});
+      item.quantity += 1;
+      item.save(function(error, item) {
+        if (error) return res.send({error: error});
+        return res.json(instance);
+      });
+    });
   });
 };
 
 module.exports.deleteAPI = function(req, res){
-  Item.findById(req.params.item_id, function(err, item){
-    if(err) return res.send({error: err});
-    if(!item)
-     return res.send({error: 'Item does not exist'});
-    else{
-      var instance = item.instances.id(req.params.instance_id);
-      if(!instance){
-        return res.send({error: "Instance does not exist in item"});
-      } else {
-        instance.remove(function(err){
-          if (err) return res.send({error: err});
-          if(!item.instances.length) item.has_instance_objects = false;
-          item.save(function(err){
-            if(err) return res.send({error: err});
-            res.send({message: 'Delete successful'});
-          });
-        });
-      }
-    }
+  Instance.findById(req.params.instance_id, function(error, instance) {
+    if (error) return res.send({error: error});
+    if (!instance) return res.send({error: 'Instance does not exist'});
+    var itemId = instance.item;
+    instance.remove(function(error) {
+      if (error) return res.send({error: error});
+      Item.findByIdAndUpdate(
+        req.params.item_id,
+        {$inc: {quantity: -1}},
+        function(error, item) {
+          if (error) return res.send({error: error});
+          return res.json({message: "Successful"});
+        }
+      );
+    });
   })
 }

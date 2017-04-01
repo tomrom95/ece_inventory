@@ -80,7 +80,7 @@ describe('Logging API Test', function () {
         });
         });
       });
-      });
+    });
     });
 
   before((done) =>{
@@ -365,7 +365,7 @@ describe('Logging API Test', function () {
       var testField;
       beforeEach((done) => {
         CustomField.remove({}, function(error) {
-          var newField = new CustomField({name: "test_field", type: "SHORT_STRING", isPrivate: false});
+          var newField = new CustomField({name: "test_field", type: "SHORT_STRING", isPrivate: false, assetField: false});
           newField.save(function(error, field) {
             testField = field;
             done();
@@ -969,6 +969,7 @@ describe('Logging API Test', function () {
             name: 'test_field',
             type: 'LONG_STRING',
             isPrivate: false,
+            assetField: false
           });
           newfield.save(function(error, field) {
             should.not.exist(error);
@@ -985,7 +986,8 @@ describe('Logging API Test', function () {
           .send({
             name: 'new_field',
             type: 'SHORT_STRING',
-            isPrivate: true
+            isPrivate: true,
+            assetField: false
           })
           .end((err, res) => {
             should.not.exist(err);

@@ -21,7 +21,7 @@ class Inventory extends Component {
         "custom_fields": obj.custom_fields,
         "meta": {
           "id": obj._id,
-          "hasInstanceObjects": obj.has_instance_objects
+          "isAsset": obj.is_asset
         }
       };
       items.push(item);

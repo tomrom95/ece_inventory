@@ -61,7 +61,7 @@ All responses are in the form of JSON objects or an array of JSON objects. This 
 			    "vendor_info": "IBM",
 			    "is_deleted": false,
 			    "custom_fields": [],
-			    "has_instance_objects": false,
+			    "is_asset": false,
 			    "tags": [
 			      "component",
 			      "electric",

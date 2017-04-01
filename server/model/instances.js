@@ -1,22 +1,37 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var ObjectId = mongoose.Types.ObjectId;
 
 var InstanceSchema = new mongoose.Schema({
-  serial_number: {
+  tag: {
     type: String,
-    required: true,
+    default: function() {
+      return String(new ObjectId());
+    },
+    unique: true
   },
-  condition: {
-    type: String,
-    enum: ['GOOD', 'NEEDS_REPAIR'],
-    default: 'GOOD'
+  item: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Item',
+    required: true
   },
-  status: {
-    type: String,
-    enum: ['AVAILABLE', 'IN_USE', 'LOST'],
-    default: 'AVAILABLE'
-  }
+  in_stock: {
+    type: Boolean,
+    default: true
+  },
+  custom_fields:[{
+    _id: false,
+    field: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'CustomField',
+      required: true,
+    },
+    value: {
+      type: mongoose.Schema.Types.Mixed,
+      required: true
+    }
+  }],
 })
 
 module.exports = mongoose.model('Instance', InstanceSchema);

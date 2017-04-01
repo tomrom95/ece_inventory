@@ -15,6 +15,10 @@ var CustomFieldSchema = new mongoose.Schema({
   isPrivate: {
     type: Boolean,
     required: true
+  },
+  assetField: {
+    type: Boolean,
+    required: true
   }
 })
 

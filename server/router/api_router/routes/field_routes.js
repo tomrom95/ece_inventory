@@ -33,7 +33,8 @@ module.exports.postAPI = function(req, res){
   var customField = new CustomField({
     name: req.body.name,
     type: req.body.type,
-    isPrivate: req.body.isPrivate
+    isPrivate: req.body.isPrivate,
+    assetField: req.body.assetField
   });
   customField.save(function(error, savedField){
     if(error) return res.send({error: error});

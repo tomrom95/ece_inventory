@@ -16,22 +16,26 @@ const fieldJSON = [
   {
     "name": "location",
     "type": "SHORT_STRING",
-    "isPrivate": false
+    "isPrivate": false,
+    "assetField": false
   },
   {
     "name": "restock_info",
     "type": "LONG_STRING",
-    "isPrivate": true
+    "isPrivate": true,
+    "assetField": false
   },
   {
     "name": "int_number",
     "type": "INT",
-    "isPrivate": true
+    "isPrivate": true,
+    "assetField": false
   },
   {
     "name": "float_number",
     "type": "FLOAT",
-    "isPrivate": false
+    "isPrivate": false,
+    "assetField": false
   }
 ];
 
