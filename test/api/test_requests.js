@@ -1662,8 +1662,13 @@ describe('Requests API Test', function () {
                   should.not.exist(error);
                   instances.length.should.be.eql(3);
                   Item.findById(allItems['Laptop']._id, function(error, item) {
+                    should.not.exist(error);
                     item.quantity.should.be.eql(2);
-                    done();
+                    Item.findById(allItems['Not an asset']._id, function(error, lastItem){
+                      should.not.exist(error);
+                      lastItem.quantity.should.be.eql(1000);
+                      done();
+                    });
                   });
                 }
               );
