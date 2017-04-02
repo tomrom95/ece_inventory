@@ -52,6 +52,11 @@ class LoanEmailReminders extends Component {
   }
 
   makeRows(){
+    if (this.state.reminders.length === 0) {
+      return (<tr> 
+                <th>No reminders configured!</th>
+              </tr>);
+    }
     var list = [];
     for(var i = 0; i < this.state.reminders.length; i++){
       var date = this.state.reminders[i].date.split('T');
@@ -70,14 +75,13 @@ class LoanEmailReminders extends Component {
   makeEditButton(i){
     return(
       <td key={"edit-td-"+i} >
-        <button
-          type="button"
+        <a
           data-toggle="modal"
           data-target={"#editModal-"+this.state.reminders[i]._id}
-          className="btn btn-sm btn-outline-primary"
+          href="#/"
           key={"editbutton-"+ i}>
-            See Body Text
-        </button>
+            See Text
+        </a>
         <div className="modal fade"
           id={"editModal-"+this.state.reminders[i]._id}
           tabIndex="-1" role="dialog"
@@ -167,7 +171,7 @@ class LoanEmailReminders extends Component {
           console.log(response);
         }
         else{
-          console.log(response)
+          alert("Successfully changed email subject line!");
         }
       }.bind(this))
       .catch(function(error){
@@ -228,27 +232,41 @@ class LoanEmailReminders extends Component {
 
     if (JSON.parse(localStorage.getItem('user')).role === "STANDARD") {
       return (
-        <div className="text-center">
+        <div className="center-text">
           You are not allowed to access this page
         </div>
       );
     }
     else{
       return(
-
-        <div className="row inventory-page">
+        <div className="container">
+        <div className="row">
           <div className="card date-card">
             <h5 className="card-header">Select reminder date</h5>
-              <DatePicker
-                dateFormat="YYYY-MM-DD"
-                className="date-select"
-                selected={this.state.startDate}
-                onChange={this.handleDateChange.bind(this)}
-                key={"email-date"}/>
+                <div className="form-group date-select">
+                  <DatePicker
+                    dateFormat="YYYY-MM-DD"
+                    popoverAttachment='bottom'
+                    className="form-control"
+                    selected={this.state.startDate}
+                    onChange={this.handleDateChange.bind(this)}
+                    key={"email-date"}/>
+                  </div>
           </div>
 	        <div className="col-md-9" >
             <div>
-              <h5 className="card-header email-header">Add email body</h5>
+              <h5 className="card-header email-header">Edit Global Subject Tag</h5>
+              <div className="email-box">
+                <input type="text"
+                    className="email-subject-text"
+                    onChange={this.handleSubjectChange.bind(this)}
+                    value={this.state.subject}
+                    key={"email-subject"}>
+                </input>
+                <button onClick={() => this.submitSubjectEdit()} type="button" className="btn btn-sm btn-primary email-apply">Apply</button>
+              </div>
+
+              <h5 className="card-header email-header">Add Email Body</h5>
   	          <div className="email-box">
                 <TextInput
                     className="email-text"
@@ -258,20 +276,11 @@ class LoanEmailReminders extends Component {
                     value={this.state.body}
                     key={"email-body"}>
                 </TextInput>
-                <button onClick={() => this.onSubmission()} type="button" className="btn btn-primary">Confirm</button>
+                <button onClick={() => this.onSubmission()} type="button" className="btn btn-sm btn-primary email-apply">Confirm</button>
   	          </div>
             </div>
+
             <div>
-              <h5 className="card-header email-header">Edit global subject tag</h5>
-              <div className="email-box">
-                <input type="text"
-                    className="email-subject-text"
-                    onChange={this.handleSubjectChange.bind(this)}
-                    value={this.state.subject}
-                    key={"email-subject"}>
-                </input>
-                <button onClick={() => this.submitSubjectEdit()} type="button" className="btn btn-primary">Apply</button>
-              </div>
 
               <div className="reminder-table">
                 <table className="table table-sm maintable-body">
@@ -291,6 +300,7 @@ class LoanEmailReminders extends Component {
 	        </div>
 
 	      </div>
+        </div>
       );
     }
 

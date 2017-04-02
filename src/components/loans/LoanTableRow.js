@@ -80,7 +80,7 @@ class LoanTableRow extends Component {
 			      	(this.state.controlBarVisible[i]) === true ? this.makeControlBar(i) :
 				      items[i].status === "LENT" ? 
 				      (<td className="status-cell" key={key + "-col3"}>
-				      	<a href="#" 
+				      	<a href="#/" 
 					      	onClick={this.makeOnClickShow(i)}
 					      	key={key + "-status"}> 
 				      		{items[i].status}
@@ -149,15 +149,15 @@ class LoanTableRow extends Component {
 			        </button>
 			        <div className="dropdown-menu form-control">
 			          	<a onClick={() => this.setDropdownStatus(rowIndex, "LENT")} 
-			          		className="dropdown-item" href="#">
+			          		className="dropdown-item" href="#/">
 			            	LENT
 			          	</a>
 		          		<a onClick={() => this.setDropdownStatus(rowIndex, "DISBURSED")} 
-		          			className="dropdown-item" href="#">
+		          			className="dropdown-item" href="#/">
 			            	DISBURSED
 			          	</a>
 		          		<a onClick={() => this.setDropdownStatus(rowIndex, "RETURNED")} 
-		          			className="dropdown-item" href="#">
+		          			className="dropdown-item" href="#/">
 			            	RETURNED
 			          	</a>
 			        </div>

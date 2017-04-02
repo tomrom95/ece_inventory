@@ -13,6 +13,7 @@ let chai = require('chai');
 let chaiHttp = require('chai-http');
 let should = chai.should();
 let assert = chai.assert;
+let moment = require('moment');
 chai.use(chaiHttp);
 chai.use(require('chai-things'));
 
@@ -599,9 +600,10 @@ describe('Email settings API Test', function () {
     it('sends loan emails to appropriate users if there is a email to send today', (done) => {
       EmailSettings.getSingleton(function(error, settings) {
         should.not.exist(error);
+        var date = moment().startOf('day').toDate();
         settings.loan_emails = {
           body: 'Semester is over',
-          date: new Date()
+          date: date
         };
         settings.save(function(error) {
           should.not.exist(error);
@@ -640,7 +642,7 @@ describe('Email settings API Test', function () {
     it('does not send loan emails if there are none to send today', (done) => {
       EmailSettings.getSingleton(function(error, settings) {
         should.not.exist(error);
-        var yesterday = new Date();
+        var yesterday = moment().startOf('day').toDate();
         yesterday.setDate(yesterday.getDate() - 1);
         settings.loan_emails = {
           body: 'Semester is over',

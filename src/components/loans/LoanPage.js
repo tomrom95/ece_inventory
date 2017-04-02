@@ -86,7 +86,7 @@ class LoanPage extends Component {
 				</div>) : null
 			}
 
-				<div className={this.state.showFilterBox ? "col-md-9" : ""}>
+				<div className={this.state.showFilterBox ? "col-md-9" : "loantable-constrained"}>
 			    	<PaginationContainer
 			            url={url}
 			            processData={data => this.processData(data)}

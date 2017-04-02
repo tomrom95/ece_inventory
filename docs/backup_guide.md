@@ -41,6 +41,9 @@ our system emails the user with the username `admin`, required by the system.
 This script to run the process, `backup_db.js`, is run by crontab every day on the
 production vm. It can also be run manually by simply running `node scripts/backup_db.js`.
 
+**An email is sent only to the admin user**. If you would like to change this email, edit the
+admin's email in the User Profile tab under Profile.
+
 ## Setting up from scratch
 
 Setting up the backup service is very simple. The script `backup_db.js` does everything
