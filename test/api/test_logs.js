@@ -365,7 +365,7 @@ describe('Logging API Test', function () {
       var testField;
       beforeEach((done) => {
         CustomField.remove({}, function(error) {
-          var newField = new CustomField({name: "test_field", type: "SHORT_STRING", isPrivate: false, assetField: false});
+          var newField = new CustomField({name: "test_field", type: "SHORT_STRING", isPrivate: false, perInstance: false});
           newField.save(function(error, field) {
             testField = field;
             done();
@@ -969,7 +969,7 @@ describe('Logging API Test', function () {
             name: 'test_field',
             type: 'LONG_STRING',
             isPrivate: false,
-            assetField: false
+            perInstance: false
           });
           newfield.save(function(error, field) {
             should.not.exist(error);
@@ -987,7 +987,7 @@ describe('Logging API Test', function () {
             name: 'new_field',
             type: 'SHORT_STRING',
             isPrivate: true,
-            assetField: false
+            perInstance: false
           })
           .end((err, res) => {
             should.not.exist(err);

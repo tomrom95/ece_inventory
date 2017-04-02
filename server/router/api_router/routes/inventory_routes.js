@@ -209,7 +209,7 @@ module.exports.putAPI = function(req, res){
       var createInstances = oldItemCopy.is_asset === false && changes.is_asset === true;
       // Pass forward the quantity reason
       changes.quantity_reason = req.body.quantity_reason;
-      CustomFieldHelpers.validateCustomFields(changes, false, function(error, isValid) {
+      CustomFieldHelpers.validateCustomFields(changes.custom_fields, false, function(error, isValid) {
         if (error) return res.send({error: error});
         if (!isValid) return res.send({error: 'Invalid custom fields'});
         var obj = Object.assign(old_item, changes);
