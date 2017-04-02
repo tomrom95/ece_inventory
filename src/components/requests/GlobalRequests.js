@@ -69,7 +69,6 @@ class GlobalRequests extends Component {
 
     for (i=0; i<requests.length; i++) {
       var cart = requests[i];
-
       var userDisplay = this.getUserDisplay(cart.user);
       var user_id = cart.user ? cart.user._id : "";
       var created = cart.created;
@@ -82,6 +81,7 @@ class GlobalRequests extends Component {
           "Reason": reason,
           "Status": status,
           "Reviewer Comment": cart.reviewer_comment,
+          "Request Type": (cart.action ? cart.action : "DISBURSEMENT"),
           "_id": cart._id,
           "user_id": user_id
       }
@@ -115,7 +115,7 @@ class GlobalRequests extends Component {
           renderComponent={table}
           showFilterBox={this.props.showFilterBox}
           showStatusFilterBox={this.props.showStatusFilterBox}
-          rowsPerPage={this.props.showStatusFilterBox ? 10 : 5}
+          rowsPerPage={this.props.showStatusFilterBox ? 20 : 5}
           id={"global-request-"+this.props.id}
           hasOtherParams={this.props.hasOtherParams}
           extraProps={

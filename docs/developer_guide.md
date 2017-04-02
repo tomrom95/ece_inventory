@@ -106,3 +106,15 @@ Mongoose models can also populate foreign keys. If say, you want to return the r
 Most authentication methods can be found in /server/auth/auth_helpers.js. Most information about authentication was described before. You can see in this file we use the `bcrypt` library to hash passwords and `JWT` to for user token authentication. We also store apikeys for each user. For this, we use the `uuid` package to create a unique key for each user to use as their apikey.
 
 Setting up passport is done in server.js and the auth routes are found in /server/router/auth.
+
+### Emails
+Emails are sent with `nodemailer`. A custom email builder can be found in `/server/emails/emailbuilder.js`. This file allows users to build an email by adding recipients, a subject, and a body. Examples of it in use are in `/server/emails/emailer.js`.
+
+Additionally, loan email reminders are sent with a crontab, which is run daily to check for loan emails to send. The script that runs is `/scripts/send_loan_emails.js`. You can customize when the emails are sent by running
+
+> crontab -e
+
+and scrolling down to see the line including this script. You can look at http://www.nncron.ru/help/EN/working/cron-format.htm for more info on the format.
+
+### Backups
+These are documented seperately in the `backup_guide.md` file.

@@ -102,7 +102,7 @@ function checkout (initiatingUser, body, next) {
   var enteredUserID = body.user;
   var reasonString = body.reason;
   var fulfillType = body.type;
-  if(!reasonString) return next('Reason not provided in checkout');
+  if(!reasonString && initiatingUser.role === 'STANDARD') return next('Reason not provided in checkout');
   if(fulfillType != "DISBURSEMENT" && fulfillType != "LOAN") return next("Invalid fulfilment type entered. Try DISBURSEMENT or LOAN");
   if(initiatingUser.role === 'STANDARD' && enteredUserID) return next('Standard user cannot request for another user');
   var requestingUserID =  (initiatingUser.role !== 'STANDARD' &&

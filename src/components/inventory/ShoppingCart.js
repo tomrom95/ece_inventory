@@ -50,7 +50,7 @@ class ShoppingCart extends Component {
 
 	sendRequests() {
 		var reason = document.getElementById('cart-reason').value;
-		if ((reason.trim()).length === 0) {
+		if ((reason.trim()).length === 0 && !this.state.checked) {
 			alert("Reason field cannot be blank.");
 			return;
 		}
@@ -79,7 +79,7 @@ class ShoppingCart extends Component {
 			}
 			else {
 				var requestId = response.data.request._id;
-				if (this.state.checked === true && this.state.actionType === "Disburse to User") {
+				if (this.state.checked === true && this.state.actionType === "Fulfill to User") {
 					this.props.api.patch('/api/requests/' + requestId, { action: "FULFILL" })
 	    			.then(function(response) {
 	      				if(response.data.error){
@@ -96,7 +96,7 @@ class ShoppingCart extends Component {
 	}
 
 	makeReasonBox() {
-		return ((this.state.items.length===0) ? <div>Your cart is currently empty</div>
+		return ((this.state.items.length===0) ? <div>Your cart is currently empty.</div>
 						  : (<div className="form-group row">
 		                          <label htmlFor="cart-reason">Reason for Request</label>
 		                          <input className="form-control" type="text" defaultValue="" id="cart-reason"/>
@@ -123,7 +123,7 @@ class ShoppingCart extends Component {
 			return (
 				<div className="row request-quantity" key={"request-on-behalf-row"}>
 				  <div className="col-xs-10">
-				  	<label htmlFor={"request-on-behalf-box"}>Assign/Disburse to User</label>
+				  	<label htmlFor={"request-on-behalf-box"}>Assign/Fulfill to User</label>
 				  </div>
 				  <div className="col-xs-2 cart-checkbox">
 				  	<input type={"checkbox"}
@@ -161,8 +161,8 @@ class ShoppingCart extends Component {
 				          	<a onClick={()=>this.setActionType("Assign to User")} className="dropdown-item" href="#">
 				            	Assign to User
 				          	</a>
-			          		<a onClick={()=>this.setActionType("Disburse to User")} className="dropdown-item" href="#">
-				            	Disburse to User
+			          		<a onClick={()=>this.setActionType("Fulfill to User")} className="dropdown-item" href="#">
+				            	Fulfill to User
 				          	</a>
 				        </div>
 				    </div>
@@ -195,7 +195,7 @@ class ShoppingCart extends Component {
 			        <button type="button" className="btn btn-secondary dropdown-toggle cart-actiontype-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			          {this.state.requestTypeDisplay}
 			        </button>
-			        <div className="dropdown-menu form-control">
+			        <div className="dropdown-menu form-control cart-actiontype-dropdown">
 			          	<a onClick={()=>this.setRequestType("LOAN")} className="dropdown-item" href="#">
 			            	Request for Loan
 			          	</a>

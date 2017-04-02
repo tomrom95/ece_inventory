@@ -7,7 +7,6 @@ import RequestItemsPopup from "./RequestItemsPopup.js";
 
 
 function getKeys(data) {
-
 	if (data.length === 0)
 		return;
 
@@ -16,7 +15,7 @@ function getKeys(data) {
 	var ret = [];
 	for (i=0; i<keys.length; i++) {
     if (keys[i] === "_id" || keys[i] === "user_id" || 
-        keys[i] === "item_id" || keys[i] === "Items" || keys[i] === "Reviewer Comment") {
+        keys[i] === "item_id" || keys[i] === "Items" || keys[i] === "Reviewer Comment" || keys[i] === "Request Type") {
 			continue;
 		}
 		else ret.push(keys[i]);
@@ -45,6 +44,8 @@ class RequestTable extends Component {
 			columnKeys: getKeys(this.props.data),
 			rows: getValues(this.props.data, getKeys(this.props.data)),
       raw_data: this.props.data,
+      requestTypes: this.props.data.map(function(elem) {return elem["Request Type"]}),
+      controlBarVisible: {},
       global: this.props.global
 		}
     this.denyButton = this.denyButton.bind(this);
@@ -54,7 +55,8 @@ class RequestTable extends Component {
     this.setState({
       columnKeys: getKeys(newProps.data),
       rows: getValues(newProps.data, getKeys(newProps.data)),
-      raw_data: newProps.data
+      raw_data: newProps.data,
+      requestTypes: newProps.data.map(function(elem) {return elem["Request Type"]}),
     });
   }
 
@@ -66,6 +68,7 @@ class RequestTable extends Component {
 		}
 		list.push(<th key={"buttonSpace-" + 1}> </th>);
     list.push(<th key={"buttonSpace-" + 2}> </th>);
+    list.push(<th key={"buttonSpace-" + 5}> </th>);
 
     // in global requests page, we have more buttons
     if (this.state.global === true) {
@@ -76,6 +79,93 @@ class RequestTable extends Component {
 		return list;
 	}
 
+  setDropdownStatus(rowIndex, status) {
+    var types = this.state.requestTypes;
+    types[rowIndex] = status;
+    this.setState({
+      requestTypes: types
+    });
+  }
+
+  updateItemStatus(rowIndex) {
+    this.changeRequestType(rowIndex);
+  }
+
+  makeOnClickHide(i) {
+    var func = this.hideControlBar;
+    var context = this;
+      return function() {
+        func(i, context);
+        return false;
+      };  
+  }
+
+  showControlBar(itemRow, context) {
+    var controlBar = context.state.controlBarVisible;
+    controlBar[itemRow] = true;
+
+    context.setState({
+      controlBarVisible: controlBar
+    });
+    context.props.callback();
+  } 
+
+  makeOnClickShow(i) {
+    var func = this.showControlBar;
+    var context = this;
+      return function() {
+        func(i, context);
+        return false;
+      };  
+  }
+
+  hideControlBar(itemRow, context) {
+    var controlBar = context.state.controlBarVisible;
+    controlBar[itemRow] = false;
+
+    context.setState({
+      controlBarVisible: controlBar,
+      requestTypes: context.state.raw_data.map(function(elem) {return elem["Request Type"]})
+    });
+    context.props.callback();
+  } 
+
+  makeControlBar(rowIndex) {
+    var list = [];
+    list.push(
+        <div key={"controlBar-status-"+rowIndex} className="btn-group loan-status-dropdown">
+              <button type="button" className="btn btn-sm btn-secondary dropdown-toggle  loan-status-dropdown" data-toggle="dropdown">
+                {this.state.requestTypes[rowIndex]}
+              </button>
+              <div className="dropdown-menu form-control">
+                  <a onClick={() => this.setDropdownStatus(rowIndex, "LOAN")} 
+                    className="dropdown-item" href="#/">
+                    LOAN
+                  </a>
+                  <a onClick={() => this.setDropdownStatus(rowIndex, "DISBURSEMENT")} 
+                    className="dropdown-item" href="#/">
+                    DISBURSEMENT
+                  </a>
+              </div>
+          </div>);
+
+    list.push(
+        <button key={"controlBar-button-"+rowIndex} onClick={() => this.updateItemStatus(rowIndex)} 
+            type="button" 
+            className="btn btn-sm btn-primary loantable-button">
+          Apply
+        </button>);
+
+    list.push(
+        <button key={"controlBar-cancel-"+rowIndex} onClick={this.makeOnClickHide(rowIndex)} 
+            type="button" 
+            className="btn btn-sm btn-outline-danger">
+          Cancel
+        </button>);
+
+    return (<td key={"requestControlBar-"+rowIndex} className="request-control-bar"> {list} </td>);
+  }
+
 	makeRows(rowData) {
 		var i;
 		var list = [];
@@ -83,15 +173,16 @@ class RequestTable extends Component {
 		for (i=0; i<rowData.length; i++) {
 
       var button_list = [];
+
       if(this.state.global ){
-        if(rowData[i][3] === 'PENDING'){
+        if (rowData[i][3] === 'PENDING') {
           button_list=[this.denyButton(i), this.approveButton(i), this.commentButton(i)];
         }
         else if (rowData[i][3] === 'APPROVED') {
-          button_list=[this.denyButton(i), this.fulfillButton(i),this.commentButton(i)];
+          button_list=[this.denyButton(i), this.fulfillButton(i), this.commentButton(i)];
         }
         else if (rowData[i][3] === 'DENIED') {
-          button_list=[this.blankSpace(i , 1), this.approveButton(i , 2),this.commentButton(i)];
+          button_list=[this.blankSpace(i , 1), this.approveButton(i , 2), this.commentButton(i)];
         }
         else if (rowData[i][3] === 'FULFILLED') {
           button_list=[this.blankSpace(i , 1), this.blankSpace(i , 2), this.commentButton(i)];
@@ -104,7 +195,6 @@ class RequestTable extends Component {
 				else{
 					button_list=[];
 				}
-
       }
 
       if (button_list.length === 0) {
@@ -120,6 +210,28 @@ class RequestTable extends Component {
                                 reviewerComment={(this.state.raw_data[i])["Reviewer Comment"]} />;
 
       button_list.push(itemsInfoButton);
+
+      /* Make the cell where you can change what type of request it is */
+      var status = this.state.raw_data[i]["Status"];
+      var role = JSON.parse(localStorage.getItem('user')).role;
+      var type = 
+      (status !== "PENDING" && status !== "DENIED" || role === "STANDARD") ? 
+            (<td key={"request-type-fixed"+i}>
+                <a key={"request-type-fixed"+i}> 
+                  { this.state.raw_data[i]["Request Type"] ? this.state.raw_data[i]["Request Type"] : "DISBURSEMENT" } 
+                </a>
+            </td>) : 
+        (this.state.controlBarVisible[i] ? this.makeControlBar(i) :
+          (<td key={"request-type-td"+i}>
+            <a key={"request-type-"+i} 
+               href="#/"
+               onClick={this.makeOnClickShow(i)}> 
+              { this.state.raw_data[i]["Request Type"] ? this.state.raw_data[i]["Request Type"] : "DISBURSEMENT" } 
+            </a>
+          </td>)
+      );
+
+      button_list.push(type);
 
 			var elem = (<TableRow
 					columnKeys={this.props.columnKeys}
@@ -192,6 +304,19 @@ class RequestTable extends Component {
 		);
 	}
 
+  changeRequestType(rowIndex) {
+    this.props.api.put('/api/requests/' + this.state.raw_data[rowIndex]._id, 
+      {action: this.state.requestTypes[rowIndex]})
+    .then(function(response) {
+      if (response.data.error) {
+        alert(response.data.error);
+      }
+      else {
+        this.hideControlBar(rowIndex, this);
+      }
+    }.bind(this));
+  }
+
   approveRequest(index){
     this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
       {
@@ -200,10 +325,11 @@ class RequestTable extends Component {
     )
     .then(function(response) {
       if(response.data.error){
-        alert(console.data.error);
+        alert(response.data.error);
       }
       else{
-        this.state.rows[index][3] = 'APPROVED'
+        this.state.rows[index][3] = 'APPROVED';
+        this.props.callback();
         this.forceUpdate();
       }
     }.bind(this))
@@ -224,7 +350,8 @@ class RequestTable extends Component {
         console.log("error denying request");
       }
       else{
-        this.state.rows[index][3] = 'DENIED'
+        this.state.rows[index][3] = 'DENIED';
+        this.props.callback();
         this.forceUpdate();
       }
     }.bind(this))
@@ -245,7 +372,8 @@ class RequestTable extends Component {
         alert(response.data.error);
       }
       else{
-        this.state.rows[index][3] = 'FULFILLED'
+        this.state.rows[index][3] = 'FULFILLED';
+        this.props.callback();
         this.forceUpdate();
       }
     }.bind(this))
@@ -279,26 +407,6 @@ class RequestTable extends Component {
 
   }
 
-  commentRequest(index) {
-    this.props.api.put('/api/requests/' + this.state.raw_data[index]._id,
-      {
-        reviewer_comment: "for real",
-      }
-    )
-    .then(function(response) {
-      if(response.data.error){
-        alert(console.data.error);
-      }
-      else{
-
-      }
-    }.bind(this))
-    .catch(function(error) {
-      console.log(error);
-    }.bind(this));
-
-  }
-
   render() {
 		return (
 			<table className="table table-sm subtable-body requesttable">
@@ -313,8 +421,6 @@ class RequestTable extends Component {
 			</table>
 		);
 	}
-
-
 }
 
 export default RequestTable;

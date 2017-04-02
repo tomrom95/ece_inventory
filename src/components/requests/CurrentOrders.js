@@ -55,6 +55,7 @@ class CurrentOrders extends Component {
           "Reason": reason,
           "Status": status,
           "Reviewer Comment": cart.reviewer_comment,
+          "Request Type": (cart.action ? cart.action : "DISBURSEMENT"),
           "_id": cart._id,
           "user_id": user_id
       }
@@ -78,7 +79,7 @@ class CurrentOrders extends Component {
           renderComponent={table}
           showFilterBox={this.props.showFilterBox}
           showStatusFilterBox={this.props.showStatusFilterBox}
-          rowsPerPage={this.props.showStatusFilterBox ? 10 : 5}
+          rowsPerPage={this.props.showStatusFilterBox ? 20 : 5}
           user={JSON.parse(localStorage.getItem('user'))._id}
           id={"user-requests-"+this.props.id}
           hasOtherParams={this.props.hasOtherParams}

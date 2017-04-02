@@ -88,16 +88,7 @@ class ItemWizard extends Component {
 					}
 					if(label !== ""){
 						list.push(this.makeCustomTextBox(i, j, field, label));
-						list.push(
-							<button
-								key={i + "delete-field" + j}
-								onClick={()=>{this.deleteCustomField(i, field)}}
-								type="button"
-								className="btn btn-danger delete-button">
-								X
-								</button>);
-
-
+						list.push(this.makeDeleteButton(i, j, field));
 						}
 
 				}
@@ -176,6 +167,21 @@ class ItemWizard extends Component {
 			alert("Description must be less than 400 characters long.");
 			return;
 		}
+		for(var i = 0; i < this.state.data.custom_fields.length; i++){
+			for(var j = 0; j < this.state.allCustomFields.length; j++){
+			
+				if(this.state.data.custom_fields[i].field === this.state.allCustomFields[j]._id){
+					var type = this.state.allCustomFields[j].type;
+					var type_mismatch = this.checkMismatch(type, this.state.data.custom_fields[i].value);
+					var invalid_length = this.checkInvalidLength(type, this.state.data.custom_fields[i].value);
+					if(type_mismatch || invalid_length){
+						alert("Incorrect value for custom field " + this.state.allCustomFields[j].name);
+						return;
+					}
+				}
+
+			}
+		}
 		return true;
 	}
 
@@ -226,15 +232,30 @@ class ItemWizard extends Component {
 
 	}
 
-	deleteCustomField(row, field){
-		var id = "createform-row-"+row;
-		this.state.formIds.splice(0,id);
+	makeDeleteButton(i, j, field){
+		return(
+			<button
+				key={i + "delete-field" + j + " " + field.field}
+				onClick={()=>{this.deleteCustomField(field.field)}}
+				type="button"
+				className="btn btn-danger delete-button">
+				X
+				</button>);
+
+	}
+
+	deleteCustomField(field){
 		var data = this.state.data;
-		data.custom_fields.splice(0, row);
+		var custom_fields = [];
+		for(var a = 0; a < data.custom_fields.length; a++){
+			if(field !== data.custom_fields[a].field){
+				custom_fields.push(data.custom_fields[a]);
+			}
+		}
+		data.custom_fields = custom_fields;
 		this.setState({
 			data: data
-		})
-
+		});
 	}
 
 	addField(value, already_exists, type_mismatch, field_params, invalid_length){
@@ -242,8 +263,8 @@ class ItemWizard extends Component {
 			var data = this.state.data;
 			var custom_fields = [];
 			if(data.custom_fields){
-				for(var j = 0; j < data.custom_fields.length; j++){
-					custom_fields.push(data.custom_fields[j])
+				for(var b = 0; b < data.custom_fields.length; b++){
+					custom_fields.push(data.custom_fields[b])
 				}
 			}
 			custom_fields.push(field_params);

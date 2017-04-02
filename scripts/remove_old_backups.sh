@@ -5,7 +5,7 @@ do
 
   EXPIRY=$(echo $f |grep -Eo "exp\-[[:digit:]]*" |grep -Eo "[[:digit:]]*")
   DAYS_SINCE=$(( ( $(date -ud '' +'%s') - $(date -ud $FILE_DATE +'%s') )/60/60/24 ))
-  if [ "$DAYS_SINCE" -ge "$EXPIRY" ]
+  if [ "$DAYS_SINCE" -gt "$EXPIRY" ]
   then
     rm $f
   fi
