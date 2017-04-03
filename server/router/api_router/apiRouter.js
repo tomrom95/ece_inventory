@@ -47,8 +47,7 @@ router.route('/inventory/:item_id/instances')
       .get(instance_routes.getAPI)
       .post(restrictToManagers, instance_routes.postAPI);
 
-router.route('/inventory/:item_id/:instance_id')
-      .get(instance_routes.getAPIbyID)
+router.route('/inventory/:item_id/instances/:instance_id')
       .put(restrictToManagers, instance_routes.putAPI)
       .delete(restrictToManagers, instance_routes.deleteAPI);
 

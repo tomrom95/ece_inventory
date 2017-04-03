@@ -692,7 +692,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"2000k resistor\",\n    \"vendor_info\": \"IBM\",\n    \"custom_fields\": [],\n    \"has_instance_objects\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
+							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"2000k resistor\",\n    \"vendor_info\": \"IBM\",\n    \"custom_fields\": [],\n    \"is_asset\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
 						},
 						"description": "Condition: GOOD, NEEDS_REPAIR\nStatus: AVAILABLE, IN_USE, LOST"
 					},
@@ -848,7 +848,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"2000k resistor\",\n    \"vendor_info\": \"IBM\",\n    \"custom_fields\": [],\n    \"has_instance_objects\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
+							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"2000k resistor\",\n    \"vendor_info\": \"IBM\",\n    \"custom_fields\": [],\n    \"is_asset\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
 						},
 						"description": ""
 					},
@@ -873,7 +873,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"199k resistor\",\n    \"vendor_info\": \"Microsoft\",\n    \"custom_fields\": [],\n    \"has_instance_objects\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
+							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"199k resistor\",\n    \"vendor_info\": \"Microsoft\",\n    \"custom_fields\": [],\n    \"is_asset\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
 						},
 						"description": ""
 					},
@@ -898,7 +898,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"2000k resistor\",\n    \"vendor_info\": \"IBM\",\n    \"custom_fields\": [],\n    \"is_deleted\": true,\n    \"has_instance_objects\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
+							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"2000k resistor\",\n    \"vendor_info\": \"IBM\",\n    \"custom_fields\": [],\n    \"is_deleted\": true,\n    \"is_asset\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
 						},
 						"description": ""
 					},
@@ -948,7 +948,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"1999k resistor\",\n    \"vendor_info\": \"Microsoft\",\n    \"custom_fields\": [],\n    \"has_instance_objects\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
+							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"1999k resistor\",\n    \"vendor_info\": \"Microsoft\",\n    \"custom_fields\": [],\n    \"is_asset\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
 						},
 						"description": ""
 					},

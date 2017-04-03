@@ -18,7 +18,7 @@ returns: // does not return instance objects
     model_number: String,
     description: String,
     tags: [String],
-    has_instance_objects: Boolean,
+    is_asset: Boolean,
     custom_fields: [
     {
         field: String,
@@ -51,7 +51,7 @@ return:
   model_number: String,
   description: String,
   tags: [String],
-  has_instance_objects: Boolean,
+  is_asset: Boolean,
   custom_fields: [
     {
         field: String,
@@ -108,7 +108,7 @@ return:
   model_number: String,
   description: String,
   tags: String array,
-  has_instance_objects: Boolean,
+  is_asset: Boolean,
   custom_fields:[
     {
         field: String,
@@ -141,7 +141,7 @@ return:
   model_number: String,
   description: String,
   tags: String array,
-  has_instance_objects: Boolean,
+  is_asset: Boolean,
   custom_fields:[
     {
         field: String,
@@ -185,58 +185,62 @@ return: {
 /api/inventory/:item_id/instances
 GET
 params:{
-	serial_number: String [optional],
-	condition: String [optional],
-	status: String [optional]
+	in_stock: Boolean
 }
 
 return:
 [
   {
   	_id: String,
-    serial_number: String,
-    condition: String,
-    status: String,
+    tag: String,
+		item: String, // The item id
+		custom_fields: [{
+			field: String, // field id
+			value: String
+		}]
   }
 ]
+
 POST
 body:
 {
-  serial_number: String,
-  condition: String [optional],
-  status: String [optional],
+	tag: String [optional],
+	custom_fields: [{
+		field: String, // field id
+		value: String
+	}]
 }
+
 return:
 {
-  _id: String,
-  serial_number: String,
-  condition: String,
-  status: String,
+	_id: String,
+	tag: String,
+	item: String, // The item id
+	custom_fields: [{
+		field: String, // field id
+		value: String
+	}]
 }
 
 /api/inventory/:item_id/:instance_id
-GET
-return:
-{
-  _id: String,
-  serial_number: String,
-  condition: String,
-  status: String,
-}
-
 PUT
 body:
 {
-  serial_number: String [optional],
-  condition: String [optional],
-  status: String [optional],
+	tag: String,
+	custom_fields: [{
+		field: String, // field id
+		value: String
+	}]
 }
 return:
 {
-  _id: String,
-  serial_number: String,
-  condition: String,
-  status: String,
+	_id: String,
+	tag: String,
+	item: String, // The item id
+	custom_fields: [{
+		field: String, // field id
+		value: String
+	}]
 }
 
 DELETE
@@ -537,7 +541,13 @@ PATCH
 // if you use the action "FULFILL" it will update the item quantity by subtracting
 // the requested amount and then set the request status to "FULFILLED"
 params: {
-	action: "FULFILL" // for now this is the only action
+	action: "FULFILL", // for now this is the only action
+	instances: {
+		item_id: [instance_id]
+	}
+	// instances is a mapping of item ids to the instance ids to fulfill with.
+	// Note that this only applies to those items that are assets.
+	// Also note that the instance ids are the _id field and NOT the tag field
 }
 return {
 	items: [

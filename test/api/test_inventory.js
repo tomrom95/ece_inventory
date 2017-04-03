@@ -3,6 +3,7 @@ process.env.NODE_ENV = 'test';
 let mongoose = require("mongoose");
 let moment = require('moment');
 let Item = require('../../server/model/items');
+let Instance = require('../../server/model/instances');
 let User = require('../../server/model/users');
 let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
@@ -18,6 +19,8 @@ describe('Inventory API Test', function () {
   var standardToken;
   var managerToken
   beforeEach((done) => { //Before each test we empty the database
+    Instance.remove({}, (err) => {
+      should.not.exist(err);
       Item.remove({}, (err) => {
         should.not.exist(err);
         User.remove({}, (err) => {
@@ -40,6 +43,7 @@ describe('Inventory API Test', function () {
           });
         });
       });
+  });
 
 
   describe('GET /inventory', () =>{
@@ -580,6 +584,34 @@ describe('Inventory API Test', function () {
           });
         });
       });
+
+      it('creates instances when is_asset is changed to true from false', (done) => {
+        let item = new Item({
+          "quantity": 5,
+          "name": "Laptop",
+          "has_instance_objects": true,
+          "vendor_info" : "Microsoft",
+          is_asset: false
+        });
+        item.save((err, item) =>{
+          should.not.exist(err);
+          chai.request(server)
+          .put('/api/inventory/'+item._id)
+          .set('Authorization', token)
+          .send({is_asset: true})
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.is_asset.should.be.eql(true);
+            Instance.find({item: item._id}, function(error, instances) {
+              should.not.exist(error);
+              instances.length.should.be.eql(5);
+              done();
+            });
+          });
+        });
+      });
     });
 
     it('disallows is_deleted from being updated', (done) => {
@@ -670,8 +702,11 @@ describe('Inventory API Test', function () {
           res.body.should.have.property("name","TEST_ITEM");
           res.body.should.have.property("quantity",100);
           res.body.should.have.property("vendor_info", "Microsoft");
-          done();
-        })
+          Instance.find({item: res.body._id}, function(error, instances) {
+            instances.length.should.be.eql(100);
+            done();
+          });
+        });
 
     })
     it('POSTs item with untrimmed tags, then GET successful by required tag', (done)=>{

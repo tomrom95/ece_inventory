@@ -21,7 +21,8 @@ describe('CustomField', function() {
       var customField = new CustomField({
         name: "Hello",
         type: "NONE",
-        isPrivate: true
+        isPrivate: true,
+        assetField: false
       });
       customField.save(function(err, field){
         should.exist(err);
@@ -35,7 +36,8 @@ describe('CustomField', function() {
       var customField = new CustomField({
         name: "Hello",
         type: "INT",
-        isPrivate: true
+        isPrivate: true,
+        assetField: false
       });
       customField.save(function(err, field){
         should.not.exist(err);

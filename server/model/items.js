@@ -19,11 +19,10 @@ var ItemSchema = new mongoose.Schema({
   description: String,
   vendor_info: String,
   tags: [String],
-  has_instance_objects: {
+  is_asset: {
     type: Boolean,
     default: false
   },
-  instances: [InstanceSchema],
   custom_fields:[{
     _id: false,
     field: {

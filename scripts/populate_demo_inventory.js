@@ -29,18 +29,11 @@ var insertManyItems = function(quantity, callback){
   var itemArray = [];
   let item = {
     "quantity": 1000,
-    "has_instance_objects": true,
+    "is_asset": true,
     "vendor_info": "",
     "tags": [
       "component",
       "electric",
-    ],
-    "instances": [
-      {
-        "serial_number": "11111",
-        "status": "IN_USE",
-        "condition": "GOOD"
-      }
     ]
   };
   for(i = 0; i<quantity; i++){

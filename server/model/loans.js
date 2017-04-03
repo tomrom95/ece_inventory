@@ -25,7 +25,13 @@ var LoanSchema = new mongoose.Schema({
         type: String,
         enum: ['RETURNED', 'DISBURSED', 'LENT'],
         default: 'LENT'
-      }
+      },
+      instances: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Instance',
+        }
+      ]
     }
   ],
   request: {

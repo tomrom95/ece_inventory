@@ -4,25 +4,29 @@
       "_id": "111111111111111111111111",
       "name": "location",
       "type": "SHORT_STRING",
-      "isPrivate": false
+      "isPrivate": false,
+      "assetField": false
     },
     {
       "_id": "222222222222222222222222",
       "name": "restock_info",
       "type": "LONG_STRING",
-      "isPrivate": true
+      "isPrivate": true,
+      "assetField": false
     },
     {
       "_id": "333333333333333333333333",
       "name": "int_number",
       "type": "INT",
-      "isPrivate": true
+      "isPrivate": true,
+      "assetField": false
     },
     {
       "_id": "444444444444444444444444",
       "name": "float_number",
       "type": "FLOAT",
-      "isPrivate": false
+      "isPrivate": false,
+      "assetField": false
     }
   ],
   "items": [

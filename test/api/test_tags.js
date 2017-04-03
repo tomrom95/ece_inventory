@@ -112,7 +112,7 @@ describe('Tag API Test', function () {
       "quantity": 1000,
       "name": "d",
       "tags": ["different_tag"],
-      "has_instance_objects": false
+      "is_asset": false
     };
     chai.request(server)
       .post('/api/inventory/')
