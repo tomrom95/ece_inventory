@@ -61,10 +61,32 @@ describe('Inventory Min Stock Test', function () {
       });
     });
   });
-  it('POSTs for item changes', (done) => {
+  it('POSTs for item changes for admin', (done) => {
     chai.request(server)
       .post('/api/inventory/minstock')
       .set('Authorization', adminToken)
+      .send(reqBody)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.should.have.status(200);
+        res.body.length.should.be.eql(2);
+        Item.findById(item1_id, function(err, item1){
+          should.not.exist(err);
+          item1.minstock.threshold.should.be.eql(456);
+          item1.minstock.isEnabled.should.be.eql(true);
+          Item.findById(item2_id, function(err, item2){
+            should.not.exist(err);
+            item2.minstock.threshold.should.be.eql(456);
+            item2.minstock.isEnabled.should.be.eql(true);
+            done();
+          })
+        })
+      });
+  });
+  it('POSTs for item changes for Manager', (done) => {
+    chai.request(server)
+      .post('/api/inventory/minstock')
+      .set('Authorization', managerToken)
       .send(reqBody)
       .end((err, res) => {
         should.not.exist(err);
@@ -109,9 +131,16 @@ describe('Inventory Min Stock Test', function () {
         done();
       });
   });
-
-  // TODO: Manager/personal permissions
-
+  it('Does not POST for standard', (done) => {
+    chai.request(server)
+      .post('/api/inventory/minstock')
+      .set('Authorization', standardToken)
+      .send(reqBody)
+      .end((err, res) => {
+        res.should.have.status(403);
+        done();
+      });
+  });
   // TODO: Threshold should be non zero
 
   it('GETs all items with quantity below threshold', (done) => {
