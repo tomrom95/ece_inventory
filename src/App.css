@@ -38,7 +38,11 @@
 }
 
 .inventory-button {
-  margin-right: 4%;
+  margin-right: 8%;
+}
+
+.form-checkbox {
+  margin: 5px;
 }
 
 .buttons-cell {
@@ -79,7 +83,8 @@
 
 .requesttable {
   margin-left: 2.7%;
-  max-width: 90%;
+  max-width: 95%;
+  min-width: 95%;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
@@ -107,14 +112,13 @@
 }
 
 .maintable-container {
-  min-width: 95%;
+  width: 95%;
   margin-left: 30px;
 }
 
 .reminder-table {
   max-width: 100%;
   margin-top: 20px;
-  margin-left: 1.5%;
 }
 .page-control-bar {
   margin-left: 0px;
@@ -141,7 +145,7 @@
 
 .log-table-mini {
   margin-left: 2.9%;
-  max-width: 50%!important;
+  max-width: 80%!important;
   border-left: solid;
   border-width: 4px;
   border-color: rgba(0,150,255,1);
@@ -154,7 +158,6 @@
   min-width: 200px;
   text-overflow: ellipsis;
   display: block;
-  font-weight: bold;
 }
 
 .log-description {
@@ -176,7 +179,7 @@
 }
 
 .item-detail-view-loans {
-  margin-left: -4.5%;
+  margin-left: -5.3%;
 }
 
 .add-to-cart-title {
@@ -243,6 +246,7 @@
   margin-top: -50px;
   font-weight: normal;
   font-size: 85%;
+
 }
 
 .request-button {
@@ -294,13 +298,18 @@
 
 .user-info {
   max-width: 310px;
-  margin-left: 12%;
+  margin-left: 20px;
   margin-top: 15px;
   margin-bottom: 15px;
   border: none;
   border-left: solid;
   border-color: rgba(0,150,255,1);
   border-width: 4px;
+}
+
+.user-card-block {
+  padding-top: 8px;
+  padding-bottom: 2px;
 }
 
 .userprofile-page {
@@ -362,11 +371,6 @@
   text-align: center;
 }
 
-.center-text-fixed {
-  width: 500px;
-  text-align: center!important;
-}
-
 .signout-button {
   display: inline-block;
 }
@@ -420,7 +424,7 @@
 }
 
 .detail-view {
-  min-width: 50%;
+  min-width: 43%;
   min-height: 325px;
 }
 
@@ -455,10 +459,6 @@
   color: gray;
   text-align: left;
   font-size: 95%;
-}
-
-.cart-actiontype-dropdown {
-  width: 250px;
 }
 
 .page-dropdown {
@@ -566,7 +566,9 @@
 }
 
 .date-select {
-  margin: 8%;
+  margin-top: 10px;
+  margin-left: 3%;
+  text-align: center;
 }
 
 .date-card {
@@ -586,19 +588,14 @@
   min-width: 70%;
 }
 
-.email-apply {
-  width: 100%;
-}
-
 .email-box {
   margin-left: 15px;
 }
 
 .email-text {
-  max-height: 200px!important;
+  height: 200px;
   background-color: white;
   min-width: 100%;
-  padding: 2%;
 }
 
 .email-subject-header {
@@ -610,9 +607,6 @@
 .email-subject-text {
   background-color: white;
   min-width: 100%;
-  padding-left: 1%;
-  padding-right: 1%;
-  margin-bottom: 5px;
 }
 
 .description {
@@ -623,10 +617,6 @@
 
 .loan-details {
   white-space: pre-wrap;
-}
-
-.loantable-constrained {
-  max-width: 100%;
 }
 
 .loan-status-dropdown {
@@ -642,10 +632,6 @@
   width: 260px;
 }
 
-.request-control-bar {
-  width: 300px;
-}
-
 .loan-table {
   margin-left: 2.5%;
   max-width: 95%;
@@ -658,8 +644,8 @@
 }
 
 .loan-table-mini {
-  margin-left: 4%;
-  min-width: 98%;
+  margin-left: 2.5%;
+  max-width:55%;
 }
 
 .tooltip-inner {
@@ -673,10 +659,6 @@
 
 .custom-field-buttons {
   margin-top: -3%;
-}
-
-.customfield-apply {
-  margin-left: 52.8%;
 }
 
 .custom-field-buttons > button{
@@ -696,9 +678,6 @@
   margin-bottom: 4%;
 }
 
-.button-space {
-  margin-right: 5px;
-}
 .customfield-editor-modal {
   max-width: 86.5%;
   margin-left: 10%;
@@ -745,6 +724,7 @@ thead {
 
 tbody {
   color: gray;
+  font-weight: bold;
 }
 
 a {
