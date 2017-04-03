@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../../App.css';
 import TagSelector from '../global/TagSelector.js';
 import validator from 'validator';
-import CustomFieldSelect from './CustomFieldSelect.js';
+import CustomFieldForm from './CustomFieldForm.js';
 
 function getKeys(data) {
 	return Object.keys(data);
@@ -74,27 +74,15 @@ class ItemWizard extends Component {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
 			}
 			else if(keys[i] === 'custom_fields'){
-				list.push(<div className="form-group" key={"createform-div-customfields-labelrow-"+i}>
-							Custom Fields
-							</div>);
-				for(var j = 0; j < vals[i].length; j++){
-
-					var field = vals[i][j];
-					var label = "";
-					for(var n = 0; n < this.state.allCustomFields.length; n ++){
-						if(this.state.allCustomFields[n]._id === field.field){
-							label = this.state.allCustomFields[n].name + " " + "(" + this.state.allCustomFields[n].type + ")";
-						}
-					}
-					if(label !== ""){
-						list.push(this.makeCustomTextBox(i, j, field, label));
-						list.push(this.makeDeleteButton(i, j, field));
-						}
-
-				}
-
-				list.push(this.addCustomFieldButton(i, vals[i]));
-
+				list.push(
+					<CustomFieldForm
+						allCustomFields={this.props.allCustomFields}
+						currentValues={[]}
+						perInstance={false}
+						ref="customFields"
+						key="customFields"
+					/>
+				);
 			}
 			else {
 
@@ -135,12 +123,7 @@ class ItemWizard extends Component {
 	handleFormChange(event, label, index) {
 		var data = this.state.data;
 
-		if(label == "custom_fields"){
-			data.custom_fields[index].value = event.target.value;
-		}
-		else{
-			data[label] = event.target.value;
-		}
+		data[label] = event.target.value;
 		this.setState({
 			data: data
 		});
@@ -167,232 +150,12 @@ class ItemWizard extends Component {
 			alert("Description must be less than 400 characters long.");
 			return;
 		}
-		for(var i = 0; i < this.state.data.custom_fields.length; i++){
-			for(var j = 0; j < this.state.allCustomFields.length; j++){
-			
-				if(this.state.data.custom_fields[i].field === this.state.allCustomFields[j]._id){
-					var type = this.state.allCustomFields[j].type;
-					var type_mismatch = this.checkMismatch(type, this.state.data.custom_fields[i].value);
-					var invalid_length = this.checkInvalidLength(type, this.state.data.custom_fields[i].value);
-					if(type_mismatch || invalid_length){
-						alert("Incorrect value for custom field " + this.state.allCustomFields[j].name);
-						return;
-					}
-				}
-
-			}
-		}
 		return true;
 	}
 
-	addCustomFieldButton(row, current_fields){
-		return(
-			<div className="form-group" key={"createform-div-custombuttom-row-"+row}>
-			  <label htmlFor={"createform-row-"+row}>Add custom field</label>
-				<CustomFieldSelect
-					api={this.props.api}
-					callback={this.props.callback}
-					allCustomFields={this.state.allCustomFields}
-					key={"add-field-"+row}
-					ref={"field"}/>
-				<input type="text"
-					className="form-control"
-					ref={"fieldvalue"}
-					key={"add-field-value"+row}
-					placeholder="Value">
-					</input>
-				<button type="button"
-					className="btn btn-outline-primary add-button"
-					key={"button-add-field"+row}
-					onClick={e => this.checkFieldParams(this.refs.field.state.selectedField, this.refs.fieldvalue.value, current_fields)}>
-					ADD
-				</button>
-			</div>
-		);
-	}
-
-
-	makeCustomTextBox(row, index, field, label){
-		var id = "createform-custom-row-"+row;
-		this.state.formIds.push(id);
-		var ref = "custom_fields";
-		var input = <input type="text"
-				className="form-control"
-				value={field.value}
-				ref={ref}
-				key={id+field.field}
-				onChange={e => this.handleFormChange(e, ref, index)}>
-				</input>
-		return (
-			<div className="form-group" key={"createform-div-custom-row-"+field.field}>
-				<label htmlFor={"createform-row-"+row}>{label}</label>
-				{input}
-			</div>
-		);
-
-	}
-
-	makeDeleteButton(i, j, field){
-		return(
-			<button
-				key={i + "delete-field" + j + " " + field.field}
-				onClick={()=>{this.deleteCustomField(field.field)}}
-				type="button"
-				className="btn btn-danger delete-button">
-				X
-				</button>);
-
-	}
-
-	deleteCustomField(field){
-		var data = this.state.data;
-		var custom_fields = [];
-		for(var a = 0; a < data.custom_fields.length; a++){
-			if(field !== data.custom_fields[a].field){
-				custom_fields.push(data.custom_fields[a]);
-			}
-		}
-		data.custom_fields = custom_fields;
-		this.setState({
-			data: data
-		});
-	}
-
-	addField(value, already_exists, type_mismatch, field_params, invalid_length){
-		if(value && !already_exists && !type_mismatch){
-			var data = this.state.data;
-			var custom_fields = [];
-			if(data.custom_fields){
-				for(var b = 0; b < data.custom_fields.length; b++){
-					custom_fields.push(data.custom_fields[b])
-				}
-			}
-			custom_fields.push(field_params);
-			data.custom_fields = custom_fields;
-			this.setState({
-				data: data
-			});
-		}
-		else if(already_exists) {
-			alert("Item already has that custom field");
-		}
-		else if(type_mismatch){
-			alert("Not correct type");
-		}
-		else if(invalid_length){
-			alert("String is too long for type SHORT_STRING");
-		}
-		else if(!value){
-			alert("Field must have a value");
-		}
-	}
-
-	checkFieldParams(custom_field, value, current_fields){
-		var already_exists = false;
-		for(var i = 0; i < current_fields.length; i++){
-			if(current_fields[i].field === custom_field){
-				already_exists = true;
-			}
-		}
-		var type = "";
-		var type_mismatch = false;
-		var invalid_length = false;
-		this.props.api.get('/api/customFields/'+custom_field)
-			.then(function(response) {
-					if (response.data.error) {
-						alert(response.data.error);
-					} else {
-						var field_params = {
-							field: custom_field,
-							value: value
-						}
-						type = response.data.type;
-						type_mismatch = this.checkMismatch(type, value);
-						invalid_length = this.checkInvalidLength(type, value);
-
-						this.addField(value, already_exists, type_mismatch, field_params, invalid_length);
-					}
-				}.bind(this))
-				.catch(function(error) {
-					console.log(error);
-				}.bind(this));
-
-	}
-
-	checkEditField(row, index, field){
-		var new_value = this.state.data.custom_fields[index].value
-		var body = {
-			field: field.field,
-			value: new_value,
-		}
-		var type = "";
-		var type_mismatch = false;
-		var invalid_length = false;
-		this.props.api.get('/api/customFields/'+field.field)
-			.then(function(response) {
-					if (response.data.error) {
-						alert(response.data.error);
-					} else {
-						type = response.data.type;
-						type_mismatch = this.checkMismatch(type, new_value);
-						invalid_length = this.checkInvalidLength(type, new_value);
-						this.submitFieldEdit(type_mismatch, body, field, invalid_length);
-					}
-				}.bind(this))
-				.catch(function(error) {
-					console.log(error);
-				}.bind(this));
-
-	}
-
-	submitFieldEdit(type_mismatch, body, field, invalid_length){
-		if(!type_mismatch){
-			this.props.api.put('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field, body)
-				.then(function(response) {
-						if (response.data.error) {
-							alert(response.data.error);
-						} else {
-							this.props.callback();
-						}
-					}.bind(this))
-					.catch(function(error) {
-						console.log(error);
-					}.bind(this));
-		}
-		else{
-			alert("New value is incorrect type");
-		}
-	}
-
-	checkMismatch(type, value){
-		var type_mismatch = false;
-		if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(value)){
-			type_mismatch = true;
-		}
-		else if(type === "INT" && !validator.isInt(value)){
-			type_mismatch = true;
-		}
-		else if(type === "FLOAT" && !validator.isFloat(value)){
-			type_mismatch = true;
-		}
-		return type_mismatch;
-	}
-
-	checkInvalidLength(type, value){
-			return (type === "SHORT_STRING" && value.length > 200);
-	}
-
-
 	onSubmission() {
 		var tags = this.refs.Tags.getSelectedTags();
-		var fields = [];
-		for(var i = 0; i < this.state.data.custom_fields.length; i++){
-		 	var obj = {
-				field: this.state.data.custom_fields[i].field,
-				value: this.state.data.custom_fields[i].value
-			}
-			fields.push(obj);
-		}
+		var fields = this.refs.customFields.getCurrentValues();
 		var object = {
 			name: this.refs.Name.value,
 	  		quantity: this.refs.Quantity.value,
@@ -426,23 +189,17 @@ class ItemWizard extends Component {
   }
 
   	clearForm() {
-			this.refs.field.setState({
-				selectedField: ""
-			});
 			var data = this.state.data;
-			data.custom_fields = [];
 			this.setState({
 				data: data
-			})
-			this.refs.fieldvalue.value = "";
+			});
   		var keys = getKeys(this.state.data);
 			keys.forEach(function(key) {
 				if (key === "Tags") {
 					this.refs[key].clearTags();
+				} else if (key === "custom_fields"){
+					this.refs.customFields.clearForm();
 				} else {
-					if (key === "custom_fields")
-						return;
-
 					this.refs[key].value = "";
 				}
 			}.bind(this));

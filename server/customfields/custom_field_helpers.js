@@ -3,6 +3,7 @@ var CustomField = require('../model/customFields');
 var validator = require('validator');
 
 var isInvalidFieldValue = function(value, type) {
+  if (!value) return false;
   value = String(value);
   switch(type) {
     case 'LONG_STRING':
