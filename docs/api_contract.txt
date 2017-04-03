@@ -8,7 +8,8 @@ params:
 	model_number: String [optional],
 	custom_fields: String (CSV) [optional], // Custom field names or custom field names with value
 	page: String [optional], // needs per_page if included
-	per_page: String [optional] // needs age if included
+	per_page: String [optional], // needs age if included
+	lessThanThreshold: Boolean
 }
 returns: // does not return instance objects
 [{
