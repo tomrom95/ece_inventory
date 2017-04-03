@@ -182,7 +182,6 @@ POST
 body:
 {
 	tag: String [optional],
-	item: String [required], // The item id
 	custom_fields: [{
 		field: String, // field id
 		value: String
@@ -519,7 +518,13 @@ PATCH
 // if you use the action "FULFILL" it will update the item quantity by subtracting
 // the requested amount and then set the request status to "FULFILLED"
 params: {
-	action: "FULFILL" // for now this is the only action
+	action: "FULFILL", // for now this is the only action
+	instances: {
+		item_id: [instance_id]
+	}
+	// instances is a mapping of item ids to the instance ids to fulfill with.
+	// Note that this only applies to those items that are assets.
+	// Also note that the instance ids are the _id field and NOT the tag field
 }
 return {
 	items: [

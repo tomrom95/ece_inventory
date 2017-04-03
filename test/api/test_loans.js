@@ -3,10 +3,12 @@ process.env.NODE_ENV = 'test';
 let mongoose = require("mongoose");
 let Loan = require('../../server/model/loans');
 let Item = require('../../server/model/items');
+let Instance = require('../../server/model/instances');
 let User = require('../../server/model/users');
 let helpers = require('../../server/auth/auth_helpers');
 let fakeInventoryData = require('./test_inventory_data');
 let fakeLoanData = require('./test_loans_data');
+let fakeInstanceData = require('./test_instances_data');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let should = chai.should();
@@ -24,42 +26,45 @@ describe('Logging API Test', function () {
   var allItems;
 
   beforeEach((done) => { //Before each test we empty the database
-    Loan.remove({}, (err) => {
+    Instance.remove({}, (err) => {
       should.not.exist(err);
-      Item.remove({}, (err) => {
+      Loan.remove({}, (err) => {
         should.not.exist(err);
-        User.remove({}, (err) => {
+        Item.remove({}, (err) => {
           should.not.exist(err);
-          helpers.createNewUser('admin', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
+          User.remove({}, (err) => {
             should.not.exist(err);
-            adminToken = helpers.createAuthToken(user);
-            adminUser = user;
-            helpers.createNewUser('standard', 'test', 'standard@email.com', 'STANDARD', function(err, user) {
+            helpers.createNewUser('admin', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
               should.not.exist(err);
-              standardToken = helpers.createAuthToken(user);
-              standardUser = user;
-              helpers.createNewUser('manager', 'test', 'manager@email.com', 'MANAGER', function(err, user) {
+              adminToken = helpers.createAuthToken(user);
+              adminUser = user;
+              helpers.createNewUser('standard', 'test', 'standard@email.com', 'STANDARD', function(err, user) {
                 should.not.exist(err);
-                managerToken = helpers.createAuthToken(user);
-                managerUser = user;
-                Item.insertMany(fakeInventoryData).then(function(array) {
-                  allItems = {};
-                  array.forEach(function(item) {
-                    allItems[item.name] = item;
-                  });
-                  var loanDataCopy = JSON.parse(JSON.stringify(fakeLoanData));
-                  loanDataCopy.forEach(function(loan) {
-                    if (loan.user === 'STANDARD') {
-                      loan.user = standardUser._id;
-                    } else {
-                      loan.user = managerUser._id;
-                    }
-                    loan.items.forEach(function(itemObj) {
-                      itemObj.item = allItems[itemObj.item]._id;
+                standardToken = helpers.createAuthToken(user);
+                standardUser = user;
+                helpers.createNewUser('manager', 'test', 'manager@email.com', 'MANAGER', function(err, user) {
+                  should.not.exist(err);
+                  managerToken = helpers.createAuthToken(user);
+                  managerUser = user;
+                  Item.insertMany(fakeInventoryData).then(function(array) {
+                    allItems = {};
+                    array.forEach(function(item) {
+                      allItems[item.name] = item;
                     });
-                  });
-                  Loan.insertMany(loanDataCopy).then(function(array) {
-                    done();
+                    var loanDataCopy = JSON.parse(JSON.stringify(fakeLoanData));
+                    loanDataCopy.forEach(function(loan) {
+                      if (loan.user === 'STANDARD') {
+                        loan.user = standardUser._id;
+                      } else {
+                        loan.user = managerUser._id;
+                      }
+                      loan.items.forEach(function(itemObj) {
+                        itemObj.item = allItems[itemObj.item]._id;
+                      });
+                    });
+                    Loan.insertMany(loanDataCopy).then(function(array) {
+                      done();
+                    });
                   });
                 });
               });
@@ -360,6 +365,113 @@ describe('Logging API Test', function () {
           })
         });
       });
+    });
+
+    describe('with instances', () => {
+      var allItems;
+      var allInstances;
+      var mockInstanceLoan;
+      var requestId = '111111111111111111111111';
+
+      beforeEach((done) => {
+        Item.insertMany(fakeInstanceData.items, function(error, items) {
+          should.not.exist(error);
+          allItems = {};
+          items.forEach(function(item) {
+            allItems[item.name] = item;
+          });
+          Instance.insertMany(fakeInstanceData.instances, function(error, instances) {
+            should.not.exist(error);
+            allInstances = {};
+            instances.forEach(function(instance) {
+              allInstances[instance.tag] = instance;
+            });
+            mockInstanceLoan = new Loan({
+              user: standardUser,
+              request: requestId,
+              items: [
+                {
+                  item: allItems['Laptop']._id,
+                  quantity: 2,
+                  status: 'LENT',
+                  instances: [allInstances['3']._id, allInstances['10']._id]
+                },
+                {
+                  item: allItems['Steve']._id,
+                  quantity: 1,
+                  status: 'LENT',
+                  instances: [allInstances['5']._id]
+                },
+                {
+                  item: allItems['Not an asset']._id,
+                  quantity: 50,
+                  status: 'LENT'
+                }
+              ]
+            });
+            mockInstanceLoan.save(function(error, newLoan) {
+              should.not.exist(error);
+              mockInstanceLoan = newLoan;
+              done();
+            });
+          });
+        });
+      });
+
+      it('PUT request successful for both disburse and return', (done) => {
+          let putBody = {
+            items:[
+              {
+                item: allItems['Laptop']._id,
+                status: 'RETURNED'
+              },
+              {
+                item: allItems['Steve']._id,
+                status: 'DISBURSED'
+              },
+              {
+                item: allItems['Not an asset']._id,
+                status: 'RETURNED'
+              }
+            ]
+          };
+          chai.request(server)
+            .put('/api/loans/' + mockInstanceLoan._id)
+            .set('Authorization', adminToken)
+            .send(putBody)
+            .end((err, res) => {
+              should.not.exist(err);
+              res.should.have.status(200);
+              Item.findById(allItems['Laptop']._id, function(err, item1){
+                should.not.exist(err);
+                item1.quantity.should.be.eql(4);
+                Item.findById(allItems['Steve']._id, function(err, item2){
+                  should.not.exist(err);
+                  item2.quantity.should.be.eql(1);
+                  Instance.find({tag: {$in: ['3', '10']}}, function(error, instances) {
+                    should.not.exist(error);
+                    instances.should.all.have.property('in_stock', true);
+                    Instance.findOne({tag: '5'}, function(error, instance) {
+                      should.not.exist(error);
+                      should.not.exist(instance);
+                      Loan.findById(mockInstanceLoan._id, function(err, loan){
+                        should.not.exist(err);
+                        loan.items.forEach(function(itemObj) {
+                          if (String(itemObj.item) === String(allItems['Laptop']._id)) {
+                            itemObj.status.should.be.eql('RETURNED');
+                          } else if (String(itemObj.item) === String(allItems['Laptop']._id)) {
+                            itemObj.status.should.be.eql('DISBURSED');
+                          }
+                        });
+                        done();
+                      });
+                    });
+                  });
+                });
+              });
+            });
+      });
+
     });
   });
 });

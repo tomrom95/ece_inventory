@@ -59,7 +59,7 @@ describe('Instance API Test', function() {
         should.not.exist(err);
         res.should.have.status(200);
         res.body.should.be.a('array');
-        res.body.length.should.be.eql(3);
+        res.body.length.should.be.eql(4);
         res.body.should.all.have.property('tag');
         res.body.should.all.have.property('in_stock');
         res.body.forEach(function(instance) {

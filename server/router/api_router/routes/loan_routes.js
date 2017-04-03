@@ -1,7 +1,7 @@
 'use strict';
 var Loan = require('../../../model/loans');
 var Item = require('../../../model/items');
-
+var Instance = require('../../../model/instances');
 var QueryBuilder = require('../../../queries/querybuilder');
 var Emailer = require('../../../emails/emailer');
 var Logger = require('../../../logging/logger');
@@ -106,6 +106,7 @@ module.exports.putAPI = function (req, res){
       if(matchedIndex === -1) return res.send({error: 'Item at index '+i+' does not exist'});
       if(newItems[i].status === 'DISBURSED') {
         loan.items[matchedIndex].status = 'DISBURSED';
+        addDisbursePromises(returnPromises, loan, matchedIndex);
       } else if (newItems[i].status === 'RETURNED'){
         loan.items[matchedIndex].status = 'RETURNED';
         addReturnPromises(returnPromises, loan, matchedIndex);
@@ -145,9 +146,29 @@ function addReturnPromises(returnPromises, loan, index){
         if (!updatedItem) return reject('Item does not exist');
         Item.populate(updatedItem,{path: "item", select: ITEM_FIELDS}, function(err, item){
           if (err) return reject(err);
-          resolve();
+          Instance.update(
+            {_id: {$in: loan.items[index].instances}},
+            {$set: {in_stock: true}},
+            {multi: true},
+            function(error) {
+              if (error) return reject(error);
+              resolve();
+            }
+          );
         })
       });
     });
+  }));
+}
+
+function addDisbursePromises(returnPromises, loan, index){
+  returnPromises.push(new Promise((resolve, reject) => {
+    Instance.remove(
+      {_id: {$in: loan.items[index].instances}},
+      function(error) {
+        if (error) return reject(error);
+        resolve();
+      }
+    );
   }));
 }
