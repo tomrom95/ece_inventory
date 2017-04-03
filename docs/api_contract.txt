@@ -85,14 +85,15 @@ body:
 	items: [
 		{
 			item: String // item_id
-			minstock_threshold: Number,
-			minstock_isEnabled: Boolean
+
 		}
-	]
+	],
+	threshold: Number,
+	isEnabled: Boolean
 }
 return:
 {
-	items:[
+	[
 		// items: See return body for GET /api/inventory
 	]
 }
