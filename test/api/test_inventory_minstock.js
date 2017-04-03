@@ -8,7 +8,7 @@ let Request = require('../../server/model/requests');
 let CustomField = require('../../server/model/customFields');
 let helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
-let fakeItemData = require('./test_inventory_data');
+let fakeItemData = require('./demo_inventory_data');
 let fakeCartData = require('./test_carts_data');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -107,6 +107,51 @@ describe('Inventory Min Stock Test', function () {
         res.should.have.status(200);
         res.body.error.should.be.eql("IsEnabled value needed");
         done();
+      });
+  });
+
+  // TODO: Manager/personal permissions
+
+  // TODO: Threshold should be non zero
+
+  it('GETs all items with quantity below threshold', (done) => {
+    reqBody.threshold = 10000;
+    chai.request(server)
+      .post('/api/inventory/minstock')
+      .set('Authorization', adminToken)
+      .send(reqBody)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.should.have.status(200);
+        chai.request(server)
+          .get('/api/inventory?lessThanThreshold=true')
+          .set('Authorization', adminToken)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            res.body.length.should.be.eql(2);
+            done();
+          });
+      });
+  });
+  it('GETs all items with quantity above threshold', (done) => {
+    reqBody.threshold = 1;
+    chai.request(server)
+      .post('/api/inventory/minstock')
+      .set('Authorization', adminToken)
+      .send(reqBody)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.should.have.status(200);
+        chai.request(server)
+          .get('/api/inventory?lessThanThreshold=true')
+          .set('Authorization', adminToken)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            res.body.length.should.be.eql(0);
+            done();
+          });
       });
   });
 });
