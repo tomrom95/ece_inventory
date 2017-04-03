@@ -20,8 +20,6 @@ var isInvalidFieldValue = function(value, type) {
 var validateCustomFields = function(newFieldValues, perInstance, next) {
   if (!newFieldValues) return next(null, true);
   CustomField.find({}, function(error, fields) {
-    console.log(fields);
-    console.log(newFieldValues);
     if (error) return next(error);
     var fieldMap = {};
     fields.forEach(function(field) {
@@ -30,7 +28,6 @@ var validateCustomFields = function(newFieldValues, perInstance, next) {
     var isValid = true;
     newFieldValues.forEach(function(fieldValuePair) {
       if (!validateSingleField(fieldValuePair, fieldMap[fieldValuePair.field], perInstance)) {
-        console.log("INVALID! " + fieldMap[fieldValuePair.field].name)
         isValid = false;
       }
     });
@@ -39,15 +36,11 @@ var validateCustomFields = function(newFieldValues, perInstance, next) {
 }
 
 var validateSingleField = function(fieldValuePair, customField, perInstance) {
-  console.log(1);
   if (!customField) return false;
-  console.log(2);
   if (customField.perInstance !== perInstance) return false;
-  console.log(3);
   if (isInvalidFieldValue(fieldValuePair.value, customField.type)) {
     return false;
   }
-  console.log(4);
   return true;
 }
 
