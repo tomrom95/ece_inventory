@@ -7,7 +7,7 @@ var mongoose = require("mongoose");
 module.exports.postAPI = function (req, res) {
   var minStockPromises = [];
   var itemIDs = [];
-  for(var i = 0 ; i < req.body.items.length ; i++){
+  for(var i = 0; i < req.body.items.length; i++){
     minStockPromises.push(createMinStockPromise(req.body.items[i].item, req.body.items[i].threshold, req.body.items[i].isEnabled));
     itemIDs.push(mongoose.Types.ObjectId(req.body.items[i].item));
   }
