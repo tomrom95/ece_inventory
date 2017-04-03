@@ -86,7 +86,10 @@ class CustomFieldForm extends Component {
     var currentValues = [];
     var valueMap = this.state.currentValueMap;
     Object.keys(valueMap).forEach(function(id) {
-      currentValues.push({field: id, value: valueMap[id]});
+      // filter out null or empty fields
+      if (valueMap[id]) {
+        currentValues.push({field: id, value: valueMap[id]});
+      }
     });
     return currentValues;
   }
