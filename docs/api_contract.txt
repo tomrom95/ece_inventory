@@ -240,7 +240,8 @@ return:
 		_id: String,
 		name: String,
 		type: String,
-		isPrivate: Boolean
+		isPrivate: Boolean,
+		perInstance: Boolean
 	}
 ]
 
@@ -249,14 +250,16 @@ body:
 {
 	name: String,
 	type: String,
-	isPrivate: Boolean
+	isPrivate: Boolean,
+	perInstance: Boolean
 }
 return:
 {
 	_id: String,
 	name: String,
 	type: String,
-	isPrivate: Boolean
+	isPrivate: Boolean,
+	perInstance: Boolean
 }
 
 /api/customFields/:customFields_id
@@ -265,7 +268,8 @@ return: {
 	_id: String,
 	name: String,
 	type: String,
-	isPrivate: Boolean
+	isPrivate: Boolean,
+	perInstance: Boolean
 }
 
 PUT:
@@ -278,7 +282,8 @@ return: {
 	_id: String,
 	name: String,
 	type: String,
-	isPrivate: Boolean
+	isPrivate: Boolean,
+	perInstance: Boolean
 }
 
 DELETE: {
