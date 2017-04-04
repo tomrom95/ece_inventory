@@ -210,7 +210,7 @@ describe('Fields API Test', function () {
           name: 'new_field',
           type: 'LONG_STRING',
           isPrivate: true,
-          assetField: false
+          perInstance: false
         })
         .end((err, res) => {
           should.not.exist(err);

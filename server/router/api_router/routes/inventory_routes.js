@@ -4,6 +4,7 @@ var Instance = require('../../../model/instances');
 var CustomField = require('../../../model/customFields');
 var QueryBuilder = require('../../../queries/querybuilder');
 var Logger = require('../../../logging/logger');
+var CustomFieldHelpers = require('../../../customfields/custom_field_helpers');
 var moment = require('moment');
 const quantityReasonStrings = ["LOSS", "MANUAL", "DESTRUCTION", "ACQUISITION"];
 
@@ -128,17 +129,21 @@ module.exports.postAPI = function(req, res){
   item.tags = trimTags(req.body.tags);
   item.is_asset = req.body.is_asset;
   item.custom_fields = req.body.custom_fields;
-  item.save(function(err, newItem){
-    if(err)
-    return res.send({error: err});
-    autoCreateInstances(newItem.quantity, newItem._id, function(error, instances) {
-      if (error) return res.send({error: error});
-      Logger.logNewItem(newItem, req.user, function(error) {
+  CustomFieldHelpers.validateCustomFields(item.custom_fields, false, function(error, isValid) {
+    if (error) return res.send({error: error});
+    if (!isValid) return res.send({error: 'Invalid custom fields'});
+    item.save(function(err, newItem){
+      if(err)
+      return res.send({error: err});
+      autoCreateInstances(newItem.quantity, newItem._id, function(error, instances) {
         if (error) return res.send({error: error});
-        return res.json(newItem);
+        Logger.logNewItem(newItem, req.user, function(error) {
+          if (error) return res.send({error: error});
+          return res.json(newItem);
+        });
       });
     });
-  })
+  });
 };
 
 function trimTags(tagArray){
@@ -180,6 +185,8 @@ var filterFieldsByArray = function(obj, array){
   return result;
 }
 
+
+
 module.exports.putAPI = function(req, res){
   if (req.body.is_deleted !== null && req.body.is_deleted !== undefined) {
     return res.send({error: 'You cannot update the delete field'})
@@ -203,22 +210,26 @@ module.exports.putAPI = function(req, res){
       var createInstances = oldItemCopy.is_asset === false && changes.is_asset === true;
       // Pass forward the quantity reason
       changes.quantity_reason = req.body.quantity_reason;
-      var obj = Object.assign(old_item, changes);
-      obj.tags = trimTags(req.body.tags);
-      obj.save((err,item) => {
-        if(err) return res.send({error: err});
-        Logger.logEditing(oldItemCopy, changes, req.user, function(err) {
+      CustomFieldHelpers.validateCustomFields(changes.custom_fields, false, function(error, isValid) {
+        if (error) return res.send({error: error});
+        if (!isValid) return res.send({error: 'Invalid custom fields'});
+        var obj = Object.assign(old_item, changes);
+        obj.tags = trimTags(req.body.tags);
+        obj.save((err,item) => {
           if(err) return res.send({error: err});
-          if (createInstances){
-            autoCreateInstances(item.quantity, item._id, function(error, instances) {
-              if(error) return res.send({error: error});
+          Logger.logEditing(oldItemCopy, changes, req.user, function(err) {
+            if(err) return res.send({error: err});
+            if (createInstances){
+              autoCreateInstances(item.quantity, item._id, function(error, instances) {
+                if(error) return res.send({error: error});
+                res.json(item);
+              });
+            } else {
               res.json(item);
-            });
-          } else {
-            res.json(item);
-          }
+            }
+          });
         });
-      });
+      })
     }
   });
 };

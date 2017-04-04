@@ -414,7 +414,6 @@ describe('Inventory API Test', function () {
       let item = new Item({
         "quantity": 1000,
         "name": "Laptop",
-        "has_instance_objects": true,
         "vendor_info" : "Microsoft"
       });
       item.save((err, item) =>{
