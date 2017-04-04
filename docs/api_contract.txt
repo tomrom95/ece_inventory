@@ -26,10 +26,8 @@ returns: // does not return instance objects
 	value: String // Mixed Type in MongoDB
     }],
 		import_id: String,
-		minstock: {
-			threshold: Number,
-			isEnabled: Boolean
-		}
+	 minstock_threshold: Number,
+	 minstock_isEnabled: Boolean
 }]
 POST
 params:
