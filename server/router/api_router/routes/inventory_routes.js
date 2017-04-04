@@ -173,7 +173,6 @@ var isQuantityReason = function(enteredString){
 var filterFieldsByArray = function(obj, array){
   var result = {};
   array.forEach(function(field){
-    console.log(obj.hasOwnProperty(field));
     if(obj.hasOwnProperty(field)){
       result[field] = obj[field];
     }
