@@ -201,7 +201,6 @@ module.exports.putAPI = function(req, res){
       var oldItemCopy = new Item(old_item);
       // Filter out invalid body fields
       var changes = filterFieldsByArray(req.body, Object.keys(Item.schema.paths));
-      console.log(changes)
       var createInstances = oldItemCopy.is_asset === false && changes.is_asset === true;
       // Pass forward the quantity reason
       changes.quantity_reason = req.body.quantity_reason;

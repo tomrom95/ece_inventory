@@ -153,7 +153,9 @@ return:
         field: String,
 	value: String // Mixed Type in MongoDB
     }
-   ]
+   ],
+	 minstock_threshold: Number,
+	 minstock_isEnabled: Boolean
 }
 
 DELETE
