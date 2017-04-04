@@ -49,8 +49,8 @@ describe('Inventory Min Stock Test', function () {
                   item2_id = obj[1]._id;
                   reqBody = {
                     "items": [item1_id, item2_id],
-                    "threshold": 456,
-                    "isEnabled": true
+                    "minstock_threshold": 456,
+                    "minstock_isEnabled": true
                   }
                   done();
                 });
@@ -72,12 +72,12 @@ describe('Inventory Min Stock Test', function () {
         res.body.length.should.be.eql(2);
         Item.findById(item1_id, function(err, item1){
           should.not.exist(err);
-          item1.minstock.threshold.should.be.eql(456);
-          item1.minstock.isEnabled.should.be.eql(true);
+          item1.minstock_threshold.should.be.eql(456);
+          item1.minstock_isEnabled.should.be.eql(true);
           Item.findById(item2_id, function(err, item2){
             should.not.exist(err);
-            item2.minstock.threshold.should.be.eql(456);
-            item2.minstock.isEnabled.should.be.eql(true);
+            item2.minstock_threshold.should.be.eql(456);
+            item2.minstock_isEnabled.should.be.eql(true);
             done();
           })
         })
@@ -94,19 +94,19 @@ describe('Inventory Min Stock Test', function () {
         res.body.length.should.be.eql(2);
         Item.findById(item1_id, function(err, item1){
           should.not.exist(err);
-          item1.minstock.threshold.should.be.eql(456);
-          item1.minstock.isEnabled.should.be.eql(true);
+          item1.minstock_threshold.should.be.eql(456);
+          item1.minstock_isEnabled.should.be.eql(true);
           Item.findById(item2_id, function(err, item2){
             should.not.exist(err);
-            item2.minstock.threshold.should.be.eql(456);
-            item2.minstock.isEnabled.should.be.eql(true);
+            item2.minstock_threshold.should.be.eql(456);
+            item2.minstock_isEnabled.should.be.eql(true);
             done();
           })
         })
       });
   });
   it('Does not POST without threshold', (done) => {
-    delete reqBody.threshold;
+    delete reqBody.minstock_threshold;
     chai.request(server)
       .post('/api/inventory/minstock')
       .set('Authorization', adminToken)
@@ -119,7 +119,7 @@ describe('Inventory Min Stock Test', function () {
       });
   });
   it('Does not POST without isEnabled', (done) => {
-    delete reqBody.isEnabled;
+    delete reqBody.minstock_isEnabled;
     chai.request(server)
       .post('/api/inventory/minstock')
       .set('Authorization', adminToken)
@@ -144,7 +144,7 @@ describe('Inventory Min Stock Test', function () {
   // TODO: Threshold should be non zero
 
   it('GETs all items with quantity below threshold', (done) => {
-    reqBody.threshold = 10000;
+    reqBody.minstock_threshold = 10000;
     chai.request(server)
       .post('/api/inventory/minstock')
       .set('Authorization', adminToken)
@@ -164,7 +164,7 @@ describe('Inventory Min Stock Test', function () {
       });
   });
   it('GETs all items with quantity above threshold', (done) => {
-    reqBody.threshold = 1;
+    reqBody.minstock_threshold = 1;
     chai.request(server)
       .post('/api/inventory/minstock')
       .set('Authorization', adminToken)

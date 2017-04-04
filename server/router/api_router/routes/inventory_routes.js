@@ -50,7 +50,7 @@ module.exports.getAPI = function (req, res) {
     .searchCaseInsensitive('vendor_info', req.query.vendor_info)
     .searchCaseInsensitive('model_number', req.query.model_number)
 
-  if(req.query.lessThanThreshold) query.searchThreshold('minstock.threshold', 'quantity');
+  if(req.query.lessThanThreshold) query.searchThreshold('minstock_threshold', 'quantity');
   // isNaN - checks whether object is not a number
   if(req.query.page && req.query.per_page && !isNaN(req.query.per_page)){
     let paginateOptions = {
@@ -173,6 +173,7 @@ var isQuantityReason = function(enteredString){
 var filterFieldsByArray = function(obj, array){
   var result = {};
   array.forEach(function(field){
+    console.log(obj.hasOwnProperty(field));
     if(obj.hasOwnProperty(field)){
       result[field] = obj[field];
     }
@@ -200,6 +201,7 @@ module.exports.putAPI = function(req, res){
       var oldItemCopy = new Item(old_item);
       // Filter out invalid body fields
       var changes = filterFieldsByArray(req.body, Object.keys(Item.schema.paths));
+      console.log(changes)
       var createInstances = oldItemCopy.is_asset === false && changes.is_asset === true;
       // Pass forward the quantity reason
       changes.quantity_reason = req.body.quantity_reason;

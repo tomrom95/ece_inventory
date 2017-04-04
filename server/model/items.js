@@ -41,15 +41,13 @@ var ItemSchema = new mongoose.Schema({
     default: false
   },
   import_id: mongoose.Schema.Types.ObjectId,
-  minstock: {
-    threshold: {
+  minstock_threshold: {
       type: Number,
       default: 0
-    },
-    isEnabled : {
+  },
+  minstock_isEnabled : {
       type: Boolean,
       default: false
-    }
   }
 })
 ItemSchema.plugin(mongoosePaginate);
