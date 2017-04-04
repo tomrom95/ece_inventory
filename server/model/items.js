@@ -40,7 +40,15 @@ var ItemSchema = new mongoose.Schema({
     required: true,
     default: false
   },
-  import_id: mongoose.Schema.Types.ObjectId
+  import_id: mongoose.Schema.Types.ObjectId,
+  minstock_threshold: {
+      type: Number,
+      default: 0
+  },
+  minstock_isEnabled : {
+      type: Boolean,
+      default: false
+  }
 })
 ItemSchema.plugin(mongoosePaginate);
 
