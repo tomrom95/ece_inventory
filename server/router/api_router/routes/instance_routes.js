@@ -4,6 +4,7 @@ var Instance = require('../../../model/instances');
 var mongoose = require('mongoose');
 var QueryBuilder = require('../../../queries/querybuilder');
 var CustomFieldHelpers = require('../../../customfields/custom_field_helpers');
+var Emailer = require('../../../emails/emailer');
 
 module.exports.getAPI = function (req, res) {
   var query = new QueryBuilder();
