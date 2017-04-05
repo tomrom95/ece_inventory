@@ -52,6 +52,28 @@ module.exports.sendStockBelowThresholdEmail = function(item, next){
     return next(null, info);
   });
 }
+var sendStockBelowThresholdEmail = module.exports.sendStockBelowThresholdEmail;
+
+module.exports.sendAllStockBelowThresholdEmails = function(items, next){
+  var emailPromises = [];
+  items.forEach(function(item) {
+    emailPromises.push(new Promise((resolve, reject) => {
+      sendStockBelowThresholdEmail(item, function(error) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    }));
+  });
+  Promise.all(emailPromises).then(function() {
+    next();
+  }, function(error) {
+    next(error);
+  });
+};
+
 
 module.exports.sendRequestChangeEmail = function(oldRequest, changes, initiator, next) {
   var filteredChanges = StringHelpers.getFilteredChanges(oldRequest, changes);
