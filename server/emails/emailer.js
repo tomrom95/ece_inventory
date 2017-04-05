@@ -40,6 +40,19 @@ module.exports.sendFulfillEmail = function(request, items, disbursedFrom, next) 
   });
 }
 
+module.exports.sendStockBelowThresholdEmail = function(item, next){
+  if(item.minstock_threshold < item.quantity) return next();
+  var builder = new EmailBuilder();
+  builder
+  .setToEmails(["henry.yuens@duke.edu"])
+  .setSubject('Item Stock Below Threshold')
+  .setBody(EmailBodies.stockBelowThreshold(item))
+  .send(function(error, info) {
+    if (error) return next(error);
+    return next(null, info);
+  });
+}
+
 module.exports.sendRequestChangeEmail = function(oldRequest, changes, initiator, next) {
   var filteredChanges = StringHelpers.getFilteredChanges(oldRequest, changes);
   if (!filteredChanges) return next();
