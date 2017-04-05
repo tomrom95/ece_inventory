@@ -3,6 +3,7 @@ process.env.NODE_ENV = 'test';
 let mongoose = require("mongoose");
 let moment = require('moment');
 let Item = require('../../server/model/items');
+let Loan = require('../../server/model/loans');
 let Instance = require('../../server/model/instances');
 let User = require('../../server/model/users');
 let helpers = require('../../server/auth/auth_helpers');
@@ -17,6 +18,7 @@ chai.use(require('chai-things'));
 describe('Inventory API Test', function () {
   var token;
   var standardToken;
+  var standardUser;
   var managerToken
   beforeEach((done) => { //Before each test we empty the database
     Instance.remove({}, (err) => {
@@ -31,6 +33,7 @@ describe('Inventory API Test', function () {
             helpers.createNewUser('standard', 'test', 'standard@email.com', 'STANDARD', function(err, user) {
               should.not.exist(err);
               standardToken = helpers.createAuthToken(user);
+              standardUser = user;
               helpers.createNewUser('manager', 'test', 'manager@email.com', 'MANAGER', function(err, user) {
                 should.not.exist(err);
                 managerToken = helpers.createAuthToken(user);
@@ -546,6 +549,7 @@ describe('Inventory API Test', function () {
         });
       });
     });
+
     it('PUTs inventory item by item id with untrimmed tags', (done) => {
       let item = new Item({
         "quantity": 1000,
@@ -583,8 +587,40 @@ describe('Inventory API Test', function () {
           });
         });
       });
+    });
 
-      it('creates instances when is_asset is changed to true from false', (done) => {
+    it('creates instances when is_asset is changed to true from false', (done) => {
+      let item = new Item({
+        "quantity": 5,
+        "name": "Laptop",
+        "has_instance_objects": true,
+        "vendor_info" : "Microsoft",
+        is_asset: false
+      });
+      item.save((err, item) =>{
+        should.not.exist(err);
+        chai.request(server)
+        .put('/api/inventory/'+item._id)
+        .set('Authorization', token)
+        .send({is_asset: true})
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.is_asset.should.be.eql(true);
+          Instance.find({item: item._id}, function(error, instances) {
+            should.not.exist(error);
+            instances.length.should.be.eql(5);
+            done();
+          });
+        });
+      });
+    });
+
+    it('creates in stock and loaned instances when is_asset is changed to true from false and loans exist', (done) => {
+      console.log("HERE");
+      Loan.remove({}, function(error) {
+        should.not.exist(error);
         let item = new Item({
           "quantity": 5,
           "name": "Laptop",
@@ -594,20 +630,62 @@ describe('Inventory API Test', function () {
         });
         item.save((err, item) =>{
           should.not.exist(err);
-          chai.request(server)
-          .put('/api/inventory/'+item._id)
-          .set('Authorization', token)
-          .send({is_asset: true})
-          .end((err, res) => {
-            should.not.exist(err);
-            res.should.have.status(200);
-            res.body.should.be.a('object');
-            res.body.is_asset.should.be.eql(true);
-            Instance.find({item: item._id}, function(error, instances) {
-              should.not.exist(error);
-              instances.length.should.be.eql(5);
-              done();
-            });
+          var fakeRequestId = '444444444444444444444444';
+          var loan1 = '111111111111111111111111';
+          var loan2 = '222222222222222222222222';
+          var loan3 = '333333333333333333333333';
+          let loans = [
+            {
+              _id: loan1,
+              user: standardUser._id,
+              request: fakeRequestId,
+              items: [{item: item._id, status: 'LENT', quantity: 3}]
+            },
+            {
+              _id: loan2,
+              user: standardUser._id,
+              request: fakeRequestId,
+              items: [{item: item._id, status: 'RETURNED', quantity: 2}]
+            },
+            {
+              _id: loan3,
+              user: standardUser._id,
+              request: fakeRequestId,
+              items: [{item: item._id, status: 'LENT', quantity: 6}]
+            }
+          ]
+          Loan.insertMany(loans, function(error, loans) {
+            chai.request(server)
+              .put('/api/inventory/'+item._id)
+              .set('Authorization', token)
+              .send({is_asset: true})
+              .end((err, res) => {
+                should.not.exist(err);
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.is_asset.should.be.eql(true);
+                Instance.find({item: item._id}, function(error, instances) {
+                  should.not.exist(error);
+                  instances.length.should.be.eql(14);
+                  var inStock = instances.filter((instance) => instance.in_stock === true);
+                  inStock.length.should.be.eql(5);
+                  Loan.find({}, function(error, loans) {
+                    should.not.exist(error);
+                    loans.length.should.be.eql(3); // sanity check;
+                    loans.forEach(function(loan) {
+                      var loanId = String(loan._id);
+                      if (loanId === loan1) {
+                        loan.items[0].instances.length.should.be.eql(3);
+                      } else if (loanId === loan2) {
+                        loan.items[0].instances.length.should.be.eql(0);
+                      } else {
+                        loan.items[0].instances.length.should.be.eql(6);
+                      }
+                    });
+                    done();
+                  });
+                });
+              });
           });
         });
       });
