@@ -291,6 +291,40 @@ describe('Users API Test', function () {
           });
       });
 
+      it('admin can register multiple users with unique api keys', (done) => {
+        chai.request(server)
+          .post('/api/users')
+          .set('Authorization', adminToken)
+          .send({
+            username: 'test_user',
+            password: 'test',
+            email: 'test@email.com'
+          })
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            User.findById(res.body.user._id, function(error, user1) {
+              should.not.exist(error);
+              chai.request(server)
+                .post('/api/users')
+                .set('Authorization', adminToken)
+                .send({
+                  username: 'other_user',
+                  password: 'test2',
+                  email: 'other@email.com'
+                })
+                .end((err, res) => {
+                  should.not.exist(err);
+                  User.findById(res.body.user._id, function(error, user2) {
+                    should.not.exist(error);
+                    user1.apikey.should.not.be.eql(user2.apikey);
+                    done();
+                  });
+                });
+            });
+          });
+      });
+
       it('returns error for invalid email', (done) => {
         chai.request(server)
           .post('/api/users')
