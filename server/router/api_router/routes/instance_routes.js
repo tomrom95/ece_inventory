@@ -86,6 +86,7 @@ module.exports.deleteAPI = function(req, res){
         function(error, item) {
           if (error) return res.send({error: error});
           Emailer.sendStockBelowThresholdEmail(item, function(error){
+            if (error) return res.send({error: error});
             return res.json({message: "Successful"});
           })
         }
