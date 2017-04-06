@@ -192,6 +192,8 @@ return: {
 GET
 params:{
 	in_stock: Boolean
+	page: Int,
+	per_page: Int
 }
 
 return:
