@@ -618,7 +618,6 @@ describe('Inventory API Test', function () {
     });
 
     it('creates in stock and loaned instances when is_asset is changed to true from false and loans exist', (done) => {
-      console.log("HERE");
       Loan.remove({}, function(error) {
         should.not.exist(error);
         let item = new Item({
