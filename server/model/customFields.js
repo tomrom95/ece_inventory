@@ -16,7 +16,7 @@ var CustomFieldSchema = new mongoose.Schema({
     type: Boolean,
     required: true
   },
-  assetField: {
+  perInstance: {
     type: Boolean,
     required: true
   }

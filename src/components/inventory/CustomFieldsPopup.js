@@ -18,14 +18,15 @@ class CustomFieldsPopup extends Component {
 			name: "",
 			type: "",
 			isPrivate: false,
+      perInstance: false
 		}
 	}
 
 	handleInputChange(event) {
-	    this.setState({
-	      isPrivate: !this.state.isPrivate,
-	    });
-	  }
+    var newState = {};
+    newState[event.target.name] = event.target.checked;
+    this.setState(newState);
+  }
 
 	handleTypeChange(value){
 		this.setState({
@@ -34,8 +35,6 @@ class CustomFieldsPopup extends Component {
 	}
 
 	makeForm(){
-
-
 		var name =
 			<input type="text"
 				className="form-control"
@@ -56,10 +55,20 @@ class CustomFieldsPopup extends Component {
 
 		var is_private =
 			<input type="checkbox"
-	      		checked={this.state.isPrivate}
+	      checked={this.state.isPrivate}
 				onChange={this.handleInputChange.bind(this)}
-				key={"field_isPrivate"}>
+				key={"field_isPrivate"}
+        name="isPrivate"
+      >
 			</input>
+
+    var perInstance =
+      <input type="checkbox"
+        checked={this.state.perInstance}
+        onChange={this.handleInputChange.bind(this)}
+        name="perInstance"
+        key={"field_perInstance"}>
+      </input>
 
 		return (
 
@@ -82,6 +91,14 @@ class CustomFieldsPopup extends Component {
 						{is_private}
 					</div>
 				</div>
+        <div className="form-group row customfield-maker-isprivate">
+					<div className="col-xs-10">
+						<label htmlFor={"createform-row-"}>Per Instance</label>
+					</div>
+					<div className="col-xs-2 customfield-maker-checkbox">
+						{perInstance}
+					</div>
+				</div>
 			</div>
 		);
 	}
@@ -99,6 +116,7 @@ class CustomFieldsPopup extends Component {
 			name: this.refs.field_name.value,
 			type: this.state.type,
 			isPrivate: this.state.isPrivate,
+      perInstance: this.state.perInstance
 		}
 
 	    if(!custom_field.name){

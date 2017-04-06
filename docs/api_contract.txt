@@ -8,7 +8,8 @@ params:
 	model_number: String [optional],
 	custom_fields: String (CSV) [optional], // Custom field names or custom field names with value
 	page: String [optional], // needs per_page if included
-	per_page: String [optional] // needs age if included
+	per_page: String [optional], // needs age if included
+	lessThanThreshold: Boolean
 }
 returns: // does not return instance objects
 [{
@@ -23,7 +24,10 @@ returns: // does not return instance objects
     {
         field: String,
 	value: String // Mixed Type in MongoDB
-    }]
+    }],
+		import_id: String,
+	 minstock_threshold: Number,
+	 minstock_isEnabled: Boolean
 }]
 POST
 params:
@@ -33,6 +37,7 @@ params:
   model_number: String,
   description: String,
   tags: [String],
+  is_asset: Boolean,
   custom_fields: [
     {
         field: String,
@@ -75,6 +80,27 @@ body:
 }
 or Array of body objects above.
 
+/api/inventory/minstock
+POST
+body:
+{
+	items: [
+		{
+			item: String // item_id
+
+		}
+	],
+	minstock_threshold: Number,
+	minstock_isEnabled: Boolean
+}
+return:
+{
+	[
+		// items: See return body for GET /api/inventory
+	]
+}
+
+
 /api/inventory/:item_id
 GET
 return:
@@ -103,12 +129,15 @@ body:
   model_number: String [optional],
   description: String [optional],
   tags: String array [optional],
+  is_asset: Boolean, // NOTE THIS CAN ONLY GO FROM FALSE TO TRUE NOT TRUE TO FALSE
   custom_fields:[
     {
         field: String,
 	value: String // Mixed Type in MongoDB
     }
-   ] [optional]
+   ] [optional],
+	 minstock_threshold: Number [optional],
+	 minstock_isEnabled: Boolean [optional]
 }
 return:
 {
@@ -124,7 +153,9 @@ return:
         field: String,
 	value: String // Mixed Type in MongoDB
     }
-   ]
+   ],
+	 minstock_threshold: Number,
+	 minstock_isEnabled: Boolean
 }
 
 DELETE
@@ -240,7 +271,8 @@ return:
 		_id: String,
 		name: String,
 		type: String,
-		isPrivate: Boolean
+		isPrivate: Boolean,
+		perInstance: Boolean
 	}
 ]
 
@@ -249,14 +281,16 @@ body:
 {
 	name: String,
 	type: String,
-	isPrivate: Boolean
+	isPrivate: Boolean,
+	perInstance: Boolean
 }
 return:
 {
 	_id: String,
 	name: String,
 	type: String,
-	isPrivate: Boolean
+	isPrivate: Boolean,
+	perInstance: Boolean
 }
 
 /api/customFields/:customFields_id
@@ -265,7 +299,8 @@ return: {
 	_id: String,
 	name: String,
 	type: String,
-	isPrivate: Boolean
+	isPrivate: Boolean,
+	perInstance: Boolean
 }
 
 PUT:
@@ -278,7 +313,8 @@ return: {
 	_id: String,
 	name: String,
 	type: String,
-	isPrivate: Boolean
+	isPrivate: Boolean,
+	perInstance: Boolean
 }
 
 DELETE: {

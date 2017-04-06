@@ -22,7 +22,7 @@ describe('CustomField', function() {
         name: "Hello",
         type: "NONE",
         isPrivate: true,
-        assetField: false
+        perInstance: false
       });
       customField.save(function(err, field){
         should.exist(err);
@@ -37,7 +37,7 @@ describe('CustomField', function() {
         name: "Hello",
         type: "INT",
         isPrivate: true,
-        assetField: false
+        perInstance: false
       });
       customField.save(function(err, field){
         should.not.exist(err);
