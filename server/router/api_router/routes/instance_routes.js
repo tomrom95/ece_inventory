@@ -11,7 +11,18 @@ module.exports.getAPI = function (req, res) {
     .searchBoolean('in_stock', req.query.in_stock)
     .searchForObjectId('item', req.params.item_id);
 
-  Instance.find(query.toJSON(), function(error, instances) {
+  var mongooseFind = Instance.find(query.toJSON());
+  var page = req.query.page; var perPage = req.query.per_page;
+
+  if (page && perPage && !isNaN(perPage)) {
+    page = Number(page); perPage = Number(perPage);
+    mongooseFind = mongooseFind
+      .sort({tag: 1})
+      .skip((page - 1)*perPage)
+      .limit(perPage);
+  }
+
+  mongooseFind.exec(function(error, instances) {
     if (error) return res.send({error: error});
     return res.json(instances);
   });
