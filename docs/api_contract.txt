@@ -37,6 +37,7 @@ params:
   model_number: String,
   description: String,
   tags: [String],
+  is_asset: Boolean,
   custom_fields: [
     {
         field: String,
@@ -128,6 +129,7 @@ body:
   model_number: String [optional],
   description: String [optional],
   tags: String array [optional],
+  is_asset: Boolean, // NOTE THIS CAN ONLY GO FROM FALSE TO TRUE NOT TRUE TO FALSE
   custom_fields:[
     {
         field: String,
@@ -192,6 +194,8 @@ return: {
 GET
 params:{
 	in_stock: Boolean
+	page: Int,
+	per_page: Int
 }
 
 return:
