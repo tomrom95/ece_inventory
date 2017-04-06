@@ -71,6 +71,10 @@ var getManagerEmails = function(next) {
 }
 
 var sendHelper = function(next) {
+  var error = validateMessage(this.message);
+  if (error) {
+    return next(error);
+  }
   this.transport.sendMail(this.message, (error, info) => {
     try {
       // If transport is not mocked, close it
@@ -84,10 +88,6 @@ var sendHelper = function(next) {
 }
 
 EmailBuilder.prototype.send = function(next, ccManagers=true) {
-  var error = validateMessage(this.message);
-  if (error) {
-    return next(error);
-  }
   EmailSettings.getSingleton((error, settings) => {
     if (error) return next(error);
     // Add global message subject tag
