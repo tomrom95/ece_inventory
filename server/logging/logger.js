@@ -215,3 +215,42 @@ module.exports.logCustomFieldDeletion = function(field, initiatingUser, next) {
     next();
   });
 }
+
+module.exports.logInstanceCreation = function(instance, item, initiatingUser, next) {
+  var newLog = new Log({
+    initiating_user: initiatingUser,
+    items: [item._id],
+    type: 'INSTANCE_CREATED',
+    description: LogDescriptions.instanceCreated(instance, item)
+  });
+  newLog.save(function(error) {
+    if (error) return next(error);
+    next();
+  });
+}
+
+module.exports.logInstanceEdit = function(instance, changes, item, initiatingUser, next) {
+  var newLog = new Log({
+    initiating_user: initiatingUser,
+    items: [item._id],
+    type: 'INSTANCE_EDITED',
+    description: LogDescriptions.instanceEdited(instance, changes, item)
+  });
+  newLog.save(function(error) {
+    if (error) return next(error);
+    next();
+  });
+}
+
+module.exports.logInstanceDeletion = function(instance, item, initiatingUser, next) {
+  var newLog = new Log({
+    initiating_user: initiatingUser,
+    items: [item._id],
+    type: 'INSTANCE_DELETED',
+    description: LogDescriptions.instanceDeleted(instance, item)
+  });
+  newLog.save(function(error) {
+    if (error) return next(error);
+    next();
+  });
+}
