@@ -93,8 +93,7 @@ class ItemEditor extends Component {
 						currentValues={vals[i]}
 						perInstance={false}
 						ref="customFields"
-						key="customFields"
-					/>
+						key="customFields"/>
 				);
 			}
 			else {

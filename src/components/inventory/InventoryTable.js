@@ -10,6 +10,7 @@ import CustomFieldListPopup from './CustomFieldListPopup.js';
 import ShoppingCart from './ShoppingCart.js';
 import BulkImportButton from './BulkImportButton.js';
 import ImportHelpButton from './ImportHelpButton.js';
+import MinQuantityEditor from './MinimumQuantityEditor.js';
 
 var meta;
 
@@ -189,13 +190,16 @@ class InventoryTable extends Component {
 
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
 			list.push(
+				<MinQuantityEditor key={"min-qty-editor"} />
+			);
+
+			list.push(
 					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
 	          			key={"makeitem-button"}
 	          			callback={this.props.callback}
 									allCustomFields={this.state.allCustomFields}/>
-	          	);
-
+          	);
 		}
 		return list;
 	}
