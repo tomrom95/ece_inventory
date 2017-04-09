@@ -753,6 +753,7 @@ return: [{
 			name: String
 		},
 		quantity: Int,
+		backfill_rejected: Boolean,
 		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
 	}],
 	request: String, // the id
@@ -773,6 +774,7 @@ return: {
 			name: String
 		},
 		quantity: Int,
+		backfill_rejected: Boolean,
 		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
 	}],
 	request: String, // the id
@@ -786,6 +788,7 @@ params: {
 	items: [{
 		item: String, // id
 		status: String, // new status
+		backfill_rejected: Boolean
 	}]
 }
 return: {
@@ -798,6 +801,7 @@ return: {
 			name: String
 		},
 		quantity: Int,
+		backfill_rejected: Boolean,
 		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
 	}],
 	request: String, // the id
