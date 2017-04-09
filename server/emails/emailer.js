@@ -40,6 +40,40 @@ module.exports.sendFulfillEmail = function(request, items, disbursedFrom, next) 
   });
 }
 
+module.exports.sendStockBelowThresholdEmail = function(item, next){
+  if(item.minstock_threshold < item.quantity) return next();
+  var builder = new EmailBuilder();
+  builder
+  .setSubject('Item Stock Below Threshold')
+  .setBody(EmailBodies.stockBelowThreshold(item))
+  .send(function(error, info) {
+    if (error) return next(error);
+    return next(null, info);
+  });
+}
+var sendStockBelowThresholdEmail = module.exports.sendStockBelowThresholdEmail;
+
+module.exports.sendAllStockBelowThresholdEmails = function(items, next){
+  var emailPromises = [];
+  items.forEach(function(item) {
+    emailPromises.push(new Promise((resolve, reject) => {
+      sendStockBelowThresholdEmail(item, function(error) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    }));
+  });
+  Promise.all(emailPromises).then(function() {
+    next();
+  }, function(error) {
+    next(error);
+  });
+};
+
+
 module.exports.sendRequestChangeEmail = function(oldRequest, changes, initiator, next) {
   var filteredChanges = StringHelpers.getFilteredChanges(oldRequest, changes);
   if (!filteredChanges) return next();
