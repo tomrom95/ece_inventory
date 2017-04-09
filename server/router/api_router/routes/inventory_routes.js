@@ -4,6 +4,7 @@ var Instance = require('../../../model/instances');
 var CustomField = require('../../../model/customFields');
 var QueryBuilder = require('../../../queries/querybuilder');
 var Logger = require('../../../logging/logger');
+var Emailer = require('../../../emails/emailer');
 var CustomFieldHelpers = require('../../../customfields/custom_field_helpers');
 var moment = require('moment');
 const quantityReasonStrings = ["LOSS", "MANUAL", "DESTRUCTION", "ACQUISITION"];
@@ -129,6 +130,8 @@ module.exports.postAPI = function(req, res){
   item.tags = trimTags(req.body.tags);
   item.is_asset = req.body.is_asset;
   item.custom_fields = req.body.custom_fields;
+  item.minstock_threshold = req.body.minstock_threshold;
+  item.minstock_isEnabled = req.body.minstock_isEnabled;
   CustomFieldHelpers.validateCustomFields(item.custom_fields, false, function(error, isValid) {
     if (error) return res.send({error: error});
     if (!isValid) return res.send({error: 'Invalid custom fields'});
@@ -139,7 +142,10 @@ module.exports.postAPI = function(req, res){
         if (error) return res.send({error: error});
         Logger.logNewItem(newItem, req.user, function(error) {
           if (error) return res.send({error: error});
-          return res.json(newItem);
+          Emailer.sendStockBelowThresholdEmail(newItem, function(error){
+            if (error) return res.send({error: error});
+            return res.json(newItem);
+          });
         });
       });
     });
@@ -217,17 +223,20 @@ module.exports.putAPI = function(req, res){
         obj.tags = trimTags(req.body.tags);
         obj.save((err,item) => {
           if(err) return res.send({error: err});
-          Logger.logEditing(oldItemCopy, changes, req.user, function(err) {
-            if(err) return res.send({error: err});
-            if (createInstances){
-              autoCreateInstances(item.quantity, item._id, function(error, instances) {
-                if(error) return res.send({error: error});
+          Emailer.sendStockBelowThresholdEmail(item, function(error){
+            if(error) return res.send({error: error});
+            Logger.logEditing(oldItemCopy, changes, req.user, function(err) {
+              if(err) return res.send({error: err});
+              if (createInstances){
+                autoCreateInstances(item.quantity, item._id, function(error, instances) {
+                  if(error) return res.send({error: error});
+                  res.json(item);
+                });
+              } else {
                 res.json(item);
-              });
-            } else {
-              res.json(item);
-            }
-          });
+              }
+            });
+          })
         });
       })
     }
