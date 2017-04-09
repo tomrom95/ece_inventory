@@ -77,13 +77,6 @@ module.exports.loanReminder = function(loanUser, loans, bodyPrepend) {
   return text;
 }
 
-module.exports.stockBelowThreshold = function(item){
-  var text = 'Hello, \n\n';
-  text += 'The item ' + item.name + ' has a quantity ('+item.quantity+') below the threshold ('+item.minstock_threshold+').';
-  console.log(text);
-  return text;
-}
-
 module.exports.backupFailure = function(adminUser, backupError, stderr) {
   var text = 'Hello ' + StringHelpers.getDisplayName(adminUser) + ',\n\n';
   text += 'A backup failed to be taken today. The following error was returned ';
