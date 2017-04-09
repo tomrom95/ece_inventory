@@ -5,7 +5,6 @@ var mongoose = require('mongoose');
 var QueryBuilder = require('../../../queries/querybuilder');
 var Logger = require('../../../logging/logger');
 var CustomFieldHelpers = require('../../../customfields/custom_field_helpers');
-var Emailer = require('../../../emails/emailer');
 
 module.exports.getAPI = function (req, res) {
   var query = new QueryBuilder();
@@ -107,4 +106,5 @@ module.exports.deleteAPI = function(req, res){
       );
     });
   });
+
 }
