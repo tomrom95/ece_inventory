@@ -97,10 +97,7 @@ module.exports.deleteAPI = function(req, res){
           if (error) return res.send({error: error});
           Logger.logInstanceDeletion(instance, item, req.user, function(error) {
             if (error) return res.send({error: error});
-            Emailer.sendStockBelowThresholdEmail(item, function(error){
-              if (error) return res.send({error: error});
-              return res.json({message: "Successful"});
-            });
+            return res.json({message: "Successful"});
           });
         }
       );
