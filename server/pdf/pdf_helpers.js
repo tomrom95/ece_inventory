@@ -1,6 +1,6 @@
+var Loan = require('../model/loans');
+
 module.exports.uploadPDF = function(req,res) {
-  console.log("hit");
-  console.log(req.files);
   if (!req.files) return res.status(400).send('No files were uploaded.');
   // The name of the input field (i.e. "uploadPDF")
   let uploadFile = req.files.uploadPDF;
@@ -9,13 +9,19 @@ module.exports.uploadPDF = function(req,res) {
   // Use the mv() method to place the file somewhere on your server
   uploadFile.mv(filePath, function(err) {
     if (err) return res.status(500).send(err);
-    console.log(req.params.loan_id);
-    console.log(req.params.item_id);
 
     // Update path of the loan Schema
-
-
-    res.send('File uploaded!');
+    Loan.findById(req.params.loan_id, function(error, loan){
+      if(error) return res.send({error: error});
+      var itemIndex = loan.items.findIndex(function(element){
+        return String(element.item) === String(req.params.item_id);
+      })
+      loan.items[itemIndex].attachment_path = filePath;
+      loan.save(function(error){
+        if(error) return res.send({error: error});
+        res.send('File uploaded!');
+      })
+    })
   });
 }
 
