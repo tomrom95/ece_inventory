@@ -12,10 +12,16 @@ var fs = require('fs');
 var secrets = require('./server/secrets.js');
 var https = require('https');
 var path = require('path');
+var fileUpload = require('express-fileupload');
+
 
 var app = express();
 var api_router = require('./server/router/api_router/apiRouter');
 var auth_router = require('./server/router/auth_router/authRouter');
+var pdf_helpers = require('./server/pdf/pdf_helpers');
+
+app.use(fileUpload());
+app.post('/upload/loan/:loan_id/item/:item_id', pdf_helpers.uploadPDF);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -113,5 +119,6 @@ if (process.env.NODE_ENV !== 'test') {
     });
   }
 }
+
 
 module.exports = app;
