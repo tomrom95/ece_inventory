@@ -224,7 +224,6 @@ class ItemWizard extends Component {
   }
 
   	clearForm() {
-			console.log(this.refs.Name);
 			var data = this.state.data;
 			this.setState({
 				data: data,
@@ -232,7 +231,6 @@ class ItemWizard extends Component {
 				checkTypeDone: false,
 			});
   		var keys = getKeys(this.state.data);
-			console.log(this.refs.Name);
 			keys.forEach(function(key) {
 				if(this.refs.length > 0){
 					if (key === "Tags") {
