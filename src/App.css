@@ -253,6 +253,11 @@
   padding-top: 80px;
 }
 
+.instance-table {
+  margin-left: 10px;
+  min-width: 50%;
+}
+
 .modal-title{
   font-size: 18px;
   font-weight:bold;

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../../App.css';
 import InventoryTable from './InventoryTable.js';
+
 import PaginationContainer from '../global/PaginationContainer.js'
 
 class Inventory extends Component {
@@ -32,8 +33,8 @@ class Inventory extends Component {
   render() {
     var url = "api/inventory/";
     var table = InventoryTable;
-
     return (
+        <div>
           <PaginationContainer
               url={url}
               processData={data => this.processData(data)}
@@ -42,7 +43,9 @@ class Inventory extends Component {
               showStatusFilterBox={false}
               hasOtherParams={false}
               id={'inventory-page'}
-              rowsPerPage={15} />);
+              rowsPerPage={15} />
+
+          </div>);
 
   }
 }
