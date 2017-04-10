@@ -802,7 +802,7 @@ return: {
 		},
 		quantity: Int,
 		backfill_rejected: Boolean,
-		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED')
 	}],
 	request: String, // the id
 	created: String, // date
@@ -811,7 +811,7 @@ return: {
 
 For PDF uploads, use the following HTML element, whereby the URL after the server URL matches:
 	/loan/:loan_id/item/:item_id/
-	And, the name "uploadPDF" must not change. 
+	And, the name "uploadPDF" must not change.
 <html>
   <body>
     <form ref='uploadForm'
