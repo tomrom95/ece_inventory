@@ -2,6 +2,7 @@
 var Item = require('../../../model/items');
 var Instance = require('../../../model/instances');
 var CustomField = require('../../../model/customFields');
+var Loan = require('../../../model/loans');
 var QueryBuilder = require('../../../queries/querybuilder');
 var Logger = require('../../../logging/logger');
 var CustomFieldHelpers = require('../../../customfields/custom_field_helpers');
@@ -110,10 +111,10 @@ module.exports.getAPIbyID = function(req,res){
   });
 };
 
-var autoCreateInstances = function(quantity, itemID, next) {
+var autoCreateInstances = function(quantity, itemID, next, inStock=true) {
   var instances = new Array(quantity);
   for (var i = 0; i < quantity; i++) {
-    var newInstance = new Instance({item: itemID});
+    var newInstance = new Instance({item: itemID, in_stock: inStock});
     instances[i] = newInstance;
   }
   Instance.insertMany(instances, next);
@@ -185,7 +186,52 @@ var filterFieldsByArray = function(obj, array){
   return result;
 }
 
+var createLoanInstances = function(loan, itemObj, next) {
+  autoCreateInstances(itemObj.quantity, itemObj.item, function(error, instances) {
+    if (error) return next(error);
+    var instanceIds = instances.map((instance) => instance._id);
+    itemObj.instances = instanceIds;
+    loan.save(function(error, newLoan) {
+      if (error) return next(error);
+      return next();
+    });
+  }, false)
+}
 
+// Used to create instances for items that already exist. This will also
+// create instances for instances on loan.
+var autoCreateExistingInstances = function(inStockQuantity, itemId, next) {
+  // first create in stock instances
+  autoCreateInstances(inStockQuantity, itemId, function(error, instances) {
+    if (error) return next(error);
+    // find all loans with a matching item that is LENT
+    Loan.find(
+      {items: {$elemMatch: {item: itemId, status: 'LENT'}}},
+      function(error, loans) {
+      if (error) return next(error);
+      if (!loans) return next();
+      var promises = [];
+      // for each loan, create the out of stock instances and assign them to the loan
+      loans.forEach(function(loan) {
+        var itemObj = loan.items.find((itemObj) => itemObj.item.equals(itemId));
+        promises.push(new Promise(function(resolve, reject) {
+          createLoanInstances(loan, itemObj, function(error) {
+            if (error) {
+              reject(error);
+            } else {
+              resolve();
+            }
+          });
+        }));
+      });
+      Promise.all(promises).then(function() {
+        return next();
+      }).catch(function(error) {
+        return next(error);
+      })
+    });
+  });
+}
 
 module.exports.putAPI = function(req, res){
   if (req.body.is_deleted !== null && req.body.is_deleted !== undefined) {
@@ -220,7 +266,7 @@ module.exports.putAPI = function(req, res){
           Logger.logEditing(oldItemCopy, changes, req.user, function(err) {
             if(err) return res.send({error: err});
             if (createInstances){
-              autoCreateInstances(item.quantity, item._id, function(error, instances) {
+              autoCreateExistingInstances(item.quantity, item._id, function(error) {
                 if(error) return res.send({error: error});
                 res.json(item);
               });

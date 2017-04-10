@@ -105,6 +105,29 @@ describe('Instance API Test', function() {
         done();
       });
     });
+
+    it('GETs all instances with pagination', (done) => {
+      chai.request(server)
+      .get('/api/inventory/'+firstItemId+'/instances?page=1&per_page=3')
+      .set('Authorization', token)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.should.have.status(200);
+        res.body.should.be.a('array');
+        res.body.length.should.be.eql(3);
+        chai.request(server)
+        .get('/api/inventory/'+firstItemId+'/instances?page=2&per_page=3')
+        .set('Authorization', token)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(1);
+          done();
+        });
+      });
+    });
+
     it('GETs in stock instances', (done) => {
       chai.request(server)
       .get('/api/inventory/'+firstItemId+'/instances?in_stock=true')

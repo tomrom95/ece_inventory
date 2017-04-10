@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var ObjectId = mongoose.Types.ObjectId;
 var uuidV4 = require('uuid/v4');
 
 var UserSchema = new mongoose.Schema({
@@ -39,7 +40,10 @@ var UserSchema = new mongoose.Schema({
   },
   apikey: {
     type: String,
-    default: uuidV4()
+    default: function() {
+      return String(new ObjectId());
+    },
+    unique: true
   }
 });
 
