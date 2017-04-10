@@ -28,7 +28,7 @@ class ItemDetailView extends React.Component {
       itemId: props.params.itemID,
       itemName: props.params.itemName,
       requestsVisible: true,
-      instances: [],
+      //instances: [],
     }
     this.addRequests = this.addRequests.bind(this);
   }
@@ -52,9 +52,9 @@ class ItemDetailView extends React.Component {
     this.axiosInstance.get('/inventory/' + this.state.itemId)
     .then(function(response) {
       this.setState({item: response.data});
-      if(this.state.item.is_asset){
-        this.getInstances();
-      }
+        // if(this.state.item.is_asset){
+        //   this.getInstances();
+        // }
     }.bind(this))
     .catch(function(error) {
       console.log(error);
@@ -187,19 +187,6 @@ class ItemDetailView extends React.Component {
     );
   }
 
-
-  getInstances() {
-    this.axiosInstance.get('/inventory/' + this.state.itemId + '/instances?in_stock=true')
-    .then(function(response) {
-      this.setState({
-        instances: response.data
-      });
-    }.bind(this))
-    .catch(function(error) {
-      console.log(error);
-      this.setState({error: 'Could not load item'});
-    }.bind(this));
-  }
 
 
 
