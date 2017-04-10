@@ -10,7 +10,8 @@ module.exports.getAPI = function (req, res) {
   var query = new QueryBuilder();
   query
     .searchBoolean('in_stock', req.query.in_stock)
-    .searchForObjectId('item', req.params.item_id);
+    .searchForObjectId('item', req.params.item_id)
+    .searchCaseInsensitive('tag', req.query.tag);
 
   var mongooseFind = Instance.find(query.toJSON());
   var page = req.query.page; var perPage = req.query.per_page;

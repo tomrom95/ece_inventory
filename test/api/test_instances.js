@@ -144,6 +144,22 @@ describe('Instance API Test', function() {
         done();
       });
     });
+
+    it('GETs instances by tag', (done) => {
+      chai.request(server)
+      .get('/api/inventory/'+firstItemId+'/instances?tag=1')
+      .set('Authorization', token)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.should.have.status(200);
+        res.body.should.be.a('array');
+        res.body.length.should.be.eql(2);
+        res.body.forEach(function(instance) {
+          instance.tag.should.include("1");
+        });
+        done();
+      });
+    });
   });
 
   describe('PUT by Instance ID', () => {
