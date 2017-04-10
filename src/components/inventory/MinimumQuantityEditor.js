@@ -67,9 +67,8 @@ class AddToCartButton extends Component {
 
 	makeItemNamesListView() {
 		var itemNames = this.state.itemNames;
-		console.log(itemNames)
 		if (itemNames.length === 0) {
-			return (<div className="center-text">No items selected!</div>);
+			return (<div>No items selected</div>);
 		}
 		else {
 			var list = [];
@@ -110,13 +109,20 @@ class AddToCartButton extends Component {
 		var qty = document.getElementById("qty-textbox-" + this.props.itemId).value;
 		var items = this.state.itemsChecked;
 		for (var i=0; i<items.length; i++) {
-			this.props.api.put('api/inventory/'+items[i], 
-			{	minstock_threshold: Number(qty),
+			var params = {	
 	 			minstock_isEnabled: this.state.checked
-	 		})
+	 		};
+	 		if (this.state.checked===true) {
+	 			params.minstock_threshold = Number(qty);
+	 		}
+			this.props.api.put('api/inventory/'+items[i], params)
 	 		.then( function (response) {
-	 			console.log(response);
-	 			this.props.clearCheckboxes();
+	 			if (response.data.error) {
+	 				alert(response.data.error);
+	 			} else {
+	 				//console.log(response.data);
+		 			this.props.clearCheckboxes();
+	 			}	
 	 		}.bind(this));
 		}
 	}
@@ -165,21 +171,34 @@ class AddToCartButton extends Component {
 				    <div className="modal-content add-to-cart">
 				      <div className="modal-header">
 				        <h6 className="modal-title" id="modalLabel">
-				        	<div className="add-to-cart-title">Edit Minimum Quantity for Selected Items</div>
+				        	<div className="add-to-cart-title">Edit Minimum Quantity</div>
 				        </h6>
 				      </div>
 
 				      <div className="modal-body">
+				      	<div> <strong> Items Selected: </strong> </div>
 				      	{this.makeItemNamesListView()}
-			      		{this.makeCheckBox("Enable Threshold")}
-						{this.makeTextBox("qty-textbox-" + this.props.itemId, "number", "Minimum Quantity", "")}
+				      	<br/>
+				      	{this.state.itemNames.length === 0 ? null : this.makeCheckBox("Enable Threshold")}
+						{this.state.itemNames.length === 0 ? null : this.makeTextBox("qty-textbox-" + this.props.itemId, "number", "Minimum Quantity", "")}
 					  </div>
 
-				      <div className="modal-footer">
-				        <button type="button" onClick={e => this.clearView()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-				        <button type="button" onClick={e=>{this.sendRequest(); this.clearView()}} className="btn btn-primary" data-dismiss="modal">Apply</button>
-				      </div>
-
+		      		{ this.state.itemNames.length === 0 ? <div className="modal-footer"></div> : 
+				      (<div className="modal-footer">
+				        <button type="button" 
+				        		 onClick={e => this.clearView()} 
+				        		 className="btn btn-secondary" 
+				        		 data-dismiss="modal">
+				        		 	Cancel
+				        </button>
+				        <button type="button" 
+				        		onClick={e=>{this.sendRequest(); this.clearView()}} 
+				        		className="btn btn-primary" 
+				        		data-dismiss="modal">
+				        			Apply
+				        		</button> 
+				      </div>)}
+				  	  
 				    </div>
 				  </div>
 				</div>
