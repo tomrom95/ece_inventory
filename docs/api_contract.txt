@@ -808,3 +808,19 @@ return: {
 	created: String, // date
 	lastModified: String, // date
 }
+
+For PDF uploads, use the following HTML element, whereby the URL after the server URL matches:
+	/loan/:loan_id/item/:item_id/
+	And, the name "uploadPDF" must not change. 
+<html>
+  <body>
+    <form ref='uploadForm'
+      id='uploadForm'
+      action='https://colab-sbx-115.oit.duke.edu/upload/loan/58e464e43f7ed8ef9c67876a/item/58c0270bdad2fa3b942b092a'
+      method='post'
+      encType="multipart/form-data">
+        <input type="file" name="uploadPDF" />
+        <input type='submit' value='Upload' />
+    </form>
+  </body>
+</html>
