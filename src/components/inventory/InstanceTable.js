@@ -58,12 +58,15 @@ class InstanceTable extends Component {
 			);
       for(var j = 0; j < allCustomFields.length; j++){
         //rowData.push(instance[allCustomFields[j].name]);
-        subrows.push(
-          <tr key={instance.Tag+"-"+i+"-row-key-"+j}>
-            <td key={instance.Tag+"-"+i+"-name-key-"+j} >{allCustomFields[j].name} </td>
-            <td key={instance.Tag+"-"+i+"-value-key-"+j} >{instance[allCustomFields[j].name]}</td>
-          </tr>
-        );
+				if(allCustomFields[j].perInstance){
+					subrows.push(
+	          <tr key={instance.Tag+"-"+i+"-row-key-"+j}>
+	            <td key={instance.Tag+"-"+i+"-name-key-"+j} >{allCustomFields[j].name} </td>
+	            <td key={instance.Tag+"-"+i+"-value-key-"+j} >{instance[allCustomFields[j].name]}</td>
+	          </tr>
+	        );
+				}
+
       }
       instances.push(rowData);
       instances.push(
