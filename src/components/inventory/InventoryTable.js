@@ -322,6 +322,8 @@ class InventoryTable extends Component {
 		          key={"editbutton-"+ id}
 		          ref={"edit-"+id}
 							allCustomFields={this.state.allCustomFields}
+							is_asset={data.meta.isAsset}
+
 							allTags={this.state.allTags}
 					/>
         );

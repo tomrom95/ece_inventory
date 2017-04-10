@@ -45,7 +45,9 @@ class ItemWizard extends Component {
 			allCustomFields: props.allCustomFields,
 			formIds: [],
 			activated: false,
-			justApplied: false
+			justApplied: false,
+			isAsset: false,
+			checkTypeDone: false,
 		}
 	}
 
@@ -64,7 +66,39 @@ class ItemWizard extends Component {
 		});
 	}
 
-	makeForm() {
+	handleCheckChange() {
+		this.setState({
+			checkTypeDone: !this.state.checkTypeDone
+		})
+	}
+
+	handleAssetSetChange() {
+		this.setState({
+			isAsset: !this.state.isAsset
+		})
+	}
+
+	makeCheckForm() {
+		var asset_checkbox =
+			<input type="checkbox"
+	      checked={this.state.isAsset}
+				onChange={this.handleAssetSetChange.bind(this)}
+				key={"asset_checkbox"}
+        name="asset_checkbox"
+      />;
+		return(
+			<div className="form-group row customfield-maker-isprivate">
+				<div className="col-xs-10">
+					<label htmlFor={"createform-row-"}>Check this if item is an asset</label>
+				</div>
+				<div className="col-xs-2 customfield-maker-checkbox">
+					{asset_checkbox}
+				</div>
+			</div>
+		);
+	}
+
+	makeItemCreationForm() {
 		var keys = getKeys(this.state.data);
 		var vals = getValues(this.state.data, keys);
 		var list = []; var i;
@@ -164,6 +198,7 @@ class ItemWizard extends Component {
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
 	  		has_instance_objects: false,
+				is_asset: this.state.isAsset,
 				custom_fields: fields
   		}
   		if (this.validItem(object) === true) {
@@ -191,61 +226,81 @@ class ItemWizard extends Component {
   	clearForm() {
 			var data = this.state.data;
 			this.setState({
-				data: data
+				data: data,
+				isAsset: false,
+				checkTypeDone: false,
 			});
   		var keys = getKeys(this.state.data);
 			keys.forEach(function(key) {
-				if (key === "Tags") {
-					this.refs[key].clearTags();
-				} else if (key === "custom_fields"){
-					this.refs.customFields.clearForm();
-				} else {
-					this.refs[key].value = "";
+				if(this.refs.length > 0){
+					if (key === "Tags") {
+						this.refs[key].clearTags();
+					} else if (key === "custom_fields"){
+						this.refs.customFields.clearForm();
+					} else {
+						this.refs[key].value = "";
+					}
 				}
 			}.bind(this));
   	}
 
   	render() {
-		var button =
-			<button type="button"
-				className="btn btn-outline-primary add-button align-right"
-				data-toggle="modal"
-				data-target={"#createModal"}
-				onMouseOver={() => this.activateView()}>
-				<span className="fa fa-plus"></span>
-			</button>;
+			var first_form =
+				<div className="modal-content">
+					<div className="modal-header">
+						<h5 className="modal-title" id="createLabel">Create New Item</h5>
+					</div>
+					<div className="modal-body">
+						{this.makeCheckForm()}
+					</div>
+					<div className="modal-footer">
+						<button type="button" onClick={e => this.setState({isAsset: false})} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+						<button onClick={this.handleCheckChange.bind(this)} type="button" className="btn btn-primary">Go</button>
+					</div>
+				</div>;
+			var item_form =
+				<div className="modal-content">
+					<div className="modal-header">
+						<h5 className="modal-title" id="createLabel">Create New Item</h5>
+					</div>
+					<div className="modal-body">
+						{this.makeItemCreationForm()}
+					</div>
+					<div className="modal-footer">
+						<button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+						<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Submit</button>
+					</div>
+				</div>;
 
-		if (this.state.activated === false) {
-			return <th>{button}</th>;
-		}
+			var form = this.state.checkTypeDone ? item_form : first_form;
+			var button =
+				<button type="button"
+					className="btn btn-outline-primary add-button align-right"
+					data-toggle="modal"
+					data-target={"#createModal"}
+					onMouseOver={() => this.activateView()}>
+					<span className="fa fa-plus"></span>
+				</button>;
 
-		return (
-		<th>
-			{button}
-			<div className="modal fade"
-				id={"createModal"}
-				tabIndex="-1"
-				role="dialog"
-				aria-labelledby="createLabel"
-				aria-hidden="true">
-			  <div className="modal-dialog" role="document">
-			    <div className="modal-content">
-			      <div className="modal-header">
-			        <h5 className="modal-title" id="createLabel">Create New Item</h5>
-			      </div>
-			      <div className="modal-body">
-			        {this.makeForm()}
-			      </div>
-			      <div className="modal-footer">
-			        <button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-			        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-			        <button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Submit</button>
-			      </div>
-			    </div>
-			  </div>
-			</div>
-		</th>
-		);
+			if (this.state.activated === false) {
+				return <th>{button}</th>;
+			}
+			return (
+				<th>
+					{button}
+					<div className="modal fade"
+						id={"createModal"}
+						tabIndex="-1"
+						role="dialog"
+						aria-labelledby="createLabel"
+						aria-hidden="true">
+					  <div className="modal-dialog" role="document">
+					    {form}
+					  </div>
+					</div>
+				</th>
+			);
 	}
 }
 

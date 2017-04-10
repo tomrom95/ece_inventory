@@ -100,7 +100,7 @@ class ItemEditor extends Component {
 					/>
 				);
 			}
-			else {
+			else if((!this.props.is_asset) || !(this.props.is_asset && keys[i] === 'Quantity')){
 				list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
 			}
 		}
