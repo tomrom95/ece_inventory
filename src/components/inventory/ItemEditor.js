@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../../App.css';
 import TagSelector from '../global/TagSelector.js';
 import CustomFieldForm from './CustomFieldForm';
+import InstanceEditor from '../instances/InstanceEditor';
 import validator from 'validator';
 
 function getKeys(data) {
@@ -280,6 +281,11 @@ class ItemEditor extends Component {
 				      </div>
 				      <div className="modal-body">
 				        {this.makeForm()}
+								<InstanceEditor
+									allCustomFields={this.state.allCustomFields}
+									rowsPerPage={10}
+									itemID={this.props.itemId}
+								/>
 				      </div>
 
 				    </div>
