@@ -17,7 +17,10 @@ const statuses = [
     { value: 'FIELD_CREATED', label: 'Field Creations' },
     { value: 'FIELD_EDITED', label: 'Field Edits' },
     { value: 'FIELD_DELETED', label: 'Field Deletions' },
-    { value: "LOAN_EDITED", label: "Loan Edits"}
+    { value: "LOAN_EDITED", label: "Loan Edits"},
+    { value: "INSTANCE_CREATED", label: "Instance Creations"},
+    { value: "INSTANCE_EDITED", label: "Instance Edits"},
+    { value: "INSTANCE_DELETED", label: "Instance Deletions"}
 ];
 
 class LogFilterBox extends Component {
