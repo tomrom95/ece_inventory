@@ -241,7 +241,7 @@ module.exports.putAPI = function(req, res){
     if(err) return res.send({error: err});
     if(!old_item || old_item.is_deleted) {
       return res.send({error: 'Item does not exist or has been deleted'});
-    } else if (req.body.quantity !== old_item.quantity && old_item.is_asset) {
+    } else if (req.body.quantity && req.body.quantity !== old_item.quantity && old_item.is_asset) {
       return res.send({error: 'You cannot directly edit the quantity of an asset'});
     } else if (isQuantityProvidedWithoutReason(req.body.quantity, old_item.quantity, req.body.quantity_reason)){
       return res.send({error:'Reason for quantity change not provided'});

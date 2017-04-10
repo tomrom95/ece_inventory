@@ -24,6 +24,30 @@
   width: 100%;
 }
 
+.instance-table {
+  max-width: 100%;
+}
+
+.form-group-compact {
+  margin-bottom: 0px;
+}
+
+.form-control-compact {
+  height: 30px;
+}
+
+.align-top {
+  position: absolute;
+  top: 15px;
+  right: 5px
+}
+
+.align-bottom {
+  position: absolute;
+  bottom: 5px;
+  right: 5px
+}
+
 .wide {
   width:100%;
 }

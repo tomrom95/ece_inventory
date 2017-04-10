@@ -68,8 +68,10 @@ class PaginationContainer extends Component {
 
 		};
 
-		if (props.rowsPerPage)
+		if (props.rowsPerPage) {
 			this.state.rowsPerPage = props.rowsPerPage
+		}
+		this.nextPage = this.nextPage.bind(this);
 	}
 
 	componentWillReceiveProps(newProps) {
@@ -100,9 +102,20 @@ class PaginationContainer extends Component {
 		this.loadData(1, false);
 	}
 
+	componentWillUnmount() {
+		if (this.source) {
+			this.source.cancel();
+		}
+	}
+
 	loadData(page, justDeleted) {
-	  this.instance.get(this.getURL(page, this.state.rowsPerPage))
-	  .then(function (response) {
+		var CancelToken = axios.CancelToken;
+		this.source = CancelToken.source();
+	  this.instance.get(
+			this.getURL(page, this.state.rowsPerPage),
+			{cancelToken: this.source.token}
+		)
+	  .then( (response) => {
 	    if (this.state.initialLoad) {
 	      this.setState({initialLoad: false});
 	    }
@@ -123,6 +136,7 @@ class PaginationContainer extends Component {
 	      }
 	    }
 	    // response not empty:
+
 	    else {
 	      this.setState({
 	        items: this.state.processData(response),
@@ -130,7 +144,7 @@ class PaginationContainer extends Component {
 	        pageBox: page
 	      });
 	    }
-	  }.bind(this));
+	  });
 	}
 
 	previousPage() {
@@ -311,7 +325,7 @@ class PaginationContainer extends Component {
 	                      </a>
 	                    </li>
 	                    <li className="page-item">
-	                      <a onClick={e=> this.nextPage()} className="page-link" href="#">
+	                      <a onClick={this.nextPage} className="page-link" href="#">
 	                        <span className="fa fa-chevron-right"></span>
 	                      </a>
 	                    </li>
