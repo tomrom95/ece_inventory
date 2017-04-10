@@ -106,7 +106,6 @@ class PaginationContainer extends Component {
 		if (this.source) {
 			this.source.cancel();
 		}
-		this.unmounted = true;
 	}
 
 	loadData(page, justDeleted) {
@@ -139,12 +138,8 @@ class PaginationContainer extends Component {
 	    // response not empty:
 
 	    else {
-				var newItems = this.state.processData(response);
-				if (this.unmounted) {
-					return;
-				}
 	      this.setState({
-	        items: newItems,
+	        items: this.state.processData(response),
 	        page: page,
 	        pageBox: page
 	      });
