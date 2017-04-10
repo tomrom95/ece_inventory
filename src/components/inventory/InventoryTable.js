@@ -76,10 +76,13 @@ class InventoryTable extends Component {
 
 	constructor(props) {
 		super(props);
+		this.clearCheckedBoxes();
 		this.state = {
 			columnKeys: getKeys(this.props.data),
 			rows: getValues(this.props.data, getKeys(this.props.data)),
 			allCustomFields: [],
+			checked: localStorage.getItem("itemsChecked") ? JSON.parse(localStorage.getItem("itemsChecked")) : {},
+			itemsCheckedNames: {}
 		}
 	}
 
@@ -190,7 +193,11 @@ class InventoryTable extends Component {
 
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
 			list.push(
-				<MinQuantityEditor key={"min-qty-editor"} />
+				<MinQuantityEditor itemsChecked={this.state.checked}
+								   itemsCheckedNames={this.state.itemsCheckedNames} 
+								   key={"min-qty-editor"}
+								   api={this.props.api}
+								   clearCheckboxes={() => this.clearCheckedBoxes()} />
 			);
 
 			list.push(
@@ -227,6 +234,15 @@ class InventoryTable extends Component {
 	makeInventoryButtons(data, id) {
 		var list = [];
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
+			// add the checkbox here:
+			list.push(<div key={"checkbox-div-"+id} className="form-check">
+				      	<input key={"checkbox-"+id} 
+				      		   type="checkbox" 
+				      		   className="form-check-input"
+				      		   onChange={e => this.handleCheckedChange(e, id, data.Name)}
+				      		   checked={this.state.checked[id] || false} />
+				  	  </div>);
+
 			list.push(
 				<div key={"cart-"+id} className="inventory-button">
 					<AddToCartButton
@@ -339,6 +355,36 @@ class InventoryTable extends Component {
 			  </div>
 			</div>
 		);
+	}
+
+	handleCheckedChange(event, itemId, itemName) {
+	    var checked = event.target.checked;
+	    this.setCheckedItemInLocalStorage(itemId, checked);
+	    var itemsCheckedNames = this.state.itemsCheckedNames;
+	    itemsCheckedNames[itemName] = checked;
+	    this.setState({
+	    	itemsCheckedNames: itemsCheckedNames
+	    })
+	}
+
+	setCheckedItemInLocalStorage(itemId, checked) {		
+		if (!localStorage.getItem("checkedItems")) {
+			this.clearCheckedBoxes();
+		}
+		var checkedItems = localStorage.getItem("checkedItems");
+		var itemsJson = JSON.parse(checkedItems);
+		itemsJson[itemId] = checked;
+		localStorage.setItem("checkedItems", JSON.stringify(itemsJson));
+		this.setState({
+			checked: JSON.parse(localStorage.getItem("checkedItems"))
+		});
+	}
+
+	clearCheckedBoxes() {
+		localStorage.setItem("checkedItems", "{}");
+		this.setState({
+			checked: {}
+		});
 	}
 
 }

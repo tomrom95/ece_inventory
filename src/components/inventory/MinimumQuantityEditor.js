@@ -23,13 +23,60 @@ function isWholeNumber(num) {
 class AddToCartButton extends Component {
 
 	/*
-		Props: itemID
+		Props: items checked in JSON form.
 	*/
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			checked: false	
+			checked: false,
+			itemsChecked: this.makeItemsList(props.itemsChecked),
+			itemNames: this.makeItemsList(props.itemsCheckedNames)
+		}
+	}
+
+	componentWillReceiveProps(newProps) {		
+		this.setState({
+			itemsChecked: this.makeItemsList(newProps.itemsChecked),
+			itemNames: this.makeItemsList(newProps.itemsCheckedNames)
+		});
+	}
+
+	makeItemsList(itemsChecked) {
+		var list = [];
+		var keys = Object.keys(itemsChecked);
+		for (var i=0; i<keys.length; i++) {
+			if (itemsChecked[keys[i]] === true) {
+				list.push(keys[i]);
+			}
+		}
+		return list;
+	}
+
+	makeItemNames(itemIds) {
+		console.log(itemIds);
+		var itemNames = [];
+		for (var i=0; i<itemIds.length; i++) {
+			this.props.api.get("api/inventory/"+itemIds[i])
+			.then( function (response) {
+				itemNames.push(response.data.name);
+				this.state.itemNames = itemNames;
+			}.bind(this));
+		}	
+	}
+
+	makeItemNamesListView() {
+		var itemNames = this.state.itemNames;
+		console.log(itemNames)
+		if (itemNames.length === 0) {
+			return (<div className="center-text">No items selected!</div>);
+		}
+		else {
+			var list = [];
+			for (var i=0; i<this.state.itemNames.length; i++) {
+				list.push(<div key={"item-"+i}> {this.state.itemNames[i]} </div>);
+			}
+			return list;
 		}
 	}
 
@@ -61,6 +108,17 @@ class AddToCartButton extends Component {
 
 	sendRequest() {
 		var qty = document.getElementById("qty-textbox-" + this.props.itemId).value;
+		var items = this.state.itemsChecked;
+		for (var i=0; i<items.length; i++) {
+			this.props.api.put('api/inventory/'+items[i], 
+			{	minstock_threshold: Number(qty),
+	 			minstock_isEnabled: this.state.checked
+	 		})
+	 		.then( function (response) {
+	 			console.log(response);
+	 			this.props.clearCheckboxes();
+	 		}.bind(this));
+		}
 	}
 
 	clearView() {
@@ -69,7 +127,6 @@ class AddToCartButton extends Component {
 			checked: false
 		});
 	}
-
 
 	makeCheckBox(label){
 		return (
@@ -94,7 +151,7 @@ class AddToCartButton extends Component {
 				<button type="button" className="btn btn-sm btn-outline-primary" data-toggle="modal"
 					data-target={"#minQuantityEditor-"+this.props.itemId}>
 						<div>
-							Edit
+							Set Threshold
 						</div>
 				</button>
 
@@ -113,6 +170,7 @@ class AddToCartButton extends Component {
 				      </div>
 
 				      <div className="modal-body">
+				      	{this.makeItemNamesListView()}
 			      		{this.makeCheckBox("Enable Threshold")}
 						{this.makeTextBox("qty-textbox-" + this.props.itemId, "number", "Minimum Quantity", "")}
 					  </div>
