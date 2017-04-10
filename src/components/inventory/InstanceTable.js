@@ -23,34 +23,54 @@ class InstanceTable extends Component {
 	render() {
 
     var columnKeys = [];
-    columnKeys.push(<th key={"tag-key"}> Item Name </th>);
-    columnKeys.push(<th key={"item-key"}> Tag </th>);
-    var keys = ['Item Name', 'Tag'];
+    var subcolumnkeys = [];
+    //columnKeys.push(<th key={"tag-key"}> Item Name </th>);
+    columnKeys.push(<th key={"item-key"}> Asset Tag </th>);
+    var keys = ['Tag'];
     var allCustomFields = this.state.data[0].allCustomFields;
-    for(var i = 0; i < allCustomFields.length; i++){
-      keys.push(allCustomFields[i].name);
-      columnKeys.push(<th key={allCustomFields[i]._id+"-key"}> {allCustomFields[i].name} </th>);
-    }
-
+  //  for(var i = 0; i < allCustomFields.length; i++){
+    //  keys.push(allCustomFields[i].name);
+    //  subcolumnKeys.push(<th key={allCustomFields[i]._id+"-key"}> {allCustomFields[i].name} </th>);
+//    }
+    //console.log(this.state.data);
     var instances = [];
     for(var i = 0; i < this.state.data.length; i++){
-      var instance = this.state.data[i];
-      var rowData = [instance.item.name, instance.Tag];
-      for(var j = 0; j < allCustomFields.length; j++){
-        rowData.push(instance[allCustomFields[j].name]);
-      }
-      var id = instance._id;
+			var subrows = [];
 
+      var instance = this.state.data[i];
+			var id = instance._id;
+      var rowData = (
+				<tr
+					data-toggle="collapse"
+					data-parent="#accordion"
+					href={"#instance-collapse-"+id}
+					aria-expanded="true"
+					key={id+"-row"}
+					>
+					<td className="subtable-row" key={id+"-tag-key"}>{instance.Tag}</td>
+				</tr>
+			);
+			subrows.push(
+				<tr key={instance.Tag+"-header"}>
+					<td key={instance.Tag+"-custom_fields"} > FIELD </td>
+					<td key={instance.Tag+"-values"} > VALUE </td>
+				</tr>
+			);
+      for(var j = 0; j < allCustomFields.length; j++){
+        //rowData.push(instance[allCustomFields[j].name]);
+        subrows.push(
+          <tr key={instance.Tag+"-"+i+"-row-key-"+j}>
+            <td key={instance.Tag+"-"+i+"-name-key-"+j} >{allCustomFields[j].name} </td>
+            <td key={instance.Tag+"-"+i+"-value-key-"+j} >{instance[allCustomFields[j].name]}</td>
+          </tr>
+        );
+      }
+      instances.push(rowData);
       instances.push(
-        <TableRow
-  					columnKeys={keys}
-  					data={rowData}
-  					idTag={"instance-"+id}
-  					row={i}
-  					key={id+"-row"}
-  					api={this.props.api}
-            inventory_buttons={[]}
-  					callback={this.props.callback}/>
+        <tbody id={"instance-collapse-"+id} className="collapse" role="tabpanel" key={id+"-subrows"}>
+          {subrows}
+        </tbody>
+
       );
 
     }
