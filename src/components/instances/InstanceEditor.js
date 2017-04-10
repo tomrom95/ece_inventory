@@ -8,12 +8,17 @@ class InstanceEditor extends Component {
   constructor(props) {
 		super(props);
 		this.state = {
-      	itemID: this.props.itemID
+      	itemID: this.props.itemID,
+        allCustomFields: this.props.allCustomFields
 		};
 	}
 
+
   componentWillReceiveProps(newProps) {
-    this.setState({itemID: newProps.itemID});
+    this.setState({
+      itemID: newProps.itemID,
+      allCustomFields: newProps.allCustomFields
+    });
   }
 
   processData(data) {
@@ -35,8 +40,8 @@ class InstanceEditor extends Component {
         showStatusFilterBox={false}
         hasOtherParams={true}
         id={'instance-editor-' + this.state.itemID}
-        rowsPerPage={this.props.rowsPerPage}
-        extraProps={{allCustomFields: this.props.allCustomFields}}
+        rowsPerPage={5}
+        extraProps={{allCustomFields: this.state.allCustomFields}}
       />
     );
   }

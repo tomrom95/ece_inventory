@@ -6,7 +6,7 @@ class TagSelector extends Component {
   constructor(props){
     super(props);
     this.state = {
-      allTags: [],
+      allTags: this.props.allTags || [],
       selectedTags: this.props.defaultTags ? this.props.defaultTags.toString() : null
     }
   }
@@ -22,7 +22,9 @@ class TagSelector extends Component {
   }
 
   componentWillMount() {
-    this.loadData();
+    if (!this.props.allTags) {
+      this.loadData();
+    }
   }
 
   loadData() {
