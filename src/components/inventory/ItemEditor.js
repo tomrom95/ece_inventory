@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../../App.css';
 import TagSelector from '../global/TagSelector.js';
 import CustomFieldForm from './CustomFieldForm';
+import InstanceEditor from '../instances/InstanceEditor';
 import validator from 'validator';
 
 function getKeys(data) {
@@ -44,6 +45,7 @@ class ItemEditor extends Component {
 			originalQuantity: props.data.Quantity,
 			showQuantityReason: false,
 			data: props.data,
+			isAsset: props.isAsset,
 			allCustomFields: props.allCustomFields,
 			formIds: [],
 			activated: false,
@@ -56,6 +58,7 @@ class ItemEditor extends Component {
 			showQuantityReason: false,
 			originalQuantity: newProps.data.Quantity,
 			data: newProps.data,
+			isAsset: newProps.isAsset,
 			allCustomFields: newProps.allCustomFields,
 			formIds: getValues(newProps.data, getKeys(newProps.data)),
 			activated: this.state.justApplied ? true : false
@@ -145,6 +148,9 @@ class ItemEditor extends Component {
 		var id = "createform-row-"+row;
 		this.state.formIds.push(id);
 		var input;
+		if (label === 'Quantity' && this.state.isAsset) {
+			return null;
+		}
 		if(type === "multiselect") {
 			input = <TagSelector
 				disallowCustom={false}
@@ -181,15 +187,16 @@ class ItemEditor extends Component {
 			return;
 		}
 
-		if (object.quantity.length === 0) {
-			alert("Quantity is a required field.");
-			return;
-		}
-
-		var val = isWholeNumber(object.quantity);
-  		if (val !== true) {
-  			alert(val);
-  			return;
+		if (!this.state.isAsset) {
+			if (object.quantity.length === 0) {
+				alert("Quantity is a required field.");
+				return;
+			}
+			var val = isWholeNumber(object.quantity);
+	  	if (val !== true) {
+	  		alert(val);
+	  		return;
+			}
 		}
 
 		var desc = object.description;
@@ -204,13 +211,14 @@ class ItemEditor extends Component {
 		var tags = this.refs.Tags.getSelectedTags();
 		var object = {
 			name: this.refs.Name.value,
-  		quantity: this.refs.Quantity.value,
  			model_number: this.refs["Model Number"].value,
   		description: this.refs.Description.value,
   		vendor_info: this.refs["Vendor Info"].value,
   		tags: tags ? tags.split(',') : [],
-  		is_asset: false
   	}
+		if (!this.state.isAsset) {
+			object['quantity'] = this.refs.Quantity.value;
+		}
 
 		var customFieldErrors = this.refs.customFields.checkForErrors();
 		if (customFieldErrors) {
@@ -220,8 +228,9 @@ class ItemEditor extends Component {
 		object.custom_fields = this.refs.customFields.getCurrentValues();
 
 		if (this.validItem(object) === true) {
-			object.quantity = Number(object.quantity);
-
+			if (object.quantity) {
+				object.quantity = Number(object.quantity);
+			}
 			if (this.refs.reasonField) {
 				object.quantity_reason = this.refs.reasonField.value;
 			}
@@ -255,15 +264,9 @@ class ItemEditor extends Component {
   				(<button type="button"
 					className="btn btn-sm btn-outline-primary"
 					data-toggle="modal"
-					data-target={"#editModal-"+this.props.itemId}
-					onMouseOver={() => this.activateView()}>
+					data-target={"#editModal-"+this.props.itemId}>
 					<span className="fa fa-pencil"></span>
 				</button>);
-
-		if (this.state.activated === false) {
-			return <div>{button}</div>;
-		}
-
 	    return (
 			<div>
 				{button}
@@ -281,7 +284,18 @@ class ItemEditor extends Component {
 				      <div className="modal-body">
 				        {this.makeForm()}
 				      </div>
-
+							{this.state.isAsset ?
+								(<div className="modal-header">
+					        <h5 className="modal-title" id="editLabel">Edit Instances</h5>
+					      </div>) : null}
+							{this.state.isAsset ?
+								(<div className="modal-body">
+									<InstanceEditor
+										allCustomFields={this.state.allCustomFields}
+										rowsPerPage={10}
+										itemID={this.props.itemId}
+									/>
+								</div>) : null}
 				    </div>
 				  </div>
 				</div>

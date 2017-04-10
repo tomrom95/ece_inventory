@@ -18,7 +18,7 @@ module.exports.getAPI = function (req, res) {
   if (page && perPage && !isNaN(perPage)) {
     page = Number(page); perPage = Number(perPage);
     mongooseFind = mongooseFind
-      .sort({tag: 1})
+      .sort()
       .skip((page - 1)*perPage)
       .limit(perPage);
   }
