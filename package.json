@@ -53,7 +53,6 @@
     "react-modal": "^1.6.5",
     "react-native": "^0.42.0",
     "react-native-web": "0.0.76",
-    "react-paginate": "^4.3.1",
     "react-popup": "^0.6.0",
     "react-router": "^3.0.2",
     "react-select": "^1.0.0-rc.3",
