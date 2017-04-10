@@ -754,7 +754,7 @@ return: [{
 		},
 		quantity: Int,
 		backfill_rejected: Boolean,
-		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED')
 	}],
 	request: String, // the id
 	created: String, // date
@@ -775,7 +775,7 @@ return: {
 		},
 		quantity: Int,
 		backfill_rejected: Boolean,
-		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT','BACKFILL_REQUESTED')
 	}],
 	request: String, // the id
 	created: String, // date

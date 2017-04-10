@@ -26,6 +26,7 @@ var LoanSchema = new mongoose.Schema({
         enum: ['RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED'],
         default: 'LENT'
       },
+      attachment_path: String,
       backfill_rejected: Boolean,
       instances: [
         {
@@ -48,8 +49,7 @@ var LoanSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  attachment_path: String,
-  comment: String
+  manager_comment: String
 })
 LoanSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('Loan', LoanSchema);
