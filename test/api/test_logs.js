@@ -8,6 +8,7 @@ let Loan = require('../../server/model/loans');
 let Request = require('../../server/model/requests');
 let Cart = require('../../server/model/carts');
 let CustomField = require('../../server/model/customFields');
+let Instance = require('../../server/model/instances');
 let helpers = require('../../server/auth/auth_helpers');
 let fakeJSONData = require('./test_inventory_data');
 let fakeLoanData = require('./test_loans_data');
@@ -1082,7 +1083,95 @@ describe('Logging API Test', function () {
     });
   });
 
+  describe ('Logging instances', () => {
+    var assetItem;
+    var testInstance;
 
+    beforeEach((done) => {
+      Instance.remove({}, function(error) {
+        should.not.exist(error);
+        var item = new Item({
+          name: "Asset",
+          is_asset: true,
+          quantity: 1
+        });
+        item.save(function(error, item) {
+          should.not.exist(error);
+          assetItem = item;
+          var instance = new Instance({
+            item: item._id,
+            tag: '1234',
+            in_stock: true
+          });
+          instance.save(function(error, instance) {
+            should.not.exist(error);
+            testInstance = instance;
+            done();
+          });
+        });
+      });
+    });
+
+    it('logs instance creation', (done) => {
+      chai.request(server)
+        .post('/api/inventory/' + assetItem._id + '/instances')
+        .send({tag: '4321', in_stock: true})
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Log.find({}, function(err, logs) {
+            logs.length.should.be.eql(1);
+            var log = logs[0];
+            log.items[0].should.be.eql(assetItem._id);
+            log.initiating_user.should.be.eql(adminUser._id);
+            log.type.should.be.eql('INSTANCE_CREATED');
+            log.description.should.be.eql('A new instance with the tag 4321 was created for the item Asset.');
+            done();
+          });
+        });
+    });
+
+    it('logs instance editing', (done) => {
+      chai.request(server)
+        .put('/api/inventory/' + assetItem._id + '/instances/' + testInstance._id)
+        .send({tag: 'newtag'})
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Log.find({}, function(err, logs) {
+            logs.length.should.be.eql(1);
+            var log = logs[0];
+            log.items[0].should.be.eql(assetItem._id);
+            log.initiating_user.should.be.eql(adminUser._id);
+            log.type.should.be.eql('INSTANCE_EDITED');
+            log.description.should.be.eql('The instance 1234 of the item Asset was edited by changing tag from "1234" to "newtag".');
+            done();
+          });
+        });
+    });
+
+    it('logs instance deletion', (done) => {
+      chai.request(server)
+        .delete('/api/inventory/' + assetItem._id + '/instances/' + testInstance._id)
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Log.find({}, function(err, logs) {
+            logs.length.should.be.eql(1);
+            var log = logs[0];
+            log.items[0].should.be.eql(assetItem._id);
+            log.initiating_user.should.be.eql(adminUser._id);
+            log.type.should.be.eql('INSTANCE_DELETED');
+            log.description.should.be.eql('The instance 1234 of the item Asset was deleted.');
+            done();
+          });
+        });
+    });
+
+  });
 
   describe('GET /logs', () =>{
     beforeEach((done) => {

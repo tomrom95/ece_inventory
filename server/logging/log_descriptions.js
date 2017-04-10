@@ -87,3 +87,20 @@ module.exports.fieldEdited = function(field, changes) {
 module.exports.fieldDeleted = function(field) {
   return 'The field ' + field.name + ' was deleted.';
 }
+
+module.exports.instanceCreated = function(instance, item) {
+  return 'A new instance with the tag ' + instance.tag
+    + ' was created for the item ' + item.name + '.';
+}
+
+module.exports.instanceEdited = function(instance, changes, item) {
+  var description = 'The instance ' + instance.tag + ' of the item '  + item.name;
+  description += ' was edited by changing'
+  description += StringHelpers.createChangesString(instance, changes) + '.';
+  return description;
+}
+
+module.exports.instanceDeleted = function(instance, item) {
+  return 'The instance ' + instance.tag + ' of the item ' + item.name
+    + ' was deleted.';
+}

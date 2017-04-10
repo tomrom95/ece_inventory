@@ -3,8 +3,8 @@ var Item = require('../../../model/items');
 var Instance = require('../../../model/instances');
 var mongoose = require('mongoose');
 var QueryBuilder = require('../../../queries/querybuilder');
+var Logger = require('../../../logging/logger');
 var CustomFieldHelpers = require('../../../customfields/custom_field_helpers');
-var Emailer = require('../../../emails/emailer');
 
 module.exports.getAPI = function (req, res) {
   var query = new QueryBuilder();
@@ -18,7 +18,7 @@ module.exports.getAPI = function (req, res) {
   if (page && perPage && !isNaN(perPage)) {
     page = Number(page); perPage = Number(perPage);
     mongooseFind = mongooseFind
-      .sort({tag: 1})
+      .sort()
       .skip((page - 1)*perPage)
       .limit(perPage);
   }
@@ -33,6 +33,7 @@ module.exports.putAPI = function(req,res) {
   Instance.findById(req.params.instance_id, function(error, instance) {
     if (error) return res.send({error: error});
     if (!instance) return res.send({error: 'Could not find instance'});
+    var oldInstanceCopy = JSON.parse(JSON.stringify(instance));
     CustomFieldHelpers.validateCustomFields(req.body.custom_fields, true, function(error, isValid) {
       if (error) return res.send({error: error});
       if (!isValid) return res.send({error: 'Invalid custom fields'});
@@ -42,7 +43,13 @@ module.exports.putAPI = function(req,res) {
 
       instance.save(function(error, newInstance) {
         if (error) return res.send({error: error});
-        return res.json(newInstance);
+        Item.findById(newInstance.item, function(error, item) {
+          if (error) return res.send({error: error});
+          Logger.logInstanceEdit(oldInstanceCopy, req.body, item, req.user, function(error) {
+            if (error) return res.send({error: error});
+            return res.json(newInstance);
+          });
+        });
       });
     });
   });
@@ -66,7 +73,10 @@ module.exports.postAPI = function(req, res) {
         item.quantity += 1;
         item.save(function(error, item) {
           if (error) return res.send({error: error});
-          return res.json(instance);
+          Logger.logInstanceCreation(instance, item, req.user, function(error) {
+            if (error) return res.send({error: error});
+            return res.json(instance);
+          });
         });
       });
     });
@@ -85,12 +95,13 @@ module.exports.deleteAPI = function(req, res){
         {$inc: {quantity: -1}},
         function(error, item) {
           if (error) return res.send({error: error});
-          Emailer.sendStockBelowThresholdEmail(item, function(error){
+          Logger.logInstanceDeletion(instance, item, req.user, function(error) {
             if (error) return res.send({error: error});
             return res.json({message: "Successful"});
-          })
+          });
         }
       );
     });
-  })
+  });
+
 }
