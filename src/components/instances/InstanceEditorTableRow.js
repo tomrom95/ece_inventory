@@ -27,24 +27,24 @@ class InstanceEditorTableRow extends Component {
   onEdit() {
     var errors = this.refs.customFields.checkForErrors();
     if (errors) {
-      alert(errors);
+      alert("Custom field errors: \n" + errors);
       return;
     }
     var newParams = {
       tag: this.refs.tagField.value,
       custom_fields: this.refs.customFields.getCurrentValues()
     }
-
     this.props.api.put(
       "api/inventory/" + this.state.itemID + "/instances/" + this.state._id,
       newParams
     )
       .then(function(response) {
         if (response.data.error) {
-          alert(response.data.error);
+          console.log("response error");
+          alert(JSON.stringify(response.data.error));
         }
         this.props.callback();
-      })
+      }.bind(this))
       .catch(function(error) {
         alert(error);
       });

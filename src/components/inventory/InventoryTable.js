@@ -55,7 +55,7 @@ function getPrefill(data) {
 		"Description": data["Description"],
 		"Vendor Info": data["Vendor"],
 		"Tags": data["Tags"],
-		"custom_fields": data["custom_fields"],
+		"custom_fields": data["custom_fields"]
 	});
 }
 
@@ -67,7 +67,7 @@ function getEmptyPrefill() {
 		"Description": "",
 		"Vendor Info": "",
 		"Tags": "",
-		"custom_fields": "",
+		"custom_fields": ""
 	});
 }
 
@@ -85,7 +85,7 @@ class InventoryTable extends Component {
 	componentWillReceiveProps(newProps) {
 		this.setState({
 			columnKeys: getKeys(newProps.data),
-			rows: getValues(newProps.data, getKeys(newProps.data))
+			rows: getValues(newProps.data, getKeys(newProps.data)),
 		});
 	}
 
@@ -301,6 +301,7 @@ class InventoryTable extends Component {
 	makeEditButton(data, id) {
 		return (
 				<ItemEditor data={getPrefill(data)}
+							isAsset={data.meta.isAsset}
 		          api={this.props.api}
 		          callback={this.props.callback}
 		          className="request-button"

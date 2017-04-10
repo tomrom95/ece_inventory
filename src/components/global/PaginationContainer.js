@@ -123,6 +123,7 @@ class PaginationContainer extends Component {
 	      }
 	    }
 	    // response not empty:
+
 	    else {
 	      this.setState({
 	        items: this.state.processData(response),

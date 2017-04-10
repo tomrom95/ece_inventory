@@ -33,7 +33,7 @@ class InstanceEditor extends Component {
         renderComponent={table}
         showFilterBox={false}
         showStatusFilterBox={false}
-        hasOtherParams={false}
+        hasOtherParams={true}
         id={'instance-editor-' + this.state.itemID}
         rowsPerPage={this.props.rowsPerPage}
         extraProps={{allCustomFields: this.props.allCustomFields}}

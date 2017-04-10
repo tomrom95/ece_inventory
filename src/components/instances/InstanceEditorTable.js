@@ -35,7 +35,7 @@ class InstanceEditorTable extends Component {
 
   render() {
     return (
-      <ul className="list-group list-group-flush">
+      <ul className="list-group list-group-flush instance-table">
         {this.makeRows()}
       </ul>
     );

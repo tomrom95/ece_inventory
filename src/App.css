@@ -24,6 +24,10 @@
   width: 100%;
 }
 
+.instance-table {
+  max-width: 100%;
+}
+
 .wide {
   width:100%;
 }

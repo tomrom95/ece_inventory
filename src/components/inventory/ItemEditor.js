@@ -45,6 +45,7 @@ class ItemEditor extends Component {
 			originalQuantity: props.data.Quantity,
 			showQuantityReason: false,
 			data: props.data,
+			isAsset: props.isAsset,
 			allCustomFields: props.allCustomFields,
 			formIds: [],
 			activated: false,
@@ -57,6 +58,7 @@ class ItemEditor extends Component {
 			showQuantityReason: false,
 			originalQuantity: newProps.data.Quantity,
 			data: newProps.data,
+			isAsset: newProps.isAsset,
 			allCustomFields: newProps.allCustomFields,
 			formIds: getValues(newProps.data, getKeys(newProps.data)),
 			activated: this.state.justApplied ? true : false
@@ -281,13 +283,15 @@ class ItemEditor extends Component {
 				      </div>
 				      <div className="modal-body">
 				        {this.makeForm()}
-								<InstanceEditor
-									allCustomFields={this.state.allCustomFields}
-									rowsPerPage={10}
-									itemID={this.props.itemId}
-								/>
+								{this.state.isAsset ?
+									<InstanceEditor
+										allCustomFields={this.state.allCustomFields}
+										rowsPerPage={10}
+										itemID={this.props.itemId}
+									/>
+									: null
+								}
 				      </div>
-
 				    </div>
 				  </div>
 				</div>
