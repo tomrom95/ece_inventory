@@ -5,6 +5,11 @@ import CurrentOrders from '../requests/CurrentOrders.js';
 import CustomFieldsPopup from './CustomFieldsPopup.js';
 import LogPage from '../logging/LogPage.js';
 import LoanPage from '../loans/LoanPage.js';
+import TableRow from './TableRow.js';
+import AddToCartButton from './AddToCartButton.js';
+import PaginationContainer from '../global/PaginationContainer.js';
+import InstanceTable from './InstanceTable.js';
+
 
 function getString(str) {
   if (str === undefined || str === null || str.length === 0) {
@@ -22,7 +27,8 @@ class ItemDetailView extends React.Component {
       requests: [],
       itemId: props.params.itemID,
       itemName: props.params.itemName,
-      requestsVisible: true
+      requestsVisible: true,
+      instances: [],
     }
     this.addRequests = this.addRequests.bind(this);
   }
@@ -32,6 +38,7 @@ class ItemDetailView extends React.Component {
       baseURL: 'https://' + location.hostname + '/api',
       headers: {'Authorization': localStorage.getItem('token')}
     });
+    this.loadData();
   }
 
   componentWillReceiveProps(newProps) {
@@ -45,11 +52,15 @@ class ItemDetailView extends React.Component {
     this.axiosInstance.get('/inventory/' + this.state.itemId)
     .then(function(response) {
       this.setState({item: response.data});
+      if(this.state.item.is_asset){
+        this.getInstances();
+      }
     }.bind(this))
     .catch(function(error) {
       console.log(error);
       this.setState({error: 'Could not load item'});
     }.bind(this));
+
   }
 
 
@@ -177,6 +188,77 @@ class ItemDetailView extends React.Component {
   }
 
 
+  getInstances() {
+    this.axiosInstance.get('/inventory/' + this.state.itemId + '/instances?in_stock=true')
+    .then(function(response) {
+      this.setState({
+        instances: response.data
+      });
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+      this.setState({error: 'Could not load item'});
+    }.bind(this));
+  }
+
+
+
+  processData(responseData) {
+    var response_instances = responseData.data;
+    var instances = [];
+    var allCustomFields = this.props.allCustomFields;
+    var item = this.state.item;
+    for(var i = 0; i < response_instances.length; i++){
+      var instance = response_instances[i];
+      var obj = {
+          "item": item,
+          "Item Name": item.name,
+          "Tag": instance.tag,
+          "_id": instance._id,
+          "allCustomFields": allCustomFields,
+      }
+      //var rowData = [item.name, instance.tag];
+      for(var j = 0; j < allCustomFields.length; j++){
+
+        var value = "N/A";
+        for(var k = 0; k < instance.custom_fields.length; k++){
+          if(instance.custom_fields[k].field === allCustomFields[j]._id){
+            value = instance.custom_fields[k].value;
+          }
+        }
+        var name = allCustomFields[j].name;
+        obj[name] = value;
+      //  rowData.push(value);
+      }
+
+      instances.push(obj);
+    //
+
+    }
+    return instances;
+
+  }
+
+  addInstances(){
+
+    var table = InstanceTable;
+    var url = "/api/inventory/" + this.state.item._id + "/instances";
+    return(
+      <div>
+        <PaginationContainer
+            url={url}
+            processData={data => this.processData(data)}
+            renderComponent={table}
+            showFilterBox={false}
+            showStatusFilterBox={false}
+            hasOtherParams={false}
+            id={'item-instances'}
+            rowsPerPage={5} />
+      </div>
+
+    );
+  }
+
   addRequests(){
     if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER"){
       return(
@@ -231,7 +313,7 @@ class ItemDetailView extends React.Component {
      if(JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
         return (
           <div className="item-detail-view-loans">
-            <LoanPage isGlobal={true} 
+            <LoanPage isGlobal={true}
                            showFilterBox={false}
                            rowsPerPage={5}
                            filters={filters} />
@@ -240,7 +322,7 @@ class ItemDetailView extends React.Component {
      else {
         return (
           <div className="item-detail-view-loans">
-            <LoanPage isGlobal={false} 
+            <LoanPage isGlobal={false}
                            showFilterBox={false}
                            rowsPerPage={5}
                            filters={filters} />
@@ -259,9 +341,25 @@ class ItemDetailView extends React.Component {
   }
 
   makeCollapsibleItems() {
+    var instances =
+    <div className="card">
+      <div className="card-header" role="tab" id="headingFour">
+        <h7 className="mb-0">
+          <a data-toggle="collapse" data-parent="#accordion" href={"#instancesCollapse-"+this.state.itemId} aria-expanded="true">
+            <strong>INSTANCES OF THIS ITEM</strong>
+          </a>
+        </h7>
+      </div>
+      <div id={"instancesCollapse-"+this.state.itemId} className="collapse" role="tabpanel">
+        <div className="card-block">
+          {this.state.requestsVisible ? this.addInstances() : null}
+        </div>
+      </div>
+    </div>;
+    var instance_table = this.state.item.is_asset ? instances : <div></div>
     return (
     <div id="accordion" role="tablist" aria-multiselectable="true">
-
+      {instance_table}
       <div className="card">
         <div className="card-header" role="tab" id="headingOne">
           <h7 className="mb-0">
@@ -290,7 +388,7 @@ class ItemDetailView extends React.Component {
             {this.state.requestsVisible ? this.makeLoanView() : null}
           </div>
         </div>
-      </div>  
+      </div>
 
       {JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER" ?
       (<div className="card">

@@ -3,6 +3,7 @@ process.env.NODE_ENV = 'test';
 let mongoose = require("mongoose");
 let Item = require('../../server/model/items');
 let Instance = require('../../server/model/instances');
+let CustomField = require('../../server/model/customFields');
 let User = require('../../server/model/users');
 let auth_helpers = require('../../server/auth/auth_helpers');
 let server = require('../../server');
@@ -14,39 +15,75 @@ let should = chai.should();
 chai.use(chaiHttp);
 chai.use(require('chai-things'));
 
+const customFieldJSON = [
+  {
+    name: "location",
+    type: "SHORT_STRING",
+    isPrivate: false,
+    perInstance: false
+  },
+  {
+    name: "restock_info",
+    type: "LONG_STRING",
+    isPrivate: true,
+    perInstance: false
+  },
+  {
+    name: "serial_number",
+    type: "SHORT_STRING",
+    isPrivate: true,
+    perInstance: true,
+  },
+  {
+    name: "instance_price",
+    type: "FLOAT",
+    isPrivate: false,
+    perInstance: true,
+  }
+];
+
 describe('Instance API Test', function() {
   var adminToken;
   var standardToken;
   var managerToken;
   var firstItemId = '111111111111111111111111';
+  var defaultFields;
 
   beforeEach((done) => { //Before each test we empty the database
-    Instance.remove({}, (err) => {
-      should.not.exist(err);
-      Item.remove({}, (err) => {
+    CustomField.remove({}, (err) => {
+      Instance.remove({}, (err) => {
         should.not.exist(err);
-        User.remove({}, (err) => {
+        Item.remove({}, (err) => {
           should.not.exist(err);
-          auth_helpers.createNewUser('admin', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
+          User.remove({}, (err) => {
             should.not.exist(err);
-            token = auth_helpers.createAuthToken(user);
-            auth_helpers.createNewUser('standard', 'test', 'standard@email.com', 'STANDARD', function(err, user) {
+            auth_helpers.createNewUser('admin', 'test', 'admin@email.com', 'ADMIN', function(err, user) {
               should.not.exist(err);
-              standardToken = auth_helpers.createAuthToken(user);
-              auth_helpers.createNewUser('manager', 'test', 'manager@email.com', 'MANAGER', function(err, user) {
+              token = auth_helpers.createAuthToken(user);
+              auth_helpers.createNewUser('standard', 'test', 'standard@email.com', 'STANDARD', function(err, user) {
                 should.not.exist(err);
-                managerToken = auth_helpers.createAuthToken(user);
-                Item.insertMany(fakeJSONData.items).then(function(obj){
-                  Instance.insertMany(fakeJSONData.instances).then(function(obj) {
-                    done();
-                  }).catch(function(error) {console.log(error)});
-                }).catch(function(error) {console.log(error)});
+                standardToken = auth_helpers.createAuthToken(user);
+                auth_helpers.createNewUser('manager', 'test', 'manager@email.com', 'MANAGER', function(err, user) {
+                  should.not.exist(err);
+                  managerToken = auth_helpers.createAuthToken(user);
+                  Item.insertMany(fakeJSONData.items).then(function(obj){
+                    Instance.insertMany(fakeJSONData.instances).then(function(obj) {
+                      CustomField.insertMany(customFieldJSON).then(function(obj) {
+                        defaultFields = {};
+                        obj.forEach(function(field) {
+                          defaultFields[field.name] = field;
+                        });
+                        done();
+                      });
+                    });
+                  });
+                });
               });
             });
-          });
+            });
           });
         });
-      });
+    });
   });
 
 
@@ -93,7 +130,20 @@ describe('Instance API Test', function() {
         chai.request(server)
           .put('/api/inventory/' + firstItemId + '/instances/' + instance._id)
           .set('Authorization', token)
-          .send({tag: 'newtag', in_stock: false})
+          .send({
+            tag: 'newtag',
+            in_stock: false,
+            custom_fields: [
+              {
+                field: defaultFields["instance_price"]._id,
+                value: 5.0
+              },
+              {
+                field: defaultFields["serial_number"]._id,
+                value: "1234"
+              }
+            ]
+          })
           .end((error, res) => {
             should.not.exist(error);
             res.should.have.status(200);
@@ -103,6 +153,64 @@ describe('Instance API Test', function() {
             Instance.findById(instance._id, function(error, instance) {
               instance.tag.should.be.eql('newtag');
               instance.in_stock.should.be.eql(true);
+              done();
+            });
+          });
+      });
+    });
+
+    it('Fails to put instance because of custom field not being per instance', (done) => {
+      Instance.findOne({tag: '1'}, function(error, instance) {
+        should.not.exist(error);
+        chai.request(server)
+          .put('/api/inventory/' + firstItemId + '/instances/' + instance._id)
+          .set('Authorization', token)
+          .send({
+            custom_fields: [
+              {
+                field: defaultFields["location"]._id,
+                value: "something"
+              },
+              {
+                field: defaultFields["instance_price"]._id,
+                value: 5.0
+              }
+            ]
+          })
+          .end((error, res) => {
+            should.not.exist(error);
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.error.should.be.eql('Invalid custom fields');
+            Instance.findById(instance._id, function(error, instance) {
+              instance.custom_fields.length.should.be.eql(0);
+              done();
+            });
+          });
+      });
+    });
+
+    it('Fails to put instance because of invalid value for custom field', (done) => {
+      Instance.findOne({tag: '1'}, function(error, instance) {
+        should.not.exist(error);
+        chai.request(server)
+          .put('/api/inventory/' + firstItemId + '/instances/' + instance._id)
+          .set('Authorization', token)
+          .send({
+            custom_fields: [
+              {
+                field: defaultFields["instance_price"]._id,
+                value: "hello there"
+              }
+            ]
+          })
+          .end((error, res) => {
+            should.not.exist(error);
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.error.should.be.eql('Invalid custom fields');
+            Instance.findById(instance._id, function(error, instance) {
+              instance.custom_fields.length.should.be.eql(0);
               done();
             });
           });
@@ -178,6 +286,32 @@ describe('Instance API Test', function() {
           res.should.have.status(200);
           res.body.should.be.a('object');
           res.body.error.should.be.eql('You cannot add an instance that is not in stock');
+          Instance.findOne({tag: '12345'}, function(error, instance) {
+            should.not.exist(instance);
+            done();
+          });
+        });
+    });
+
+    it('Should not POST instance with invalid custom fields', (done) => {
+      let instance = {
+        tag: '12345',
+        custom_fields: [
+          {
+            field: defaultFields["location"]._id,
+            value: "something"
+          }
+        ]
+      };
+      chai.request(server)
+        .post('/api/inventory/'+ firstItemId + '/instances')
+        .set('Authorization', token)
+        .send(instance)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('object');
+          res.body.error.should.be.eql('Invalid custom fields');
           Instance.findOne({tag: '12345'}, function(error, instance) {
             should.not.exist(instance);
             done();

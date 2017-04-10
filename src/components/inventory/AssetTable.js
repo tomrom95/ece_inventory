@@ -5,20 +5,12 @@ import ItemWizard from './ItemWizard.js';
 import AddToCartButton from './AddToCartButton.js';
 import ItemEditor from './ItemEditor.js';
 import ItemDetailView from './ItemDetailView.js';
-import CustomFieldsPopup from './CustomFieldsPopup.js';
-import CustomFieldListPopup from './CustomFieldListPopup.js';
-import ShoppingCart from './ShoppingCart.js';
-import BulkImportButton from './BulkImportButton.js';
-import ImportHelpButton from './ImportHelpButton.js';
-import CollapsibleRow from '../../CollapsibleRow.js';
 
 var meta;
 
 function getKeys(data) {
-
 	if (data.length === 0)
 		return;
-
 	var keys = Object.keys(data[0]);
 	var i;
 	var ret = [];
@@ -27,7 +19,6 @@ function getKeys(data) {
 			meta = keys[i];
 			continue;
 		}
-
 		if (["Name", "Quantity", "Model", "Vendor"].includes(keys[i])) {
 			ret.push(keys[i]);
 		}
@@ -40,10 +31,12 @@ function getValues(data, keys) {
 	var vals = [];
 	for (i=0; i<data.length; i++) {
 		var row = [];
-		for (j=0; j<keys.length; j++) {
-			row.push(String(data[i][keys[j]]).replace(/,/g,', '));
+		if(data[i].meta.isAsset){
+			for (j=0; j<keys.length; j++) {
+				row.push(String(data[i][keys[j]]).replace(/,/g,', '));
+			}
+			vals.push(row);
 		}
-		vals.push(row);
 	}
 	return vals;
 }
@@ -116,55 +109,51 @@ class AssetTable extends Component {
       });
 	}
 
-	render() {
+	makeAssetKeys(rowData){
+		var keys = ["Name", "Model", "Quantity", "Vendor"];
+		var name = rowData[0];
+		var list = [];
+		for (var i=0; i<keys.length; i++) {
+			var columnTag = "asset-name-" + rowData[0] + " " + i;
+			var value = rowData[i];
+			if (value.length === 0 || value === "undefined")
+				value = "N/A";
+				list.push(
+					<td	className="subtable-row"	key={columnTag}>
+						{value}
+					</td>);
+		}
+		return list;
 
+	}
+	makeSubRows() {
+		var i;
+		var list = [];
+		var instances = [["test", "123"]];
+		var keys = ["Name", "Model", "Quantity", "Vendor"];
+		for (var i=0; i<instances.length; i++) {
+			var elem;
+			elem = (<TableRow
+					columnKeys={keys}
+					data={instances[i]}
+					idTag={"testasset" + i}
+					row={i}
+					key={"asset-instance-" + "testasset" + " " + i}
+					api={this.props.api}
+					callback={this.props.callback}/>);
+			list.push(elem);
+		}
+		return list;
+	}
+
+
+	render() {
+	//	console.log(this.state.rows);
 		var isManager = JSON.parse(localStorage.getItem('user')).role === "ADMIN"
 				|| JSON.parse(localStorage.getItem('user')).role === "MANAGER";
 
 		return (
 			<div className="row">
-				<div className="col-md-12">
-		            <ul className="nav nav-links inventorypage-tabs-container">
-		            { isManager === false ? null :
-		              <li className="nav-item userpage-tab-container">
-		                    <CustomFieldsPopup
-										api={this.props.api}
-										key={"makefields-button"}
-										callback={this.setCustomFields.bind(this)}/>
-		              </li>
-		          	}
-
-	            	{ isManager === false ? null :
-		              <li className="nav-item userpage-tab-container">
-		                    <CustomFieldListPopup
-										api={this.props.api}
-										key={"editfields-button"}
-										callback={this.setCustomFields.bind(this)}
-										allCustomFields={this.state.allCustomFields}/>
-		              </li>
-		          	}
-
-
-		              <li className="nav-item userpage-tab-container">
-	                    	<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>
-		              </li>
-						{ isManager === false ? null :
-							<li className="nav-item userpage-tab-container">
-										<BulkImportButton
-							key={"bulkimport-button"}
-							api={this.props.api}
-							callback={this.props.callback}/>
-							</li>
-
-						}
-						{ isManager === false ? null :
-							<li className="nav-item userpage-tab-container">
-								<ImportHelpButton />
-							</li>
-						}
-		            </ul>
-		        </div>
-
 				<div className="row maintable-container">
 					<table className="table table-sm maintable-body">
 					  <thead className="thread">
@@ -178,6 +167,9 @@ class AssetTable extends Component {
 					</table>
 				</div>
 			</div>
+
+
+
 		);
 	}
 
@@ -194,7 +186,8 @@ class AssetTable extends Component {
 	          			api={this.props.api}
 	          			key={"makeitem-button"}
 	          			callback={this.props.callback}
-									allCustomFields={this.state.allCustomFields}/>
+									allCustomFields={this.state.allCustomFields}
+									isAsset={true}/>
 	          	);
 
 		}
@@ -205,20 +198,24 @@ class AssetTable extends Component {
 		var i;
 		var list = [];
 		for (i=0; i<rowData.length; i++) {
-			var elem;
-			var id = this.props.data[i]["meta"]["id"];
-			elem = (<TableRow
-					columnKeys={this.props.columnKeys}
-					data={rowData[i]}
-					idTag={id}
-					row={i}
-					key={id+"-row"}
-					api={this.props.api}
-					inventory_buttons={this.makeInventoryButtons(this.props.data[i], id)}
-					callback={this.props.callback}/>);
-			list.push(elem);
+			list.push(
+				<tr	className="accordion-toggle"	data-toggle="collapse"	data-target="#testasset" key={"name-"+rowData[0]+"-"+i}>
+					{this.makeAssetKeys(rowData[i])}
+				</tr>);
+			list.push(
+				<tr key={"instances-"+rowData[0]+"-"+i}>
+					<td className="row instance-table accordion-body collapse" id="testasset">
+						<table className="table table-sm ">
+							<tbody>
+								{this.makeSubRows()}
+							</tbody>
+						</table>
+					</td>
+				</tr>);
 		}
 		return list;
+
+
 	}
 
 	makeInventoryButtons(data, id) {

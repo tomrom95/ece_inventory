@@ -3,8 +3,8 @@ var Request = require('../../../model/requests');
 var Item = require('../../../model/items');
 var User = require('../../../model/users');
 var CustomField = require('../../../model/customFields.js');
+var CustomFieldHelpers = require('../../../customfields/custom_field_helpers');
 var mongoose = require('mongoose');
-var validator = require('validator');
 
 module.exports.postAPI = function (req, res) {
     if(req.body === undefined || req.body === null) return res.send({error: "Null or undefined body"});
@@ -81,7 +81,7 @@ var updateCustomFields = function(enteredCustomFields, dataCustomFields, next){
               "field": dataCustomFields[j]._id,
               "value": enteredCustomFields[i].value
             }
-            if(isInvalid(enteredCustomFields[i].value, dataCustomFields[j].type)){
+            if (!CustomFieldHelpers.validateSingleField(draftField, dataCustomFields[j], false)) {
               return {error: "The entered custom field "+enteredCustomFields[i].name + " has a value "+ enteredCustomFields[i].value +" not matching type " + dataCustomFields[j].type};
             }
             draftCustomFieldArray.push(draftField);
@@ -90,19 +90,4 @@ var updateCustomFields = function(enteredCustomFields, dataCustomFields, next){
       if(!isMatch) return {error: "The entered custom field "+enteredCustomFields[i].name + " was not found in list of current custom fields"};
   }
   return draftCustomFieldArray;
-}
-
-var isInvalid = function(value, type) {
-  value = String(value);
-  switch(type) {
-    case 'LONG_STRING':
-    case 'SHORT_STRING':
-      return false;
-    case 'FLOAT':
-      return !validator.isFloat(value);
-    case 'INT':
-      return !validator.isInt(value);
-    default:
-      return true;
-  }
 }

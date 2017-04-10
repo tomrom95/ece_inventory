@@ -58,6 +58,7 @@ class SubtableRow extends Component {
 				return this.props.inventory_buttons;
 
 			}
+			return (<td> <div > </div> </td>);
 	}
 }
 

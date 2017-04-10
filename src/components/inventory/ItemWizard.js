@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../../App.css';
 import TagSelector from '../global/TagSelector.js';
 import validator from 'validator';
-import CustomFieldSelect from './CustomFieldSelect.js';
+import CustomFieldForm from './CustomFieldForm.js';
 
 function getKeys(data) {
 	return Object.keys(data);
@@ -47,7 +47,7 @@ class ItemWizard extends Component {
 			activated: false,
 			justApplied: false,
 			isAsset: false,
-			assetCheckComplete: false,
+			checkTypeDone: false,
 		}
 	}
 
@@ -66,22 +66,39 @@ class ItemWizard extends Component {
 		});
 	}
 
-	setIsAsset() {
+	handleCheckChange() {
+		this.setState({
+			checkTypeDone: !this.state.checkTypeDone
+		})
+	}
+
+	handleAssetSetChange() {
 		this.setState({
 			isAsset: !this.state.isAsset
-		});
+		})
 	}
 
-	setAssetCheckComplete() {
-		console.log(this.state.assetCheckComplete);
-
-		this.setState({
-			assetCheckComplete: true
-		});
+	makeCheckForm() {
+		var asset_checkbox =
+			<input type="checkbox"
+	      checked={this.state.isAsset}
+				onChange={this.handleAssetSetChange.bind(this)}
+				key={"asset_checkbox"}
+        name="asset_checkbox"
+      />;
+		return(
+			<div className="form-group row customfield-maker-isprivate">
+				<div className="col-xs-10">
+					<label htmlFor={"createform-row-"}>Check this if item is an asset</label>
+				</div>
+				<div className="col-xs-2 customfield-maker-checkbox">
+					{asset_checkbox}
+				</div>
+			</div>
+		);
 	}
 
-
-	makeItemForm() {
+	makeItemCreationForm() {
 		var keys = getKeys(this.state.data);
 		var vals = getValues(this.state.data, keys);
 		var list = []; var i;
@@ -91,68 +108,15 @@ class ItemWizard extends Component {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
 			}
 			else if(keys[i] === 'custom_fields'){
-				list.push(<div className="form-group" key={"createform-div-customfields-labelrow-"+i}>
-							Custom Fields
-							</div>);
-				for(var j = 0; j < vals[i].length; j++){
-
-					var field = vals[i][j];
-					var label = "";
-					for(var n = 0; n < this.state.allCustomFields.length; n ++){
-						if(this.state.allCustomFields[n]._id === field.field){
-							label = this.state.allCustomFields[n].name + " " + "(" + this.state.allCustomFields[n].type + ")";
-						}
-					}
-					if(label !== ""){
-						list.push(this.makeCustomTextBox(i, j, field, label));
-						list.push(this.makeDeleteButton(i, j, field));
-						}
-
-				}
-
-				list.push(this.addCustomFieldButton(i, vals[i]));
-
-			}
-			else {
-
-				list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
-			}
-		}
-
-		return list;
-	}
-
-	makeAssetForm(){
-		var keys = getKeys(this.state.data);
-		var vals = getValues(this.state.data, keys);
-		var list = []; var i;
-
-		for (i=0; i<keys.length; i++) {
-			if (keys[i] === 'Tags') {
-				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
-			}
-			else if(keys[i] === 'custom_fields'){
-				list.push(<div className="form-group" key={"createform-div-customfields-labelrow-"+i}>
-							Custom Fields
-							</div>);
-				for(var j = 0; j < vals[i].length; j++){
-
-					var field = vals[i][j];
-					var label = "";
-					for(var n = 0; n < this.state.allCustomFields.length; n ++){
-						if(this.state.allCustomFields[n]._id === field.field){
-							label = this.state.allCustomFields[n].name + " " + "(" + this.state.allCustomFields[n].type + ")";
-						}
-					}
-					if(label !== ""){
-						list.push(this.makeCustomTextBox(i, j, field, label));
-						list.push(this.makeDeleteButton(i, j, field));
-						}
-
-				}
-
-				list.push(this.addCustomFieldButton(i, vals[i]));
-
+				list.push(
+					<CustomFieldForm
+						allCustomFields={this.props.allCustomFields}
+						currentValues={[]}
+						perInstance={false}
+						ref="customFields"
+						key="customFields"
+					/>
+				);
 			}
 			else {
 
@@ -193,12 +157,7 @@ class ItemWizard extends Component {
 	handleFormChange(event, label, index) {
 		var data = this.state.data;
 
-		if(label == "custom_fields"){
-			data.custom_fields[index].value = event.target.value;
-		}
-		else{
-			data[label] = event.target.value;
-		}
+		data[label] = event.target.value;
 		this.setState({
 			data: data
 		});
@@ -225,232 +184,12 @@ class ItemWizard extends Component {
 			alert("Description must be less than 400 characters long.");
 			return;
 		}
-		for(var i = 0; i < this.state.data.custom_fields.length; i++){
-			for(var j = 0; j < this.state.allCustomFields.length; j++){
-
-				if(this.state.data.custom_fields[i].field === this.state.allCustomFields[j]._id){
-					var type = this.state.allCustomFields[j].type;
-					var type_mismatch = this.checkMismatch(type, this.state.data.custom_fields[i].value);
-					var invalid_length = this.checkInvalidLength(type, this.state.data.custom_fields[i].value);
-					if(type_mismatch || invalid_length){
-						alert("Incorrect value for custom field " + this.state.allCustomFields[j].name);
-						return;
-					}
-				}
-
-			}
-		}
 		return true;
 	}
 
-	addCustomFieldButton(row, current_fields){
-		return(
-			<div className="form-group" key={"createform-div-custombuttom-row-"+row}>
-			  <label htmlFor={"createform-row-"+row}>Add custom field</label>
-				<CustomFieldSelect
-					api={this.props.api}
-					callback={this.props.callback}
-					allCustomFields={this.state.allCustomFields}
-					key={"add-field-"+row}
-					ref={"field"}/>
-				<input type="text"
-					className="form-control"
-					ref={"fieldvalue"}
-					key={"add-field-value"+row}
-					placeholder="Value">
-					</input>
-				<button type="button"
-					className="btn btn-outline-primary add-button"
-					key={"button-add-field"+row}
-					onClick={e => this.checkFieldParams(this.refs.field.state.selectedField, this.refs.fieldvalue.value, current_fields)}>
-					ADD
-				</button>
-			</div>
-		);
-	}
-
-
-	makeCustomTextBox(row, index, field, label){
-		var id = "createform-custom-row-"+row;
-		this.state.formIds.push(id);
-		var ref = "custom_fields";
-		var input = <input type="text"
-				className="form-control"
-				value={field.value}
-				ref={ref}
-				key={id+field.field}
-				onChange={e => this.handleFormChange(e, ref, index)}>
-				</input>
-		return (
-			<div className="form-group" key={"createform-div-custom-row-"+field.field}>
-				<label htmlFor={"createform-row-"+row}>{label}</label>
-				{input}
-			</div>
-		);
-
-	}
-
-	makeDeleteButton(i, j, field){
-		return(
-			<button
-				key={i + "delete-field" + j + " " + field.field}
-				onClick={()=>{this.deleteCustomField(field.field)}}
-				type="button"
-				className="btn btn-danger delete-button">
-				X
-				</button>);
-
-	}
-
-	deleteCustomField(field){
-		var data = this.state.data;
-		var custom_fields = [];
-		for(var a = 0; a < data.custom_fields.length; a++){
-			if(field !== data.custom_fields[a].field){
-				custom_fields.push(data.custom_fields[a]);
-			}
-		}
-		data.custom_fields = custom_fields;
-		this.setState({
-			data: data
-		});
-	}
-
-	addField(value, already_exists, type_mismatch, field_params, invalid_length){
-		if(value && !already_exists && !type_mismatch){
-			var data = this.state.data;
-			var custom_fields = [];
-			if(data.custom_fields){
-				for(var b = 0; b < data.custom_fields.length; b++){
-					custom_fields.push(data.custom_fields[b])
-				}
-			}
-			custom_fields.push(field_params);
-			data.custom_fields = custom_fields;
-			this.setState({
-				data: data
-			});
-		}
-		else if(already_exists) {
-			alert("Item already has that custom field");
-		}
-		else if(type_mismatch){
-			alert("Not correct type");
-		}
-		else if(invalid_length){
-			alert("String is too long for type SHORT_STRING");
-		}
-		else if(!value){
-			alert("Field must have a value");
-		}
-	}
-
-	checkFieldParams(custom_field, value, current_fields){
-		var already_exists = false;
-		for(var i = 0; i < current_fields.length; i++){
-			if(current_fields[i].field === custom_field){
-				already_exists = true;
-			}
-		}
-		var type = "";
-		var type_mismatch = false;
-		var invalid_length = false;
-		this.props.api.get('/api/customFields/'+custom_field)
-			.then(function(response) {
-					if (response.data.error) {
-						alert(response.data.error);
-					} else {
-						var field_params = {
-							field: custom_field,
-							value: value
-						}
-						type = response.data.type;
-						type_mismatch = this.checkMismatch(type, value);
-						invalid_length = this.checkInvalidLength(type, value);
-
-						this.addField(value, already_exists, type_mismatch, field_params, invalid_length);
-					}
-				}.bind(this))
-				.catch(function(error) {
-					console.log(error);
-				}.bind(this));
-
-	}
-
-	checkEditField(row, index, field){
-		var new_value = this.state.data.custom_fields[index].value
-		var body = {
-			field: field.field,
-			value: new_value,
-		}
-		var type = "";
-		var type_mismatch = false;
-		var invalid_length = false;
-		this.props.api.get('/api/customFields/'+field.field)
-			.then(function(response) {
-					if (response.data.error) {
-						alert(response.data.error);
-					} else {
-						type = response.data.type;
-						type_mismatch = this.checkMismatch(type, new_value);
-						invalid_length = this.checkInvalidLength(type, new_value);
-						this.submitFieldEdit(type_mismatch, body, field, invalid_length);
-					}
-				}.bind(this))
-				.catch(function(error) {
-					console.log(error);
-				}.bind(this));
-
-	}
-
-	submitFieldEdit(type_mismatch, body, field, invalid_length){
-		if(!type_mismatch){
-			this.props.api.put('/api/inventory/'+ this.props.itemId+ "/customFields/" + field.field, body)
-				.then(function(response) {
-						if (response.data.error) {
-							alert(response.data.error);
-						} else {
-							this.props.callback();
-						}
-					}.bind(this))
-					.catch(function(error) {
-						console.log(error);
-					}.bind(this));
-		}
-		else{
-			alert("New value is incorrect type");
-		}
-	}
-
-	checkMismatch(type, value){
-		var type_mismatch = false;
-		if((type === "SHORT_STRING" || type === "LONG_STRING") && !validator.isAscii(value)){
-			type_mismatch = true;
-		}
-		else if(type === "INT" && !validator.isInt(value)){
-			type_mismatch = true;
-		}
-		else if(type === "FLOAT" && !validator.isFloat(value)){
-			type_mismatch = true;
-		}
-		return type_mismatch;
-	}
-
-	checkInvalidLength(type, value){
-			return (type === "SHORT_STRING" && value.length > 200);
-	}
-
-
 	onSubmission() {
 		var tags = this.refs.Tags.getSelectedTags();
-		var fields = [];
-		for(var i = 0; i < this.state.data.custom_fields.length; i++){
-		 	var obj = {
-				field: this.state.data.custom_fields[i].field,
-				value: this.state.data.custom_fields[i].value
-			}
-			fields.push(obj);
-		}
+		var fields = this.refs.customFields.getCurrentValues();
 		var object = {
 			name: this.refs.Name.value,
 	  		quantity: this.refs.Quantity.value,
@@ -459,6 +198,7 @@ class ItemWizard extends Component {
 	  		vendor_info: this.refs["Vendor Info"].value,
 	  		tags: tags ? tags.split(',') : [],
 	  		has_instance_objects: false,
+				is_asset: this.state.isAsset,
 				custom_fields: fields
   		}
   		if (this.validItem(object) === true) {
@@ -484,128 +224,85 @@ class ItemWizard extends Component {
   }
 
   	clearForm() {
-			this.refs.field.setState({
-				selectedField: ""
-			});
+			console.log(this.refs.Name);
 			var data = this.state.data;
-			data.custom_fields = [];
 			this.setState({
 				data: data,
 				isAsset: false,
-				assetCheckComplete: false,
-			})
-			this.refs.fieldvalue.value = "";
+				checkTypeDone: false,
+			});
   		var keys = getKeys(this.state.data);
+			console.log(this.refs.Name);
 			keys.forEach(function(key) {
-				if (key === "Tags") {
-					this.refs[key].clearTags();
-				} else {
-					if (key === "custom_fields")
-						return;
-
-					this.refs[key].value = "";
+				if(this.refs.length > 0){
+					if (key === "Tags") {
+						this.refs[key].clearTags();
+					} else if (key === "custom_fields"){
+						this.refs.customFields.clearForm();
+					} else {
+						this.refs[key].value = "";
+					}
 				}
 			}.bind(this));
   	}
 
   	render() {
-		var button =
-			<button type="button"
-				className="btn btn-outline-primary add-button align-right"
-				data-toggle="modal"
-				data-target={"#createModal"}
-				onMouseOver={() => this.activateView()}>
-				<span className="fa fa-plus"></span>
-			</button>;
-
-		if (this.state.activated === false) {
-			return <th>{button}</th>;
-		}
-		var itemForm = (
-			<div className="modal-content">
-				<div className="modal-header">
-					<h5 className="modal-title" id="createLabel">Create New Item</h5>
-				</div>
-				<div className="modal-body">
-					{this.makeItemForm()}
-				</div>
-				<div className="modal-footer">
-					<button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Submit</button>
-				</div>
-			</div>
-		);
-
-		var assetForm = (
-			<div className="modal-content">
-				<div className="modal-header">
-					<h5 className="modal-title" id="createLabel">Create New Asset Item</h5>
-				</div>
-				<div className="modal-body">
-					{this.makeItemForm()}
-				</div>
-				<div className="modal-footer">
-					<button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Submit</button>
-				</div>
-			</div>
-		);
-
-		var firstForm = (
-			<div className="modal-content">
-				<div className="modal-header">
-					<h5 className="modal-title" id="createLabel">Will this new item be an asset?</h5>
-				</div>
-				<div className="modal-body">
-					<div className="form-group row customfield-maker-isprivate">
-						<div className="col-xs-10">
-							<label htmlFor={"createform-row-"}>Check this box for yes</label>
-						</div>
-						<div className="col-xs-2 customfield-maker-checkbox">
-							<input
-								type="checkbox"
-								key={"isAssetCheckBox"}
-								checked={this.state.isAsset}
-								onChange={this.setIsAsset.bind(this)}
-							/>
-						</div>
+			var first_form =
+				<div className="modal-content">
+					<div className="modal-header">
+						<h5 className="modal-title" id="createLabel">Create New Item</h5>
 					</div>
-				</div>
-				<div className="modal-footer">
-					<button type="button" onClick={e => this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					<button onClick={e => this.setAssetCheckComplete()} type="button" className="btn btn-primary">Go</button>
-				</div>
-			</div>
-		);
-		var form;
-		if(this.state.assetCheckComplete){
-			if(this.state.isAsset){
-				form = assetForm;
+					<div className="modal-body">
+						{this.makeCheckForm()}
+					</div>
+					<div className="modal-footer">
+						<button type="button" onClick={e => this.setState({isAsset: false})} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+						<button onClick={this.handleCheckChange.bind(this)} type="button" className="btn btn-primary">Go</button>
+					</div>
+				</div>;
+			var item_form =
+				<div className="modal-content">
+					<div className="modal-header">
+						<h5 className="modal-title" id="createLabel">Create New Item</h5>
+					</div>
+					<div className="modal-body">
+						{this.makeItemCreationForm()}
+					</div>
+					<div className="modal-footer">
+						<button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+						<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Submit</button>
+					</div>
+				</div>;
+
+			var form = this.state.checkTypeDone ? item_form : first_form;
+			var button =
+				<button type="button"
+					className="btn btn-outline-primary add-button align-right"
+					data-toggle="modal"
+					data-target={"#createModal"}
+					onMouseOver={() => this.activateView()}>
+					<span className="fa fa-plus"></span>
+				</button>;
+
+			if (this.state.activated === false) {
+				return <th>{button}</th>;
 			}
-			else{
-				form = itemForm;
-			}
-		}
-		else{
-			form = firstForm;
-		}
-		return (
-		<th>
-			{button}
-			<div className="modal fade"
-				id={"createModal"}
-				tabIndex="-1"
-				role="dialog"
-				aria-labelledby="createLabel"
-				aria-hidden="true">
-			  <div className="modal-dialog" role="document">
-			    {form}
-			  </div>
-			</div>
-		</th>
-		);
+			return (
+				<th>
+					{button}
+					<div className="modal fade"
+						id={"createModal"}
+						tabIndex="-1"
+						role="dialog"
+						aria-labelledby="createLabel"
+						aria-hidden="true">
+					  <div className="modal-dialog" role="document">
+					    {form}
+					  </div>
+					</div>
+				</th>
+			);
 	}
 }
 

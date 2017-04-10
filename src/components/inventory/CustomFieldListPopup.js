@@ -22,7 +22,8 @@ class CustomFieldListPopup extends Component {
         name: field.name,
         type: field.type,
         isPrivate: field.isPrivate,
-        _id: field._id
+        _id: field._id,
+				perInstance: field.perInstance
        };
     });
   }
@@ -78,9 +79,19 @@ class CustomFieldListPopup extends Component {
     var is_private = <input type="checkbox"
           checked={field.isPrivate}
     			onChange={e=>this.handlePrivacyChange(e, field._id)}
+					className="form-checkbox"
           ref={field._id+"-PRIVACY"}
     			key={field._id+"-PRIVACY"}>
     			</input>
+		var perInstance =
+			<input type="checkbox"
+	      checked={field.perInstance}
+				className="form-checkbox"
+				onChange={null}
+				disabled="disabled"
+	      ref={field._id+"-perinstance"}
+				key={field._id+"-perinstance"}>
+			</input>
 
 
     return (
@@ -105,14 +116,18 @@ class CustomFieldListPopup extends Component {
               </div>
             </div>
 
-            <div className="form-group row customfield-maker-isprivate">
-              <div className="col-xs-8">
-                <label key={"privacy-row-"+row+"-"+field._id} htmlFor={"createform-row-"+row}>Private</label>
+            <div className="form-group row">
+              <div className="col-sm-8">
+								<div className="row">
+									<label key={"privacy-row-"+row+"-"+field._id} htmlFor={field._id+"-PRIVACY"}>Private</label>
+		              {is_private}
+								</div>
+                <div className="row">
+									<label key={"perInstance-row-"+row+"-"+field._id} htmlFor={field._id+"-perinstance"}>Per Instance</label>
+		               {perInstance}
+								</div>
               </div>
-              <div className="col-xs-2 customfield-maker-checkbox">
-                {is_private}
-              </div>
-              <div className="col-xs-2 customfield-apply">
+							<div className="col-sm-4 customfield-apply">
                   {
                     this.state.changed[row] === true ?
                     <button type="button"
@@ -124,8 +139,6 @@ class CustomFieldListPopup extends Component {
                   }
               </div>
             </div>
-
-
           </div>
         </div>
       </div>
@@ -247,6 +260,9 @@ class CustomFieldListPopup extends Component {
   	      .catch(function(error) {
   	        console.log(error);
   	      }.bind(this));
+
+
+
     }
   }
 
