@@ -283,15 +283,19 @@ class ItemEditor extends Component {
 				      </div>
 				      <div className="modal-body">
 				        {this.makeForm()}
-								{this.state.isAsset ?
+				      </div>
+							{this.state.isAsset ?
+								(<div className="modal-header">
+					        <h5 className="modal-title" id="editLabel">Edit Instances</h5>
+					      </div>) : null}
+							{this.state.isAsset ?
+								(<div className="modal-body">
 									<InstanceEditor
 										allCustomFields={this.state.allCustomFields}
 										rowsPerPage={10}
 										itemID={this.props.itemId}
 									/>
-									: null
-								}
-				      </div>
+								</div>) : null}
 				    </div>
 				  </div>
 				</div>
