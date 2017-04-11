@@ -24,6 +24,10 @@
   width: 100%;
 }
 
+input[type=checkbox].inventory-checkbox {
+  transform: scale(1.5);
+}
+
 .instance-editor-table {
   max-width: 100%;
 }
@@ -701,6 +705,7 @@
 
 .loan-table {
   margin-left: 2.5%;
+  margin-bottom: 4%;
   max-width: 95%;
   border:none;
   border-left:solid;
@@ -755,6 +760,10 @@
 .customfield-editor-modal {
   max-width: 86.5%;
   margin-left: 10%;
+  color: gray;
+}
+
+.min-qty-modal {
   color: gray;
 }
 
