@@ -96,8 +96,7 @@ class ItemEditor extends Component {
 						currentValues={vals[i]}
 						perInstance={false}
 						ref="customFields"
-						key="customFields"
-					/>
+						key="customFields"/>
 				);
 			}
 			else if((!this.props.is_asset) || !(this.props.is_asset && keys[i] === 'Quantity')){
