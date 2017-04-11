@@ -193,7 +193,8 @@ return: {
 /api/inventory/:item_id/instances
 GET
 params:{
-	in_stock: Boolean
+	in_stock: Boolean,
+	tag: String, // case insensitive partial match search
 	page: Int,
 	per_page: Int
 }
