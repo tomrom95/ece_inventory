@@ -74,7 +74,7 @@ class InstanceEditorTable extends Component {
       newRow = this.renderAddingRow()
     }
     return (
-      <ul className="list-group list-group-flush instance-table">
+      <ul className="list-group list-group-flush instance-editor-table">
         <li className="list-group-item add-instance-row">
           <button
             className="btn btn-outline-primary add-instance-button"

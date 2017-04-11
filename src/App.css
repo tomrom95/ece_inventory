@@ -24,7 +24,7 @@
   width: 100%;
 }
 
-.instance-table {
+.instance-editor-table {
   max-width: 100%;
 }
 
@@ -68,7 +68,7 @@
   padding-bottom: 3px !important;
 }
 
-.no-pad-right {
+.no-pad-sides {
   padding-right: 0px !important;
 }
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PaginationContainer from '../global/PaginationContainer.js';
 import InstanceEditorTable from './InstanceEditorTable';
+import SearchBar from '../global/SearchBar';
 import axios from 'axios';
 
 class InstanceEditor extends Component {
@@ -30,42 +31,22 @@ class InstanceEditor extends Component {
   makeURL() {
     var url = 'api/inventory/' + this.state.itemID + '/instances?in_stock=true';
     if (this.state.searchText) {
-      url += "&tag=" + searchText;
+      url += "&tag=" + this.state.searchText;
     }
     return url;
   }
 
-  onSearch() {
+  onSearch(text) {
     this.setState({
-      searchText: this.refs.tagSearchField.value
+      searchText: text
     });
-  }
-
-  renderSearchBar() {
-    return (
-      <div className="row">
-        <div className="col-sm-8">
-          <input
-            type="text"
-            className="form-control form-control-compact"
-            defaultValue={this.state.tag}
-            ref="tagSearchField"
-          />
-        </div>
-        <div className="col-sm-4">
-          <button onClick={() => this.onSearch()} type="button" className="btn btn-sm btn-primary">
-  					<span className="fa fa-search"></span>
-  				</button>
-        </div>
-      </div>
-    )
   }
 
   render() {
     var table = InstanceEditorTable;
     return (
       <div>
-        {this.renderSearchBar()}
+        <SearchBar callback={this.onSearch.bind(this)} />
         <PaginationContainer
           url={this.makeURL()}
           processData={data => this.processData(data)}
