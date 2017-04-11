@@ -24,6 +24,10 @@
   width: 100%;
 }
 
+input[type=checkbox].inventory-checkbox {
+  transform: scale(1.5);
+}
+
 .wide {
   width:100%;
 }
@@ -703,6 +707,10 @@
 .customfield-editor-modal {
   max-width: 86.5%;
   margin-left: 10%;
+  color: gray;
+}
+
+.min-qty-modal {
   color: gray;
 }
 

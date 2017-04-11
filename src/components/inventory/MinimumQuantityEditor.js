@@ -20,7 +20,7 @@ function isWholeNumber(num) {
 	}
 }
 
-class AddToCartButton extends Component {
+class MinimumQuantityEditor extends Component {
 
 	/*
 		Props: items checked in JSON form.
@@ -153,13 +153,13 @@ class AddToCartButton extends Component {
 
 	render() {
 		return (
-			<td>
-				<button type="button" className="btn btn-sm btn-outline-primary" data-toggle="modal"
+			<div>
+				<a className="nav-link userpage-tab" href="#" data-toggle="modal"
 					data-target={"#minQuantityEditor-"+this.props.itemId}>
 						<div>
 							Set Threshold
 						</div>
-				</button>
+				</a>
 
 				<div className="modal fade"
 					id={"minQuantityEditor-"+this.props.itemId}
@@ -202,9 +202,9 @@ class AddToCartButton extends Component {
 				    </div>
 				  </div>
 				</div>
-			</td>
+			</div>
 		);
 	}
 }
 
-export default AddToCartButton;
+export default MinimumQuantityEditor;

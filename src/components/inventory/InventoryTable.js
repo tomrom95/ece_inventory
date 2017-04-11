@@ -76,14 +76,18 @@ class InventoryTable extends Component {
 
 	constructor(props) {
 		super(props);
-		this.clearCheckedBoxes();
 		this.state = {
 			columnKeys: getKeys(this.props.data),
 			rows: getValues(this.props.data, getKeys(this.props.data)),
 			allCustomFields: [],
 			checked: localStorage.getItem("itemsChecked") ? JSON.parse(localStorage.getItem("itemsChecked")) : {},
-			itemsCheckedNames: {}
+			itemsCheckedNames: {},
+			checkboxesVisible: false
 		}
+	}
+
+	componentDidMount() {
+		this.clearCheckedBoxes();
 	}
 
 	componentWillReceiveProps(newProps) {
@@ -123,6 +127,15 @@ class InventoryTable extends Component {
 
 		var isManager = JSON.parse(localStorage.getItem('user')).role === "ADMIN"
 				|| JSON.parse(localStorage.getItem('user')).role === "MANAGER";
+
+		var minQtyEditor = this.state.checkboxesVisible ? 
+							(<li className="nav-item userpage-tab-container">
+								<MinQuantityEditor itemsChecked={this.state.checked}
+									   itemsCheckedNames={this.state.itemsCheckedNames} 
+									   key={"min-qty-editor"}
+									   api={this.props.api}
+									   clearCheckboxes={() => this.clearCheckedBoxes()} />
+						    </li>) : null;	
 
 		return (
 			<div className="row">
@@ -166,6 +179,17 @@ class InventoryTable extends Component {
 							</li>
 						}
 		            </ul>
+
+		            { isManager ? 
+			            (<ul className="nav nav-links inventorypage-tabs-container">
+			              <li className="nav-item userpage-tab-container">
+		                    <a className="nav-link userpage-tab" href="#"
+								onClick={() => this.toggleCheckboxes()}>
+								{this.state.checkboxesVisible ? "Hide Checkboxes" : "Select Multiple"}
+							</a>
+			              </li>
+			              {minQtyEditor}
+			            </ul>) : null }
 		        </div>
 
 				<div className="row maintable-container">
@@ -192,14 +216,6 @@ class InventoryTable extends Component {
 		}
 
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
-			list.push(
-				<MinQuantityEditor itemsChecked={this.state.checked}
-								   itemsCheckedNames={this.state.itemsCheckedNames} 
-								   key={"min-qty-editor"}
-								   api={this.props.api}
-								   clearCheckboxes={() => this.clearCheckedBoxes()} />
-			);
-
 			list.push(
 					<ItemWizard data={getEmptyPrefill()}
 	          			api={this.props.api}
@@ -234,14 +250,16 @@ class InventoryTable extends Component {
 	makeInventoryButtons(data, id) {
 		var list = [];
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
-			// add the checkbox here:
-			list.push(<div key={"checkbox-div-"+id} className="form-check">
-				      	<input key={"checkbox-"+id} 
-				      		   type="checkbox" 
-				      		   className="form-check-input"
-				      		   onChange={e => this.handleCheckedChange(e, id, data.Name)}
-				      		   checked={this.state.checked[id] || false} />
-				  	  </div>);
+			
+			if (this.state.checkboxesVisible === true) {
+				list.push(<div key={"checkbox-div-"+id}>
+					      	<input key={"checkbox-"+id} 
+					      		   type="checkbox" 
+					      		   className="form-check-input inventory-checkbox"
+					      		   onChange={e => this.handleCheckedChange(e, id, data.Name)}
+					      		   checked={this.state.checked[id] || false} />
+					  	  </div>);
+			}
 
 			list.push(
 				<div key={"cart-"+id} className="inventory-button">
@@ -357,6 +375,12 @@ class InventoryTable extends Component {
 		);
 	}
 
+	toggleCheckboxes() {
+		this.setState({
+			checkboxesVisible: !this.state.checkboxesVisible
+		});
+	}
+
 	handleCheckedChange(event, itemId, itemName) {
 	    var checked = event.target.checked;
 	    this.setCheckedItemInLocalStorage(itemId, checked);
@@ -383,7 +407,8 @@ class InventoryTable extends Component {
 	clearCheckedBoxes() {
 		localStorage.setItem("checkedItems", "{}");
 		this.setState({
-			checked: {}
+			checked: {},
+			checkboxesVisible: false
 		});
 	}
 
