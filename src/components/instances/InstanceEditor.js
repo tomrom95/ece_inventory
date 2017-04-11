@@ -41,7 +41,10 @@ class InstanceEditor extends Component {
         hasOtherParams={true}
         id={'instance-editor-' + this.state.itemID}
         rowsPerPage={5}
-        extraProps={{allCustomFields: this.state.allCustomFields}}
+        extraProps={{
+          allCustomFields: this.state.allCustomFields,
+          itemID: this.state.itemID
+        }}
       />
     );
   }

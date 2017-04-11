@@ -288,7 +288,7 @@ class ItemEditor extends Component {
 					        <h5 className="modal-title" id="editLabel">Edit Instances</h5>
 					      </div>) : null}
 							{this.state.isAsset ?
-								(<div className="modal-body">
+								(<div className="modal-body no-pad-right">
 									<InstanceEditor
 										allCustomFields={this.state.allCustomFields}
 										rowsPerPage={10}
