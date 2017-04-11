@@ -167,7 +167,7 @@ class MinimumQuantityEditor extends Component {
 					aria-labelledby="modalLabel"
 					aria-hidden="true">
 
-				  <div className="modal-dialog" role="document">
+				  <div className="modal-dialog min-qty-modal" role="document">
 				    <div className="modal-content add-to-cart">
 				      <div className="modal-header">
 				        <h6 className="modal-title" id="modalLabel">
