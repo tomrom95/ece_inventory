@@ -9,6 +9,7 @@ import TableRow from './TableRow.js';
 import AddToCartButton from './AddToCartButton.js';
 import PaginationContainer from '../global/PaginationContainer.js';
 import InstanceTable from './InstanceTable.js';
+import SearchBar from '../global/SearchBar';
 
 
 function getString(str) {
@@ -226,19 +227,29 @@ class ItemDetailView extends React.Component {
 
   }
 
+  onSearch(text) {
+    this.setState({
+      searchText: text
+    });
+  }
+
   addInstances(){
 
     var table = InstanceTable;
-    var url = "/api/inventory/" + this.state.item._id + "/instances";
+    var url = "/api/inventory/" + this.state.item._id + "/instances?in_stock=true";
+    if (this.state.searchText) {
+      url += '&tag=' + this.state.searchText;
+    }
     return(
       <div>
+        <SearchBar callback={this.onSearch.bind(this)} />
         <PaginationContainer
             url={url}
             processData={data => this.processData(data)}
             renderComponent={table}
             showFilterBox={false}
             showStatusFilterBox={false}
-            hasOtherParams={false}
+            hasOtherParams={true}
             id={'item-instances'}
             rowsPerPage={5} />
       </div>
