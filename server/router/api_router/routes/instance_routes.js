@@ -10,7 +10,8 @@ module.exports.getAPI = function (req, res) {
   var query = new QueryBuilder();
   query
     .searchBoolean('in_stock', req.query.in_stock)
-    .searchForObjectId('item', req.params.item_id);
+    .searchForObjectId('item', req.params.item_id)
+    .searchCaseInsensitive('tag', req.query.tag);
 
   var mongooseFind = Instance.find(query.toJSON());
   var page = req.query.page; var perPage = req.query.per_page;
@@ -18,7 +19,7 @@ module.exports.getAPI = function (req, res) {
   if (page && perPage && !isNaN(perPage)) {
     page = Number(page); perPage = Number(perPage);
     mongooseFind = mongooseFind
-      .sort({tag: 1})
+      .sort()
       .skip((page - 1)*perPage)
       .limit(perPage);
   }

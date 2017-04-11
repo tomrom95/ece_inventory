@@ -106,11 +106,12 @@ class CustomFieldForm extends Component {
       var field = this.state.fieldMap[fieldId];
       var value = this.state.currentValueMap[fieldId];
       var typeLabel = field.type.toLowerCase().replace('_', ' ');
+      var formClass = "form-group" + (this.props.compact ? " form-group-compact" : "");
       var form = (
-        <div className="form-group" key={fieldId}>
+        <div className={formClass} key={fieldId}>
   			  <label htmlFor={fieldId}>{field.name + ' (' + typeLabel + ')'}</label>
           <input type="text"
-    				className="form-control"
+    				className={"form-control" + (this.props.compact ? " form-control-compact" : "")}
     				value={value || ""}
             name={fieldId}
             key={fieldId + '-textbox'}
@@ -120,6 +121,7 @@ class CustomFieldForm extends Component {
       );
       formFields.push(form);
     }.bind(this));
+
     return (
       <div>
         {formFields}

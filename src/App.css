@@ -28,6 +28,30 @@ input[type=checkbox].inventory-checkbox {
   transform: scale(1.5);
 }
 
+.instance-table {
+  max-width: 100%;
+}
+
+.form-group-compact {
+  margin-bottom: 0px;
+}
+
+.form-control-compact {
+  height: 30px;
+}
+
+.align-top {
+  position: absolute;
+  top: 15px;
+  right: 5px
+}
+
+.align-bottom {
+  position: absolute;
+  bottom: 5px;
+  right: 5px
+}
+
 .wide {
   width:100%;
 }
@@ -231,6 +255,11 @@ input[type=checkbox].inventory-checkbox {
 
 .main-container {
   padding-top: 80px;
+}
+
+.instance-table {
+  margin-left: 10px;
+  min-width: 50%;
 }
 
 .modal-title{

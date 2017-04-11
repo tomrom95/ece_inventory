@@ -193,7 +193,8 @@ return: {
 /api/inventory/:item_id/instances
 GET
 params:{
-	in_stock: Boolean
+	in_stock: Boolean,
+	tag: String, // case insensitive partial match search
 	page: Int,
 	per_page: Int
 }
@@ -753,7 +754,8 @@ return: [{
 			name: String
 		},
 		quantity: Int,
-		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
+		backfill_rejected: Boolean,
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED')
 	}],
 	request: String, // the id
 	created: String, // date
@@ -773,7 +775,8 @@ return: {
 			name: String
 		},
 		quantity: Int,
-		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
+		backfill_rejected: Boolean,
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT','BACKFILL_REQUESTED')
 	}],
 	request: String, // the id
 	created: String, // date
@@ -786,6 +789,7 @@ params: {
 	items: [{
 		item: String, // id
 		status: String, // new status
+		backfill_rejected: Boolean
 	}]
 }
 return: {
@@ -798,9 +802,26 @@ return: {
 			name: String
 		},
 		quantity: Int,
-		status: String, // ('RETURNED', 'DISBURSED', 'LENT')
+		backfill_rejected: Boolean,
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED')
 	}],
 	request: String, // the id
 	created: String, // date
 	lastModified: String, // date
 }
+
+For PDF uploads, use the following HTML element, whereby the URL after the server URL matches:
+	/loan/:loan_id/item/:item_id/
+	And, the name "uploadPDF" must not change.
+<html>
+  <body>
+    <form ref='uploadForm'
+      id='uploadForm'
+      action='https://colab-sbx-115.oit.duke.edu/upload/loan/58e464e43f7ed8ef9c67876a/item/58c0270bdad2fa3b942b092a'
+      method='post'
+      encType="multipart/form-data">
+        <input type="file" name="uploadPDF" />
+        <input type='submit' value='Upload' />
+    </form>
+  </body>
+</html>

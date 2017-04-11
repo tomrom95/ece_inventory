@@ -56,7 +56,7 @@ function getPrefill(data) {
 		"Description": data["Description"],
 		"Vendor Info": data["Vendor"],
 		"Tags": data["Tags"],
-		"custom_fields": data["custom_fields"],
+		"custom_fields": data["custom_fields"]
 	});
 }
 
@@ -68,7 +68,7 @@ function getEmptyPrefill() {
 		"Description": "",
 		"Vendor Info": "",
 		"Tags": "",
-		"custom_fields": "",
+		"custom_fields": ""
 	});
 }
 
@@ -104,6 +104,16 @@ class InventoryTable extends Component {
           console.log(response.data.error);
         }
         this.setState({allCustomFields: response.data});
+      }.bind(this))
+      .catch(function(error) {
+        console.log(error);
+      });
+		this.props.api.get('/api/inventory/tags')
+      .then(function(response) {
+        if (response.data.error) {
+          console.log(response.data.error);
+        }
+        this.setState({allTags: response.data});
       }.bind(this))
       .catch(function(error) {
         console.log(error);
@@ -292,7 +302,9 @@ class InventoryTable extends Component {
 					<ItemDetailView key={"detail-view-button-" + id}
 									params={{itemID: id}}
 									isButton={true}
-									allCustomFields={this.state.allCustomFields}/>
+									allCustomFields={this.state.allCustomFields}
+									allTags={this.state.allTags}
+					/>
 				</div>);
 			return <td className="row buttons-cell"> <div className="row align-right-inventory"> {list} </div> </td>;
 		}
@@ -313,7 +325,7 @@ class InventoryTable extends Component {
 							params={{itemID: id}}
 							isButton={true}
 							allCustomFields={this.state.allCustomFields}/>
-
+							allTags={this.state.allTags}
 
 					</td>);
 				return list;
@@ -339,13 +351,18 @@ class InventoryTable extends Component {
 	makeEditButton(data, id) {
 		return (
 				<ItemEditor data={getPrefill(data)}
+							isAsset={data.meta.isAsset}
 		          api={this.props.api}
 		          callback={this.props.callback}
 		          className="request-button"
 		          itemId={id}
 		          key={"editbutton-"+ id}
 		          ref={"edit-"+id}
-							allCustomFields={this.state.allCustomFields}/>
+							allCustomFields={this.state.allCustomFields}
+							is_asset={data.meta.isAsset}
+
+							allTags={this.state.allTags}
+					/>
         );
 	}
 
