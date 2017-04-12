@@ -186,7 +186,7 @@ describe('Logging API Test', function () {
           res.body.should.satisfy(function(loans){
             return loans.every(function(loan){
               return loan.items.every(function(element){
-                return ['DISBURSED','RETURNED'].should.include(element.status);
+                return ['DISBURSED','RETURNED','BACKFILL_REQUESTED'].should.include(element.status);
               })
             });
           });
@@ -258,17 +258,184 @@ describe('Logging API Test', function () {
   });
 
   describe('PUT by ID /loans', () =>{
-    it('PUT request fail when initiated by standard user', (done) => {
+    it('PUT request fail for DISBURSED when initiated by standard user', (done) => {
       Loan.findOne({"request": "444444444444444444444444"}, function(err, loan){
         should.not.exist(err);
+        let item2ID = loan.items[1].item;
+        let putBody = {
+          items:[{
+            item: item2ID,
+            status:'DISBURSED'
+          }]
+        };
         chai.request(server)
         .put('/api/loans/' + loan._id)
         .set('Authorization', standardToken)
+        .send(putBody)
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.error.should.be.eql("You are not authorized");
           done();
+        });
+      });
+    });
+    it('PUT request fail for RETURNED when initiated by standard user', (done) => {
+      Loan.findOne({"request": "444444444444444444444444"}, function(err, loan){
+        should.not.exist(err);
+        let item1ID = loan.items[0].item;
+        let putBody = {
+          items:[{
+            item: item1ID,
+            status:'RETURNED'
+          }]
+        };
+        chai.request(server)
+        .put('/api/loans/' + loan._id)
+        .set('Authorization', standardToken)
+        .send(putBody)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.error.should.be.eql("You are not authorized");
+          Loan.findOne({"request": "444444444444444444444444"}, function(err, loan){
+            should.not.exist(err);
+            loan.items[0].status.should.not.be.eql("RETURNED");
+            done();
+          });
+        });
+      });
+    });
+    it('PUT request fail for LENT when initiated by standard user', (done) => {
+      Loan.findOne({"request": "444444444444444444444444"}, function(err, loan){
+        should.not.exist(err);
+        let item2ID = loan.items[1].item;
+        let putBody = {
+          items:[{
+            item: item2ID,
+            status:'LENT'
+          }]
+        };
+        chai.request(server)
+        .put('/api/loans/' + loan._id)
+        .set('Authorization', standardToken)
+        .send(putBody)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.error.should.be.eql("You are not authorized");
+          Loan.findOne({"request": "444444444444444444444444"}, function(err, loan){
+            should.not.exist(err);
+            loan.items[1].status.should.not.be.eql("LENT");
+            done();
+          });
+        });
+      });
+    });
+    it('PUT request fail for BACKFILL_REQUESTED when initiated by standard user for non-LENT loans', (done) => {
+      Loan.findOne({"request": "444444444444444444444444"}, function(err, loan){
+        should.not.exist(err);
+        // item2 has status RETURNED
+        let item2ID = loan.items[1].item;
+        let putBody = {
+          items:[{
+            item: item2ID,
+            status:'BACKFILL_REQUESTED'
+          }]
+        };
+        chai.request(server)
+        .put('/api/loans/' + loan._id)
+        .set('Authorization', standardToken)
+        .send(putBody)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.error.should.be.eql("You are not authorized");
+          Loan.findOne({"request": "444444444444444444444444"}, function(err, loan){
+            should.not.exist(err);
+            loan.items[1].status.should.not.be.eql("BACKFILL_REQUESTED");
+            done();
+          });
+        });
+      });
+    });
+    it('PUT request successful for BACKFILL_REQUESTED when initiated by standard user for LENT loans', (done) => {
+      Loan.findOne({"request": "444444444444444444444444"}, function(err, loan){
+        should.not.exist(err);
+        // item2 has status RETURNED
+        let item1ID = loan.items[0].item;
+        let putBody = {
+          items:[{
+            item: item1ID,
+            status:'BACKFILL_REQUESTED'
+          }]
+        };
+        chai.request(server)
+        .put('/api/loans/' + loan._id)
+        .set('Authorization', standardToken)
+        .send(putBody)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Loan.findOne({"request": "444444444444444444444444"}, function(err, loan){
+            should.not.exist(err);
+            loan.items[0].status.should.be.eql("BACKFILL_REQUESTED");
+            done();
+          });
+        });
+      });
+    });
+    it('PUT successful, backfill_rejected marked as true if status is BACKFILL_REQUESTED and changed to LENT', (done) => {
+      Loan.findOne({"request": "222222222222222222222222"}, function(err, loan){
+        should.not.exist(err);
+        // item2 has status RETURNED
+        let item1ID = loan.items[0].item;
+        let putBody = {
+          items:[{
+            item: item1ID,
+            status:'LENT'
+          }]
+        };
+        chai.request(server)
+        .put('/api/loans/' + loan._id)
+        .set('Authorization', adminToken)
+        .send(putBody)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Loan.findOne({"request": "222222222222222222222222"}, function(err, loan){
+            should.not.exist(err);
+            loan.items[0].status.should.be.eql("LENT");
+            loan.items[0].backfill_rejected.should.be.eql(true);
+            done();
+          });
+        });
+      });
+    });
+    it('PUT successful, backfill_rejected marked as false if status is BACKFILL_REQUESTED and changed to DISBURSED', (done) => {
+      Loan.findOne({"request": "222222222222222222222222"}, function(err, loan){
+        should.not.exist(err);
+        // item2 has status RETURNED
+        let item1ID = loan.items[0].item;
+        let putBody = {
+          items:[{
+            item: item1ID,
+            status:'DISBURSED'
+          }]
+        };
+        chai.request(server)
+        .put('/api/loans/' + loan._id)
+        .set('Authorization', adminToken)
+        .send(putBody)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          Loan.findOne({"request": "222222222222222222222222"}, function(err, loan){
+            should.not.exist(err);
+            loan.items[0].status.should.be.eql("DISBURSED");
+            loan.items[0].backfill_rejected.should.be.eql(false);
+            done();
+          });
         });
       });
     });
@@ -365,8 +532,38 @@ describe('Logging API Test', function () {
           })
         });
       });
+      it('PUT request successful for backfill_rejected and comment', (done) => {
+        Loan.findOne({"request": "666666666666666666666666"}, function(err, loan){
+          should.not.exist(err);
+          let item1ID = loan.items[0].item;
+          let item2ID = loan.items[1].item;
+          let putBody = {
+            items:[{
+              item: item1ID,
+              backfill_rejected: true,
+            }],
+            backfill_comment: "It is rejected"
+          };
+          chai.request(server)
+          .put('/api/loans/' + loan._id)
+          .set('Authorization', adminToken)
+          .send(putBody)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Item.findById(item1ID, function(err, item1){
+              should.not.exist(err);
+              item1.backfill_rejected.should.be.eql(true);
+              Loan.findById(loan._id, function(err, loan){
+                should.not.exist(err);
+                loan.backfill_comment.should.be.eql("It is rejected");
+                done();
+              });
+            });
+          });
+        });
     });
-
+});
     describe('with instances', () => {
       var allItems;
       var allInstances;

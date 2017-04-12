@@ -7,6 +7,7 @@ var Emailer = require('../../../emails/emailer');
 var Logger = require('../../../logging/logger');
 const ITEM_FIELDS = 'name';
 const USER_FIELDS = 'username netid first_name last_name';
+const INSTANCE_FIELDS = 'tag';
 
 module.exports.getAPI = function(req, res) {
   var query = new QueryBuilder();
@@ -57,7 +58,11 @@ function returnLoans(query, req, res){
       page: req.query.page,
       limit: Number(req.query.per_page),
       sort: {"created": -1},
-      populate: [{path:'items.item', select: ITEM_FIELDS}, {path:'user', select: USER_FIELDS}]
+      populate: [
+        {path:'items.item', select: ITEM_FIELDS},
+        {path:'user', select: USER_FIELDS},
+        {path:'items.instances', select: INSTANCE_FIELDS}
+      ]
     }
     Loan.paginate(query.toJSON(), paginateOptions, function(err,obj){
       if(err) return res.send({error:err});
@@ -67,6 +72,7 @@ function returnLoans(query, req, res){
     Loan.find(query.toJSON())
         .populate('items.item', ITEM_FIELDS)
         .populate('user', USER_FIELDS)
+        .populate('items.instances', INSTANCE_FIELDS)
         .sort({"created": -1})
         .exec(function(error, loans) {
           if (error) return res.send({error: error});
@@ -86,7 +92,6 @@ module.exports.getAPIbyID = function (req,res){
 }
 
 module.exports.putAPI = function (req, res){
-  if(req.user.role === 'STANDARD') return res.send({error: "You are not authorized"});
   var newItems = req.body.items;
   // Error checking with items array;
   if(newItems instanceof Array === false) return res.send({error:'Items must be an array'});
@@ -104,15 +109,31 @@ module.exports.putAPI = function (req, res){
         return element.item.toString() === newItems[i].item.toString();
       })
       if(matchedIndex === -1) return res.send({error: 'Item at index '+i+' does not exist'});
+      if(!newItems[i].backfill_rejected) loan.items[matchedIndex].backfill_rejected = newItems[i].backfill_rejected;
       if(newItems[i].status === 'DISBURSED') {
+        if(req.user.role === 'STANDARD') return res.send({error: "You are not authorized"});
+        // marked as disbursed if pending backfill means request not rejected
+        if(loan.items[matchedIndex].status==='BACKFILL_REQUESTED') loan.items[matchedIndex].backfill_rejected = false;
         loan.items[matchedIndex].status = 'DISBURSED';
         addDisbursePromises(returnPromises, loan, matchedIndex);
       } else if (newItems[i].status === 'RETURNED'){
+        if(req.user.role === 'STANDARD') return res.send({error: "You are not authorized"});
         loan.items[matchedIndex].status = 'RETURNED';
         addReturnPromises(returnPromises, loan, matchedIndex);
+      } else if (newItems[i].status === 'LENT'){
+        if(req.user.role === 'STANDARD') return res.send({error: "You are not authorized"});
+        // marked as lent if pending backfill means request rejected
+        if(loan.items[matchedIndex].status==='BACKFILL_REQUESTED') loan.items[matchedIndex].backfill_rejected = true;
+        loan.items[matchedIndex].status = 'LENT';
+      } else if (newItems[i].status === 'BACKFILL_REQUESTED' && req.user.role === 'STANDARD' && loan.items[matchedIndex].status === 'LENT'){
+        loan.items[matchedIndex].status = 'BACKFILL_REQUESTED';
+      } else if (newItems[i].status === 'BACKFILL_REQUESTED'){
+        if(req.user.role === 'STANDARD') return res.send({error: "You are not authorized"});
+        loan.items[matchedIndex].status = 'BACKFILL_REQUESTED';
       }
     }
     loan.lastModified = new Date();
+    if(loan.manager_comment) loan.manager_comment = req.body.manager_comment;
     Promise.all(returnPromises).then(function() {
       loan.save(function(error, loan){
         if (error) return res.send({error: error});
