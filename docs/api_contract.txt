@@ -759,6 +759,7 @@ return: [{
 	}],
 	request: String, // the id
 	created: String, // date
+	manager_comment: String,
 	lastModified: String, // date
 	_id: String // loan id
 }]
@@ -780,6 +781,7 @@ return: {
 	}],
 	request: String, // the id
 	created: String, // date
+	manager_comment: String,
 	lastModified: String, // date
 	_id: String
 }
@@ -789,8 +791,8 @@ params: {
 	items: [{
 		item: String, // id
 		status: String, // new status
-		backfill_rejected: Boolean
-	}]
+	}],
+	manager_comment: String
 }
 return: {
 	user: {
@@ -807,6 +809,7 @@ return: {
 	}],
 	request: String, // the id
 	created: String, // date
+	manager_comment: String,
 	lastModified: String, // date
 }
 

@@ -45,11 +45,11 @@ var LoanSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  manager_comment: String,
   lastModified:{
     type: Date,
     default: Date.now,
-  },
-  manager_comment: String
+  }
 })
 LoanSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('Loan', LoanSchema);

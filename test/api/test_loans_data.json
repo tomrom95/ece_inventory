@@ -37,7 +37,7 @@
       {
         "item": "2k resistor",
         "quantity": 10,
-        "status": "DISBURSED"
+        "status": "BACKFILL_REQUESTED"
       },
       {
         "item": "5k resistor",
