@@ -374,8 +374,8 @@ describe('Logging API Test', function () {
             items:[{
               item: item1ID,
               backfill_rejected: true,
-              backfill_comment: "It is rejected"
-            }]
+            }],
+            backfill_comment: "It is rejected"
           };
           chai.request(server)
           .put('/api/loans/' + loan._id)
@@ -387,8 +387,11 @@ describe('Logging API Test', function () {
             Item.findById(item1ID, function(err, item1){
               should.not.exist(err);
               item1.backfill_rejected.should.be.eql(true);
-              item1.backfill_comment.should.be.eql("It is rejected");
-              done();
+              Loan.findById(loan._id, function(err, loan){
+                should.not.exist(err);
+                loan.backfill_comment.should.be.eql("It is rejected");
+                done();
+              });
             });
           });
         });

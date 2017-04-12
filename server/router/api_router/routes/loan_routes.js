@@ -112,9 +112,9 @@ module.exports.putAPI = function (req, res){
         addReturnPromises(returnPromises, loan, matchedIndex);
       }
       loan.items[matchedIndex].backfill_rejected = newItems[i].backfill_rejected;
-      loan.items[matchedIndex].backfill_comment = newItems[i].backfill_comment;
     }
     loan.lastModified = new Date();
+    loan.manager_comment = req.body.manager_comment;
     Promise.all(returnPromises).then(function() {
       loan.save(function(error, loan){
         if (error) return res.send({error: error});

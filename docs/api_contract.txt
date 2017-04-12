@@ -754,11 +754,11 @@ return: [{
 		},
 		quantity: Int,
 		backfill_rejected: Boolean,
-		backfill_comment: String,
 		status: String, // ('RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED')
 	}],
 	request: String, // the id
 	created: String, // date
+	manager_comment: String,
 	lastModified: String, // date
 	_id: String // loan id
 }]
@@ -776,11 +776,11 @@ return: {
 		},
 		quantity: Int,
 		backfill_rejected: Boolean,
-		backfill_comment: String,
 		status: String, // ('RETURNED', 'DISBURSED', 'LENT','BACKFILL_REQUESTED')
 	}],
 	request: String, // the id
 	created: String, // date
+	manager_comment: String,
 	lastModified: String, // date
 	_id: String
 }
@@ -791,8 +791,8 @@ params: {
 		item: String, // id
 		status: String, // new status
 		backfill_rejected: Boolean,
-		backfill_comment: String
-	}]
+	}],
+	manager_comment: String
 }
 return: {
 	user: {
@@ -805,11 +805,11 @@ return: {
 		},
 		quantity: Int,
 		backfill_rejected: Boolean,
-		backfill_comment: String,
 		status: String, // ('RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED')
 	}],
 	request: String, // the id
 	created: String, // date
+	manager_comment: String,
 	lastModified: String, // date
 }
 
