@@ -790,7 +790,6 @@ params: {
 	items: [{
 		item: String, // id
 		status: String, // new status
-		backfill_rejected: Boolean,
 	}],
 	manager_comment: String
 }
