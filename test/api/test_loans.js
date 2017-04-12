@@ -261,9 +261,21 @@ describe('Logging API Test', function () {
     it('PUT request fail when initiated by standard user', (done) => {
       Loan.findOne({"request": "444444444444444444444444"}, function(err, loan){
         should.not.exist(err);
+        let item1ID = loan.items[0].item;
+        let item2ID = loan.items[1].item;
+        let putBody = {
+          items:[{
+            item: item1ID,
+            status: 'RETURNED'
+          },{
+            item: item2ID,
+            status:'DISBURSED'
+          }]
+        };
         chai.request(server)
         .put('/api/loans/' + loan._id)
         .set('Authorization', standardToken)
+        .send(putBody)
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
