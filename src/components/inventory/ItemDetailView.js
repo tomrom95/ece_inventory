@@ -229,7 +229,7 @@ class ItemDetailView extends React.Component {
   addInstances(){
 
     var table = InstanceTable;
-    var url = "/api/inventory/" + this.state.item._id + "/instances";
+    var url = "/api/inventory/" + this.state.item._id + "/instances?in_stock=true";
     return(
       <div>
         <PaginationContainer
@@ -238,7 +238,7 @@ class ItemDetailView extends React.Component {
             renderComponent={table}
             showFilterBox={false}
             showStatusFilterBox={false}
-            hasOtherParams={false}
+            hasOtherParams={true}
             id={'item-instances'}
             rowsPerPage={5} />
       </div>
