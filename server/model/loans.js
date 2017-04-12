@@ -28,6 +28,7 @@ var LoanSchema = new mongoose.Schema({
       },
       attachment_path: String,
       backfill_rejected: Boolean,
+      backfill_comment: String,
       instances: [
         {
           type: mongoose.Schema.Types.ObjectId,
@@ -48,8 +49,7 @@ var LoanSchema = new mongoose.Schema({
   lastModified:{
     type: Date,
     default: Date.now,
-  },
-  manager_comment: String
+  }
 })
 LoanSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('Loan', LoanSchema);

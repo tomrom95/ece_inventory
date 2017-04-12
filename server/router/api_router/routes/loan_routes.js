@@ -111,6 +111,8 @@ module.exports.putAPI = function (req, res){
         loan.items[matchedIndex].status = 'RETURNED';
         addReturnPromises(returnPromises, loan, matchedIndex);
       }
+      loan.items[matchedIndex].backfill_rejected = newItems[i].backfill_rejected;
+      loan.items[matchedIndex].backfill_comment = newItems[i].backfill_comment;
     }
     loan.lastModified = new Date();
     Promise.all(returnPromises).then(function() {

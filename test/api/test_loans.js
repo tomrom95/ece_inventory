@@ -365,8 +365,35 @@ describe('Logging API Test', function () {
           })
         });
       });
+      it('PUT request successful for backfill_rejected and comment', (done) => {
+        Loan.findOne({"request": "666666666666666666666666"}, function(err, loan){
+          should.not.exist(err);
+          let item1ID = loan.items[0].item;
+          let item2ID = loan.items[1].item;
+          let putBody = {
+            items:[{
+              item: item1ID,
+              backfill_rejected: true,
+              backfill_comment: "It is rejected"
+            }]
+          };
+          chai.request(server)
+          .put('/api/loans/' + loan._id)
+          .set('Authorization', adminToken)
+          .send(putBody)
+          .end((err, res) => {
+            should.not.exist(err);
+            res.should.have.status(200);
+            Item.findById(item1ID, function(err, item1){
+              should.not.exist(err);
+              item1.backfill_rejected.should.be.eql(true);
+              item1.backfill_comment.should.be.eql("It is rejected");
+              done();
+            });
+          });
+        });
     });
-
+});
     describe('with instances', () => {
       var allItems;
       var allInstances;
