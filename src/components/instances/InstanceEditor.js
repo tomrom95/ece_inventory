@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PaginationContainer from '../global/PaginationContainer.js';
 import InstanceEditorTable from './InstanceEditorTable';
+import SearchBar from '../global/SearchBar';
 import axios from 'axios';
 
 class InstanceEditor extends Component {
@@ -9,7 +10,8 @@ class InstanceEditor extends Component {
 		super(props);
 		this.state = {
       	itemID: this.props.itemID,
-        allCustomFields: this.props.allCustomFields
+        allCustomFields: this.props.allCustomFields,
+        searchText: ""
 		};
 	}
 
@@ -17,7 +19,8 @@ class InstanceEditor extends Component {
   componentWillReceiveProps(newProps) {
     this.setState({
       itemID: newProps.itemID,
-      allCustomFields: newProps.allCustomFields
+      allCustomFields: newProps.allCustomFields,
+      searchText: ""
     });
   }
 
@@ -26,23 +29,36 @@ class InstanceEditor extends Component {
   }
 
   makeURL() {
-    return 'api/inventory/' + this.state.itemID + '/instances?in_stock=true';
+    var url = 'api/inventory/' + this.state.itemID + '/instances?in_stock=true';
+    if (this.state.searchText) {
+      url += "&tag=" + this.state.searchText;
+    }
+    return url;
+  }
+
+  onSearch(text) {
+    this.setState({
+      searchText: text
+    });
   }
 
   render() {
     var table = InstanceEditorTable;
     return (
-      <PaginationContainer
-        url={this.makeURL()}
-        processData={data => this.processData(data)}
-        renderComponent={table}
-        showFilterBox={false}
-        showStatusFilterBox={false}
-        hasOtherParams={true}
-        id={'instance-editor-' + this.state.itemID}
-        rowsPerPage={5}
-        extraProps={{allCustomFields: this.state.allCustomFields}}
-      />
+      <div>
+        <SearchBar callback={this.onSearch.bind(this)} />
+        <PaginationContainer
+          url={this.makeURL()}
+          processData={data => this.processData(data)}
+          renderComponent={table}
+          showFilterBox={false}
+          showStatusFilterBox={false}
+          hasOtherParams={true}
+          id={'instance-editor-' + this.state.itemID}
+          rowsPerPage={5}
+          extraProps={{allCustomFields: this.state.allCustomFields}}
+        />
+      </div>
     );
   }
 }

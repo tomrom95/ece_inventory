@@ -23,9 +23,11 @@ var LoanSchema = new mongoose.Schema({
       },
       status: {
         type: String,
-        enum: ['RETURNED', 'DISBURSED', 'LENT'],
+        enum: ['RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED'],
         default: 'LENT'
       },
+      attachment_path: String,
+      backfill_rejected: Boolean,
       instances: [
         {
           type: mongoose.Schema.Types.ObjectId,
@@ -43,6 +45,7 @@ var LoanSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  manager_comment: String,
   lastModified:{
     type: Date,
     default: Date.now,

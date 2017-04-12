@@ -24,7 +24,11 @@
   width: 100%;
 }
 
-.instance-table {
+input[type=checkbox].inventory-checkbox {
+  transform: scale(1.5);
+}
+
+.instance-editor-table {
   max-width: 100%;
 }
 
@@ -46,6 +50,30 @@
   position: absolute;
   bottom: 5px;
   right: 5px
+}
+
+.add-instance-button {
+  position: absolute;
+  right: 15px;
+}
+
+.add-instance-row {
+  height: 40px;
+}
+
+.new-instance-form {
+  border-style: solid !important;
+  border-width: 4px !important;
+  border-color: #0275d8 !important;
+}
+
+.instance-item-row {
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+}
+
+.no-pad-sides {
+  padding-right: 0px !important;
 }
 
 .wide {
@@ -677,6 +705,7 @@
 
 .loan-table {
   margin-left: 2.5%;
+  margin-bottom: 4%;
   max-width: 95%;
   border:none;
   border-left:solid;
@@ -731,6 +760,10 @@
 .customfield-editor-modal {
   max-width: 86.5%;
   margin-left: 10%;
+  color: gray;
+}
+
+.min-qty-modal {
   color: gray;
 }
 

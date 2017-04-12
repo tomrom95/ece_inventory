@@ -96,8 +96,7 @@ class ItemEditor extends Component {
 						currentValues={vals[i]}
 						perInstance={false}
 						ref="customFields"
-						key="customFields"
-					/>
+						key="customFields"/>
 				);
 			}
 			else if((!this.props.is_asset) || !(this.props.is_asset && keys[i] === 'Quantity')){
@@ -289,7 +288,7 @@ class ItemEditor extends Component {
 					        <h5 className="modal-title" id="editLabel">Edit Instances</h5>
 					      </div>) : null}
 							{this.state.isAsset ?
-								(<div className="modal-body">
+								(<div className="modal-body no-pad-right">
 									<InstanceEditor
 										allCustomFields={this.state.allCustomFields}
 										rowsPerPage={10}
