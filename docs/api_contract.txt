@@ -755,7 +755,11 @@ return: [{
 		},
 		quantity: Int,
 		backfill_rejected: Boolean,
-		status: String, // ('RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED')
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED'),
+		instances: [{
+			_id: String,
+			tag: String
+		}]
 	}],
 	request: String, // the id
 	created: String, // date
