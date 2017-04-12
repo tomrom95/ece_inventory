@@ -7,6 +7,7 @@ var Emailer = require('../../../emails/emailer');
 var Logger = require('../../../logging/logger');
 const ITEM_FIELDS = 'name';
 const USER_FIELDS = 'username netid first_name last_name';
+const INSTANCE_FIELDS = 'tag';
 
 module.exports.getAPI = function(req, res) {
   var query = new QueryBuilder();
@@ -57,7 +58,11 @@ function returnLoans(query, req, res){
       page: req.query.page,
       limit: Number(req.query.per_page),
       sort: {"created": -1},
-      populate: [{path:'items.item', select: ITEM_FIELDS}, {path:'user', select: USER_FIELDS}]
+      populate: [
+        {path:'items.item', select: ITEM_FIELDS},
+        {path:'user', select: USER_FIELDS},
+        {path:'items.instances', select: INSTANCE_FIELDS}
+      ]
     }
     Loan.paginate(query.toJSON(), paginateOptions, function(err,obj){
       if(err) return res.send({error:err});
@@ -67,6 +72,7 @@ function returnLoans(query, req, res){
     Loan.find(query.toJSON())
         .populate('items.item', ITEM_FIELDS)
         .populate('user', USER_FIELDS)
+        .populate('items.instances', INSTANCE_FIELDS)
         .sort({"created": -1})
         .exec(function(error, loans) {
           if (error) return res.send({error: error});
