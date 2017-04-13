@@ -60,6 +60,7 @@
     "react-simple-list": "^2.2.0",
     "react-timer": "^1.0.2",
     "reactstrap": "^4.2.0",
+    "shortid": "^2.2.8",
     "uuid": "^3.0.1",
     "validator": "^6.2.1"
   },

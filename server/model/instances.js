@@ -1,14 +1,13 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var shortid = require('shortid');
 var ObjectId = mongoose.Types.ObjectId;
 
 var InstanceSchema = new mongoose.Schema({
   tag: {
     type: String,
-    default: function() {
-      return String(new ObjectId());
-    },
+    default: shortid.generate,
     unique: true
   },
   item: {
