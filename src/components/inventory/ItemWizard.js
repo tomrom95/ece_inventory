@@ -47,7 +47,6 @@ class ItemWizard extends Component {
 			activated: false,
 			justApplied: false,
 			isAsset: false,
-			checkTypeDone: false,
 		}
 	}
 
@@ -66,13 +65,7 @@ class ItemWizard extends Component {
 		});
 	}
 
-	handleCheckChange() {
-		this.setState({
-			checkTypeDone: !this.state.checkTypeDone
-		})
-	}
-
-	handleAssetSetChange() {
+	handleAssetChange() {
 		this.setState({
 			isAsset: !this.state.isAsset
 		})
@@ -119,11 +112,22 @@ class ItemWizard extends Component {
 				);
 			}
 			else {
-
 				list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
 			}
-		}
 
+		}
+		list.push(
+			<div className="form-group" key={"asset-checkbox-div"}>
+				<label key={"asset-checkbox-label"} >Make Asset </label>
+				<input type="checkbox"
+							checked={this.state.is_asset}
+							onChange={e=>this.handleAssetChange(e)}
+							className="asset-checkbox"
+							ref={"asset-checkbox"}
+							key={"asset-checkbox"}/>
+			</div>
+
+		);
 		return list;
 	}
 
@@ -228,7 +232,6 @@ class ItemWizard extends Component {
 			this.setState({
 				data: data,
 				isAsset: false,
-				checkTypeDone: false,
 			});
   		var keys = getKeys(this.state.data);
 			keys.forEach(function(key) {
@@ -245,19 +248,7 @@ class ItemWizard extends Component {
   	}
 
   	render() {
-			var first_form =
-				<div className="modal-content">
-					<div className="modal-header">
-						<h5 className="modal-title" id="createLabel">Create New Item</h5>
-					</div>
-					<div className="modal-body">
-						{this.makeCheckForm()}
-					</div>
-					<div className="modal-footer">
-						<button type="button" onClick={e => this.setState({isAsset: false})} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-						<button onClick={this.handleCheckChange.bind(this)} type="button" className="btn btn-primary">Go</button>
-					</div>
-				</div>;
+
 			var item_form =
 				<div className="modal-content">
 					<div className="modal-header">
@@ -273,7 +264,6 @@ class ItemWizard extends Component {
 					</div>
 				</div>;
 
-			var form = this.state.checkTypeDone ? item_form : first_form;
 			var button =
 				<button type="button"
 					className="btn btn-outline-primary add-button align-right"
@@ -296,7 +286,7 @@ class ItemWizard extends Component {
 						aria-labelledby="createLabel"
 						aria-hidden="true">
 					  <div className="modal-dialog" role="document">
-					    {form}
+					    {item_form}
 					  </div>
 					</div>
 				</th>

@@ -371,7 +371,7 @@ class PaginationContainer extends Component {
 		if(JSON.parse(localStorage.getItem('user')).role !== "STANDARD"){
 			importRow = this.makeImportRow();
 		}
-
+		//console.log(this.state.items);
     if (this.state.initialLoad) {
       table = (<div></div>);
     } else if (this.state.items.length === 0) {

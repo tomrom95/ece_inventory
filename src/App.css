@@ -28,6 +28,9 @@ input[type=checkbox].inventory-checkbox {
   transform: scale(1.5);
 }
 
+.asset-checkbox{
+  margin-left: 10px;
+}
 .instance-editor-table {
   max-width: 100%;
 }

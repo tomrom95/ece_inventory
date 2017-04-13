@@ -10,7 +10,7 @@ var QueryBuilder = require('../../../queries/querybuilder');
 var Emailer = require('../../../emails/emailer');
 var Logger = require('../../../logging/logger');
 // fields within the item to return
-var itemFieldsToReturn = 'name model_number description';
+var itemFieldsToReturn = 'name model_number description is_asset';
 var userFieldsToReturn = 'username netid first_name last_name';
 module.exports.getAPI = function (req, res) {
   // searchable by user, item_id, reason, created, status
