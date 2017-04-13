@@ -76,7 +76,7 @@ module.exports.restrictToAdmins = function(req, res, next) {
 }
 
 module.exports.createAPIKey = function() {
-  return String(new ObjectId());
+  return uuidV4();
 }
 
 module.exports.createPasswordHash = createPasswordHash;
