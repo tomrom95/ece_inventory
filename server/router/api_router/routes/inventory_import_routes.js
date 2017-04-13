@@ -1,6 +1,7 @@
 'use strict';
 var Request = require('../../../model/requests');
 var Item = require('../../../model/items');
+var Instance = require('../../../model/instances');
 var User = require('../../../model/users');
 var CustomField = require('../../../model/customFields.js');
 var CustomFieldHelpers = require('../../../customfields/custom_field_helpers');
@@ -29,20 +30,67 @@ module.exports.postAPI = function (req, res) {
     }
 };
 
+var autoCreateInstances = function(quantity, itemID, importId, next) {
+  var instances = new Array(quantity);
+  for (var i = 0; i < quantity; i++) {
+    var newInstance = new Instance({item: itemID, in_stock: true});
+    instances[i] = newInstance;
+  }
+  Instance.insertMany(instances, next);
+}
+
 var importSingleItem = function(data, next) {
   CustomField.find({}).then(function(fieldArray){
    if(data.custom_fields){
-     var result = updateCustomFields(data.custom_fields, fieldArray, next);
+     var result = updateCustomFields(data.custom_fields, fieldArray, false, next);
      if(result.error) return next(result.error, null);
      data.custom_fields = result;
    }
+   let instances = data.instances;
+   delete data.instances;
    var item = new Item(data);
    item.save(function(err,item){
      if(err) return next(err,null);
+
+     // Check if the instances array is same size as the quantity, if not autogenerate all instances
+     // Otherwise, call importInstances
+     if(instances && instances.length === item.quantity){
+       // Call importInstances
+     } else {
+       autoCreateInstances(item.quantity, item)
+       // auto generate
+
+     }
      return next(null, item);//On successful import
    })
  });
 };
+
+var importInstances = function(instancesData, next){
+  CustomField.find({}).then(function(fieldArray){
+    var instancesArray = [];
+    let importId = mongoose.Types.ObjectId();
+    for(var i in instancesData){
+      if(instancesData[i].custom_fields){
+        var result = updateCustomFields(data[i].custom_fields, fieldArray, true, next);
+        if(result.error) return next(result.error, null);
+        instancesData[i].custom_fields = result;
+      }
+      instancesData[i].import_id = importId;
+      instancesArray.push(new Instance(instancesData[i]));
+    }
+    Instances.insertMany(instancesArray, function(err, instances){
+      if(err){
+        // Rollback
+        Instances.remove({import_id: importId}, function(rollBackErr){
+          return rollBackErr ? next(rollBackErr, null) : next(err,null);
+        })
+      } else {
+        return next(null, instances); // successfully inserted array
+      }
+    })
+  });
+}
 
 var importMultipleItems = function(data, next){
   CustomField.find({}).then(function(fieldArray){
@@ -50,11 +98,12 @@ var importMultipleItems = function(data, next){
     let importId = mongoose.Types.ObjectId();
     for(var i in data){
       if(data[i].custom_fields){
-          var result = updateCustomFields(data[i].custom_fields, fieldArray, next);
+          var result = updateCustomFields(data[i].custom_fields, fieldArray, false, next);
           if(result.error) return next(result.error, null);
           data[i].custom_fields = result;
       }
       data[i].import_id = importId;
+      // TODO: Remove the instances array field
       itemArray.push(new Item(data[i]));
     }
     Item.insertMany(itemArray, function(err, items){
@@ -70,7 +119,7 @@ var importMultipleItems = function(data, next){
   })
 };
 
-var updateCustomFields = function(enteredCustomFields, dataCustomFields, next){
+var updateCustomFields = function(enteredCustomFields, dataCustomFields, perInstance, next){
   var draftCustomFieldArray = [];
   for(var i in enteredCustomFields){
     var isMatch = false;
@@ -81,7 +130,7 @@ var updateCustomFields = function(enteredCustomFields, dataCustomFields, next){
               "field": dataCustomFields[j]._id,
               "value": enteredCustomFields[i].value
             }
-            if (!CustomFieldHelpers.validateSingleField(draftField, dataCustomFields[j], false)) {
+            if (!CustomFieldHelpers.validateSingleField(draftField, dataCustomFields[j], perInstance)) {
               return {error: "The entered custom field "+enteredCustomFields[i].name + " has a value "+ enteredCustomFields[i].value +" not matching type " + dataCustomFields[j].type};
             }
             draftCustomFieldArray.push(draftField);
