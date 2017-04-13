@@ -324,8 +324,8 @@ class InventoryTable extends Component {
 					<ItemDetailView key={"detail-view-button-" + id}
 							params={{itemID: id}}
 							isButton={true}
-							allCustomFields={this.state.allCustomFields}/>
-							allTags={this.state.allTags}
+							allCustomFields={this.state.allCustomFields}
+							allTags={this.state.allTags} />
 
 					</td>);
 				return list;
@@ -361,8 +361,7 @@ class InventoryTable extends Component {
 							allCustomFields={this.state.allCustomFields}
 							is_asset={data.meta.isAsset}
 
-							allTags={this.state.allTags}
-					/>
+							allTags={this.state.allTags}/>
         );
 	}
 
@@ -393,6 +392,10 @@ class InventoryTable extends Component {
 	}
 
 	toggleCheckboxes() {
+		if (this.state.checkboxesVisible === true) {
+			this.clearCheckedBoxes();
+		}
+
 		this.setState({
 			checkboxesVisible: !this.state.checkboxesVisible
 		});

@@ -40,6 +40,11 @@ input[type=checkbox].inventory-checkbox {
   height: 30px;
 }
 
+.inputfile {
+  overflow: hidden;
+  font-weight: normal;
+}
+
 .align-top {
   position: absolute;
   top: 15px;
