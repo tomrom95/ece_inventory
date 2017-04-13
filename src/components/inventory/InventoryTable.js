@@ -52,6 +52,7 @@ function getPrefill(data) {
 	return ({
 		"Name": data["Name"],
 		"Quantity": data["Quantity"],
+		"Minimum Quantity": data["Minimum Quantity"],
 		"Model Number": data["Model"],
 		"Description": data["Description"],
 		"Vendor Info": data["Vendor"],
@@ -64,6 +65,7 @@ function getEmptyPrefill() {
 	return ({
 		"Name": "",
 		"Quantity": "",
+		"Minimum Quantity": "",
 		"Model Number": "",
 		"Description": "",
 		"Vendor Info": "",
@@ -137,7 +139,7 @@ class InventoryTable extends Component {
 
 		var isManager = JSON.parse(localStorage.getItem('user')).role === "ADMIN"
 				|| JSON.parse(localStorage.getItem('user')).role === "MANAGER";
-
+		var isAdmin = JSON.parse(localStorage.getItem('user')).role === "ADMIN";
 		var minQtyEditor = this.state.checkboxesVisible ?
 							(<li className="nav-item userpage-tab-container">
 								<MinQuantityEditor itemsChecked={this.state.checked}
@@ -151,7 +153,7 @@ class InventoryTable extends Component {
 			<div className="row">
 				<div className="col-md-12">
 		            <ul className="nav nav-links inventorypage-tabs-container">
-		            { isManager === false ? null :
+		            { isAdmin === false ? null :
 		              <li className="nav-item userpage-tab-container">
 		                    <CustomFieldsPopup
 										api={this.props.api}
@@ -160,7 +162,7 @@ class InventoryTable extends Component {
 		              </li>
 		          	}
 
-	            	{ isManager === false ? null :
+	            	{ isAdmin === false ? null :
 		              <li className="nav-item userpage-tab-container">
 		                    <CustomFieldListPopup
 										api={this.props.api}
@@ -360,6 +362,7 @@ class InventoryTable extends Component {
 							allCustomFields={this.state.allCustomFields}
 							is_asset={data.meta.isAsset}
 							isAsset={data.meta.isAsset}
+							minstock_isEnabled={data.meta.minstock_isEnabled}
 							allTags={this.state.allTags}
 					/>
 
