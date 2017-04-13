@@ -52,15 +52,20 @@ var importSingleItem = function(data, next) {
    item.save(function(err,item){
      if(err) return next(err,null);
 
-     // Check if the instances array is same size as the quantity, if not autogenerate all instances
-     // Otherwise, call importInstances
-     if(instances && instances.length === item.quantity){
-       // Call importInstances
-     } else {
-       autoCreateInstances(item.quantity, item)
-       // auto generate
-
-     }
+     // 
+    //  // If specify quantity, then autoCreate all
+    //  // Otherwise instances array specifies quantity of item
+    //
+    //  if(instances && instances.length === item.quantity){
+    //    // Call importInstances
+     //
+    //
+    //  } else {
+    //    // Handle cases where they specify more instances than quantity or less
+    //    autoCreateInstances(item.quantity, item._id, null, )
+    //    // auto generate
+     //
+    //  }
      return next(null, item);//On successful import
    })
  });
