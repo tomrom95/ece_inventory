@@ -45,11 +45,12 @@ class ItemEditor extends Component {
 			originalQuantity: props.data.Quantity,
 			showQuantityReason: false,
 			data: props.data,
-			isAsset: props.isAsset,
+			is_asset: props.is_asset,
 			allCustomFields: props.allCustomFields,
 			formIds: [],
 			activated: false,
-			justApplied: false
+			justApplied: false,
+			isAsset: props.isAsset,
 		}
 	}
 
@@ -63,6 +64,12 @@ class ItemEditor extends Component {
 			formIds: getValues(newProps.data, getKeys(newProps.data)),
 			activated: this.state.justApplied ? true : false
 		});
+	}
+
+	handleAssetChange(event){
+		this.setState({
+			is_asset: !this.state.is_asset,
+		})
 	}
 
 	handleFormChange(event, label, index) {
@@ -102,6 +109,21 @@ class ItemEditor extends Component {
 			else if((!this.props.is_asset) || !(this.props.is_asset && keys[i] === 'Quantity')){
 				list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
 			}
+
+		}
+		if(!this.props.is_asset){
+			list.push(
+				<div className="form-group" key={"asset-checkbox-div"}>
+					<label key={"asset-checkbox-label"} >Make Asset     </label>
+					<input type="checkbox"
+			          checked={this.state.is_asset}
+			    			onChange={e=>this.handleAssetChange(e)}
+								className="asset-checkbox"
+			          ref={"asset-checkbox"}
+			    			key={"asset-checkbox"}/>
+				</div>
+
+			)
 		}
 		list.push(
 			<div key = {"createform-button-bar-row-"+i} className="modal-footer">
@@ -214,6 +236,7 @@ class ItemEditor extends Component {
   		description: this.refs.Description.value,
   		vendor_info: this.refs["Vendor Info"].value,
   		tags: tags ? tags.split(',') : [],
+			is_asset: this.state.is_asset,
   	}
 		if (!this.state.isAsset) {
 			object['quantity'] = this.refs.Quantity.value;
