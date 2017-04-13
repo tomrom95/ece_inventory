@@ -10,6 +10,7 @@ import CustomFieldListPopup from './CustomFieldListPopup.js';
 import ShoppingCart from './ShoppingCart.js';
 import BulkImportButton from './BulkImportButton.js';
 import ImportHelpButton from './ImportHelpButton.js';
+import MinQuantityEditor from './MinimumQuantityEditor.js';
 
 var meta;
 
@@ -79,14 +80,20 @@ class InventoryTable extends Component {
 			columnKeys: getKeys(this.props.data),
 			rows: getValues(this.props.data, getKeys(this.props.data)),
 			allCustomFields: [],
-			allTags: []
+			checked: localStorage.getItem("itemsChecked") ? JSON.parse(localStorage.getItem("itemsChecked")) : {},
+			itemsCheckedNames: {},
+			checkboxesVisible: false
 		}
+	}
+
+	componentDidMount() {
+		this.clearCheckedBoxes();
 	}
 
 	componentWillReceiveProps(newProps) {
 		this.setState({
 			columnKeys: getKeys(newProps.data),
-			rows: getValues(newProps.data, getKeys(newProps.data)),
+			rows: getValues(newProps.data, getKeys(newProps.data))
 		});
 	}
 
@@ -131,6 +138,15 @@ class InventoryTable extends Component {
 		var isManager = JSON.parse(localStorage.getItem('user')).role === "ADMIN"
 				|| JSON.parse(localStorage.getItem('user')).role === "MANAGER";
 
+		var minQtyEditor = this.state.checkboxesVisible ? 
+							(<li className="nav-item userpage-tab-container">
+								<MinQuantityEditor itemsChecked={this.state.checked}
+									   itemsCheckedNames={this.state.itemsCheckedNames} 
+									   key={"min-qty-editor"}
+									   api={this.props.api}
+									   clearCheckboxes={() => this.clearCheckedBoxes()} />
+						    </li>) : null;	
+
 		return (
 			<div className="row">
 				<div className="col-md-12">
@@ -173,6 +189,17 @@ class InventoryTable extends Component {
 							</li>
 						}
 		            </ul>
+
+		            { isManager ? 
+			            (<ul className="nav nav-links inventorypage-tabs-container">
+			              <li className="nav-item userpage-tab-container">
+		                    <a className="nav-link userpage-tab" href="#"
+								onClick={() => this.toggleCheckboxes()}>
+								{this.state.checkboxesVisible ? "Hide Checkboxes" : "Select Multiple"}
+							</a>
+			              </li>
+			              {minQtyEditor}
+			            </ul>) : null }
 		        </div>
 
 				<div className="row maintable-container">
@@ -205,8 +232,7 @@ class InventoryTable extends Component {
 	          			key={"makeitem-button"}
 	          			callback={this.props.callback}
 									allCustomFields={this.state.allCustomFields}/>
-	          	);
-
+          	);
 		}
 		return list;
 	}
@@ -234,6 +260,17 @@ class InventoryTable extends Component {
 	makeInventoryButtons(data, id) {
 		var list = [];
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
+			
+			if (this.state.checkboxesVisible === true) {
+				list.push(<div key={"checkbox-div-"+id}>
+					      	<input key={"checkbox-"+id} 
+					      		   type="checkbox" 
+					      		   className="form-check-input inventory-checkbox"
+					      		   onChange={e => this.handleCheckedChange(e, id, data.Name)}
+					      		   checked={this.state.checked[id] || false} />
+					  	  </div>);
+			}
+
 			list.push(
 				<div key={"cart-"+id} className="inventory-button">
 					<AddToCartButton
@@ -322,6 +359,8 @@ class InventoryTable extends Component {
 		          key={"editbutton-"+ id}
 		          ref={"edit-"+id}
 							allCustomFields={this.state.allCustomFields}
+							is_asset={data.meta.isAsset}
+
 							allTags={this.state.allTags}
 					/>
         );
@@ -351,6 +390,43 @@ class InventoryTable extends Component {
 			  </div>
 			</div>
 		);
+	}
+
+	toggleCheckboxes() {
+		this.setState({
+			checkboxesVisible: !this.state.checkboxesVisible
+		});
+	}
+
+	handleCheckedChange(event, itemId, itemName) {
+	    var checked = event.target.checked;
+	    this.setCheckedItemInLocalStorage(itemId, checked);
+	    var itemsCheckedNames = this.state.itemsCheckedNames;
+	    itemsCheckedNames[itemName] = checked;
+	    this.setState({
+	    	itemsCheckedNames: itemsCheckedNames
+	    })
+	}
+
+	setCheckedItemInLocalStorage(itemId, checked) {		
+		if (!localStorage.getItem("checkedItems")) {
+			this.clearCheckedBoxes();
+		}
+		var checkedItems = localStorage.getItem("checkedItems");
+		var itemsJson = JSON.parse(checkedItems);
+		itemsJson[itemId] = checked;
+		localStorage.setItem("checkedItems", JSON.stringify(itemsJson));
+		this.setState({
+			checked: JSON.parse(localStorage.getItem("checkedItems"))
+		});
+	}
+
+	clearCheckedBoxes() {
+		localStorage.setItem("checkedItems", "{}");
+		this.setState({
+			checked: {},
+			checkboxesVisible: false
+		});
 	}
 
 }
