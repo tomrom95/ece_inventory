@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import '../../App.css';
+import { Tooltip } from 'reactstrap';
+
 
 function formatDate(dateString) {
   var i;
@@ -35,7 +37,8 @@ class LoanTableRow extends Component {
 			items: props.params.items,
 			itemsModified: props.params.items,
 			reviewer_comment: props.reviewer_comment,
-			controlBarVisible: {}
+			controlBarVisible: {},
+      tooltipOpenMap: {},
 		}
 	}
 
@@ -51,6 +54,13 @@ class LoanTableRow extends Component {
 				});
 			}
 		});
+    var tooltipOpenMap = this.state.tooltipOpenMap;
+    for(var i = 0; i < this.state.items.length; i++){
+      tooltipOpenMap[i] = false;
+    }
+    this.setState({
+      tooltipOpenMap: tooltipOpenMap
+    })
 	}
 
 	componentWillReceiveProps(newProps) {
@@ -65,24 +75,42 @@ class LoanTableRow extends Component {
 		});
 	}
 
+  makeToolkitItems(instances){
+
+		if (instances.length === 0) {
+    		return (<p><strong>Something went wrong!</strong></p>);
+    	}
+
+		var str = 'Instances:\n';
+		var i;
+		for (i=0; i<instances.length; i++) {
+			var tag = instances[i].tag;
+			str += "   " + tag +  '\n';
+    	}
+
+    	return str;
+
+  }
+
 	makeItemRows() {
 		var items = this.state.items;
 		var list = [];
 		var i;
 		for (i=0; i<items.length; i++) {
+
 			var key = "loan-item-id-"+items[i]._id;
 
 			list.push(
-			    <tr key={key}>
+			    <tr key={key} id={items[i].item.name}>
 			      <td key={key + "-col1"}>{items[i].item.name}</td>
 			      <td key={key + "-col2"}>{items[i].quantity}</td>
-			      { 
+			      {
 			      	(this.state.controlBarVisible[i]) === true ? this.makeControlBar(i) :
-				      items[i].status === "LENT" ? 
+				      items[i].status === "LENT" ?
 				      (<td className="status-cell" key={key + "-col3"}>
-				      	<a href="#/" 
+				      	<a href="#/"
 					      	onClick={this.makeOnClickShow(i)}
-					      	key={key + "-status"}> 
+					      	key={key + "-status"}>
 				      		{items[i].status}
 				      	</a>
 				      </td>
@@ -96,18 +124,33 @@ class LoanTableRow extends Component {
 			  	  }
 			    </tr>
 			);
+      if(items[i].instances !== null){
+        if(items[i].instances.length > 0){
+          list.push(
+            <Tooltip placement="bottom"
+               isOpen={this.state.tooltipOpenMap[i]}
+               target={items[i].item.name}
+               toggle={this.toggle.bind(this, i)}
+               autohide={false}
+               key={items[i]._id}>
+               {this.makeToolkitItems(items[i].instances)}
+            </Tooltip>
+          );
+        }
+
+      }
 		}
 		return list;
 	}
 
-	makeOnClickShow(i) {  
+	makeOnClickShow(i) {
 		var func = this.showControlBar;
 		var context = this;
-	    return function() {  
+	    return function() {
 	      func(i, context);
 	      return false;
-	    };  
-	} 
+	    };
+	}
 
 	makeOnClickHide(i) {
 		var func = this.hideControlBar;
@@ -115,7 +158,7 @@ class LoanTableRow extends Component {
 	    return function() {
 	      func(i, context);
 	      return false;
-	    };  
+	    };
 	}
 
 	showControlBar(itemRow, context) {
@@ -138,7 +181,7 @@ class LoanTableRow extends Component {
 			itemsModified: items
 		});
 		context.props.callback();
-	} 
+	}
 
 	makeControlBar(rowIndex) {
 		var list = [];
@@ -148,15 +191,15 @@ class LoanTableRow extends Component {
 			          {this.state.itemsModified[rowIndex].status}
 			        </button>
 			        <div className="dropdown-menu form-control">
-			          	<a onClick={() => this.setDropdownStatus(rowIndex, "LENT")} 
+			          	<a onClick={() => this.setDropdownStatus(rowIndex, "LENT")}
 			          		className="dropdown-item" href="#/">
 			            	LENT
 			          	</a>
-		          		<a onClick={() => this.setDropdownStatus(rowIndex, "DISBURSED")} 
+		          		<a onClick={() => this.setDropdownStatus(rowIndex, "DISBURSED")}
 		          			className="dropdown-item" href="#/">
 			            	DISBURSED
 			          	</a>
-		          		<a onClick={() => this.setDropdownStatus(rowIndex, "RETURNED")} 
+		          		<a onClick={() => this.setDropdownStatus(rowIndex, "RETURNED")}
 		          			className="dropdown-item" href="#/">
 			            	RETURNED
 			          	</a>
@@ -164,15 +207,15 @@ class LoanTableRow extends Component {
 			    </div>);
 
 		list.push(
-				<button key={"controlBar-button-"+rowIndex} onClick={() => this.updateItemStatus(rowIndex)} 
-						type="button" 
+				<button key={"controlBar-button-"+rowIndex} onClick={() => this.updateItemStatus(rowIndex)}
+						type="button"
 						className="btn btn-sm btn-primary loantable-button">
 					Apply
 				</button>);
 
 		list.push(
-				<button key={"controlBar-cancel-"+rowIndex} onClick={this.makeOnClickHide(rowIndex)} 
-						type="button" 
+				<button key={"controlBar-cancel-"+rowIndex} onClick={this.makeOnClickHide(rowIndex)}
+						type="button"
 						className="btn btn-sm btn-outline-danger">
 					Cancel
 				</button>);
@@ -214,6 +257,13 @@ class LoanTableRow extends Component {
 		});
 	}
 
+  toggle(index) {
+    var tooltipOpenMap = this.state.tooltipOpenMap;
+    tooltipOpenMap[index] = !tooltipOpenMap[index];
+    this.setState({
+      tooltipOpenMap: tooltipOpenMap
+    });
+  }
 	render() {
 		return (
 		    <li className="list-group-item">
@@ -232,19 +282,20 @@ class LoanTableRow extends Component {
 		    		</div>
 		    		<br></br>
 		    		<div className="row">
-			    		<table className="table table-sm table-hover">
-						  <thead>
-						    <tr>
-						      <th>Item Name</th>
-						      <th>Quantity Loaned</th>
-						      <th>Status</th>
-						    </tr>
-						  </thead>
-						  <tbody>
-						  	{this.makeItemRows()}
-						  </tbody>
-						</table>
-		    		</div>		    		
+			    		<table className="table table-sm table-hover" id={this.state._id}>
+  						  <thead>
+  						    <tr>
+  						      <th>Item Name</th>
+  						      <th>Quantity Loaned</th>
+  						      <th>Status</th>
+  						    </tr>
+  						  </thead>
+  						  <tbody>
+  						  	{this.makeItemRows()}
+  						  </tbody>
+						  </table>
+
+		    		</div>
 		    	</div>
 			</li>);
 	}
