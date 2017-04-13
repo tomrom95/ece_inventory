@@ -755,6 +755,7 @@ return: [{
 		},
 		quantity: Int,
 		backfill_rejected: Boolean,
+		attachment_name: String,
 		status: String, // ('RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED'),
 		instances: [{
 			_id: String,
@@ -781,6 +782,7 @@ return: {
 		},
 		quantity: Int,
 		backfill_rejected: Boolean,
+		attachment_name: String,
 		status: String, // ('RETURNED', 'DISBURSED', 'LENT','BACKFILL_REQUESTED')
 	}],
 	request: String, // the id
@@ -809,6 +811,7 @@ return: {
 		},
 		quantity: Int,
 		backfill_rejected: Boolean,
+		attachment_name: String,
 		status: String, // ('RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED')
 	}],
 	request: String, // the id
