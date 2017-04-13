@@ -55,7 +55,7 @@ class BulkImportButton extends Component {
           </div>
         </div> :
         <Dropzone accept=".json" ref={(node) => { this.dropzone = node; }} onDrop={this.onDrop.bind(this)}>
-            <div>Drop JSon file here or click to upload</div>
+            <div className="center-text">Drop JSON file here, or click to upload</div>
         </Dropzone>}
       </div>
     );
