@@ -26,7 +26,7 @@ var LoanSchema = new mongoose.Schema({
         enum: ['RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED'],
         default: 'LENT'
       },
-      attachment_path: String,
+      attachment_name: String,
       backfill_rejected: Boolean,
       instances: [
         {
