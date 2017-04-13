@@ -20,6 +20,7 @@ var InstanceSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  import_id:  mongoose.Schema.Types.ObjectId,
   custom_fields:[{
     _id: false,
     field: {
