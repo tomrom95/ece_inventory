@@ -31,7 +31,10 @@ class UploadPdfModal extends Component {
                           target="_blank"
                           method='post'
                           encType="multipart/form-data">
-                            <input className="btn btn-sm btn-secondary inputfile" type="file" name="uploadPDF" />
+                            <input className="btn btn-sm btn-secondary inputfile" 
+                                   type="file" 
+                                   accept="text/html,application/pdf,image/jpeg,image/gif,image/png"
+                                   name="uploadPDF" />
                             <input className="btn btn-sm btn-primary" type='submit' value='Upload' />
                         </form>
                     </div>    
