@@ -40,9 +40,7 @@ var UserSchema = new mongoose.Schema({
   },
   apikey: {
     type: String,
-    default: function() {
-      return String(new ObjectId());
-    },
+    default: uuidV4,
     unique: true
   }
 });
