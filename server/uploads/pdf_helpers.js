@@ -4,7 +4,7 @@ module.exports.uploadPDF = function(req,res) {
   if (!req.files) return res.status(400).send('No files were uploaded.');
   // The name of the input field (i.e. "uploadPDF")
   let uploadFile = req.files.uploadPDF;
-  let updatedName = req.params.loan_id + '_' + req.params.item_id + '_' + uploadFile.name ;
+  let updatedName = req.params.loan_id + '_' + req.params.item_id + '_' + uploadFile.name;
   let filePath = path.join(__dirname,'files',updatedName);
   // Use the mv() method to place the file somewhere on your server
   uploadFile.mv(filePath, function(err) {
@@ -16,7 +16,7 @@ module.exports.uploadPDF = function(req,res) {
       var itemIndex = loan.items.findIndex(function(element){
         return String(element.item) === String(req.params.item_id);
       })
-      loan.items[itemIndex].attachment_path = filePath;
+      loan.items[itemIndex].attachment_name = updatedName;
       loan.lastModified = new Date();
       loan.save(function(error){
         if(error) return res.send({error: error});
