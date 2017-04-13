@@ -121,6 +121,7 @@ class CustomFieldForm extends Component {
       );
       formFields.push(form);
     }.bind(this));
+
     return (
       <div>
         {formFields}
