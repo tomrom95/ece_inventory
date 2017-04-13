@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../../App.css';
 import { Tooltip } from 'reactstrap';
-
+import UploadPdfModal from './UploadPdfModal.js';
 
 function formatDate(dateString) {
   var i;
@@ -99,6 +99,14 @@ class LoanTableRow extends Component {
 		for (i=0; i<items.length; i++) {
 
 			var key = "loan-item-id-"+items[i]._id;
+			var backfillColumns = [];
+
+			backfillColumns.push(
+				<td className="loan-control-bar" key={key+"-backfill-status"}>
+					{items[i].status}
+					{this.makeBackfillControlBar(i)}
+				</td>
+			);
 
 			list.push(
 			    <tr key={key} id={items[i].item.name}>
@@ -106,15 +114,24 @@ class LoanTableRow extends Component {
 			      <td key={key + "-col2"}>{items[i].quantity}</td>
 			      {
 			      	(this.state.controlBarVisible[i]) === true ? this.makeControlBar(i) :
+
 				      items[i].status === "LENT" ?
-				      (<td className="status-cell" key={key + "-col3"}>
+				      (<div>
+				      	<td className="status-cell" key={key + "-col3"}>
 				      	<a href="#/"
 					      	onClick={this.makeOnClickShow(i)}
 					      	key={key + "-status"}>
 				      		{items[i].status}
 				      	</a>
 				      </td>
-				      ) :
+				      <td key={key+"-request-backfill-button"}>
+				      	<UploadPdfModal item_id={items[i].item._id}
+				      					loan_id={this.state._id}
+				      					submitBackfillRequest={this.makeOnClickBackfillRequest(i, "BACKFILL_REQUESTED")} />
+			  	  	  </td>
+			  	  	 </div>
+
+				      ) : items[i].status === "BACKFILL_REQUESTED" ? backfillColumns :
 				      (<td className="status-cell" key={key + "-col3"}>
 				      	<a key = {key + "-status"}>
 			      			{items[i].status}
@@ -159,6 +176,15 @@ class LoanTableRow extends Component {
 	      func(i, context);
 	      return false;
 	    };
+	}
+
+	makeOnClickBackfillRequest(i, status) {
+		var func = this.submitBackfillRequest;
+		var context = this;
+		return function() {
+			func(i, status, context);
+			return false;
+		}
 	}
 
 	showControlBar(itemRow, context) {
@@ -222,6 +248,46 @@ class LoanTableRow extends Component {
 		return (<td className="loan-control-bar"> {list} </td>);
 	}
 
+	makeBackfillControlBar(rowIndex) {
+		var href = "#/";
+		if (this.state.items[rowIndex].attachment_name)
+			href = 'https://'+ location.hostname + '/uploads/'+this.state.items[rowIndex].attachment_name;
+
+		var role = JSON.parse(localStorage.getItem('user')).role;
+
+		if (role === "MANAGER" || role === "ADMIN") {
+			return (
+				<div>
+					<div key={"backfill-controlBar-"+rowIndex}>
+						<button type="button"
+								className="btn btn-sm btn-outline-success"
+								onClick={() => this.approveBackfill(rowIndex)}>
+					    	APPROVE
+				        </button>
+				        <button type="button"
+				        		className="btn btn-sm btn-outline-danger"
+				        		onClick={() => this.denyBackfill(rowIndex)}>
+					    	DENY
+				        </button>
+				        <a target={href==="#/" ? "" : "_blank"}
+				        	href={href}
+				        	onClick={href==="#/" ? (() => alert("No PDF uploaded for this backfill request")) : null}>
+				        	<strong>View PDF</strong>
+			        	</a>
+			        </div>
+		        </div>);
+		}
+		else return null;
+	}
+
+	approveBackfill(rowIndex) {
+		this.submitBackfillRequest(rowIndex, "DISBURSED", this);
+	}
+
+	denyBackfill(rowIndex) {
+		this.submitBackfillRequest(rowIndex, "LENT", this);
+	}
+
 	setDropdownStatus(rowIndex, newStatus) {
 		var items = this.state.itemsModified;
 		items[rowIndex].status = newStatus;
@@ -264,6 +330,30 @@ class LoanTableRow extends Component {
       tooltipOpenMap: tooltipOpenMap
     });
   }
+	submitBackfillRequest(rowIndex, status, context) {
+		var items = context.state.itemsModified;
+		var itemId = items[rowIndex].item._id;
+		var loanId = context.state._id;
+		var param = {items: []};
+
+		for (var i=0; i<items.length; i++) {
+			if (i === rowIndex) {
+				param.items.push({item: itemId, status: status})
+			} else {
+				param.items.push({item: itemId, status: items[i].status});
+			}
+		}
+
+		context.props.api.put("api/loans/"+loanId, param)
+		.then(response => {
+			if (response.data.error) {
+				alert(response.data.error);
+			}
+			else
+				context.props.callback();
+			});
+	}
+
 	render() {
 		return (
 		    <li className="list-group-item">
