@@ -23,8 +23,8 @@ class UploadPdfModal extends Component {
               </div>
               <div className="modal-body">
                 <div className="container">
-                  <div className="form-group row">
-
+                  <div className="form-group container">
+                    <div className="row">
                         <form ref='uploadForm'
                           id='uploadForm'
                           action= {'https://'+ location.hostname + '/upload/loan/' + this.props.loan_id + '/item/' + this.props.item_id}
@@ -34,9 +34,15 @@ class UploadPdfModal extends Component {
                             <input className="btn btn-sm btn-secondary inputfile" type="file" name="uploadPDF" />
                             <input className="btn btn-sm btn-primary" type='submit' value='Upload' />
                         </form>
-                 
-
+                    </div>    
                   </div>
+
+                  <div className="container">
+                    <div className="row">
+                      Note: You must click the Upload button after choosing a PDF in order to attach it.
+                    </div>
+                  </div>
+
                 </div>
               </div>
               <div className="modal-footer">
