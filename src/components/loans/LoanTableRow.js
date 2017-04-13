@@ -283,8 +283,6 @@ class LoanTableRow extends Component {
 
 	submitBackfillRequest(rowIndex, status, context) {
 		var items = context.state.itemsModified;
-		console.log(rowIndex);
-		console.log(items);
 		var itemId = items[rowIndex].item._id;
 		var loanId = context.state._id;
 		var param = {items: []};
