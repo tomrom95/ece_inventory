@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "ECE458",
-		"_postman_id": "141a2d4c-0fff-6c2a-33f5-889471621cb3",
+		"_postman_id": "302f61f3-261e-8a90-aa31-885569851d92",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -40,7 +40,7 @@
 								}
 							]
 						},
-						"description": ""
+						"description": "Use this API to log in as a user. Note that this only supports local login."
 					},
 					"response": []
 				},
@@ -78,7 +78,7 @@
 								}
 							]
 						},
-						"description": "role: String ('ADMIN', 'MANAGER', 'STANDARD')"
+						"description": "Gets all users. Only accessible by managers and admins\n\nrole: String ('ADMIN', 'MANAGER', 'STANDARD')"
 					},
 					"response": []
 				},
@@ -103,7 +103,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"username\": \"HelloMoto1\",\n\t\"password\": \"motorola\",\n\t\"role\": \"ADMIN\",\n\t\"email\": \"hello@hello.com\"\n}"
 						},
-						"description": "role: String ('ADMIN', 'MANAGER', 'STANDARD')\nemail: String // required"
+						"description": "Create a new user on the system. Only accessible by admins\n\nparams:{\n\tusername: String,\n\tpassword: String,\n\trole: String ('ADMIN', 'MANAGER', 'STANDARD'),\n\temail: String\n}"
 					},
 					"response": []
 				},
@@ -128,14 +128,14 @@
 							"mode": "raw",
 							"raw": "{\n\t\"username\": \"HelloMoto1\",\n\t\"password\": \"motorola\",\n\t\"role\": \"ADMIN\"\n}"
 						},
-						"description": "role: String ('ADMIN', 'MANAGER', 'STANDARD')"
+						"description": "Get a specific user by his id"
 					},
 					"response": []
 				},
 				{
 					"name": "/api/users/:user_id",
 					"request": {
-						"url": "https://colab-sbx-115.oit.duke.edu/api/users/58ac99867cc99a16bb62d643",
+						"url": "https://colab-sbx-186.oit.duke.edu/api/users/58ac99867cc99a16bb62d643",
 						"method": "PUT",
 						"header": [
 							{
@@ -153,7 +153,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"first_name\": \"admin1\",\n\t\"password\": \"motorola\",\n\t\"role\": \"ADMIN\"\n}"
 						},
-						"description": "role: String ('ADMIN', 'MANAGER', 'STANDARD')"
+						"description": "Change a user's settings. Admins can edit other people's roles, and standard users can update their personal info.\n\nparams: {\n\tfirst_name: String,\n\tlast_name: String,\n\trole: String ('ADMIN', 'MANAGER', 'STANDARD'), // only admins can change this\n\temail: String,\n\tsubscribed: Boolean // only for managers\n}"
 					},
 					"response": []
 				}
@@ -184,7 +184,7 @@
 							"mode": "raw",
 							"raw": ""
 						},
-						"description": ""
+						"description": "Returns a user's cart. No parameters required"
 					},
 					"response": []
 				},
@@ -209,7 +209,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"description\": \"Hello from the other side\"\n}"
 						},
-						"description": "Fields \"user\" and \"items\" may be modified by an admin privileged user only. They expect this:\n\n\tuser: String, // Admin only\n\titems: [{\n\t\titem: String,\n\t\tquantity: Integer\n\t}], // Admin only"
+						"description": "Change your cart's items. Fields \"user\" and \"items\" may be modified by an admin privileged user only. They expect this:\n\n\tuser: String, // Admin only\n\titems: [{\n\t\titem: String,\n\t\tquantity: Integer\n\t}], // Admin only"
 					},
 					"response": []
 				},
@@ -234,7 +234,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"action\": \"CHECKOUT\",\n\t\"reason\": \"I want to\",\n\t\"type\": \"LOAN\"\n}"
 						},
-						"description": "Field \"action\" accepts only \"CHECKOUT\".\n\ntype: String [\"DISBURSEMENT\", \"LOAN\"] // required"
+						"description": "Use this route to checkout your cart. It will turn the items in your cart into a request object. You can then use PUT /api/request/:request_id and PATCH /api/request/:request_id to approve and fulfill the request\n\nField \"action\" accepts only \"CHECKOUT\".\n\ntype: String [\"DISBURSEMENT\", \"LOAN\"] // required"
 					},
 					"response": []
 				}
@@ -265,7 +265,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"item\": \"58adb3b605bd0609ef8dd91a\",\n\t\"quantity\": 123\n}"
 						},
-						"description": ""
+						"description": "Add an item to your cart.\n\nparams: {\n\tuser: String, // admin-only\n\titem: String, // item id\n\tquantity: Integer\n}"
 					},
 					"response": []
 				},
@@ -290,7 +290,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"quantity\": 10\n}"
 						},
-						"description": ""
+						"description": "Update the quantity of an item in the cart.\n\nparams: {\n\tuser: String, // admin-only\n\tquantity: Integer\n}"
 					},
 					"response": []
 				},
@@ -315,7 +315,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"quantity\": 10\n}"
 						},
-						"description": ""
+						"description": "Remove an item from your cart. No params required"
 					},
 					"response": []
 				}
@@ -346,7 +346,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"name\": \"Stockroom Number\",\n\t\"isPrivate\": false,\n\t\"type\": \"SHORT_STRING\"\n}"
 						},
-						"description": "type: ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT']"
+						"description": "Create a new custom field.\nparams: {\n\tname: String,\n\ttype: String, // ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT']\n\tisPrivate: Boolean,\n\tperInstance: Boolean\n}"
 					},
 					"response": []
 				},
@@ -371,7 +371,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"name\": \"Stockroom Number\",\n\t\"isPrivate\": false,\n\t\"type\": \"SHORT_STRING\"\n}"
 						},
-						"description": "type: ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT']"
+						"description": "Get all custom fields. You can filter by \"name\", \"type\", and \"isPrivate\".\n\nparams: {\n\tname: String [optional],\n\ttype: String [optional], // ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT']\n\tisPrivate: Boolean [optional]\n}"
 					},
 					"response": []
 				},
@@ -396,7 +396,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"name\": \"Stockroom Number\",\n\t\"isPrivate\": false,\n\t\"type\": \"SHORT_STRING\"\n}"
 						},
-						"description": "type: ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT']"
+						"description": "Gets a specific custom field by its id. No params required"
 					},
 					"response": []
 				},
@@ -421,7 +421,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"name\": \"restock_info\",\n\t\"isPrivate\": true,\n\t\"type\": \"SHORT_STRING\"\n}"
 						},
-						"description": "type: ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT']"
+						"description": "Update a custom field's attributes.\n\nparams: {\n\tname: String,\n\ttype: String, // ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT']\n\tisPrivate: Boolean\n}"
 					},
 					"response": []
 				},
@@ -446,7 +446,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"name\": \"restock_info\",\n\t\"isPrivate\": true,\n\t\"type\": \"SHORT_STRING\"\n}"
 						},
-						"description": "type: ['SHORT_STRING', 'LONG_STRING', 'INT', 'FLOAT']"
+						"description": "Delete a custom field by its id. No params required"
 					},
 					"response": []
 				}
@@ -477,7 +477,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"field\": \"58adaf05627dce046ff33e24\", \n\t\"value\": \"CIEMAS1111\"\n}"
 						},
-						"description": ""
+						"description": "Deprecated. Please use PUT /api/inventory/:item_id with a body parameter of \"custom_fields\" to update an item's custom field"
 					},
 					"response": []
 				},
@@ -502,7 +502,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"value\": \"CIEMAS2222\"\n}"
 						},
-						"description": ""
+						"description": "Deprecated. Please use PUT /api/inventory/:item_id with a body parameter of \"custom_fields\" to update an item's custom field"
 					},
 					"response": []
 				},
@@ -527,7 +527,7 @@
 							"mode": "raw",
 							"raw": ""
 						},
-						"description": ""
+						"description": "Deprecated. Please use PUT /api/inventory/:item_id with a body parameter of \"custom_fields\" to update an item's custom field"
 					},
 					"response": []
 				}
@@ -571,7 +571,7 @@
 								}
 							]
 						},
-						"description": ""
+						"description": "Get the global email settings for the site. Manager/admin only."
 					},
 					"response": []
 				},
@@ -603,7 +603,7 @@
 								}
 							]
 						},
-						"description": ""
+						"description": "Change the email settings for the site. Can only be used to change the subject tag. use /api/emailSettings/loans to manage the loan emails\n\nparams: {\n\tsubject_tag: String\n}"
 					},
 					"response": []
 				},
@@ -641,12 +641,12 @@
 								}
 							]
 						},
-						"description": ""
+						"description": "Used to add a loan reminder email to the system.\n\nparams: {\n\tdate: String, // format 2017-02-24\n\tbody: String\n}"
 					},
 					"response": []
 				},
 				{
-					"name": "/api/emailSettings/loans copy",
+					"name": "/api/emailSettings/loans/:email_id",
 					"request": {
 						"url": "https://colab-sbx-186.oit.duke.edu/api/emailSettings/loans/58d90e6ce8e66f55c2a769ec",
 						"method": "DELETE",
@@ -662,8 +662,11 @@
 								"description": ""
 							}
 						],
-						"body": {},
-						"description": ""
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": "Delete a loan reminder email by its email id. No params required"
 					},
 					"response": []
 				}
@@ -694,7 +697,7 @@
 							"mode": "raw",
 							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"2000k resistor\",\n    \"vendor_info\": \"IBM\",\n    \"custom_fields\": [],\n    \"is_asset\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
 						},
-						"description": "Condition: GOOD, NEEDS_REPAIR\nStatus: AVAILABLE, IN_USE, LOST"
+						"description": "Gets all instances for the item. There is no endpoint to get all instances for any item. Note that to get only the items available, you must use in_stock. If you do not, you also get the instances on loan.\n\nparams: {\n\tin_stock: Boolean,\n\ttag: String, // case insensitive partial match search\n\tpage: Int,\n\tper_page: Int\n}"
 					},
 					"response": []
 				},
@@ -717,39 +720,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"serial_number\": \"12345\",\n\t\"condition\": \"NEEDS_REPAIR\",\n\t\"status\": \"AVAILABLE\"\n}"
+							"raw": "{\n\t\"tag\": \"12345\",\n\t\"custom_fields\": []\n}"
 						},
-						"description": "Condition: GOOD, NEEDS_REPAIR\nStatus: AVAILABLE, IN_USE, LOST"
+						"description": "Add a new instance to the item. This also updates the item's quantity as one greater. If no tag is specified, one is auto generated\n\nparams: {\n\ttag: String [optional],\n\tcustom_fields: [{\n\t\tfield: String, // field id\n\t\tvalue: String\n\t}]\n}"
 					},
 					"response": []
 				},
 				{
-					"name": "/api/inventory/:item_id/:instance_id",
-					"request": {
-						"url": "https://colab-sbx-186.oit.duke.edu/api/inventory/58adb3b605bd0609ef8dd943/58adb4af56b2040a44fcba5b",
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": ""
-							},
-							{
-								"key": "apikey",
-								"value": "45190748-a312-498d-97ad-baebf00a470d",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"serial_number\": \"54321\",\n\t\"condition\": \"GOOD\",\n\t\"status\": \"AVAILABLE\"\n}"
-						},
-						"description": "Condition: GOOD, NEEDS_REPAIR\nStatus: AVAILABLE, IN_USE, LOST"
-					},
-					"response": []
-				},
-				{
-					"name": "/api/inventory/:item_id/:instance_id",
+					"name": "/api/inventory/:item_id/instances/:instance_id",
 					"request": {
 						"url": "https://colab-sbx-186.oit.duke.edu/api/inventory/58adb3b605bd0609ef8dd943/58adb4af56b2040a44fcba5b",
 						"method": "PUT",
@@ -767,14 +745,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"serial_number\": \"54321\",\n\t\"condition\": \"GOOD\",\n\t\"status\": \"AVAILABLE\"\n}"
+							"raw": "{\n\t\"tag\": \"54321\",\n\t\"custom_fields\": []\n}"
 						},
-						"description": "Condition: GOOD, NEEDS_REPAIR\nStatus: AVAILABLE, IN_USE, LOST"
+						"description": "Edit an item's instance.\n\nparams: {\n\ttag: String,\n\tcustom_fields: [{\n\t\tfield: String, // field id\n\t\tvalue: String\n\t}]\n}"
 					},
 					"response": []
 				},
 				{
-					"name": "/api/inventory/:item_id/:instance_id",
+					"name": "/api/inventory/:item_id/instances/:instance_id",
 					"request": {
 						"url": "https://colab-sbx-186.oit.duke.edu/api/inventory/58adb3b605bd0609ef8dd943/58adb4af56b2040a44fcba5b",
 						"method": "DELETE",
@@ -792,9 +770,9 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"serial_number\": \"54321\",\n\t\"condition\": \"GOOD\",\n\t\"status\": \"AVAILABLE\"\n}"
+							"raw": ""
 						},
-						"description": "Condition: GOOD, NEEDS_REPAIR\nStatus: AVAILABLE, IN_USE, LOST"
+						"description": "Delete an instance by its id. This will also update the item's quantity to be one fewer."
 					},
 					"response": []
 				}
@@ -825,7 +803,7 @@
 							"mode": "raw",
 							"raw": "{\n\t\"items\": [],\n\t\"password\": \"motorola\",\n\t\"role\": \"ADMIN\"\n}"
 						},
-						"description": ""
+						"description": "Gets all the inventory items.\n\nparams: {\n\trequired_tags: String (CSV) [optional],\n\texcluded_tags: String (CSV) [optional],\n\tname: String [optional],\n\tmodel_number: String [optional],\n\tcustom_fields: String (CSV) [optional], // Custom field names or custom field names with value\n\tpage: String [optional], // needs per_page if included\n\tper_page: String [optional], // needs age if included\n\tlessThanThreshold: Boolean\n}"
 					},
 					"response": []
 				},
@@ -848,9 +826,9 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"2000k resistor\",\n    \"vendor_info\": \"IBM\",\n    \"custom_fields\": [],\n    \"is_asset\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
+							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"2000k resistor\",\n    \"vendor_info\": \"IBM\",\n    \"custom_fields\": [],\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
 						},
-						"description": ""
+						"description": "Edit an item. A few things to note- \nYou can change an item from not an asset to an asset, but not the other way around (it's not supported).\nIf an item is an asset, you cannot change its quantity directly. use the /inventory/id/instances/id routes to edit the instances.\nIf an item is not an asset and you edit the quantity, you need to provide a reason.\n\n\nparams: {\n\tname: String [optional],\n  quantity: Integer [optional],\n\tquantity_field: String // enum: \"MANUAL\", \"LOSS\", \"ACQUISITION\", \"DESTRUCTION\"\n  model_number: String [optional],\n  description: String [optional],\n  tags: String array [optional],\n  is_asset: Boolean, // NOTE THIS CAN ONLY GO FROM FALSE TO TRUE NOT TRUE TO FALSE\n  custom_fields:[\n    {\n        field: String,\n\tvalue: String // Mixed Type in MongoDB\n    }\n   ] [optional],\n\t minstock_threshold: Number [optional],\n\t minstock_isEnabled: Boolean [optional]\n}"
 					},
 					"response": []
 				},
@@ -875,7 +853,7 @@
 							"mode": "raw",
 							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"199k resistor\",\n    \"vendor_info\": \"Microsoft\",\n    \"custom_fields\": [],\n    \"is_asset\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
 						},
-						"description": ""
+						"description": "Add a new item to the inventory. If you create an asset, the instances will be automatically specified. You cannot specify these. Use the /inventory/id/instances routes to edit the instances.\n\nparams: {\n  name: String [required],\n  quantity: Integer [required],\n  model_number: String,\n  description: String,\n  tags: [String],\n  is_asset: Boolean,\n  custom_fields: [\n    {\n        field: String,\n\tvalue: String // Mixed Type in MongoDB\n    }\n  ]\n}"
 					},
 					"response": []
 				},
@@ -900,7 +878,7 @@
 							"mode": "raw",
 							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"2000k resistor\",\n    \"vendor_info\": \"IBM\",\n    \"custom_fields\": [],\n    \"is_deleted\": true,\n    \"is_asset\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
 						},
-						"description": ""
+						"description": "Get a specific item by its id."
 					},
 					"response": []
 				},
@@ -925,7 +903,7 @@
 							"mode": "raw",
 							"raw": ""
 						},
-						"description": ""
+						"description": "Delete a specific item by id."
 					},
 					"response": []
 				},
@@ -948,9 +926,34 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"quantity\": 1000,\n    \"name\": \"1999k resistor\",\n    \"vendor_info\": \"Microsoft\",\n    \"custom_fields\": [],\n    \"is_asset\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}"
+							"raw": "[{\n    \"quantity\": 1000,\n    \"name\": \"1999k resistor\",\n    \"vendor_info\": \"Microsoft\",\n    \"custom_fields\": [{\n    \t\"name\": \"location\",\n    \t\"value\": \"hudson\"\n    }],\n    \"is_asset\": false,\n    \"tags\": [\n      \"component\",\n      \"electric\",\n      \"cheap\"\n    ]\n}]"
 						},
-						"description": ""
+						"description": "Bulk import items. This supports adding multiple items to the database and either fully succeeds or fully fails. Note that the custom fields you specify will actually have their names, not their ids.\n\nparams: {\n  name: String [required],\n  quantity: Integer [required],\n  model_number: String,\n  description: String,\n  vendor_info: String,\n  tags: [String],\n  custom_fields: [\n    {\n        name: String, // Name of Custom field, not ID\n\tvalue: String\n  ]\n}\nor Array of body objects above."
+					},
+					"response": []
+				},
+				{
+					"name": "/api/inventory/minstock",
+					"request": {
+						"url": "https://colab-sbx-186.oit.duke.edu/api/inventory/minstock",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "apikey",
+								"value": "45190748-a312-498d-97ad-baebf00a470d",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"items\": [\n\t\t{ \"item\": \"id\"}\n\t],\n\t\"minstock_threshold\": 5,\n\t\"minstock_isEnabled\": true\n}"
+						},
+						"description": "Bulk change minstock values and enabled status for items.\n\nparams: {\n\titems: [\n\t\t{\n\t\t\titem: String // item_id\n\t\t}\n\t],\n\tminstock_threshold: Number,\n\tminstock_isEnabled: Boolean\n}"
 					},
 					"response": []
 				}
@@ -994,7 +997,7 @@
 								}
 							]
 						},
-						"description": "params: {\n\tuser_id: String,\n\titem_name: String,\n\titem_type: String, // ('OUTSTANDING', 'COMPLETE'),\n\titem_id: String\n}"
+						"description": "Get all loans in the system.\n\nparams: {\n\tuser_id: String,\n\titem_name: String,\n\titem_type: String, // ('OUTSTANDING', 'COMPLETE'),\n\titem_id: String\n}"
 					},
 					"response": []
 				},
@@ -1032,7 +1035,7 @@
 								}
 							]
 						},
-						"description": ""
+						"description": "Get a specific loan by id. No params required"
 					},
 					"response": []
 				},
@@ -1044,7 +1047,7 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
+								"value": "application/json",
 								"description": ""
 							},
 							{
@@ -1054,17 +1057,10 @@
 							}
 						],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "",
-									"value": "",
-									"type": "text",
-									"enabled": false
-								}
-							]
+							"mode": "raw",
+							"raw": "{\n\t\"items\": [{\n\t\t\"item\": \"id\",\n\t\t\"status\": \"LENT\"\n\t}],\n\t\"manager_comment\": \"NO BACKFILL FOR YOU\"\n}"
 						},
-						"description": "params: {\n\titems: [{\n\t\titem: String, // id\n\t\tstatus: String, // new status\n\t}]\n}"
+						"description": "Edit the items in a loan as well as the manager comments. This route is also used for backfill. If a loan's status is 'BACKFILL_REQUESTED' and a manager sets it as 'LENT', then the field 'BACKFILL_DENIED' will be true. If the status is backfill requested and it's changed to 'DISBURSED', then the denied field will be false. There is additionally a separate endpoint for uploading pdfs. That is not done through this API.\n\nparams: {\n\titems: [{\n\t\titem: String, // id\n\t\tstatus: String, // ('RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED')\n\t}],\n\tmanager_comment: String\n}"
 					},
 					"response": []
 				}
@@ -1108,7 +1104,7 @@
 								}
 							]
 						},
-						"description": "You can query by field \"type\" with the following enums: 'ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED', 'REQUEST_FULFILLED', 'REQUEST_CREATED', 'REQUEST_EDITED'"
+						"description": "Logs are only accessible through this endpoint and are automatically created during different inventory actions. Logs are filterable by a variety of fields.\n\nparams: {\n\titem_id: String,\n\titem_name: String,\n\ttype: String, // ('ITEM_EDITED', 'ITEM_CREATED', 'ITEM_DELETED',\n\t\t'REQUEST_FULFILLED', 'REQUEST_CREATED', 'REQUEST_EDITED',\n\t\t'REQUEST_DELETED', 'FIELD_CREATED', 'FIELD_EDITED', 'FIELD_DELETED')\n\tuser_id: String,\n\tstart_date: String, // in full date format '2017-02-27T00:00:00-05:00' (encoded)\n\tend_date: String // in full date format '2017-02-27T00:00:00-05:00' (encoded)\n}"
 					},
 					"response": []
 				}
@@ -1152,7 +1148,7 @@
 								}
 							]
 						},
-						"description": ""
+						"description": "Gets all requests made. Filterable by a variety of fields.\n\nparams: {\n\treviewer_comment: String,\n\trequestor_comment: String,\n\treason: String,\n\taction: String, // ('DISBURSEMENT', 'LOAN')\n\tstatus: String,\n\tcreated: Date,\n\titems: String, // query with array of item names separated by commas\n\tuser: String  // Only for admin users entering another username\n}"
 					},
 					"response": []
 				},
@@ -1175,9 +1171,9 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"items\": [{\n\t\t\"item\": \"58adb3b605bd0609ef8dd919\",\n\t\t\"quantity\": 100\n\t}]\n}"
+							"raw": "{\n\t\"items\": [{\n\t\t\"item\": \"58adb3b605bd0609ef8dd919\",\n\t\t\"quantity\": 100\n\t}],\n\t\"type\": \"DISBURSEMENT\"\n}"
 						},
-						"description": "status: ['PENDING', 'APPROVED', 'DENIED', 'FULFILLED']"
+						"description": "Create a request. This has been deprecated due to the more popular cart method. So, use the POST /api/cart route to add items to your cart and then PATCH /api/cart with the action CHECKOUT to turn those items into a request."
 					},
 					"response": []
 				},
@@ -1215,7 +1211,7 @@
 								}
 							]
 						},
-						"description": ""
+						"description": "Gets a specific request by id."
 					},
 					"response": []
 				},
@@ -1238,9 +1234,9 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"reason\": \"I want to\",\n\t\"status\": \"FULFILLED\"\n}"
+							"raw": "{\n\t\"comment\": \"nice request you got there\",\n\t\"status\": \"APPROVED\"\n}"
 						},
-						"description": "status: ['PENDING', 'APPROVED', 'DENIED', 'FULFILLED']"
+						"description": "Update a request. This route is most commonly used to update the status of a request from PENDING to DENIED or APPROVED. Note that you cannot change a request to FULFILLED using this route. You MUST use PATCH /api/requests/:request_id with the action \"FULFILL\" to do this.\n\nparams: {\n  items: [{\n\t\tname: String,\n\t\tquantity: Integer\n  }],\n  reason: String [optional],\n  created: String [optional],\n  status: String [optional],\n  action: String [optional], // ('DISBURSEMENT', 'LOAN')\n  comment: String [optional]\n}"
 					},
 					"response": []
 				},
@@ -1265,7 +1261,7 @@
 							"mode": "raw",
 							"raw": ""
 						},
-						"description": ""
+						"description": "Remove a request from the system. This is most commonly used for users to cancel their own requests."
 					},
 					"response": []
 				},
@@ -1288,9 +1284,9 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"action\": \"DISBURSE\"\n}"
+							"raw": "{\n\t\"action\": \"FULFILL\",\n\t\"instances\": {\n\t\t\"itemid1\": [\"instance1\", \"instance2\", \"instance3\"],\n\t\t\"itemid2\": [\"instance4\", \"instance5\"]\n\t}\n}"
 						},
-						"description": ""
+						"description": "Used to fulfill a request. You cannot use PUT /api/requests/:request_id to accomplish this. Additionally, if the request includes an instance, you MUST include a mapping of item ids to the instance ids used to fulfill the request. Otherwise it will fail. This endpoint will also update the item quantities to be lower and create a loan if the request was for a loan.\n\nparams: {\n\taction: \"FULFILL\", // for now this is the only action\n\tinstances: {\n\t\titem_id: [instance_id]\n\t}\n\t// instances is a mapping of item ids to the instance ids to fulfill with.\n\t// Note that this only applies to those items that are assets.\n\t// Also note that the instance ids are the _id field and NOT the tag field\n}"
 					},
 					"response": []
 				}
