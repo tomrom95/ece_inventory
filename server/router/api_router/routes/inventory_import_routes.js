@@ -109,13 +109,17 @@ var importMultipleItems = function(data, next){
           if(result.error) return next(result.error, null);
           data[i].custom_fields = result;
       }
+      console.log("hit");
       data[i].import_id = importId;
       // Set quantity if quantity field is not specified
       instancesDataArray.push(data[i].instances);
+      let instances = data[i].instances;
       delete data[i].instances;
-      let quantityNotSpecified = data.quantity === undefined || data.quantity === null;
-      if(quantityNotSpecified) data.quantity = instances.length;
+      let quantityNotSpecified = data[i].quantity === undefined || data[i].quantity === null;
+      if(quantityNotSpecified) data[i].quantity = instances.length;
       quantityNotSpecifiedArray.push(quantityNotSpecified);
+      console.log(instancesDataArray);
+      console.log(quantityNotSpecifiedArray);
       itemArray.push(new Item(data[i]));
     }
     Item.insertMany(itemArray, function(err, items){
@@ -151,9 +155,9 @@ var importMultipleItems = function(data, next){
 
 var rollBackAll = function(importId, err, next){
   Item.remove({import_id: importId}, function(rollBackErr){
-    if(rollBackErr) return next(rollBackErr, null);
+    if(rollBackErr) next(rollBackErr, null);
       Instance.remove({import_id: importId}, function(rollBackErr){
-        return rollBackErr ? next(rollBackErr, null) : next(err,null);
+        rollBackErr ? next(rollBackErr, null) : next(err,null);
       });
   })
 }
