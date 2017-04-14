@@ -32,7 +32,7 @@ module.exports.postAPI = function (req, res) {
 var importSingleItem = function(data, next) {
   CustomField.find({}).then(function(fieldArray){
    if(data.custom_fields){
-     var result = updateCustomFields(data.custom_fields, fieldArray, next);
+     var result = updateCustomFields(data.custom_fields, fieldArray, false, next);
      if(result.error) return next(result.error, null);
      data.custom_fields = result;
    }
@@ -50,7 +50,7 @@ var importMultipleItems = function(data, next){
     let importId = mongoose.Types.ObjectId();
     for(var i in data){
       if(data[i].custom_fields){
-          var result = updateCustomFields(data[i].custom_fields, fieldArray, next);
+          var result = updateCustomFields(data[i].custom_fields, fieldArray, false, next);
           if(result.error) return next(result.error, null);
           data[i].custom_fields = result;
       }
@@ -70,7 +70,7 @@ var importMultipleItems = function(data, next){
   })
 };
 
-var updateCustomFields = function(enteredCustomFields, dataCustomFields, next){
+var updateCustomFields = function(enteredCustomFields, dataCustomFields, perInstance, next){
   var draftCustomFieldArray = [];
   for(var i in enteredCustomFields){
     var isMatch = false;
@@ -81,7 +81,7 @@ var updateCustomFields = function(enteredCustomFields, dataCustomFields, next){
               "field": dataCustomFields[j]._id,
               "value": enteredCustomFields[i].value
             }
-            if (!CustomFieldHelpers.validateSingleField(draftField, dataCustomFields[j], false)) {
+            if (!CustomFieldHelpers.validateSingleField(draftField, dataCustomFields[j], perInstance)) {
               return {error: "The entered custom field "+enteredCustomFields[i].name + " has a value "+ enteredCustomFields[i].value +" not matching type " + dataCustomFields[j].type};
             }
             draftCustomFieldArray.push(draftField);
