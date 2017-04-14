@@ -107,13 +107,13 @@ class LoanTableRow extends Component {
 					{this.makeBackfillControlBar(i)}
 				</td>
 			);
-
+      var role = JSON.parse(localStorage.getItem("user")).role;
 			list.push(
 			    <tr key={key} id={items[i].item.name}>
 			      <td key={key + "-col1"}>{items[i].item.name}</td>
 			      <td key={key + "-col2"}>{items[i].quantity}</td>
 			      {
-			      	(this.state.controlBarVisible[i]) === true ? this.makeControlBar(i) :
+			      	(this.state.controlBarVisible[i] && (role === "ADMIN" || role === "MANAGER")) === true ? this.makeControlBar(i) :
 
 				      items[i].status === "LENT" ?
 				      (<div>

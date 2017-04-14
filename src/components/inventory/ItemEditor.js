@@ -51,6 +51,7 @@ class ItemEditor extends Component {
 			activated: false,
 			justApplied: false,
 			isAsset: props.isAsset,
+			minstock_isEnabled: props.minstock_isEnabled,
 		}
 	}
 
@@ -62,7 +63,8 @@ class ItemEditor extends Component {
 			isAsset: newProps.isAsset,
 			allCustomFields: newProps.allCustomFields,
 			formIds: getValues(newProps.data, getKeys(newProps.data)),
-			activated: this.state.justApplied ? true : false
+			activated: this.state.justApplied ? true : false,
+			minstock_isEnabled: newProps.minstock_isEnabled,
 		});
 	}
 
@@ -111,6 +113,17 @@ class ItemEditor extends Component {
 			}
 
 		}
+		list.push(
+			<div className="form-group" key={"threshold-enabled-checkbox-div"}>
+				<label key={"threshold-enabled-checkbox-label"} >Enable Min Threshold  </label>
+				<input type="checkbox"
+							checked={this.state.minstock_isEnabled}
+							onChange={e=>this.handleEnableChange()}
+							className="asset-checkbox"
+							ref={"enable-checkbox"}
+							key={"enable-checkbox"}/>
+			</div>
+		);
 		if(!this.props.is_asset){
 			list.push(
 				<div className="form-group" key={"asset-checkbox-div"}>
@@ -125,6 +138,7 @@ class ItemEditor extends Component {
 
 			)
 		}
+
 		list.push(
 			<div key = {"createform-button-bar-row-"+i} className="modal-footer">
 				<button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -138,6 +152,12 @@ class ItemEditor extends Component {
 
 
 	clearForm() {
+	}
+
+	handleEnableChange(){
+		this.setState({
+			minstock_isEnabled: !this.state.minstock_isEnabled
+		})
 	}
 
 	makeQuantityReasonField() {
@@ -237,6 +257,8 @@ class ItemEditor extends Component {
   		vendor_info: this.refs["Vendor Info"].value,
   		tags: tags ? tags.split(',') : [],
 			is_asset: this.state.is_asset,
+			minstock_threshold: this.refs["Minimum Quantity"].value,
+			minstock_isEnabled: this.state.minstock_isEnabled
   	}
 		if (!this.state.isAsset) {
 			object['quantity'] = this.refs.Quantity.value;
@@ -272,6 +294,9 @@ class ItemEditor extends Component {
 				.catch(function(error) {
 					console.log(error);
 				}.bind(this));
+
+
+
 			}
   	}
 
