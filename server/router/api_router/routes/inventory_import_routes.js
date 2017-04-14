@@ -11,6 +11,7 @@ module.exports.postAPI = function (req, res) {
     if(req.body === undefined || req.body === null) return res.send({error: "Null or undefined body"});
     if(req.body instanceof Array){
       importMultipleItems(req.body, function(err, data){
+        console.log(err);
         if(err) return res.send({error:err});
         var message = "Successful import of "+ data.length + " item(s): ";
         data.forEach(function(item){
@@ -73,7 +74,6 @@ var importSingleItem = function(data, next) {
 
 var importInstances = function(instancesData, itemId, importId, next){
   CustomField.find({}).then(function(fieldArray){
-    console.log(fieldArray);
     var instancesArray = [];
     for(var i in instancesData){
       if(instancesData[i].custom_fields){
@@ -86,8 +86,6 @@ var importInstances = function(instancesData, itemId, importId, next){
       instancesArray.push(new Instance(instancesData[i]));
     }
     Instance.insertMany(instancesArray, function(err, instances){
-      console.log(err);
-      console.log(instances);
       if(err){
         rollBackAll(importId, err, next);
       } else {
@@ -118,8 +116,6 @@ var importMultipleItems = function(data, next){
       let quantityNotSpecified = data[i].quantity === undefined || data[i].quantity === null;
       if(quantityNotSpecified) data[i].quantity = instances.length;
       quantityNotSpecifiedArray.push(quantityNotSpecified);
-      console.log(instancesDataArray);
-      console.log(quantityNotSpecifiedArray);
       itemArray.push(new Item(data[i]));
     }
     Item.insertMany(itemArray, function(err, items){
@@ -139,11 +135,18 @@ var importMultipleItems = function(data, next){
           }
           if(quantityNotSpecifiedArray[i]){
             importInstances(instancesDataArray[i], items[i]._id, importId, function(err, instances){
-              if(err) rollBackAll(importId, err, next);
+              if(err){
+                rollBackAll(importId, err, next);
+                return;
+              }
             })
           } else {
             autoCreateInstances(items[i].quantity, items[i]._id, importId, function(err, instances){
-              if(err) rollBackAll(importId, err, next);
+              if(err){
+                rollBackAll(importId, err, next);
+                return;
+              }
+
             });
           }
         }
