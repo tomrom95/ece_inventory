@@ -55,8 +55,8 @@ class LoanTable extends Component {
 			};
 
 			list.push(
-				<LoanTableRow key={"loan-table-row-"+i} 
-							  api={this.props.api} 
+				<LoanTableRow key={"loan-table-row-"+i}
+							  api={this.props.api}
 							  params={params}
 							  callback={this.props.callback}/>
 			);
