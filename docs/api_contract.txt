@@ -76,7 +76,19 @@ body:
     {
         name: String, // Name of Custom field, not ID
 	value: String
-  ]
+  ],
+	is_asset: Boolean,
+	instances:[ // If instances specified, all instances must be present. Otherwise, include {}
+		{
+			tag: String // optional, otherwise auto-generated
+			custom_fields:[
+				{
+					name: String, // Name of custom field
+					value: String
+				}
+			]
+		}
+	]
 }
 or Array of body objects above.
 
