@@ -167,7 +167,7 @@ var rollBackAll = function(importId, err, next){
       Instance.remove({import_id: importId}, function(rollBackErr){
         return rollBackErr ? next(rollBackErr, null) : next(err,null);
       });
-  })
+  }) 
 }
 
 var updateCustomFields = function(enteredCustomFields, dataCustomFields, perInstance, next){
