@@ -462,7 +462,7 @@ describe('Inventory Import API Test', function () {
             .send(dataCopy)
             .end((err, res) => {
               should.not.exist(err);
-              res.body.error.errmsg.should.be.eql("E11000 duplicate key error collection: test.instances index: tag_1 dup key: { : \"101\" }");
+              res.body.error.errmsg.should.contain("tag_1 dup key: { : \"101\" }");
               Item.find({}, function(err, items){
                 items.length.should.be.eql(1);
                 Instance.find({}, function(err, instances){
@@ -531,7 +531,7 @@ describe('Inventory Import API Test', function () {
             .send(multipleItemInstances)
             .end((err, res) => {
               should.not.exist(err);
-              res.body.error.errmsg.should.be.eql("E11000 duplicate key error collection: test.instances index: tag_1 dup key: { : \"101\" }");
+              res.body.error.errmsg.should.contain("tag_1 dup key: { : \"101\" }");
               Item.find({}, function(err, items){
                 items.length.should.be.eql(2);
                 Instance.find({}, function(err, instances){
