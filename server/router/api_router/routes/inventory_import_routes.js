@@ -11,7 +11,6 @@ module.exports.postAPI = function (req, res) {
     if(req.body === undefined || req.body === null) return res.send({error: "Null or undefined body"});
     if(req.body instanceof Array){
       importMultipleItems(req.body, function(err, data){
-        console.log(err);
         if(err) return res.send({error:err});
         var message = "Successful import of "+ data.length + " item(s): ";
         data.forEach(function(item){
@@ -78,7 +77,9 @@ var importInstances = function(instancesData, itemId, importId, next){
     for(var i in instancesData){
       if(instancesData[i].custom_fields){
         var result = updateCustomFields(instancesData[i].custom_fields, fieldArray, true, next);
-        if(result.error) return next(result.error, null);
+        if(result.error){
+          return rollBackAll(importId, result.error, next);
+        }
         instancesData[i].custom_fields = result;
       }
       instancesData[i].import_id = importId;
@@ -87,9 +88,10 @@ var importInstances = function(instancesData, itemId, importId, next){
     }
     Instance.insertMany(instancesArray, function(err, instances){
       if(err){
-        rollBackAll(importId, err, next);
+        console.log(err);
+        return rollBackAll(importId, err, next);
       } else {
-        next(null, instances);
+        return next(null, instances);
       }
     })
   });
@@ -99,7 +101,6 @@ var importMultipleItems = function(data, next){
   CustomField.find({}).then(function(fieldArray){
     var itemArray = [];
     var quantityNotSpecifiedArray = [];
-    var instancesDataArray = [];
     let importId = mongoose.Types.ObjectId();
     for(var i in data){
       if(data[i].custom_fields){
@@ -107,16 +108,15 @@ var importMultipleItems = function(data, next){
           if(result.error) return next(result.error, null);
           data[i].custom_fields = result;
       }
-      console.log("hit");
       data[i].import_id = importId;
       // Set quantity if quantity field is not specified
-      instancesDataArray.push(data[i].instances);
       let instances = data[i].instances;
-      delete data[i].instances;
       let quantityNotSpecified = data[i].quantity === undefined || data[i].quantity === null;
       if(quantityNotSpecified) data[i].quantity = instances.length;
+      var itemCopy = Object.assign({}, data[i]);
+      delete itemCopy.instances;
       quantityNotSpecifiedArray.push(quantityNotSpecified);
-      itemArray.push(new Item(data[i]));
+      itemArray.push(new Item(itemCopy));
     }
     Item.insertMany(itemArray, function(err, items){
       if(err){
@@ -125,32 +125,37 @@ var importMultipleItems = function(data, next){
           return rollBackErr ? next(rollBackErr, null) : next(err,null);
         })
       } else {
+        var instancesDataArray = [];
         // Insert all instances here
-        for(var i in instancesDataArray){
-          // validate custom fields
-          if(instancesDataArray[i].custom_fields){
-            var result = updateCustomFields(instancesDataArray[i].custom_fields, fieldArray, true, next);
-            if(result.error) return next(result.error, null);
-            instancesDataArray[i].custom_fields = result;
-          }
+        for(var i in items){
           if(quantityNotSpecifiedArray[i]){
-            importInstances(instancesDataArray[i], items[i]._id, importId, function(err, instances){
-              if(err){
-                rollBackAll(importId, err, next);
-                return;
+            // modify the instances in each
+            for(var j=0; j<data[i].instances.length; j++){
+              data[i].instances[j].item = items[i]._id;
+              data[i].instances[j].import_id = importId;
+              if(data[i].instances[j].custom_fields){
+                  var result = updateCustomFields(data[i].instances[j].custom_fields, fieldArray, true, next);
+                  if(result.error) {
+                    return rollBackAll(importId, result.error, next);
+                  }
+                  data[i].instances[j].custom_fields = result;
               }
-            })
+              instancesDataArray.push(data[i].instances[j]);
+            }
           } else {
-            autoCreateInstances(items[i].quantity, items[i]._id, importId, function(err, instances){
-              if(err){
-                rollBackAll(importId, err, next);
-                return;
-              }
-
-            });
+            // auto generate
+            for(j=0; j<items[i].quantity; j++){
+              var newInstance = new Instance({item: items[i]._id, import_id: importId, in_stock: true});
+              instancesDataArray.push(newInstance);
+            }
           }
         }
-        return next(null, items); // successfully inserted both items and instances
+        Instance.insertMany(instancesDataArray, function(err, instances){
+          if(err) {
+            return rollBackAll(importId, err, next);
+          }
+          return next(null, items);
+        });
       }
     })
   })
@@ -158,9 +163,9 @@ var importMultipleItems = function(data, next){
 
 var rollBackAll = function(importId, err, next){
   Item.remove({import_id: importId}, function(rollBackErr){
-    if(rollBackErr) next(rollBackErr, null);
+    if(rollBackErr) return next(rollBackErr, null);
       Instance.remove({import_id: importId}, function(rollBackErr){
-        rollBackErr ? next(rollBackErr, null) : next(err,null);
+        return rollBackErr ? next(rollBackErr, null) : next(err,null);
       });
   })
 }
