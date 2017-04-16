@@ -130,6 +130,8 @@ module.exports.postAPI = function(req, res){
   item.tags = trimTags(req.body.tags);
   item.is_asset = req.body.is_asset;
   item.custom_fields = req.body.custom_fields;
+  item.minstock_threshold = req.body.minstock_threshold;
+  item.minstock_isEnabled = req.body.minstock_isEnabled;
   CustomFieldHelpers.validateCustomFields(item.custom_fields, false, function(error, isValid) {
     if (error) return res.send({error: error});
     if (!isValid) return res.send({error: 'Invalid custom fields'});
