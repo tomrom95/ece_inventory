@@ -136,13 +136,20 @@ module.exports.postAPI = function(req, res){
     item.save(function(err, newItem){
       if(err)
       return res.send({error: err});
-      autoCreateInstances(newItem.quantity, newItem._id, function(error, instances) {
-        if (error) return res.send({error: error});
+      if (newItem.is_asset) {
+        autoCreateInstances(newItem.quantity, newItem._id, function(error, instances) {
+          if (error) return res.send({error: error});
+          Logger.logNewItem(newItem, req.user, function(error) {
+            if (error) return res.send({error: error});
+            return res.json(newItem);
+          });
+        });
+      } else {
         Logger.logNewItem(newItem, req.user, function(error) {
           if (error) return res.send({error: error});
           return res.json(newItem);
         });
-      });
+      }
     });
   });
 };
