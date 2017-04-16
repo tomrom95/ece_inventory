@@ -48,6 +48,7 @@ class ItemEditor extends Component {
 			isAsset: props.isAsset,
 			allCustomFields: props.allCustomFields,
 			formIds: [],
+			minstock_enabled: props.data["Min Stock Enabled"],
 			activated: false,
 			justApplied: false
 		}
@@ -61,6 +62,7 @@ class ItemEditor extends Component {
 			isAsset: newProps.isAsset,
 			allCustomFields: newProps.allCustomFields,
 			formIds: getValues(newProps.data, getKeys(newProps.data)),
+			minstock_enabled: newProps.data["Min Stock Enabled"],
 			activated: this.state.justApplied ? true : false
 		});
 	}
@@ -89,6 +91,11 @@ class ItemEditor extends Component {
 			if (keys[i] === 'Tags') {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
 			}
+
+			else if (keys[i] === 'Min Stock Enabled') {
+				list.push(this.makeCheckBox("Min Stock Enabled", "minstock_enabled", this.state.minstock_enabled));
+			}
+
 			else if (keys[i] === 'custom_fields'){
 				list.push(
 					<CustomFieldForm
@@ -112,6 +119,31 @@ class ItemEditor extends Component {
 		);
 
 		return list;
+	}
+
+	handleCheckboxChange(event) {
+	    var value = event.target.checked;
+	    this.setState({
+	      minstock_enabled: value
+	    });
+	}	
+
+	makeCheckBox(label, ref, value){
+		return (
+			<div className="row request-quantity" key={"minstock-enabled-row"} >
+			  <div className="col-xs-10">
+			  	<label>{label}</label>
+			  </div>
+			  <div className="col-xs-2 cart-checkbox">
+			  	<input type={"checkbox"}
+			  			id={"minstock-enabled-checkbox"}
+			  			checked={value}
+			  			onChange={e => this.handleCheckboxChange(e)}
+			  			ref={ref}>
+			  	</input>
+			  </div>
+			</div>
+		);
 	}
 
 
@@ -211,10 +243,17 @@ class ItemEditor extends Component {
 		var object = {
 			name: this.refs.Name.value,
  			model_number: this.refs["Model Number"].value,
-  		description: this.refs.Description.value,
-  		vendor_info: this.refs["Vendor Info"].value,
-  		tags: tags ? tags.split(',') : [],
-  	}
+  			description: this.refs.Description.value,
+  			vendor_info: this.refs["Vendor Info"].value,
+  			tags: tags ? tags.split(',') : [],
+  			minstock_isEnabled: this.refs["minstock_enabled"].checked,
+  			minstock_threshold: this.refs["Min Stock Threshold"].value
+  		}
+
+  		if (String(object.minstock_threshold).length === 0) {
+  			object.minstock_threshold = undefined;
+  		}
+
 		if (!this.state.isAsset) {
 			object['quantity'] = this.refs.Quantity.value;
 		}
@@ -237,7 +276,7 @@ class ItemEditor extends Component {
       this.props.api.put('/api/inventory/'+ this.props.itemId, object)
 				.then(function(response) {
 					if (response.data.error) {
-						alert(response.data.error);
+						alert(response.data.error.message);
 					} else {
 						this.props.callback();
 						this.setState({

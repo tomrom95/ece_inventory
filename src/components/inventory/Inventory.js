@@ -20,6 +20,8 @@ class Inventory extends Component {
         "Vendor": obj.vendor_info,
         "Tags": obj.tags,
         "custom_fields": obj.custom_fields,
+        "minstock_threshold": obj.minstock_threshold,
+        "minstock_isEnabled": obj.minstock_isEnabled,
         "meta": {
           "id": obj._id,
           "isAsset": obj.is_asset

@@ -81,11 +81,10 @@ class ItemWizard extends Component {
 	makeCheckForm() {
 		var asset_checkbox =
 			<input type="checkbox"
-	      checked={this.state.isAsset}
+	      		checked={this.state.isAsset}
 				onChange={this.handleAssetSetChange.bind(this)}
 				key={"asset_checkbox"}
-        name="asset_checkbox"
-      />;
+        		name="asset_checkbox"/>;
 		return(
 			<div className="form-group row customfield-maker-isprivate">
 				<div className="col-xs-10">
@@ -107,6 +106,11 @@ class ItemWizard extends Component {
 			if (keys[i] === 'Tags') {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
 			}
+
+			else if (keys[i] === 'Min Stock Enabled') {
+				list.push(this.makeCheckBox("Min Stock Enabled", "minstock_enabled", this.state.minstock_enabled));
+			}
+
 			else if(keys[i] === 'custom_fields'){
 				list.push(
 					<CustomFieldForm
@@ -114,8 +118,7 @@ class ItemWizard extends Component {
 						currentValues={[]}
 						perInstance={false}
 						ref="customFields"
-						key="customFields"
-					/>
+						key="customFields"/>
 				);
 			}
 			else {
@@ -125,6 +128,31 @@ class ItemWizard extends Component {
 		}
 
 		return list;
+	}
+
+	handleCheckboxChange(event) {
+	    var value = event.target.checked;
+	    this.setState({
+	      minstock_enabled: value
+	    });
+	}	
+
+	makeCheckBox(label, ref, value){
+		return (
+			<div className="row request-quantity" key={"minstock-enabled-row"} >
+			  <div className="col-xs-10">
+			  	<label>{label}</label>
+			  </div>
+			  <div className="col-xs-2 cart-checkbox">
+			  	<input type={"checkbox"}
+			  			id={"minstock-enabled-checkbox"}
+			  			checked={value}
+			  			onChange={e => this.handleCheckboxChange(e)}
+			  			ref={ref}>
+			  	</input>
+			  </div>
+			</div>
+		);
 	}
 
 	makeTextBox(row, type, label, defaultValue){
@@ -137,14 +165,14 @@ class ItemWizard extends Component {
 				api={this.props.api}
 				id={id}
 				ref={label}/>
-	} else {
-		input = <input type={type}
-			className="form-control"
-			defaultValue={defaultValue}
-			ref={label}
-			key={id}>
-			</input>
-	}
+		} else {
+			input = <input type={type}
+				className="form-control"
+				defaultValue={defaultValue}
+				ref={label}
+				key={id}>
+				</input>
+		}
 
 		return (
 			<div className="form-group" key={"createform-div-row-"+row}>
@@ -162,6 +190,7 @@ class ItemWizard extends Component {
 			data: data
 		});
 	}
+
 	validItem(object) {
 		if (object.name.length === 0) {
 			alert("Name is a required field.");
@@ -191,16 +220,21 @@ class ItemWizard extends Component {
 		var tags = this.refs.Tags.getSelectedTags();
 		var fields = this.refs.customFields.getCurrentValues();
 		var object = {
-			name: this.refs.Name.value,
-	  		quantity: this.refs.Quantity.value,
+				name: this.refs.Name.value,
+	  			quantity: this.refs.Quantity.value,
 	 			model_number: this.refs["Model Number"].value,
-	  		description: this.refs.Description.value,
-	  		vendor_info: this.refs["Vendor Info"].value,
-	  		tags: tags ? tags.split(',') : [],
-	  		has_instance_objects: false,
+	  			description: this.refs.Description.value,
+	  			vendor_info: this.refs["Vendor Info"].value,
+	  			tags: tags ? tags.split(',') : [],
+	  			has_instance_objects: false,
 				is_asset: this.state.isAsset,
+				minstock_isEnabled: this.refs["minstock_enabled"].checked,
+				minstock_threshold: this.refs["Min Stock Threshold"].value,
 				custom_fields: fields
   		}
+
+  		console.log(this.refs["Min Stock Threshold"].value);
+
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
 
@@ -221,15 +255,16 @@ class ItemWizard extends Component {
 			        console.log(error);
 			      }.bind(this));
 		}
-  }
+  	}
 
   	clearForm() {
-			var data = this.state.data;
-			this.setState({
-				data: data,
-				isAsset: false,
-				checkTypeDone: false,
-			});
+		var data = this.state.data;
+		this.setState({
+			data: data,
+			isAsset: false,
+			checkTypeDone: false,
+		});
+
   		var keys = getKeys(this.state.data);
 			keys.forEach(function(key) {
 				if(this.refs.length > 0){

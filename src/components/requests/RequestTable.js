@@ -218,7 +218,7 @@ class RequestTable extends Component {
       (status !== "PENDING" && status !== "DENIED" || role === "STANDARD") ? 
             (<td key={"request-type-fixed"+i}>
                 <a key={"request-type-fixed"+i}> 
-                  { this.state.raw_data[i]["Request Type"] ? this.state.raw_data[i]["Request Type"] : "DISBURSEMENT" } 
+                  <strong>{ this.state.raw_data[i]["Request Type"] ? this.state.raw_data[i]["Request Type"] : "DISBURSEMENT" } </strong>
                 </a>
             </td>) : 
         (this.state.controlBarVisible[i] ? this.makeControlBar(i) :
@@ -226,7 +226,7 @@ class RequestTable extends Component {
             <a key={"request-type-"+i} 
                href="#/"
                onClick={this.makeOnClickShow(i)}> 
-              { this.state.raw_data[i]["Request Type"] ? this.state.raw_data[i]["Request Type"] : "DISBURSEMENT" } 
+              <strong> { this.state.raw_data[i]["Request Type"] ? this.state.raw_data[i]["Request Type"] : "DISBURSEMENT" } </strong>
             </a>
           </td>)
       );

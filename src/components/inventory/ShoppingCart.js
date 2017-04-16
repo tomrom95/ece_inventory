@@ -84,11 +84,16 @@ class ShoppingCart extends Component {
 	    			.then(function(response) {
 	      				if(response.data.error){
 	        				alert(response.data.error + ". A request was created but was not fulfilled.");
+	      				} 
+	      				else {
+	      					alert("Successfully checked out " + this.state.items.length + " items.");
 	      				}
 				    }.bind(this))
 				    .catch(function(error) {
 				      alert(error);
 				    }.bind(this));
+				} else {
+					alert("Successfully checked out " + this.state.items.length + " items.");
 				}
 			}
 		}.bind(this));
@@ -226,7 +231,7 @@ class ShoppingCart extends Component {
 		var submitDisabled = (this.state.items.length===0) ? "disabled" : "";
  		return (
  			<div>
-                <a className="nav-link userpage-tab" href="#"
+                <a className="nav-link shopping-cart-tab" href="#"
                 		data-toggle="modal"
 						data-target={"#cart-button"}
 						onClick={() => this.loadData()}>
