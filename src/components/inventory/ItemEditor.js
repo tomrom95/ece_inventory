@@ -45,12 +45,14 @@ class ItemEditor extends Component {
 			originalQuantity: props.data.Quantity,
 			showQuantityReason: false,
 			data: props.data,
-			isAsset: props.isAsset,
+			is_asset: props.is_asset,
 			allCustomFields: props.allCustomFields,
 			formIds: [],
 			minstock_enabled: props.data["Min Stock Enabled"],
 			activated: false,
-			justApplied: false
+			justApplied: false,
+			isAsset: props.isAsset,
+			minstock_isEnabled: props.minstock_isEnabled,
 		}
 	}
 
@@ -65,6 +67,12 @@ class ItemEditor extends Component {
 			minstock_enabled: newProps.data["Min Stock Enabled"],
 			activated: this.state.justApplied ? true : false
 		});
+	}
+
+	handleAssetChange(event){
+		this.setState({
+			is_asset: !this.state.is_asset,
+		})
 	}
 
 	handleFormChange(event, label, index) {
@@ -110,6 +118,32 @@ class ItemEditor extends Component {
 				list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
 			}
 		}
+		list.push(
+			<div className="form-group" key={"threshold-enabled-checkbox-div"}>
+				<label key={"threshold-enabled-checkbox-label"} >Enable Min Threshold  </label>
+				<input type="checkbox"
+							checked={this.state.minstock_isEnabled}
+							onChange={e=>this.handleEnableChange()}
+							className="asset-checkbox"
+							ref={"enable-checkbox"}
+							key={"enable-checkbox"}/>
+			</div>
+		);
+		if(!this.props.is_asset){
+			list.push(
+				<div className="form-group" key={"asset-checkbox-div"}>
+					<label key={"asset-checkbox-label"} >Make Asset     </label>
+					<input type="checkbox"
+			          checked={this.state.is_asset}
+			    			onChange={e=>this.handleAssetChange(e)}
+								className="asset-checkbox"
+			          ref={"asset-checkbox"}
+			    			key={"asset-checkbox"}/>
+				</div>
+
+			)
+		}
+
 		list.push(
 			<div key = {"createform-button-bar-row-"+i} className="modal-footer">
 				<button type="button" onClick={() => this.props.callback()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>

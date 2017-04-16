@@ -180,11 +180,11 @@ class InventoryTable extends Component {
 	makeInventoryButtons(data, id) {
 		var list = [];
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
-			
+
 			if (this.state.checkboxesVisible === true) {
 				list.push(<div key={"checkbox-div-"+id}>
-					      	<input key={"checkbox-"+id} 
-					      		   type="checkbox" 
+					      	<input key={"checkbox-"+id}
+					      		   type="checkbox"
 					      		   className="form-check-input inventory-checkbox"
 					      		   onChange={e => this.handleCheckedChange(e, id, data.Name)}
 					      		   checked={this.state.checked[id] || false} />
@@ -271,7 +271,6 @@ class InventoryTable extends Component {
 	makeEditButton(data, id) {
 		return (
 				<ItemEditor data={getPrefill(data)}
-							isAsset={data.meta.isAsset}
 		          api={this.props.api}
 		          callback={this.props.callback}
 		          className="request-button"
@@ -280,8 +279,11 @@ class InventoryTable extends Component {
 		          ref={"edit-"+id}
 							allCustomFields={this.state.allCustomFields}
 							is_asset={data.meta.isAsset}
+							isAsset={data.meta.isAsset}
+							minstock_isEnabled={data.meta.minstock_isEnabled}
+							allTags={this.state.allTags}
+					/>
 
-							allTags={this.state.allTags}/>
         );
 	}
 
@@ -331,7 +333,7 @@ class InventoryTable extends Component {
 	    })
 	}
 
-	setCheckedItemInLocalStorage(itemId, checked) {		
+	setCheckedItemInLocalStorage(itemId, checked) {
 		if (!localStorage.getItem("checkedItems")) {
 			this.clearCheckedBoxes();
 		}

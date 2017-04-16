@@ -101,11 +101,10 @@ class GlobalRequests extends Component {
       url += '?item_id=' + this.state.itemId + "&status=" + this.state.status;
     }
 
-   if (JSON.parse(localStorage.getItem('user')).role !== "ADMIN" 
+   if (JSON.parse(localStorage.getItem('user')).role !== "ADMIN"
         && JSON.parse(localStorage.getItem('user')).role !== "MANAGER") {
       return(<div className="text-center">You are not allowed to access this page.</div>);
     }
-
     else{
       return (
           <PaginationContainer
