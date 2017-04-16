@@ -20,7 +20,7 @@ class BackfillCommentModal extends Component {
           className="btn btn-sm btn-secondary"
           data-toggle="modal"
           data-target={"#backfillLeaveComment-"+this.props.loan_id}>
-          Leave Comment &nbsp;<span className="fa fa-comment-o"></span>
+          Leave Note &nbsp;<span className="fa fa-comment-o"></span>
         </button>
 
         <div className="modal fade"

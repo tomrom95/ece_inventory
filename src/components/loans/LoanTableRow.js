@@ -77,7 +77,6 @@ class LoanTableRow extends Component {
 	}
 
   makeToolkitItems(instances){
-
 		if (instances.length === 0) {
     		return (<p><strong>Something went wrong!</strong></p>);
     	}
@@ -90,7 +89,6 @@ class LoanTableRow extends Component {
     	}
 
     	return str;
-
   }
 
 	makeItemRows() {
@@ -124,11 +122,12 @@ class LoanTableRow extends Component {
 
 			      		(<td className="loan-control-bar-2">
 							<div className="loantable-button" key={key + "-col3"}>
-								<a href="#/" 
-							  	onClick={this.makeOnClickShow(i)}
-							  	key={key + "-status"}> 
+								<button href="#/" 
+							  		onClick={this.makeOnClickShow(i)}
+							  		key={key + "-status"}
+							  		className="btn btn-sm btn-outline-primary"> 
 									<strong>{items[i].status}</strong>
-								</a>
+								</button>
 							</div>
 							<div>
 								<UploadPdfModal item_id={items[i].item._id}
@@ -137,12 +136,18 @@ class LoanTableRow extends Component {
 										key={key+"-request-backfill-button"}
 										className="loantable-button" />
 							</div>
+							{ items[i].backfill_rejected ? 
+								(<div className="backfill-rejected">
+									Backfill Rejected
+								</div>) : null
+							}
 			  	  	 	</td>
 				      ) : items[i].status === "BACKFILL_REQUESTED" ? backfillColumns :
 				      (<td className="status-cell" key={key + "-col3"}>
-				      	<a key = {key + "-status"}>
+				      	<button key={key + "-status"}
+				      			className="btn btn-sm btn-outline-primary">
 			      			<strong>{items[i].status}</strong>
-			      	  	</a>
+			      	  	</button>
 			      	  </td>
 			      	  )
 			  	  }
