@@ -104,7 +104,11 @@ class PaginationContainer extends Component {
 
 	componentWillUnmount() {
 		if (this.source) {
-			this.source.cancel();
+			try {
+				this.source.cancel();
+			} catch (error) {
+				return;
+			}
 		}
 	}
 
@@ -116,6 +120,7 @@ class PaginationContainer extends Component {
 			{cancelToken: this.source.token}
 		)
 	  .then( (response) => {
+			this.source = null;
 	    if (this.state.initialLoad) {
 	      this.setState({initialLoad: false});
 	    }
