@@ -52,6 +52,7 @@ function getPrefill(data) {
 	return ({
 		"Name": data["Name"],
 		"Quantity": data["Quantity"],
+		"Minimum Quantity": data["Minimum Quantity"],
 		"Model Number": data["Model"],
 		"Description": data["Description"],
 		"Vendor Info": data["Vendor"],
@@ -64,6 +65,7 @@ function getEmptyPrefill() {
 	return ({
 		"Name": "",
 		"Quantity": "",
+		"Minimum Quantity": "",
 		"Model Number": "",
 		"Description": "",
 		"Vendor Info": "",
@@ -137,21 +139,21 @@ class InventoryTable extends Component {
 
 		var isManager = JSON.parse(localStorage.getItem('user')).role === "ADMIN"
 				|| JSON.parse(localStorage.getItem('user')).role === "MANAGER";
-
-		var minQtyEditor = this.state.checkboxesVisible ? 
+		var isAdmin = JSON.parse(localStorage.getItem('user')).role === "ADMIN";
+		var minQtyEditor = this.state.checkboxesVisible ?
 							(<li className="nav-item userpage-tab-container">
 								<MinQuantityEditor itemsChecked={this.state.checked}
-									   itemsCheckedNames={this.state.itemsCheckedNames} 
+									   itemsCheckedNames={this.state.itemsCheckedNames}
 									   key={"min-qty-editor"}
 									   api={this.props.api}
 									   clearCheckboxes={() => this.clearCheckedBoxes()} />
-						    </li>) : null;	
+						    </li>) : null;
 
 		return (
 			<div className="row">
 				<div className="col-md-12">
 		            <ul className="nav nav-links inventorypage-tabs-container">
-		            { isManager === false ? null :
+		            { isAdmin === false ? null :
 		              <li className="nav-item userpage-tab-container">
 		                    <CustomFieldsPopup
 										api={this.props.api}
@@ -160,7 +162,7 @@ class InventoryTable extends Component {
 		              </li>
 		          	}
 
-	            	{ isManager === false ? null :
+	            	{ isAdmin === false ? null :
 		              <li className="nav-item userpage-tab-container">
 		                    <CustomFieldListPopup
 										api={this.props.api}
@@ -190,7 +192,7 @@ class InventoryTable extends Component {
 						}
 		            </ul>
 
-		            { isManager ? 
+		            { isManager ?
 			            (<ul className="nav nav-links inventorypage-tabs-container">
 			              <li className="nav-item userpage-tab-container">
 		                    <a className="nav-link userpage-tab" href="#"
@@ -260,11 +262,11 @@ class InventoryTable extends Component {
 	makeInventoryButtons(data, id) {
 		var list = [];
 		if (JSON.parse(localStorage.getItem('user')).role === "ADMIN" || JSON.parse(localStorage.getItem('user')).role === "MANAGER") {
-			
+
 			if (this.state.checkboxesVisible === true) {
 				list.push(<div key={"checkbox-div-"+id}>
-					      	<input key={"checkbox-"+id} 
-					      		   type="checkbox" 
+					      	<input key={"checkbox-"+id}
+					      		   type="checkbox"
 					      		   className="form-check-input inventory-checkbox"
 					      		   onChange={e => this.handleCheckedChange(e, id, data.Name)}
 					      		   checked={this.state.checked[id] || false} />
@@ -351,7 +353,6 @@ class InventoryTable extends Component {
 	makeEditButton(data, id) {
 		return (
 				<ItemEditor data={getPrefill(data)}
-							isAsset={data.meta.isAsset}
 		          api={this.props.api}
 		          callback={this.props.callback}
 		          className="request-button"
@@ -360,8 +361,11 @@ class InventoryTable extends Component {
 		          ref={"edit-"+id}
 							allCustomFields={this.state.allCustomFields}
 							is_asset={data.meta.isAsset}
+							isAsset={data.meta.isAsset}
+							minstock_isEnabled={data.meta.minstock_isEnabled}
+							allTags={this.state.allTags}
+					/>
 
-							allTags={this.state.allTags}/>
         );
 	}
 
@@ -411,7 +415,7 @@ class InventoryTable extends Component {
 	    })
 	}
 
-	setCheckedItemInLocalStorage(itemId, checked) {		
+	setCheckedItemInLocalStorage(itemId, checked) {
 		if (!localStorage.getItem("checkedItems")) {
 			this.clearCheckedBoxes();
 		}

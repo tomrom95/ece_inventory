@@ -14,7 +14,6 @@ var https = require('https');
 var path = require('path');
 var fileUpload = require('express-fileupload');
 
-
 var app = express();
 var api_router = require('./server/router/api_router/apiRouter');
 var auth_router = require('./server/router/auth_router/authRouter');
@@ -88,6 +87,7 @@ app.use('/auth', auth_router);
 
 // Places a try catch around all requests. The server never stops
 app.use(function (error, req, res, next) {
+  console.log("SERVER ERROR!");
   console.error(error);
   res.status(500);
   res.send({error: 'A server error has occured.'});

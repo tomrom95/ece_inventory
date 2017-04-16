@@ -94,8 +94,12 @@ module.exports.getAPIbyID = function (req,res){
 module.exports.putAPI = function (req, res){
   var newItems = req.body.items;
   // Error checking with items array;
-  if(newItems instanceof Array === false) return res.send({error:'Items must be an array'});
-  if(newItems.length <= 0) return res.send({error: 'You must enter at least one item to change'});
+  if(newItems){
+    if(newItems instanceof Array === false) return res.send({error:'Items must be an array'});
+    if(newItems.length <= 0) return res.send({error: 'You must enter at least one item to change'});
+  } else {
+    newItems = [];
+  }
   Loan.findById(req.params.loan_id, function(err, loan){
     if(err) return res.send({error:err});
     if (!loan) return res.send({error: 'Loan does not exist'});
@@ -133,7 +137,7 @@ module.exports.putAPI = function (req, res){
       }
     }
     loan.lastModified = new Date();
-    if(loan.manager_comment) loan.manager_comment = req.body.manager_comment;
+    if(req.body.manager_comment) loan.manager_comment = req.body.manager_comment;
     Promise.all(returnPromises).then(function() {
       loan.save(function(error, loan){
         if (error) return res.send({error: error});
