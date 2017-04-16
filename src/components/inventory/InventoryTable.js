@@ -52,12 +52,14 @@ function getPrefill(data) {
 	return ({
 		"Name": data["Name"],
 		"Quantity": data["Quantity"],
-		"Minimum Quantity": data["Minimum Quantity"],
 		"Model Number": data["Model"],
 		"Description": data["Description"],
 		"Vendor Info": data["Vendor"],
 		"Tags": data["Tags"],
-		"custom_fields": data["custom_fields"]
+		"custom_fields": data["custom_fields"],
+		"Min Stock Enabled": data["minstock_isEnabled"],
+		"Min Stock Threshold": data["minstock_threshold"]
+
 	});
 }
 
@@ -65,12 +67,13 @@ function getEmptyPrefill() {
 	return ({
 		"Name": "",
 		"Quantity": "",
-		"Minimum Quantity": "",
 		"Model Number": "",
 		"Description": "",
 		"Vendor Info": "",
 		"Tags": "",
-		"custom_fields": ""
+		"custom_fields": "",
+		"Min Stock Enabled": "",
+		"Min Stock Threshold": ""
 	});
 }
 
@@ -133,91 +136,6 @@ class InventoryTable extends Component {
       .catch(function(error) {
         console.log(error);
       });
-	}
-
-	render() {
-
-		var isManager = JSON.parse(localStorage.getItem('user')).role === "ADMIN"
-				|| JSON.parse(localStorage.getItem('user')).role === "MANAGER";
-		var isAdmin = JSON.parse(localStorage.getItem('user')).role === "ADMIN";
-		var minQtyEditor = this.state.checkboxesVisible ?
-							(<li className="nav-item userpage-tab-container">
-								<MinQuantityEditor itemsChecked={this.state.checked}
-									   itemsCheckedNames={this.state.itemsCheckedNames}
-									   key={"min-qty-editor"}
-									   api={this.props.api}
-									   clearCheckboxes={() => this.clearCheckedBoxes()} />
-						    </li>) : null;
-
-		return (
-			<div className="row">
-				<div className="col-md-12">
-		            <ul className="nav nav-links inventorypage-tabs-container">
-		            { isAdmin === false ? null :
-		              <li className="nav-item userpage-tab-container">
-		                    <CustomFieldsPopup
-										api={this.props.api}
-										key={"makefields-button"}
-										callback={this.setCustomFields.bind(this)}/>
-		              </li>
-		          	}
-
-	            	{ isAdmin === false ? null :
-		              <li className="nav-item userpage-tab-container">
-		                    <CustomFieldListPopup
-										api={this.props.api}
-										key={"editfields-button"}
-										callback={this.setCustomFields.bind(this)}
-										allCustomFields={this.state.allCustomFields}/>
-		              </li>
-		          	}
-
-
-		              <li className="nav-item userpage-tab-container">
-	                    	<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>
-		              </li>
-						{ isManager === false ? null :
-							<li className="nav-item userpage-tab-container">
-										<BulkImportButton
-							key={"bulkimport-button"}
-							api={this.props.api}
-							callback={this.props.callback}/>
-							</li>
-
-						}
-						{ isManager === false ? null :
-							<li className="nav-item userpage-tab-container">
-								<ImportHelpButton />
-							</li>
-						}
-		            </ul>
-
-		            { isManager ?
-			            (<ul className="nav nav-links inventorypage-tabs-container">
-			              <li className="nav-item userpage-tab-container">
-		                    <a className="nav-link userpage-tab" href="#"
-								onClick={() => this.toggleCheckboxes()}>
-								{this.state.checkboxesVisible ? "Hide Checkboxes" : "Select Multiple"}
-							</a>
-			              </li>
-			              {minQtyEditor}
-			            </ul>) : null }
-		        </div>
-
-				<div className="row maintable-container">
-					<table className="table table-sm maintable-body">
-					  <thead className="thread">
-					    <tr>
-				    	  {this.makeColumnKeyElements(this.state.columnKeys)}
-					    </tr>
-					  </thead>
-					  <tbody>
-					  	{this.makeRows(this.state.rows)}
-					  </tbody>
-					</table>
-				</div>
-			</div>
-		);
 	}
 
 	makeColumnKeyElements(keys) {
@@ -436,7 +354,91 @@ class InventoryTable extends Component {
 		});
 	}
 
-}
+	render() {
 
+		var isManager = JSON.parse(localStorage.getItem('user')).role === "ADMIN"
+				|| JSON.parse(localStorage.getItem('user')).role === "MANAGER";
+		var isAdmin = JSON.parse(localStorage.getItem('user')).role === "ADMIN";
+
+		var minQtyEditor = this.state.checkboxesVisible ? 
+							(<li className="nav-item userpage-tab-container">
+								<MinQuantityEditor itemsChecked={this.state.checked}
+									   itemsCheckedNames={this.state.itemsCheckedNames} 
+									   key={"min-qty-editor"}
+									   api={this.props.api}
+									   clearCheckboxes={() => this.clearCheckedBoxes()} />
+						    </li>) : null;	
+
+		return (
+			<div className="row">
+				<div className="col-md-12">
+		            <ul className="nav nav-links inventorypage-tabs-container">
+		            { isAdmin === false ? null :
+		              <li className="nav-item userpage-tab-container">
+		                    <CustomFieldsPopup
+										api={this.props.api}
+										key={"makefields-button"}
+										callback={this.setCustomFields.bind(this)}/>
+		              </li>
+		          	}
+
+	            	{ isAdmin === false ? null :
+		              <li className="nav-item userpage-tab-container">
+		                    <CustomFieldListPopup
+										api={this.props.api}
+										key={"editfields-button"}
+										callback={this.setCustomFields.bind(this)}
+										allCustomFields={this.state.allCustomFields}/>
+		              </li>
+		          	}
+
+						{ isManager === false ? null :
+							<li className="nav-item userpage-tab-container">
+										<BulkImportButton
+							key={"bulkimport-button"}
+							api={this.props.api}
+							callback={this.props.callback}/>
+							</li>
+
+						}
+						{ isManager === false ? null :
+							<li className="nav-item userpage-tab-container">
+								<ImportHelpButton />
+							</li>
+						}
+
+						<li className="nav-item userpage-tab-container">
+	                    	<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>
+		              	</li>
+		            </ul>
+
+		            { isManager ? 
+			            (<ul className="nav nav-links inventorypage-tabs-container">
+			              <li className="nav-item userpage-tab-container">
+		                    <a className="nav-link userpage-tab" href="#"
+								onClick={() => this.toggleCheckboxes()}>
+								{this.state.checkboxesVisible ? "Hide Checkboxes" : "Select Multiple"}
+							</a>
+			              </li>
+			              {minQtyEditor}
+			            </ul>) : null }
+		        </div>
+
+				<div className="row maintable-container">
+					<table className="table table-sm maintable-body">
+					  <thead className="thread">
+					    <tr>
+				    	  {this.makeColumnKeyElements(this.state.columnKeys)}
+					    </tr>
+					  </thead>
+					  <tbody>
+					  	{this.makeRows(this.state.rows)}
+					  </tbody>
+					</table>
+				</div>
+			</div>
+		);
+	}
+}
 
 export default InventoryTable

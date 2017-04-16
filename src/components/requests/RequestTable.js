@@ -376,9 +376,27 @@ class RequestTable extends Component {
 
   }
 
+  fulfillRequest(index){
+    this.props.api.patch('/api/requests/' + this.state.raw_data[index]._id,
+      {
+        action: "FULFILL",
+      }
+    )
+    .then(function(response) {
+      if(response.data.error){
+        alert(response.data.error);
+      }
+      else{
+        this.state.rows[index][3] = 'FULFILLED';
+        this.props.callback();
+        this.forceUpdate();
+      }
+    }.bind(this))
+    .catch(function(error) {
+      console.log(error);
+    }.bind(this));
 
-
-
+  }
 
   deleteRequest(index){
     this.props.api.delete('/api/requests/' + this.state.raw_data[index]._id)

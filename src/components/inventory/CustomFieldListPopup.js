@@ -37,10 +37,7 @@ class CustomFieldListPopup extends Component {
     });
   }
 
-	componentWillMount(){
-
-
-
+	componentWillMount() {
     //this.loadData();
 	}
 
@@ -117,17 +114,25 @@ class CustomFieldListPopup extends Component {
             </div>
 
             <div className="form-group row">
-              <div className="col-sm-8">
-								<div className="row">
-									<label key={"privacy-row-"+row+"-"+field._id} htmlFor={field._id+"-PRIVACY"}>Private</label>
-		              {is_private}
+              <div className="col-md-8">
+								<div className="form-group row customfield-maker-isprivate">
+                  <div className="col-xs-10">
+									   <label key={"privacy-row-"+row+"-"+field._id} htmlFor={field._id+"-PRIVACY"}>Private</label>
+                  </div>
+                  <div className="col-xs-2 customfield-maker-checkbox">
+		                {is_private}
+                  </div>
 								</div>
-                <div className="row">
-									<label key={"perInstance-row-"+row+"-"+field._id} htmlFor={field._id+"-perinstance"}>Per Instance</label>
-		               {perInstance}
+                <div className="form-group row customfield-maker-isprivate">
+                  <div className="col-xs-10">
+									   <label key={"perInstance-row-"+row+"-"+field._id} htmlFor={field._id+"-perinstance"}>Per Instance</label>
+                  </div>
+                  <div className="col-xs-2 customfield-maker-checkbox">
+		                  {perInstance}
+                  </div>
 								</div>
               </div>
-							<div className="col-sm-4 customfield-apply">
+							<div className="col-md-4 customfield-apply">
                   {
                     this.state.changed[row] === true ?
                     <button type="button"

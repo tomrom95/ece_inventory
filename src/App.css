@@ -372,6 +372,15 @@ input[type=checkbox].inventory-checkbox {
   margin-top: 1%;
 }
 
+.shopping-cart-tab {
+  background-color: rgba(0,120,255,0.9);
+  font-weight: bold;
+  color: white;
+  margin-right: 20px;
+  text-align: center;
+  border-radius: 3px;
+}
+
 .userpage-tab {
   background-color: rgba(255,255,255,0.87);
   font-weight: bold;
@@ -382,7 +391,7 @@ input[type=checkbox].inventory-checkbox {
 
 .userpage-tab-container {
   min-width: 15%;
-  margin-top: -23px;
+  margin-top: -20px;
   margin-left: 5px;
 }
 
@@ -686,6 +695,12 @@ input[type=checkbox].inventory-checkbox {
   color: black;
 }
 
+.loan-comment-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
 .loan-details {
   white-space: pre-wrap;
 }
@@ -703,8 +718,46 @@ input[type=checkbox].inventory-checkbox {
   margin-right: 3%;
 }
 
+.loantable-button-2 {
+  margin-left: 10%;
+}
+
 .loan-control-bar {
-  width: 260px;
+  width: 260px!important;
+}
+
+.loan-control-bar-2 {
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:-ms-flexbox;
+  display:flex;
+  -webkit-flex-wrap:wrap;
+  -ms-flex-wrap:wrap;
+  flex-wrap:wrap;
+  max-width: 200px;
+}
+
+.loan-control-bar-3 {
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:-ms-flexbox;
+  display:flex;
+  -webkit-flex-wrap:wrap;
+  -ms-flex-wrap:wrap;
+  flex-wrap:wrap;
+  min-width: 400px;
+}
+
+.loan-control-bar-container {
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:-ms-flexbox;
+  display:flex;
+  -webkit-flex-wrap:wrap;
+  -ms-flex-wrap:wrap;
+  flex-wrap:wrap;
+  margin-right: -200px;
+  width: 600px;
 }
 
 .request-control-bar {
@@ -742,7 +795,8 @@ input[type=checkbox].inventory-checkbox {
 }
 
 .customfield-apply {
-  margin-left: 52.8%;
+  position: absolute;
+  right: 0;
 }
 
 .custom-field-buttons > button{

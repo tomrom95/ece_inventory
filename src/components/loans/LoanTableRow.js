@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../../App.css';
 import { Tooltip } from 'reactstrap';
 import UploadPdfModal from './UploadPdfModal.js';
+import BackfillCommentModal from './BackfillCommentModal.js';
 
 function formatDate(dateString) {
   var i;
@@ -96,66 +97,72 @@ class LoanTableRow extends Component {
 		var items = this.state.items;
 		var list = [];
 		var i;
+		var role = JSON.parse(localStorage.getItem("user")).role;
+		
 		for (i=0; i<items.length; i++) {
-
 			var key = "loan-item-id-"+items[i]._id;
 			var backfillColumns = [];
 
 			backfillColumns.push(
-				<td className="loan-control-bar" key={key+"-backfill-status"}>
-					{items[i].status}
+				<td className="loan-control-bar-container" key={key+"-backfill-status"}>
+					<div className="loantable-button">
+						<strong>{items[i].status}</strong>
+					</div>
 					{this.makeBackfillControlBar(i)}
 				</td>
 			);
-      var role = JSON.parse(localStorage.getItem("user")).role;
+      		
 			list.push(
 			    <tr key={key} id={items[i].item.name}>
 			      <td key={key + "-col1"}>{items[i].item.name}</td>
 			      <td key={key + "-col2"}>{items[i].quantity}</td>
-			      {
+			      { 
+
+
 			      	(this.state.controlBarVisible[i] && (role === "ADMIN" || role === "MANAGER")) === true ? this.makeControlBar(i) :
+				      items[i].status === "LENT" ? 
 
-				      items[i].status === "LENT" ?
-				      (<div>
-				      	<td className="status-cell" key={key + "-col3"}>
-				      	<a href="#/"
-					      	onClick={this.makeOnClickShow(i)}
-					      	key={key + "-status"}>
-				      		{items[i].status}
-				      	</a>
-				      </td>
-				      <td key={key+"-request-backfill-button"}>
-				      	<UploadPdfModal item_id={items[i].item._id}
-				      					loan_id={this.state._id}
-				      					submitBackfillRequest={this.makeOnClickBackfillRequest(i, "BACKFILL_REQUESTED")} />
-			  	  	  </td>
-			  	  	 </div>
-
+			      		(<td className="loan-control-bar-2">
+							<div className="loantable-button" key={key + "-col3"}>
+								<a href="#/" 
+							  	onClick={this.makeOnClickShow(i)}
+							  	key={key + "-status"}> 
+									<strong>{items[i].status}</strong>
+								</a>
+							</div>
+							<div>
+								<UploadPdfModal item_id={items[i].item._id}
+										loan_id={this.state._id}
+										submitBackfillRequest={this.makeOnClickBackfillRequest(i, "BACKFILL_REQUESTED")}
+										key={key+"-request-backfill-button"}
+										className="loantable-button" />
+							</div>
+			  	  	 	</td>
 				      ) : items[i].status === "BACKFILL_REQUESTED" ? backfillColumns :
 				      (<td className="status-cell" key={key + "-col3"}>
 				      	<a key = {key + "-status"}>
-			      			{items[i].status}
+			      			<strong>{items[i].status}</strong>
 			      	  	</a>
 			      	  </td>
 			      	  )
 			  	  }
 			    </tr>
 			);
-      if(items[i].instances !== null){
-        if(items[i].instances.length > 0){
-          list.push(
-            <Tooltip placement="bottom"
-               isOpen={this.state.tooltipOpenMap[i]}
-               target={items[i].item.name}
-               toggle={this.toggle.bind(this, i)}
-               autohide={false}
-               key={items[i]._id}>
-               {this.makeToolkitItems(items[i].instances)}
-            </Tooltip>
-          );
-        }
 
-      }
+		      if(items[i].instances !== null) {
+		        if(items[i].instances.length > 0){
+		          list.push(
+		            <Tooltip placement="bottom"
+		               isOpen={this.state.tooltipOpenMap[i]}
+		               target={items[i].item.name}
+		               toggle={this.toggle.bind(this, i)}
+		               autohide={false}
+		               key={items[i]._id}>
+		               {this.makeToolkitItems(items[i].instances)}
+		            </Tooltip>
+		          );
+		        }
+		      }
 		}
 		return list;
 	}
@@ -183,6 +190,15 @@ class LoanTableRow extends Component {
 		var context = this;
 		return function() {
 			func(i, status, context);
+			return false;
+		}
+	}
+
+	makeOnClickCommentSend(comment) {
+		var func = this.sendComment;
+		var context = this;
+		return function() {
+			func(comment, context);
 			return false;
 		}
 	}
@@ -257,25 +273,24 @@ class LoanTableRow extends Component {
 
 		if (role === "MANAGER" || role === "ADMIN") {
 			return (
-				<div>
-					<div key={"backfill-controlBar-"+rowIndex}>
-						<button type="button"
-								className="btn btn-sm btn-outline-success"
-								onClick={() => this.approveBackfill(rowIndex)}>
-					    	APPROVE
-				        </button>
-				        <button type="button"
-				        		className="btn btn-sm btn-outline-danger"
-				        		onClick={() => this.denyBackfill(rowIndex)}>
-					    	DENY
-				        </button>
+					<div className="loan-control-bar-3" key={"backfill-controlBar-"+rowIndex}>
 				        <a target={href==="#/" ? "" : "_blank"}
 				        	href={href}
-				        	onClick={href==="#/" ? (() => alert("No PDF uploaded for this backfill request")) : null}>
-				        	<strong>View PDF</strong>
+				        	className="btn btn-sm btn-secondary loantable-button"
+				        	onClick={href==="#/" ? (() => alert("No attachment uploaded for this backfill request")) : null}>
+				        	<span className="fa fa-paperclip"></span>
 			        	</a>
-			        </div>
-		        </div>);
+						<button type="button" 
+								className="btn btn-sm btn-outline-success loantable-button"
+								onClick={() => this.approveBackfill(rowIndex)}>
+					    	<span className="fa fa-check"></span>
+				        </button>
+				        <button type="button" 
+				        		className="btn btn-sm btn-outline-danger loantable-button"
+				        		onClick={() => this.denyBackfill(rowIndex)}>
+					    	<span className="fa fa-times"></span>
+				        </button>
+			        </div>);
 		}
 		else return null;
 	}
@@ -354,7 +369,36 @@ class LoanTableRow extends Component {
 			});
 	}
 
+	sendComment(comment, context) {
+		var items = context.state.items;
+		var loanId = context.state._id;
+		var param = {items: []};
+
+		for (var i=0; i<items.length; i++) {
+			param.items.push({item: items[i].item._id, status: items[i].status})
+		}
+
+		param.manager_comment = comment;
+		console.log(param);
+
+		context.props.api.put("api/loans/"+loanId, param)
+		.then(response => {
+			if (response.data.error) {
+				alert(response.data.error);
+			}
+			else {
+				context.props.callback();
+				console.log(response.data);
+			}
+			});
+	}
+
+
 	render() {
+
+		var isManager = JSON.parse(localStorage.getItem('user')).role === "ADMIN"
+				|| JSON.parse(localStorage.getItem('user')).role === "MANAGER";
+				
 		return (
 		    <li className="list-group-item">
 				<div className="container loan-details">
@@ -370,6 +414,17 @@ class LoanTableRow extends Component {
 		    		<div className="row">
 		    			<strong>Reviewer Comment:  </strong> {this.state.reviewer_comment ? this.state.reviewer_comment : "N/A"}
 		    		</div>
+
+		    		{ isManager ?
+			    		<div className="loan-comment-button">
+					        <BackfillCommentModal loan_id={this.state._id} 
+							  sendComment={comment => this.makeOnClickCommentSend(comment)}
+							  api={this.props.api}/>
+						 </div> : null
+					}
+
+
+
 		    		<br></br>
 		    		<div className="row">
 			    		<table className="table table-sm table-hover" id={this.state._id}>

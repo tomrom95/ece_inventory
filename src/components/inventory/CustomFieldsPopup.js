@@ -55,11 +55,10 @@ class CustomFieldsPopup extends Component {
 
 		var is_private =
 			<input type="checkbox"
-	      checked={this.state.isPrivate}
+	      		checked={this.state.isPrivate}
 				onChange={this.handleInputChange.bind(this)}
 				key={"field_isPrivate"}
-        name="isPrivate"
-      >
+        		name="isPrivate">
 			</input>
 
     var perInstance =
@@ -91,7 +90,7 @@ class CustomFieldsPopup extends Component {
 						{is_private}
 					</div>
 				</div>
-        <div className="form-group row customfield-maker-isprivate">
+        		<div className="form-group row customfield-maker-isprivate">
 					<div className="col-xs-10">
 						<label htmlFor={"createform-row-"}>Per Instance</label>
 					</div>
