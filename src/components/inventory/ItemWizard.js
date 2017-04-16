@@ -247,10 +247,10 @@ class ItemWizard extends Component {
 		        		alert(response.data.error.errmsg);
 			        } else {
 			        	this.props.callback();
-			        	this.clearForm();
 			        	this.setState({
 			        		justApplied: true
 			        	});
+			        	this.clearForm();
 			        	alert("Successfully created new item: " + response.data.name);
 			        }
 			      }.bind(this))
@@ -261,22 +261,25 @@ class ItemWizard extends Component {
   	}
 
   	clearForm() {
-			var data = this.state.data;
-			this.setState({
-				data: data,
-				isAsset: false,
-			});
+		var data = this.state.data;
+		this.setState({
+			isAsset: false,
+		});
   		var keys = getKeys(this.state.data);
 			keys.forEach(function(key) {
-				if(this.refs.length > 0){
-					if (key === "Tags") {
-						this.refs[key].clearTags();
-					} else if (key === "custom_fields"){
-						this.refs.customFields.clearForm();
-					} else {
-						this.refs[key].value = "";
-					}
+				console.log("here!")
+				if (key === "Tags") {
+					this.refs[key].clearTags();
+				} else if (key === "custom_fields") {
+					this.refs.customFields.clearForm();
 				}
+				else if (key === "Min Stock Enabled") {
+					this.refs["minstock_enabled"].checked = false
+				} else {
+					console.log("clearing")
+					this.refs[key].value = "";
+				}
+				
 			}.bind(this));
   	}
 

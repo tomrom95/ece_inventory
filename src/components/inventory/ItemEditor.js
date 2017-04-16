@@ -118,17 +118,7 @@ class ItemEditor extends Component {
 				list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
 			}
 		}
-		list.push(
-			<div className="form-group" key={"threshold-enabled-checkbox-div"}>
-				<label key={"threshold-enabled-checkbox-label"} >Enable Min Threshold  </label>
-				<input type="checkbox"
-							checked={this.state.minstock_isEnabled}
-							onChange={e=>this.handleEnableChange()}
-							className="asset-checkbox"
-							ref={"enable-checkbox"}
-							key={"enable-checkbox"}/>
-			</div>
-		);
+
 		if(!this.props.is_asset){
 			list.push(
 				<div className="form-group" key={"asset-checkbox-div"}>
