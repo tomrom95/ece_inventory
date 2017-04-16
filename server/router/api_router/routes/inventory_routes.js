@@ -130,19 +130,28 @@ module.exports.postAPI = function(req, res){
   item.tags = trimTags(req.body.tags);
   item.is_asset = req.body.is_asset;
   item.custom_fields = req.body.custom_fields;
+  item.minstock_threshold = req.body.minstock_threshold;
+  item.minstock_isEnabled = req.body.minstock_isEnabled;
   CustomFieldHelpers.validateCustomFields(item.custom_fields, false, function(error, isValid) {
     if (error) return res.send({error: error});
     if (!isValid) return res.send({error: 'Invalid custom fields'});
     item.save(function(err, newItem){
       if(err)
       return res.send({error: err});
-      autoCreateInstances(newItem.quantity, newItem._id, function(error, instances) {
-        if (error) return res.send({error: error});
+      if (newItem.is_asset) {
+        autoCreateInstances(newItem.quantity, newItem._id, function(error, instances) {
+          if (error) return res.send({error: error});
+          Logger.logNewItem(newItem, req.user, function(error) {
+            if (error) return res.send({error: error});
+            return res.json(newItem);
+          });
+        });
+      } else {
         Logger.logNewItem(newItem, req.user, function(error) {
           if (error) return res.send({error: error});
           return res.json(newItem);
         });
-      });
+      }
     });
   });
 };
