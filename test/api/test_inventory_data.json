@@ -8,7 +8,9 @@
       "component",
       "electric",
       "cheap"
-    ]
+    ],
+    "minstock_threshold": 1005,
+    "minstock_isEnabled": true
   },
   {
     "quantity": 1000,
@@ -19,7 +21,9 @@
       "component",
       "electric",
       "cheap"
-    ]
+    ],
+    "minstock_threshold": 1005,
+    "minstock_isEnabled": true
   },
   {
     "quantity": 1000,
@@ -30,7 +34,9 @@
       "component",
       "electric",
       "cheap"
-    ]
+    ],
+    "minstock_threshold": 1005,
+    "minstock_isEnabled": false
   },
   {
     "quantity": 1000,
@@ -41,7 +47,8 @@
       "component",
       "electric",
       "cheap"
-    ]
+    ],
+    "minstock_threshold": 1005
   },
   {
     "quantity": 1000,

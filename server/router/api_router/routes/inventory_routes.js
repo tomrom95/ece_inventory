@@ -20,7 +20,7 @@ module.exports.getAPI = function (req, res) {
     .searchCaseInsensitive('vendor_info', req.query.vendor_info)
     .searchCaseInsensitive('model_number', req.query.model_number)
 
-  if(req.query.lessThanThreshold) query.searchThreshold('minstock_threshold', 'quantity');
+  if(req.query.lessThanThreshold) query = query.searchThreshold();
   // isNaN - checks whether object is not a number
   if(req.query.page && req.query.per_page && !isNaN(req.query.per_page)){
     let paginateOptions = {

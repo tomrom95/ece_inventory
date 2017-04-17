@@ -63,13 +63,11 @@ QueryBuilder.prototype.searchInDateRange = function(name, startDate, endDate) {
   return this;
 }
 
-QueryBuilder.prototype.searchThreshold = function(a, b){
-  // a is greater than b
-  if(a && b){
-    this.queryObject['$where']= "this." + a +">" + "this." + b;
-  }
+QueryBuilder.prototype.searchThreshold = function() {
+  this.queryObject['$where']= "this.minstock_threshold > this.quantity && this.minstock_isEnabled === true";
   return this;
 }
+
 QueryBuilder.prototype.searchCaseInsensitive = function(name, value, trim=true) {
   if (value) {
     value = trim ? value.trim() : value;
