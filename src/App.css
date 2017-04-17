@@ -7,6 +7,10 @@
   height: 80px;
 }
 
+.home-screen {
+  align-items: center;
+}
+
 .App-header {
   background-color: #222;
   height: 20px;

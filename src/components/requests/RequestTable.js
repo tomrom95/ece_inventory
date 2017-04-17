@@ -281,12 +281,20 @@ class RequestTable extends Component {
 				data-target={"#selectInstanceModal"+this.state.raw_data[index]._id} >
 		      Fulfill
 		    </button>
-				<FulfillRequestForm
-					data={this.state.raw_data[index]}
-					row={this.state.rows[index]}
-					api={this.props.api}
-					callback={() => this.props.callback()}
-				/>
+				<div className="modal fade"
+					id={"selectInstanceModal"+this.state.raw_data[index]._id}
+					tabIndex="-1"
+					role="dialog"
+					aria-labelledby="createLabel"
+					aria-hidden="false">
+					<div className="modal-dialog" role="document">
+						<FulfillRequestForm
+							data={this.state.raw_data[index]}
+							api={this.props.api}
+							callback={() => this.props.callback()}
+						/>
+					</div>
+				</div>
 			</td>
     );
   }
