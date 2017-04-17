@@ -34,7 +34,7 @@ class ImportHelpButton extends Component {
           }
         ],
 	"instances": [{
-		"tag": "String,
+		"tag": "String",
 		"custom_fields": [
 		  {
 		    "name": "String",
