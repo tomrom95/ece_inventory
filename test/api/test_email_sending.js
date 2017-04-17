@@ -280,11 +280,11 @@ describe('Email settings API Test', function () {
           user: standardUser._id,
           items: [
             {
-              item: allItems["1k resistor"]._id,
+              item: allItems["100k resistor"]._id,
               quantity: 2
             },
             {
-              item: allItems["2k resistor"]._id,
+              item: allItems["10k resistor"]._id,
               quantity: 5
             },
             {
@@ -318,8 +318,8 @@ describe('Email settings API Test', function () {
           email.cc.should.be.eql(adminUser.email);
           email.bcc.should.be.eql(managerUser.email);
           email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'Inventory Request Fulfilled');
-          email.text.should.include('(2) 1k resistors');
-          email.text.should.include('(5) 2k resistors');
+          email.text.should.include('(2) 100k resistors');
+          email.text.should.include('(5) 10k resistors');
           email.text.should.include('(1) Oscilloscope');
           email.text.should.include('Hello standard,');
           email.text.should.include('has been fulfilled as a disbursement to you by admin.');
@@ -373,8 +373,8 @@ describe('Email settings API Test', function () {
           email.cc.should.be.eql(adminUser.email);
           email.bcc.should.be.eql(managerUser.email);
           email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'Inventory Request Updated');
-          email.text.should.include('(2) 1k resistors');
-          email.text.should.include('(5) 2k resistors');
+          email.text.should.include('(2) 100k resistors');
+          email.text.should.include('(5) 10k resistors');
           email.text.should.include('(1) Oscilloscope');
           email.text.should.include('Hello standard,');
           email.text.should.include('has been updated by admin by changing');
@@ -414,8 +414,8 @@ describe('Email settings API Test', function () {
           should.not.exist(email.cc);
           email.bcc.should.be.eql(managerUser.email);
           email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'Inventory Request Cancelled');
-          email.text.should.include('(2) 1k resistors');
-          email.text.should.include('(5) 2k resistors');
+          email.text.should.include('(2) 100k resistors');
+          email.text.should.include('(5) 10k resistors');
           email.text.should.include('(1) Oscilloscope');
           email.text.should.include('Hello standard,');
           email.text.should.include('has been cancelled.');
@@ -437,8 +437,8 @@ describe('Email settings API Test', function () {
           email.cc.should.be.eql(adminUser.email);
           email.bcc.should.be.eql(managerUser.email);
           email.subject.should.be.eql(currentSettings.subject_tag + ' ' + 'Inventory Request Cancelled');
-          email.text.should.include('(2) 1k resistors');
-          email.text.should.include('(5) 2k resistors');
+          email.text.should.include('(2) 100k resistors');
+          email.text.should.include('(5) 10k resistors');
           email.text.should.include('(1) Oscilloscope');
           email.text.should.include('Hello standard,');
           email.text.should.include('has been cancelled by admin.');

@@ -112,12 +112,16 @@ class UserProfile extends Component {
   }
 
   submitButtonClick() {
-    this.instance.put('/api/users/' + this.state._id, {
-      subscribed: this.refs.subscribedCheckbox.checked,
+    var params = {
       email: this.refs.email.value,
       first_name: this.refs.firstName.value,
       last_name: this.refs.lastName.value
-    }).then(function(response){
+    };
+    if (this.refs.subscribedCheckbox) {
+      params.subscribed = this.refs.subscribedCheckbox.checked
+    }
+    this.instance.put('/api/users/' + this.state._id, params)
+    .then(function(response){
       if (response.data.error) {
         console.log(response.data.error);
       }
@@ -231,7 +235,7 @@ class UserProfile extends Component {
       <div className="userprofile-side-panel">
         <div className="card user-info center-text">
           {userNameField}
-          { this.state.firstName || this.state.lastName ? 
+          { this.state.firstName || this.state.lastName ?
             (<div className="card-block user-card-block">
               <h5 className="card-title row">Name:</h5>
               <p className="card-title row">

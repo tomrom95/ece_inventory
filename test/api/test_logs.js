@@ -193,6 +193,7 @@ describe('Logging API Test', function () {
         .end((err, res) => {
           should.not.exist(err);
           res.should.have.status(200);
+          should.not.exist(res.body.error);
           Log.find({}, function(err, logs) {
             should.not.exist(err);
             logs.length.should.be.eql(1);
