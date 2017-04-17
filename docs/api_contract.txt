@@ -251,7 +251,7 @@ return:
 	}]
 }
 
-/api/inventory/:item_id/:instance_id
+/api/inventory/:item_id/instances/:instance_id
 PUT
 body:
 {
@@ -534,12 +534,10 @@ return:
 PUT
 body:
 {
-  items: [
-  {
-	name: String,
-	quantity: Integer
-  }
-  ],
+  items: [{
+		item: String, // item id
+		quantity: Integer
+  }],
   reason: String [optional],
   created: String [optional],
   status: String [optional],
@@ -729,9 +727,9 @@ return: {
 	}]
 }
 PUT
-params: [{
+params: {
 	subject_tag: String
-}]
+}
 return {
 	// email settings object
 }
@@ -814,7 +812,7 @@ PUT
 params: {
 	items: [{
 		item: String, // id
-		status: String, // new status
+		status: String, // ('RETURNED', 'DISBURSED', 'LENT', 'BACKFILL_REQUESTED')
 	}],
 	manager_comment: String
 }
