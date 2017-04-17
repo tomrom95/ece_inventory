@@ -95,6 +95,11 @@ EmailBuilder.prototype.send = function(next, ccManagers=true) {
     if (ccManagers) {
       getManagerEmails((error, managerEmails) => {
         if (error) return next(error);
+        // the case where emails should be sent to managers, but none are subscribed
+        if (managerEmails.length === 0 && !this.message.to && !this.message.cc && !this.message.bcc) {
+          // just do nothing, don't throw error
+          return next();
+        }
         // add all subscribed managers in bcc
         if (this.message.bcc) {
           this.message.bcc += ',' + managerEmails.join();
