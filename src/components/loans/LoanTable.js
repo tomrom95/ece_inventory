@@ -51,7 +51,8 @@ class LoanTable extends Component {
 				created: loanItem.created,
 				modified: loanItem.modified,
 				items: loanItem.items,
-				request_id: loanItem.request_id
+				request_id: loanItem.request_id,
+				manager_comment: loanItem.manager_comment
 			};
 
 			list.push(

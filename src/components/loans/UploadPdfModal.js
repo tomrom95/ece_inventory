@@ -5,7 +5,7 @@ class UploadPdfModal extends Component {
 
   render() {
     return (
-      <div className="loantable-button-2">
+      <div className="loantable-button">
         <button type="button"
           className="btn btn-sm btn-secondary"
           data-toggle="modal"

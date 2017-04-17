@@ -38,9 +38,19 @@ class LoanTableRow extends Component {
 			items: props.params.items,
 			itemsModified: props.params.items,
 			reviewer_comment: props.reviewer_comment,
+			manager_comment: props.params.manager_comment,
 			controlBarVisible: {},
-      tooltipOpenMap: {},
+      		tooltipOpenMap: {}
 		}
+
+		var containsBackfill = false;
+		for (var i=0; i<props.params.items.length; i++) {
+			if (props.params.items[i].status === "BACKFILL_REQUESTED") {
+				containsBackfill = true;
+				break;
+			}
+		}
+		this.state.containsBackfill = containsBackfill;
 	}
 
 	componentWillMount() {
@@ -55,16 +65,23 @@ class LoanTableRow extends Component {
 				});
 			}
 		});
-    var tooltipOpenMap = this.state.tooltipOpenMap;
-    for(var i = 0; i < this.state.items.length; i++){
-      tooltipOpenMap[i] = false;
-    }
-    this.setState({
-      tooltipOpenMap: tooltipOpenMap
-    })
+    	var tooltipOpenMap = this.state.tooltipOpenMap;
+    	for(var i = 0; i < this.state.items.length; i++){
+      		tooltipOpenMap[i] = false;
+    	}
+	    this.setState({
+	      tooltipOpenMap: tooltipOpenMap
+	    });
 	}
 
 	componentWillReceiveProps(newProps) {
+		var containsBackfill = false;
+		for (var i=0; i<newProps.params.items.length; i++) {
+			if (newProps.params.items[i].status === "BACKFILL_REQUESTED") {
+				containsBackfill = true;
+				break;
+			}
+		}
 		this.setState({
 			_id: newProps.params._id,
 			user: newProps.params.user,
@@ -73,11 +90,12 @@ class LoanTableRow extends Component {
 			items: newProps.params.items,
 			itemsModified: newProps.params.items,
 			reviewer_comment: newProps.reviewer_comment,
+			manager_comment: newProps.params.manager_comment,
+			containsBackfill: containsBackfill
 		});
 	}
 
   makeToolkitItems(instances){
-
 		if (instances.length === 0) {
     		return (<p><strong>Something went wrong!</strong></p>);
     	}
@@ -90,7 +108,6 @@ class LoanTableRow extends Component {
     	}
 
     	return str;
-
   }
 
 	makeItemRows() {
@@ -124,11 +141,12 @@ class LoanTableRow extends Component {
 
 			      		(<td className="loan-control-bar-2">
 							<div className="loantable-button" key={key + "-col3"}>
-								<a href="#/" 
-							  	onClick={this.makeOnClickShow(i)}
-							  	key={key + "-status"}> 
+								<button href="#/" 
+							  		onClick={this.makeOnClickShow(i)}
+							  		key={key + "-status"}
+							  		className="btn btn-sm btn-outline-primary"> 
 									<strong>{items[i].status}</strong>
-								</a>
+								</button>
 							</div>
 							<div>
 								<UploadPdfModal item_id={items[i].item._id}
@@ -137,12 +155,18 @@ class LoanTableRow extends Component {
 										key={key+"-request-backfill-button"}
 										className="loantable-button" />
 							</div>
+							{ items[i].backfill_rejected ? 
+								(<div className="backfill-rejected">
+									Backfill Rejected
+								</div>) : null
+							}
 			  	  	 	</td>
 				      ) : items[i].status === "BACKFILL_REQUESTED" ? backfillColumns :
 				      (<td className="status-cell" key={key + "-col3"}>
-				      	<a key = {key + "-status"}>
+				      	<button key={key + "-status"}
+				      			className="btn btn-sm btn-outline-primary">
 			      			<strong>{items[i].status}</strong>
-			      	  	</a>
+			      	  	</button>
 			      	  </td>
 			      	  )
 			  	  }
@@ -379,7 +403,6 @@ class LoanTableRow extends Component {
 		}
 
 		param.manager_comment = comment;
-		console.log(param);
 
 		context.props.api.put("api/loans/"+loanId, param)
 		.then(response => {
@@ -388,9 +411,8 @@ class LoanTableRow extends Component {
 			}
 			else {
 				context.props.callback();
-				console.log(response.data);
 			}
-			});
+		});
 	}
 
 
@@ -414,6 +436,11 @@ class LoanTableRow extends Component {
 		    		<div className="row">
 		    			<strong>Reviewer Comment:  </strong> {this.state.reviewer_comment ? this.state.reviewer_comment : "N/A"}
 		    		</div>
+		    		{ (isManager && this.state.containsBackfill === true) ? 
+			    		(<div className="row">
+			    			<strong>Manager Backill Note:  </strong> {this.state.manager_comment ? this.state.manager_comment : "N/A"}
+			    		</div>) : null
+		    		}
 
 		    		{ isManager ?
 			    		<div className="loan-comment-button">
