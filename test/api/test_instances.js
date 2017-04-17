@@ -31,13 +31,13 @@ const customFieldJSON = [
   {
     name: "serial_number",
     type: "SHORT_STRING",
-    isPrivate: true,
+    isPrivate: false,
     perInstance: true,
   },
   {
     name: "instance_price",
     type: "FLOAT",
-    isPrivate: false,
+    isPrivate: true,
     perInstance: true,
   }
 ];
@@ -158,6 +158,78 @@ describe('Instance API Test', function() {
           instance.tag.should.include("1");
         });
         done();
+      });
+    });
+
+    it('Only returns non-private fields for standard user', (done) => {
+      var testInstance = new Instance({
+        tag: 'private',
+        in_stock: false,
+        custom_fields: [
+          {
+            field: defaultFields["instance_price"]._id, //private
+            value: 5.0
+          },
+          {
+            field: defaultFields["serial_number"]._id,
+            value: "1234"
+          }
+        ],
+        item: firstItemId
+      });
+      testInstance.save(function(error, testInstance) {
+        should.not.exist(error);
+        chai.request(server)
+        .get('/api/inventory/'+firstItemId+'/instances')
+        .set('Authorization', standardToken)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.forEach(function(instance) {
+            instance.custom_fields.forEach(function(fieldObj) {
+              String(fieldObj.field).should.not.be.eql(String(defaultFields["instance_price"]._id));
+            });
+          });
+          done();
+        });
+      });
+    });
+
+    it('Returns all fields for admin user', (done) => {
+      var testInstance = new Instance({
+        tag: 'private',
+        in_stock: false,
+        custom_fields: [
+          {
+            field: defaultFields["instance_price"]._id, //private
+            value: 5.0
+          },
+          {
+            field: defaultFields["serial_number"]._id,
+            value: "1234"
+          }
+        ],
+        item: firstItemId
+      });
+      testInstance.save(function(error, testInstance) {
+        should.not.exist(error);
+        chai.request(server)
+        .get('/api/inventory/'+firstItemId+'/instances')
+        .set('Authorization', token)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          var foundInstance = res.body.find(function(instance) {
+            return String(instance._id) === String(testInstance._id);
+          });
+          var foundField = foundInstance.custom_fields.find(function(fieldObj) {
+            return String(fieldObj.field) === String(defaultFields["instance_price"]._id);
+          });
+          should.exist(foundField);
+          done();
+        });
       });
     });
   });

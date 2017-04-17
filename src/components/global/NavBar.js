@@ -28,6 +28,13 @@ class NavBar extends Component {
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav mr-auto">
               <li className="nav-item">
+                <Link to="/"
+                      className={"nav-link" + (this.state.activeTab === "/" ? " active" : "")}
+                      onClick={() => this.setActiveTab("/")}>
+                      HOME
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link to="/UserProfile"
                       className={"nav-link" + (this.state.activeTab === "/UserProfile" ? " active" : "")}
                       onClick={() => this.setActiveTab("/UserProfile")}>

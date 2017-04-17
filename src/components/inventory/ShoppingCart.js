@@ -94,27 +94,12 @@ class ShoppingCart extends Component {
 				this.setState({
 					requestSubmitted: true,
 				})
-				console.log(response.data);
 				if (this.state.checked === true && this.state.actionType === "Fulfill to User") {
 					this.setState({
 						needToFulfill: true,
 						current_request: this.refineRequestData(response.data.request),
 					});
 
-					// this.props.api.patch('/api/requests/' + requestId, { action: "FULFILL" })
-	    		// 	.then(function(response) {
-	      	// 			if(response.data.error){
-	        // 				alert(response.data.error + ". A request was created but was not fulfilled.");
-	      	// 			}
-	      	// 			else {
-	      	// 				alert("Successfully checked out " + this.state.items.length + " items.");
-	      	// 			}
-				  //   }.bind(this))
-				  //   .catch(function(error) {
-				  //     alert(error);
-				  //   }.bind(this));
-				} else {
-					alert("Successfully checked out " + this.state.items.length + " items.");
 				}
 			}
 		}.bind(this));
@@ -244,14 +229,17 @@ class ShoppingCart extends Component {
 
 	clearCheckbox() {
 		this.setState({
-			checked: false
+			checked: false,
+			needToFulfill: false,
+			requestSubmitted: false,
 		});
 	}
+
 
 	render() {
 		var submitDisabled = (this.state.items.length===0) ? "disabled" : "";
 
-
+		var assign_success = "Successfully checked out "  + this.state.items.length + " items."
 		var EndForm = (
 			<div className="modal-content cart-modal">
 				<div className="modal-header">
@@ -260,7 +248,7 @@ class ShoppingCart extends Component {
 					</h5>
 				</div>
 				<div className="modal-body">
-
+					{assign_success}
 				</div>
 				<div className="modal-footer">
 					<button type="button"
@@ -278,6 +266,7 @@ class ShoppingCart extends Component {
 				data={this.state.current_request}
 				api={this.props.api}
 				callback={() => this.props.callback()}
+				clearForm={() => this.clearCheckbox()}
 			/>
 		);
 
@@ -325,6 +314,9 @@ class ShoppingCart extends Component {
 		else{
 			if(this.state.needToFulfill){
 				body = fulfillForm;
+			}
+			else{
+				body = EndForm;
 			}
 		}
  		return (

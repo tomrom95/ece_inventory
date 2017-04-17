@@ -31,7 +31,23 @@ class FilterBox extends Component {
     var modelNumber = this.refs.model.value;
     var required = this.refs.required.getSelectedTags();
     var excluded = this.refs.excluded.getSelectedTags();
-    this.props.filterItems(name, modelNumber, required, excluded);
+    var showBelowMinStock = this.refs.belowMinStock.checked;
+    this.props.filterItems(name, modelNumber, required, excluded, showBelowMinStock);
+  }
+
+  makeMinThresholdCheckBox(){
+    return (
+      <div className="row request-quantity" >
+        <div className="col-xs-10">
+          <label>Below Minimum Threshold</label>
+        </div>
+        <div className="col-xs-2 cart-checkbox">
+          <input type={"checkbox"}
+                 ref="belowMinStock">
+          </input>
+        </div>
+      </div>
+    );
   }
 
   render() {
@@ -78,6 +94,10 @@ class FilterBox extends Component {
                               disallowCustom={true}
                               ref="excluded"
                             />
+                        </div>
+
+                        <div className="form-group row">
+                          {this.makeMinThresholdCheckBox()}
                         </div>
 
                         <div className="row">

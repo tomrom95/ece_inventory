@@ -275,7 +275,6 @@ class RequestTable extends Component {
   }
 
   fulfillButton(index){
-		console.log(this.state.raw_data[index])
     return(
 			<td key={"fulfill-td-"+index} className="subtable-row">
 		    <button key={"fulfill"+index} className="btn btn-outline-success btn-sm" data-toggle="modal"

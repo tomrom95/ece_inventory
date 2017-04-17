@@ -235,6 +235,7 @@ class FulfillRequestForm extends Component {
           status: "FULFILLED",
         });
 
+
         //this.clearInstanceForm();
         //this.props.callback();
         //this.forceUpdate();
@@ -247,6 +248,12 @@ class FulfillRequestForm extends Component {
   }
 
   render() {
+		var close_button = this.props.clearForm ? (
+			<button onClick={e => {this.clearInstanceForm(), this.props.clearForm()}} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+		) :
+		(
+			<button onClick={e => {this.clearInstanceForm()}} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+		);
     var body = (this.state.status === "FULFILLED") ? (
       <div className="modal-content">
         <div className="modal-header">
@@ -257,7 +264,7 @@ class FulfillRequestForm extends Component {
             Success
           </div>
           <div className="modal-footer">
-              <button onClick={e => {this.clearInstanceForm()}} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+						{close_button}
           </div>
         </div>
       </div>

@@ -4,7 +4,8 @@ import '../../App.css';
 import axios from 'axios';
 import querystring from 'querystring';
 import {browserHistory} from 'react-router';
-import jwtDecode from 'jwt-decode'
+import jwtDecode from 'jwt-decode';
+import { View, Image } from 'react-native';
 
 class Home extends Component {
   constructor(props) {
@@ -166,11 +167,25 @@ class Home extends Component {
           lastName: this.state.last_name
         });
       }
+      var pic = (children === null) ? (
+        <div>
+
+          <View className="home-screen">
+            <Image
+              style={{width: 500, height: 500}}
+              source={{uri: 'http://cdn.c.photoshelter.com/img-get/I0000dnmCT8pREK4/s/750/750/035012v-coonley002.jpg'}}
+            />
+            <h2 className="main-container"> "The only thing you can't buy is your freedom" </h2>
+
+          </View>
+        </div>
+      ) : null;
       return (
         <div className="App">
 	         <NavBar onClick={this.signOut} role={this.state.user.role} username={this.state.user.username} first_name={this.state.user.first_name}/>
           <div className="main-container">
             {children}
+            {pic}
           </div>
         </div>
       );

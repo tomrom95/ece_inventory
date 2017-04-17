@@ -270,17 +270,14 @@ class ItemWizard extends Component {
 		this.refs["isAsset"].checked=false;
   		var keys = getKeys(this.state.data);
 			keys.forEach(function(key) {
-				console.log(key)
 				if (key === "Tags") {
 					this.refs[key].clearTags();
 				} else if (key === "custom_fields") {
 					this.refs.customFields.clearForm();
 				}
 				else if (key === "Min Stock Enabled") {
-					console.log("test");
 					this.refs["minstock_enabled"].checked = false
 				} else {
-					console.log("clearing")
 					this.refs[key].value = "";
 				}
 

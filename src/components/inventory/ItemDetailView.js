@@ -139,7 +139,6 @@ class ItemDetailView extends React.Component {
       return <div>{button}</div>;
     }
 
-    var minstock_enabled = this.state.item.minstock_enabled ? "True" : "False";
 
     return (
       <div>
@@ -178,10 +177,11 @@ class ItemDetailView extends React.Component {
                         <p><strong>Tags: </strong>{getString(this.state.item.tags.join(', '))}</p>
                       </div>
                       <div className="row">
-                        <p><strong>Min Stock Quantity: </strong>{getString(this.state.item.minstock_threshold)}</p>
+
+                        <p><strong>Min Quantity Threshold Enabled: </strong>{getString(this.state.item.minstock_isEnabled)}</p>
                       </div>
                       <div className="row">
-                        <p><strong>Min Stock Enabled: </strong>{minstock_enabled}</p>
+                        <p><strong>Min Quantity Threshold: </strong>{getString(this.state.item.minstock_threshold)}</p>
                       </div>
                       {this.makeCustomFields()}
                     </div>
