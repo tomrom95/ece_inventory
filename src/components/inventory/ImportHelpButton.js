@@ -23,7 +23,7 @@ class ImportHelpButton extends Component {
       };
     var schema =   {
         "name": "String [required]",
-        "quantity": "Integer [required]",
+        "quantity": "Integer",
         "model_number": "String",
         "description": "String",
         "tags": "[String]",
@@ -33,6 +33,8 @@ class ImportHelpButton extends Component {
             "value": "String"
           }
         ],
+   	"minstock_threshold": "Integer",
+	"minstock_isEnabled": "Boolean",
 	"instances": [{
 		"tag": "String",
 		"custom_fields": [
