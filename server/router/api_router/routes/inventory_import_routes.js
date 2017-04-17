@@ -33,7 +33,7 @@ module.exports.postAPI = function (req, res) {
 var autoCreateInstances = function(quantity, itemID, importId, next, inStock=true) {
   var instances = new Array(quantity);
   for (var i = 0; i < quantity; i++) {
-    var newInstance = new Instance({item: itemID, in_stock: inStock});
+    var newInstance = new Instance({item: itemID, in_stock: inStock, import_id: importId});
     instances[i] = newInstance;
   }
   Instance.insertMany(instances, next);
