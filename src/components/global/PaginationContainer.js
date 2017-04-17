@@ -104,7 +104,11 @@ class PaginationContainer extends Component {
 
 	componentWillUnmount() {
 		if (this.source) {
-			this.source.cancel();
+			try {
+				this.source.cancel();
+			} catch (error) {
+				return;
+			}
 		}
 	}
 
@@ -116,6 +120,7 @@ class PaginationContainer extends Component {
 			{cancelToken: this.source.token}
 		)
 	  .then( (response) => {
+			this.source = null;
 	    if (this.state.initialLoad) {
 	      this.setState({initialLoad: false});
 	    }
@@ -371,7 +376,7 @@ class PaginationContainer extends Component {
 		if(JSON.parse(localStorage.getItem('user')).role !== "STANDARD"){
 			importRow = this.makeImportRow();
 		}
-
+		//console.log(this.state.items);
     if (this.state.initialLoad) {
       table = (<div></div>);
     } else if (this.state.items.length === 0) {

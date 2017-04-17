@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../../App.css';
 
-class LeaveCommentModal extends Component {
+class BackfillCommentModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,16 +15,16 @@ class LeaveCommentModal extends Component {
 
   render() {
     return (
-      <div>
+      <div className="loantable-button">
         <button type="button"
-          className="btn btn-sm btn-outline-primary"
+          className="btn btn-sm btn-secondary"
           data-toggle="modal"
-          data-target={"#leaveComment-"+this.props.id}>
-          <span className="fa fa-comment-o"></span>
+          data-target={"#backfillLeaveComment-"+this.props.loan_id}>
+          Leave Comment &nbsp;<span className="fa fa-comment-o"></span>
         </button>
 
         <div className="modal fade"
-          id={"leaveComment-"+this.props.id}
+          id={"backfillLeaveComment-"+this.props.loan_id}
           tabIndex="-1" role="dialog">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
@@ -34,13 +34,12 @@ class LeaveCommentModal extends Component {
               <div className="modal-body">
                 <form className="container">
                   <div className="form-group row">
-                    <label>Comment:</label>
                     <input className="form-control" maxLength="200" type="text" value={this.state.value} onChange={e => this.handleChange(e)}/>
                   </div>
                 </form>
               </div>
               <div className="modal-footer">
-                <button type="button" onClick={() => console.log("")} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <button onClick={() => this.commentRequest()} type="button" data-dismiss="modal" className="btn btn-primary">Submit</button>
               </div>
             </div>
@@ -57,20 +56,9 @@ class LeaveCommentModal extends Component {
       return;
     }
 
-    this.props.api.put('/api/requests/' + this.props.request, {reviewer_comment: this.state.value})
-    .then(function(response) {
-      if(response.data.error){
-        alert(response.data.error);
-      }
-      else {
-        this.props.callback();
-      }
-    }.bind(this))
-    .catch(function(error) {
-      console.log(error);
-    }.bind(this));
+    this.props.sendComment(this.state.value)();
   }
 
 }
 
-export default LeaveCommentModal;
+export default BackfillCommentModal;

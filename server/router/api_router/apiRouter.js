@@ -14,9 +14,12 @@ var field_routes = require('./routes/field_routes');
 var item_field_routes = require('./routes/item_field_routes');
 var email_routes = require('./routes/email_routes');
 var loan_routes = require('./routes/loan_routes');
+var errorHandler = require('express-async-error').Handler
 
 var express = require('express');
 var router = express.Router();
+
+router.use(errorHandler());
 
 router.route('/inventory')
       .get(inventory_routes.getAPI)

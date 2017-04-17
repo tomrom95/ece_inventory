@@ -43,7 +43,9 @@ params:
         field: String,
 	value: String // Mixed Type in MongoDB
     }
-  ]
+  ],
+	minstock_threshold: Integer,
+	minstock_isEnabled: Boolean
 }
 return:
 {
@@ -59,7 +61,9 @@ return:
         field: String,
 	value: String // Mixed Type in MongoDB
     }
-  ]
+  ],
+	minstock_threshold: Integer,
+	minstock_isEnabled: Boolean
 }
 
 /api/inventory/import
@@ -89,6 +93,8 @@ body:
 			]
 		}
 	]
+	minstock_threshold: Integer,
+	minstock_isEnabled: Boolean
 }
 or Array of body objects above.
 

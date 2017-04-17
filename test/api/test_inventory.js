@@ -767,7 +767,28 @@ describe('Inventory API Test', function () {
         done();
       });
     });
-    it('POSTs successfully', (done)=>{
+    it('POSTs non asset successfully', (done)=>{
+      item.is_asset = false;
+      chai.request(server)
+        .post('/api/inventory')
+        .set('Authorization', token)
+        .send(item)
+        .end((err, res)=>{
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.have.property("name","TEST_ITEM");
+          res.body.should.have.property("quantity",100);
+          res.body.should.have.property("vendor_info", "Microsoft");
+          Instance.find({item: res.body._id}, function(error, instances) {
+            instances.length.should.be.eql(0);
+            done();
+          });
+        });
+
+    });
+
+    it('POSTs asset successfully', (done)=>{
+      item.is_asset = true;
       chai.request(server)
         .post('/api/inventory')
         .set('Authorization', token)
@@ -784,7 +805,8 @@ describe('Inventory API Test', function () {
           });
         });
 
-    })
+    });
+
     it('POSTs item with untrimmed tags, then GET successful by required tag', (done)=>{
       let item = {
           name: "TEST_ITEM",

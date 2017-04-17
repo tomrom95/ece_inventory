@@ -17,14 +17,19 @@ class Inventory extends Component {
         "Model": obj.model_number,
         "Description": obj.description,
         "Quantity": obj.quantity,
+        "Minimum Quantity": obj.minstock_threshold,
         "Vendor": obj.vendor_info,
         "Tags": obj.tags,
         "custom_fields": obj.custom_fields,
+        "minstock_threshold": obj.minstock_threshold,
+        "minstock_isEnabled": obj.minstock_isEnabled,
         "meta": {
           "id": obj._id,
-          "isAsset": obj.is_asset
+          "isAsset": obj.is_asset,
+          "minstock_isEnabled": obj.minstock_isEnabled,
         }
       };
+
       items.push(item);
     }
     return items;

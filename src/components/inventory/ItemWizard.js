@@ -47,7 +47,6 @@ class ItemWizard extends Component {
 			activated: false,
 			justApplied: false,
 			isAsset: false,
-			checkTypeDone: false,
 		}
 	}
 
@@ -66,13 +65,7 @@ class ItemWizard extends Component {
 		});
 	}
 
-	handleCheckChange() {
-		this.setState({
-			checkTypeDone: !this.state.checkTypeDone
-		})
-	}
-
-	handleAssetSetChange() {
+	handleAssetChange() {
 		this.setState({
 			isAsset: !this.state.isAsset
 		})
@@ -81,11 +74,10 @@ class ItemWizard extends Component {
 	makeCheckForm() {
 		var asset_checkbox =
 			<input type="checkbox"
-	      checked={this.state.isAsset}
+	      		checked={this.state.isAsset}
 				onChange={this.handleAssetSetChange.bind(this)}
 				key={"asset_checkbox"}
-        name="asset_checkbox"
-      />;
+        		name="asset_checkbox"/>;
 		return(
 			<div className="form-group row customfield-maker-isprivate">
 				<div className="col-xs-10">
@@ -107,6 +99,11 @@ class ItemWizard extends Component {
 			if (keys[i] === 'Tags') {
 				list.push(this.makeTextBox(i, "multiselect", keys[i], vals[i]));
 			}
+
+			else if (keys[i] === 'Min Stock Enabled') {
+				list.push(this.makeCheckBox("Min Stock Enabled", "minstock_enabled", this.state.minstock_enabled));
+			}
+
 			else if(keys[i] === 'custom_fields'){
 				list.push(
 					<CustomFieldForm
@@ -114,17 +111,51 @@ class ItemWizard extends Component {
 						currentValues={[]}
 						perInstance={false}
 						ref="customFields"
-						key="customFields"
-					/>
+						key="customFields"/>
 				);
 			}
 			else {
-
 				list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
 			}
 		}
+		list.push(
+			<div className="form-group" key={"asset-checkbox-div"}>
+				<label key={"asset-checkbox-label"} >Make Asset </label>
+				<input type="checkbox"
+							checked={this.state.is_asset}
+							onChange={e=>this.handleAssetChange(e)}
+							className="asset-checkbox"
+							ref={"asset-checkbox"}
+							key={"asset-checkbox"}/>
+			</div>
 
+		);
 		return list;
+	}
+
+	handleCheckboxChange(event) {
+	    var value = event.target.checked;
+	    this.setState({
+	      minstock_enabled: value
+	    });
+	}	
+
+	makeCheckBox(label, ref, value){
+		return (
+			<div className="row request-quantity" key={"minstock-enabled-row"} >
+			  <div className="col-xs-10">
+			  	<label>{label}</label>
+			  </div>
+			  <div className="col-xs-2 cart-checkbox">
+			  	<input type={"checkbox"}
+			  			id={"minstock-enabled-checkbox"}
+			  			checked={value}
+			  			onChange={e => this.handleCheckboxChange(e)}
+			  			ref={ref}>
+			  	</input>
+			  </div>
+			</div>
+		);
 	}
 
 	makeTextBox(row, type, label, defaultValue){
@@ -137,14 +168,14 @@ class ItemWizard extends Component {
 				api={this.props.api}
 				id={id}
 				ref={label}/>
-	} else {
-		input = <input type={type}
-			className="form-control"
-			defaultValue={defaultValue}
-			ref={label}
-			key={id}>
-			</input>
-	}
+		} else {
+			input = <input type={type}
+				className="form-control"
+				defaultValue={defaultValue}
+				ref={label}
+				key={id}>
+				</input>
+		}
 
 		return (
 			<div className="form-group" key={"createform-div-row-"+row}>
@@ -162,6 +193,7 @@ class ItemWizard extends Component {
 			data: data
 		});
 	}
+
 	validItem(object) {
 		if (object.name.length === 0) {
 			alert("Name is a required field.");
@@ -191,16 +223,21 @@ class ItemWizard extends Component {
 		var tags = this.refs.Tags.getSelectedTags();
 		var fields = this.refs.customFields.getCurrentValues();
 		var object = {
-			name: this.refs.Name.value,
-	  		quantity: this.refs.Quantity.value,
+				name: this.refs.Name.value,
+	  			quantity: this.refs.Quantity.value,
 	 			model_number: this.refs["Model Number"].value,
-	  		description: this.refs.Description.value,
-	  		vendor_info: this.refs["Vendor Info"].value,
-	  		tags: tags ? tags.split(',') : [],
-	  		has_instance_objects: false,
+	  			description: this.refs.Description.value,
+	  			vendor_info: this.refs["Vendor Info"].value,
+	  			tags: tags ? tags.split(',') : [],
+	  			has_instance_objects: false,
 				is_asset: this.state.isAsset,
+				minstock_isEnabled: this.refs["minstock_enabled"].checked,
+				minstock_threshold: this.refs["Min Stock Threshold"].value,
 				custom_fields: fields
   		}
+
+  		console.log(this.refs["Min Stock Threshold"].value);
+
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
 
@@ -210,10 +247,10 @@ class ItemWizard extends Component {
 		        		alert(response.data.error.errmsg);
 			        } else {
 			        	this.props.callback();
-			        	this.clearForm();
 			        	this.setState({
 			        		justApplied: true
 			        	});
+			        	this.clearForm();
 			        	alert("Successfully created new item: " + response.data.name);
 			        }
 			      }.bind(this))
@@ -221,43 +258,33 @@ class ItemWizard extends Component {
 			        console.log(error);
 			      }.bind(this));
 		}
-  }
+  	}
 
   	clearForm() {
-			var data = this.state.data;
-			this.setState({
-				data: data,
-				isAsset: false,
-				checkTypeDone: false,
-			});
+		var data = this.state.data;
+		this.setState({
+			isAsset: false,
+		});
   		var keys = getKeys(this.state.data);
 			keys.forEach(function(key) {
-				if(this.refs.length > 0){
-					if (key === "Tags") {
-						this.refs[key].clearTags();
-					} else if (key === "custom_fields"){
-						this.refs.customFields.clearForm();
-					} else {
-						this.refs[key].value = "";
-					}
+				console.log("here!")
+				if (key === "Tags") {
+					this.refs[key].clearTags();
+				} else if (key === "custom_fields") {
+					this.refs.customFields.clearForm();
 				}
+				else if (key === "Min Stock Enabled") {
+					this.refs["minstock_enabled"].checked = false
+				} else {
+					console.log("clearing")
+					this.refs[key].value = "";
+				}
+				
 			}.bind(this));
   	}
 
   	render() {
-			var first_form =
-				<div className="modal-content">
-					<div className="modal-header">
-						<h5 className="modal-title" id="createLabel">Create New Item</h5>
-					</div>
-					<div className="modal-body">
-						{this.makeCheckForm()}
-					</div>
-					<div className="modal-footer">
-						<button type="button" onClick={e => this.setState({isAsset: false})} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-						<button onClick={this.handleCheckChange.bind(this)} type="button" className="btn btn-primary">Go</button>
-					</div>
-				</div>;
+
 			var item_form =
 				<div className="modal-content">
 					<div className="modal-header">
@@ -273,7 +300,6 @@ class ItemWizard extends Component {
 					</div>
 				</div>;
 
-			var form = this.state.checkTypeDone ? item_form : first_form;
 			var button =
 				<button type="button"
 					className="btn btn-outline-primary add-button align-right"
@@ -296,7 +322,7 @@ class ItemWizard extends Component {
 						aria-labelledby="createLabel"
 						aria-hidden="true">
 					  <div className="modal-dialog" role="document">
-					    {form}
+					    {item_form}
 					  </div>
 					</div>
 				</th>

@@ -120,7 +120,6 @@ class MinimumQuantityEditor extends Component {
 	 			if (response.data.error) {
 	 				alert(response.data.error);
 	 			} else {
-	 				//console.log(response.data);
 		 			this.props.clearCheckboxes();
 	 			}	
 	 		}.bind(this));

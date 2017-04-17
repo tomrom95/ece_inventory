@@ -6,7 +6,6 @@ class ImportHelpButton extends Component {
 
 	constructor(props) {
 		super(props);
-
 	}
 
 
@@ -53,12 +52,12 @@ class ImportHelpButton extends Component {
     var part_three = "An example of a correct import with multiple items would look like this\n";
 		return (
       <div>
-        <button type="button"
-          className="nav-link userpage-tab"
-          data-toggle="modal"
-          data-target={"#helpModal"}>
-          Bulk Import Help
-        </button>
+        <a className="nav-link userpage-tab"
+           data-toggle="modal"
+           href="#"
+           data-target={"#helpModal"}>
+           Bulk Import Help
+        </a>
         <div className="modal fade"
           id={"helpModal"}
           tabIndex="-1"
