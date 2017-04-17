@@ -35,7 +35,7 @@ class MinimumQuantityEditor extends Component {
 		}
 	}
 
-	componentWillReceiveProps(newProps) {		
+	componentWillReceiveProps(newProps) {
 		this.setState({
 			itemsChecked: this.makeItemsList(newProps.itemsChecked),
 			itemNames: this.makeItemsList(newProps.itemsCheckedNames)
@@ -62,7 +62,7 @@ class MinimumQuantityEditor extends Component {
 				itemNames.push(response.data.name);
 				this.state.itemNames = itemNames;
 			}.bind(this));
-		}	
+		}
 	}
 
 	makeItemNamesListView() {
@@ -94,7 +94,7 @@ class MinimumQuantityEditor extends Component {
 				  <label htmlFor={id}>{label}</label>
 				  <input type={type} className="form-control" defaultValue={defaultText} id={id}></input>
 				</div>
-			); 
+			);
 		}
 	}
 
@@ -109,7 +109,7 @@ class MinimumQuantityEditor extends Component {
 		var qty = document.getElementById("qty-textbox-" + this.props.itemId).value;
 		var items = this.state.itemsChecked;
 		for (var i=0; i<items.length; i++) {
-			var params = {	
+			var params = {
 	 			minstock_isEnabled: this.state.checked
 	 		};
 	 		if (this.state.checked===true) {
@@ -121,7 +121,8 @@ class MinimumQuantityEditor extends Component {
 	 				alert(response.data.error);
 	 			} else {
 		 			this.props.clearCheckboxes();
-	 			}	
+					this.props.callback();
+	 			}
 	 		}.bind(this));
 		}
 	}
@@ -182,22 +183,22 @@ class MinimumQuantityEditor extends Component {
 						{this.state.itemNames.length === 0 ? null : this.makeTextBox("qty-textbox-" + this.props.itemId, "number", "Minimum Quantity", "")}
 					  </div>
 
-		      		{ this.state.itemNames.length === 0 ? <div className="modal-footer"></div> : 
+		      		{ this.state.itemNames.length === 0 ? <div className="modal-footer"></div> :
 				      (<div className="modal-footer">
-				        <button type="button" 
-				        		 onClick={e => this.clearView()} 
-				        		 className="btn btn-secondary" 
+				        <button type="button"
+				        		 onClick={e => this.clearView()}
+				        		 className="btn btn-secondary"
 				        		 data-dismiss="modal">
 				        		 	Cancel
 				        </button>
-				        <button type="button" 
-				        		onClick={e=>{this.sendRequest(); this.clearView()}} 
-				        		className="btn btn-primary" 
+				        <button type="button"
+				        		onClick={e=>{this.sendRequest(); this.clearView()}}
+				        		className="btn btn-primary"
 				        		data-dismiss="modal">
 				        			Apply
-				        		</button> 
+				        		</button>
 				      </div>)}
-				  	  
+
 				    </div>
 				  </div>
 				</div>

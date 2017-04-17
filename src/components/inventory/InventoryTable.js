@@ -366,7 +366,8 @@ class InventoryTable extends Component {
 									   itemsCheckedNames={this.state.itemsCheckedNames}
 									   key={"min-qty-editor"}
 									   api={this.props.api}
-									   clearCheckboxes={() => this.clearCheckedBoxes()} />
+									   clearCheckboxes={() => this.clearCheckedBoxes()}
+										 callback={this.props.callback} />
 						    </li>) : null;
 
 		return (
