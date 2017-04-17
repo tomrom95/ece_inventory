@@ -403,7 +403,6 @@ class LoanTableRow extends Component {
 		}
 
 		param.manager_comment = comment;
-		console.log(param);
 
 		context.props.api.put("api/loans/"+loanId, param)
 		.then(response => {
@@ -412,9 +411,8 @@ class LoanTableRow extends Component {
 			}
 			else {
 				context.props.callback();
-				console.log(response.data);
 			}
-			});
+		});
 	}
 
 
