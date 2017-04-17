@@ -80,7 +80,6 @@ module.exports.loanReminder = function(loanUser, loans, bodyPrepend) {
 module.exports.stockBelowThreshold = function(item){
   var text = 'Hello, \n\n';
   text += 'The item ' + item.name + ' has a quantity ('+item.quantity+') below the threshold ('+item.minstock_threshold+').';
-  console.log(text);
   return text;
 }
 

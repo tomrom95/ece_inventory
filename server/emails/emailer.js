@@ -41,7 +41,7 @@ module.exports.sendFulfillEmail = function(request, items, disbursedFrom, next) 
 }
 
 module.exports.sendStockBelowThresholdEmail = function(item, next){
-  if(item.minstock_threshold <= item.quantity) return next();
+  if(item.minstock_threshold <= item.quantity || item.minstock_isEnabled !== true) return next();
   var builder = new EmailBuilder();
   builder
   .setSubject('Item Stock Below Threshold')
