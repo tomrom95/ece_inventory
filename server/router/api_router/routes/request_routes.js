@@ -10,7 +10,7 @@ var QueryBuilder = require('../../../queries/querybuilder');
 var Emailer = require('../../../emails/emailer');
 var Logger = require('../../../logging/logger');
 // fields within the item to return
-var itemFieldsToReturn = 'name model_number description is_asset';
+var itemFieldsToReturn = 'name model_number description is_asset minstock_threshold';
 var userFieldsToReturn = 'username netid first_name last_name';
 module.exports.getAPI = function (req, res) {
   // searchable by user, item_id, reason, created, status
@@ -380,12 +380,15 @@ module.exports.patchAPI = function(req, res) {
         if (err) res.send({error: err});
         Emailer.sendFulfillEmail(request, cart, req.user, function(error) {
           if (error) return res.send({error: error});
-          Logger.logFulfill(request, cart, req.user, function(err) {
-            if (err) return res.send({error: err});
-            return res.json({
-              message: 'Fulfillment successful',
-              request: request,
-              items: cart
+          Emailer.sendAllStockBelowThresholdEmails(cart, function(error){
+            if (error) return res.send({error: error});
+            Logger.logFulfill(request, cart, req.user, function(err) {
+              if (err) return res.send({error: err});
+              return res.json({
+                message: 'Fulfillment successful',
+                request: request,
+                items: cart
+              });
             });
           });
         });
