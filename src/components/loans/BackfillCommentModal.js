@@ -20,7 +20,7 @@ class BackfillCommentModal extends Component {
           className="btn btn-sm btn-secondary"
           data-toggle="modal"
           data-target={"#backfillLeaveComment-"+this.props.loan_id}>
-          Leave Note &nbsp;<span className="fa fa-comment-o"></span>
+          Leave Note &nbsp;<span className="fa fa-sticky-note-o"></span>
         </button>
 
         <div className="modal fade"
@@ -29,12 +29,15 @@ class BackfillCommentModal extends Component {
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="editLabel">Leave a Comment</h5>
+                <h5 className="modal-title" id="editLabel">Leave a Note</h5>
               </div>
               <div className="modal-body">
                 <form className="container">
                   <div className="form-group row">
                     <input className="form-control" maxLength="200" type="text" value={this.state.value} onChange={e => this.handleChange(e)}/>
+                  </div>
+                  <div className="row">
+                    Note: This will overwrite any previous notes written for this loan.
                   </div>
                 </form>
               </div>

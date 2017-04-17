@@ -6,7 +6,7 @@ import ErrorMessage from './ErrorMessage.js';
 import StatusFilterBox from '../requests/StatusFilterBox.js';
 import BulkImportButton from '../inventory/BulkImportButton.js';
 
-var filterNames = ["name", "model_number", "required_tags", "excluded_tags", "status", "user"];
+var filterNames = ["name", "model_number", "required_tags", "excluded_tags", "status", "user", "lessThanThreshold"];
 
 function validNumber(num) {
 	if (!isNaN(num)) {
@@ -115,41 +115,41 @@ class PaginationContainer extends Component {
 	loadData(page, justDeleted) {
 		var CancelToken = axios.CancelToken;
 		this.source = CancelToken.source();
-	  this.instance.get(
+	  	this.instance.get(
 			this.getURL(page, this.state.rowsPerPage),
 			{cancelToken: this.source.token}
 		)
-	  .then( (response) => {
+	  	.then( (response) => {
 			this.source = null;
-	    if (this.state.initialLoad) {
-	      this.setState({initialLoad: false});
-	    }
-	    // reponse is empty:
-	    if (response.data.length === 0) {
-	      if (page === 1) {
-	        this.setState({items: []});
-	      } else {
-	        this.setState({
-	        	pageBox: this.state.page
-	        });
-	        if (justDeleted === true) {
-	        	this.previousPage();
-	        }
-	        else {
-	        	this.renderError('', "Page does not exist!");
-	        }
-	      }
-	    }
-	    // response not empty:
+	    	if (this.state.initialLoad) {
+	      		this.setState({initialLoad: false});
+	   		 }
+		    // reponse is empty:
+		    if (response.data.length === 0) {
+		      if (page === 1) {
+		        this.setState({items: []});
+		      } else {
+		      	this.setState({
+		        	pageBox: this.state.page
+		      	});
+		        if (justDeleted === true) {
+		        	this.previousPage();
+		        }
+		        else {
+		        	this.renderError('', "Page does not exist!");
+		        }
+		      }
+		    }
+		    // response not empty:
 
-	    else {
-	      this.setState({
-	        items: this.state.processData(response),
-	        page: page,
-	        pageBox: page
-	      });
-	    }
-	  });
+		    else {
+		      this.setState({
+		        items: this.state.processData(response),
+		        page: page,
+		        pageBox: page
+		      });
+		    }
+		  });
 	}
 
 	previousPage() {
@@ -166,28 +166,35 @@ class PaginationContainer extends Component {
 
 	getURL(page, rowsPerPage) {
 		var pageQuery = this.state.hasOtherParams ? '&page=' : '?page=';
+
 		var url = this.state.url
 		  + pageQuery + page
 		  +'&per_page='+rowsPerPage;
 
 		filterNames.forEach(function(filterName) {
-		  if (this.state.filters[filterName]) {
-		    url += "&" + filterName + "=" + this.state.filters[filterName];
-		  }
+		  	if (this.state.filters[filterName]) {
+		    	url += "&" + filterName + "=" + this.state.filters[filterName];
+			}
 		}.bind(this));
 		return url;
 	}
 
-	filterItems(name, modelNumber, requiredTags, excludedTags) {
-	    this.setState({
-	      page: 1,
-	      filters: {
+	filterItems(name, modelNumber, requiredTags, excludedTags, belowMinThreshold) {
+		var filter = {
 	        name: name,
 	        model_number: modelNumber,
 	        required_tags: requiredTags,
 	        excluded_tags: excludedTags,
-					status: "",
-	      }
+			status: ""
+	    };
+
+	    if (belowMinThreshold === true) {
+	    	filter.lessThanThreshold = true;
+	    }
+
+	    this.setState({
+	      page: 1,
+	      filters: filter
 	    }, function () {
 	      this.loadData(1, false);
 	    });
@@ -376,7 +383,6 @@ class PaginationContainer extends Component {
 		if(JSON.parse(localStorage.getItem('user')).role !== "STANDARD"){
 			importRow = this.makeImportRow();
 		}
-		//console.log(this.state.items);
     if (this.state.initialLoad) {
       table = (<div></div>);
     } else if (this.state.items.length === 0) {
