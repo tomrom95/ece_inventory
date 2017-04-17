@@ -69,7 +69,7 @@ module.exports.getAPIbyID = function(req,res){
       if (item.is_deleted) {
         return res.status(403).send({error: 'You do not have privileges to view this item'});
       }
-      getAndRemovePrivateFieldsFromItem(item, function(error, filteredItem) {
+      CustomFieldHelpers.getAndRemovePrivateFieldsFromItem(item, function(error, filteredItem) {
         if (error) return res.send({error: error});
         return res.json(filteredItem);
       });

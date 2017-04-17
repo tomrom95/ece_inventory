@@ -80,3 +80,4 @@ var getAndRemovePrivateFieldsFromList = function(itemList, next) {
 module.exports.validateCustomFields = validateCustomFields;
 module.exports.validateSingleField = validateSingleField;
 module.exports.getAndRemovePrivateFieldsFromList = getAndRemovePrivateFieldsFromList;
+module.exports.getAndRemovePrivateFieldsFromItem = getAndRemovePrivateFieldsFromItem;
