@@ -5,7 +5,7 @@ var Request = require("../../../model/requests");
 var Logger = require('../../../logging/logger');
 var Emailer = require('../../../emails/emailer');
 var QueryBuilder = require('../../../queries/querybuilder');
-var itemFieldsToReturn = 'name model_number description';
+var itemFieldsToReturn = 'name model_number description is_asset';
 
 module.exports.getAPI = function (req, res) {
   createCartIfNotExistent(req.user._id, res, returnCart);
@@ -86,13 +86,16 @@ module.exports.putAPI = function(req,res){
 
 module.exports.patchAPI = function(req, res){
   if (req.body.action == 'CHECKOUT') {
-    checkout(req.user, req.body, function(err, request){
-      if (err) return res.send({error: err});
-      // populate cart items in cart object
+    checkout(req.user, req.body, function(error, request){
+      if (error) return res.send({error: error});
+      request.populate('items.item', 'itemFieldsToReturn', function(error, populatedRequest) {
+        if (error) return res.send({error: error});
+        // populate cart items in cart object
         res.json({
           message: 'Request successful',
           request: request
         });
+      });
     });
   } else {
     return res.send({error: "Action not recognized"});

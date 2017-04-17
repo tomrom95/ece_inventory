@@ -115,7 +115,7 @@ class LoanTableRow extends Component {
 		var list = [];
 		var i;
 		var role = JSON.parse(localStorage.getItem("user")).role;
-		
+
 		for (i=0; i<items.length; i++) {
 			var key = "loan-item-id-"+items[i]._id;
 			var backfillColumns = [];
@@ -128,23 +128,23 @@ class LoanTableRow extends Component {
 					{this.makeBackfillControlBar(i)}
 				</td>
 			);
-      		
+
 			list.push(
 			    <tr key={key} id={items[i].item.name}>
 			      <td key={key + "-col1"}>{items[i].item.name}</td>
 			      <td key={key + "-col2"}>{items[i].quantity}</td>
-			      { 
+			      {
 
 
 			      	(this.state.controlBarVisible[i] && (role === "ADMIN" || role === "MANAGER")) === true ? this.makeControlBar(i) :
-				      items[i].status === "LENT" ? 
+				      items[i].status === "LENT" ?
 
 			      		(<td className="loan-control-bar-2">
 							<div className="loantable-button" key={key + "-col3"}>
-								<button href="#/" 
+								<button href="#/"
 							  		onClick={this.makeOnClickShow(i)}
 							  		key={key + "-status"}
-							  		className="btn btn-sm btn-outline-primary"> 
+							  		className="btn btn-sm btn-outline-primary">
 									<strong>{items[i].status}</strong>
 								</button>
 							</div>
@@ -155,7 +155,7 @@ class LoanTableRow extends Component {
 										key={key+"-request-backfill-button"}
 										className="loantable-button" />
 							</div>
-							{ items[i].backfill_rejected ? 
+							{ items[i].backfill_rejected ?
 								(<div className="backfill-rejected">
 									Backfill Rejected
 								</div>) : null
@@ -304,12 +304,12 @@ class LoanTableRow extends Component {
 				        	onClick={href==="#/" ? (() => alert("No attachment uploaded for this backfill request")) : null}>
 				        	<span className="fa fa-paperclip"></span>
 			        	</a>
-						<button type="button" 
+						<button type="button"
 								className="btn btn-sm btn-outline-success loantable-button"
 								onClick={() => this.approveBackfill(rowIndex)}>
 					    	<span className="fa fa-check"></span>
 				        </button>
-				        <button type="button" 
+				        <button type="button"
 				        		className="btn btn-sm btn-outline-danger loantable-button"
 				        		onClick={() => this.denyBackfill(rowIndex)}>
 					    	<span className="fa fa-times"></span>
@@ -373,15 +373,7 @@ class LoanTableRow extends Component {
 		var items = context.state.itemsModified;
 		var itemId = items[rowIndex].item._id;
 		var loanId = context.state._id;
-		var param = {items: []};
-
-		for (var i=0; i<items.length; i++) {
-			if (i === rowIndex) {
-				param.items.push({item: itemId, status: status})
-			} else {
-				param.items.push({item: itemId, status: items[i].status});
-			}
-		}
+		var param = {items: [{item: itemId, status: status}]};
 
 		context.props.api.put("api/loans/"+loanId, param)
 		.then(response => {
@@ -420,7 +412,7 @@ class LoanTableRow extends Component {
 
 		var isManager = JSON.parse(localStorage.getItem('user')).role === "ADMIN"
 				|| JSON.parse(localStorage.getItem('user')).role === "MANAGER";
-				
+
 		return (
 		    <li className="list-group-item">
 				<div className="container loan-details">
@@ -436,7 +428,7 @@ class LoanTableRow extends Component {
 		    		<div className="row">
 		    			<strong>Reviewer Comment:  </strong> {this.state.reviewer_comment ? this.state.reviewer_comment : "N/A"}
 		    		</div>
-		    		{ (isManager && this.state.containsBackfill === true) ? 
+		    		{ (isManager && this.state.containsBackfill === true) ?
 			    		(<div className="row">
 			    			<strong>Manager Backill Note:  </strong> {this.state.manager_comment ? this.state.manager_comment : "N/A"}
 			    		</div>) : null
@@ -444,7 +436,7 @@ class LoanTableRow extends Component {
 
 		    		{ isManager ?
 			    		<div className="loan-comment-button">
-					        <BackfillCommentModal loan_id={this.state._id} 
+					        <BackfillCommentModal loan_id={this.state._id}
 							  sendComment={comment => this.makeOnClickCommentSend(comment)}
 							  api={this.props.api}/>
 						 </div> : null
