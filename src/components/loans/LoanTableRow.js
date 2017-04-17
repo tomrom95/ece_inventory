@@ -38,9 +38,19 @@ class LoanTableRow extends Component {
 			items: props.params.items,
 			itemsModified: props.params.items,
 			reviewer_comment: props.reviewer_comment,
+			manager_comment: props.params.manager_comment,
 			controlBarVisible: {},
-      tooltipOpenMap: {},
+      		tooltipOpenMap: {}
 		}
+
+		var containsBackfill = false;
+		for (var i=0; i<props.params.items.length; i++) {
+			if (props.params.items[i].status === "BACKFILL_REQUESTED") {
+				containsBackfill = true;
+				break;
+			}
+		}
+		this.state.containsBackfill = containsBackfill;
 	}
 
 	componentWillMount() {
@@ -55,16 +65,23 @@ class LoanTableRow extends Component {
 				});
 			}
 		});
-    var tooltipOpenMap = this.state.tooltipOpenMap;
-    for(var i = 0; i < this.state.items.length; i++){
-      tooltipOpenMap[i] = false;
-    }
-    this.setState({
-      tooltipOpenMap: tooltipOpenMap
-    })
+    	var tooltipOpenMap = this.state.tooltipOpenMap;
+    	for(var i = 0; i < this.state.items.length; i++){
+      		tooltipOpenMap[i] = false;
+    	}
+	    this.setState({
+	      tooltipOpenMap: tooltipOpenMap
+	    });
 	}
 
 	componentWillReceiveProps(newProps) {
+		var containsBackfill = false;
+		for (var i=0; i<newProps.params.items.length; i++) {
+			if (newProps.params.items[i].status === "BACKFILL_REQUESTED") {
+				containsBackfill = true;
+				break;
+			}
+		}
 		this.setState({
 			_id: newProps.params._id,
 			user: newProps.params.user,
@@ -73,6 +90,8 @@ class LoanTableRow extends Component {
 			items: newProps.params.items,
 			itemsModified: newProps.params.items,
 			reviewer_comment: newProps.reviewer_comment,
+			manager_comment: newProps.params.manager_comment,
+			containsBackfill: containsBackfill
 		});
 	}
 
@@ -419,6 +438,11 @@ class LoanTableRow extends Component {
 		    		<div className="row">
 		    			<strong>Reviewer Comment:  </strong> {this.state.reviewer_comment ? this.state.reviewer_comment : "N/A"}
 		    		</div>
+		    		{ (isManager && this.state.containsBackfill === true) ? 
+			    		(<div className="row">
+			    			<strong>Manager Backill Note:  </strong> {this.state.manager_comment ? this.state.manager_comment : "N/A"}
+			    		</div>) : null
+		    		}
 
 		    		{ isManager ?
 			    		<div className="loan-comment-button">

@@ -26,14 +26,15 @@ class LoanPage extends Component {
 	    var i;
 	    var loanList = [];
 	    for (i=0; i<loans.length; i++) {
-	      var obj = loans[i];
+	      	var obj = loans[i];
 	        var loan = {
 	        	_id: obj._id,
 	        	user: obj.user,
 	        	request_id: obj.request,
 	        	created: obj.created,
 	        	modified: obj.lastModified,
-	        	items: obj.items
+	        	items: obj.items,
+	        	manager_comment: obj.manager_comment
 	        }
 	        loanList.push(loan);
 	      }
