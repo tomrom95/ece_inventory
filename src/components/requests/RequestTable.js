@@ -275,18 +275,27 @@ class RequestTable extends Component {
   }
 
   fulfillButton(index){
+		console.log(this.state.raw_data[index])
     return(
 			<td key={"fulfill-td-"+index} className="subtable-row">
 		    <button key={"fulfill"+index} className="btn btn-outline-success btn-sm" data-toggle="modal"
 				data-target={"#selectInstanceModal"+this.state.raw_data[index]._id} >
 		      Fulfill
 		    </button>
-				<FulfillRequestForm
-					data={this.state.raw_data[index]}
-					row={this.state.rows[index]}
-					api={this.props.api}
-					callback={() => this.props.callback()}
-				/>
+				<div className="modal fade"
+					id={"selectInstanceModal"+this.state.raw_data[index]._id}
+					tabIndex="-1"
+					role="dialog"
+					aria-labelledby="createLabel"
+					aria-hidden="false">
+					<div className="modal-dialog" role="document">
+						<FulfillRequestForm
+							data={this.state.raw_data[index]}
+							api={this.props.api}
+							callback={() => this.props.callback()}
+						/>
+					</div>
+				</div>
 			</td>
     );
   }

@@ -47,6 +47,7 @@ class ItemWizard extends Component {
 			activated: false,
 			justApplied: false,
 			isAsset: false,
+			minstock_enabled: false,
 		}
 	}
 
@@ -71,24 +72,24 @@ class ItemWizard extends Component {
 		})
 	}
 
-	makeCheckForm() {
-		var asset_checkbox =
-			<input type="checkbox"
-	      		checked={this.state.isAsset}
-				onChange={this.handleAssetSetChange.bind(this)}
-				key={"asset_checkbox"}
-        		name="asset_checkbox"/>;
-		return(
-			<div className="form-group row customfield-maker-isprivate">
-				<div className="col-xs-10">
-					<label htmlFor={"createform-row-"}>Check this if item is an asset</label>
-				</div>
-				<div className="col-xs-2 customfield-maker-checkbox">
-					{asset_checkbox}
-				</div>
-			</div>
-		);
-	}
+	// makeCheckForm() {
+	// 	var asset_checkbox =
+	// 		<input type="checkbox"
+	//       		checked={this.state.isAsset}
+	// 			onChange={this.handleAssetSetChange.bind(this)}
+	// 			key={"asset_checkbox"}
+  //       		name="asset_checkbox"/>;
+	// 	return(
+	// 		<div className="form-group row customfield-maker-isprivate">
+	// 			<div className="col-xs-10">
+	// 				<label htmlFor={"createform-row-"}>Check this if item is an asset</label>
+	// 			</div>
+	// 			<div className="col-xs-2 customfield-maker-checkbox">
+	// 				{asset_checkbox}
+	// 			</div>
+	// 		</div>
+	// 	);
+	// }
 
 	makeItemCreationForm() {
 		var keys = getKeys(this.state.data);
@@ -122,11 +123,11 @@ class ItemWizard extends Component {
 			<div className="form-group" key={"asset-checkbox-div"}>
 				<label key={"asset-checkbox-label"} >Make Asset </label>
 				<input type="checkbox"
-							checked={this.state.is_asset}
+							checked={this.state.isAsset}
 							onChange={e=>this.handleAssetChange(e)}
 							className="asset-checkbox"
-							ref={"asset-checkbox"}
-							key={"asset-checkbox"}/>
+							ref={"isAsset"}
+							key={"isAsset"}/>
 			</div>
 
 		);
@@ -138,7 +139,7 @@ class ItemWizard extends Component {
 	    this.setState({
 	      minstock_enabled: value
 	    });
-	}	
+	}
 
 	makeCheckBox(label, ref, value){
 		return (
@@ -236,7 +237,7 @@ class ItemWizard extends Component {
 				custom_fields: fields
   		}
 
-  		console.log(this.refs["Min Stock Threshold"].value);
+  		//console.log(this.refs["Min Stock Threshold"].value);
 
   		if (this.validItem(object) === true) {
   			object.quantity = Number(object.quantity);
@@ -264,22 +265,25 @@ class ItemWizard extends Component {
 		var data = this.state.data;
 		this.setState({
 			isAsset: false,
+			minstock_enabled: false,
 		});
+		this.refs["isAsset"].checked=false;
   		var keys = getKeys(this.state.data);
 			keys.forEach(function(key) {
-				console.log("here!")
+				console.log(key)
 				if (key === "Tags") {
 					this.refs[key].clearTags();
 				} else if (key === "custom_fields") {
 					this.refs.customFields.clearForm();
 				}
 				else if (key === "Min Stock Enabled") {
+					console.log("test");
 					this.refs["minstock_enabled"].checked = false
 				} else {
 					console.log("clearing")
 					this.refs[key].value = "";
 				}
-				
+
 			}.bind(this));
   	}
 
@@ -294,7 +298,7 @@ class ItemWizard extends Component {
 						{this.makeItemCreationForm()}
 					</div>
 					<div className="modal-footer">
-						<button type="button" onClick={this.clearForm.bind(this)} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+						<button type="button" onClick={e => this.clearForm()} className="btn btn-secondary" data-dismiss="modal">Cancel</button>
 						<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
 						<button onClick={e => this.onSubmission()} type="button" className="btn btn-primary">Submit</button>
 					</div>

@@ -267,17 +267,10 @@ class FulfillRequestForm extends Component {
 			</div>
 		);
     return(
-      <div className="modal fade"
-        id={"selectInstanceModal"+this.state.raw_data._id}
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="createLabel"
-        aria-hidden="false">
-        <div className="modal-dialog" role="document">
-          {body}
-        </div>
-      </div>
-    )
+			<div>
+        {body}
+			</div>
+    );
   }
 
 }
