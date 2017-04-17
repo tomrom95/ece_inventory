@@ -386,6 +386,24 @@ describe('Inventory API Test', function () {
             done();
           });
       });
+
+      it('GETs items under threshold', (done)=>{
+        chai.request(server)
+        .get('/api/inventory?lessThanThreshold=true&name=resistor')
+        .set('Authorization', token)
+        .end((err, res) => {
+          should.not.exist(err);
+          res.should.have.status(200);
+          res.body.should.be.a('array');
+          res.body.length.should.be.eql(2);
+          res.body.should.satisfy(function(items){
+            return items.every(function(item){
+              return item.quantity < item.minstock_threshold && item.minstock_isEnabled === true;
+            });
+          });
+          done();
+        });
+      });
   });
   describe('GET /inventory/:item_id', ()=>{
     it('GETs inventory item by item id', (done) => {

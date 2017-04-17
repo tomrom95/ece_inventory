@@ -26,7 +26,14 @@ module.exports.getAPI = function (req, res) {
 
   mongooseFind.exec(function(error, instances) {
     if (error) return res.send({error: error});
-    return res.json(instances);
+    if (req.user.role === 'STANDARD') {
+      CustomFieldHelpers.getAndRemovePrivateFieldsFromList(instances, function(error, filteredInstances) {
+        if (error) return res.send({error: error});
+        return res.json(filteredInstances);
+      });
+    } else {
+      return res.json(instances);
+    }
   });
 };
 
