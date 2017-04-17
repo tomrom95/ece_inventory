@@ -88,13 +88,10 @@ module.exports.patchAPI = function(req, res){
   if (req.body.action == 'CHECKOUT') {
     checkout(req.user, req.body, function(error, request){
       if (error) return res.send({error: error});
-      request.populate('items.item', 'itemFieldsToReturn', function(error, populatedRequest) {
-        if (error) return res.send({error: error});
-        // populate cart items in cart object
-        res.json({
-          message: 'Request successful',
-          request: request
-        });
+      // populate cart items in cart object
+      res.json({
+        message: 'Request successful',
+        request: request
       });
     });
   } else {
