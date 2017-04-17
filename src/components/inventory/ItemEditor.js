@@ -45,7 +45,6 @@ class ItemEditor extends Component {
 			originalQuantity: props.data.Quantity,
 			showQuantityReason: false,
 			data: props.data,
-			is_asset: props.is_asset,
 			allCustomFields: props.allCustomFields,
 			formIds: [],
 			minstock_enabled: props.data["Min Stock Enabled"],
@@ -71,7 +70,7 @@ class ItemEditor extends Component {
 
 	handleAssetChange(event){
 		this.setState({
-			is_asset: !this.state.is_asset,
+			isAsset: !this.state.isAsset,
 		})
 	}
 
@@ -114,17 +113,17 @@ class ItemEditor extends Component {
 						key="customFields"/>
 				);
 			}
-			else if((!this.props.is_asset) || !(this.props.is_asset && keys[i] === 'Quantity')){
+			else if((!this.props.isAsset) || !(this.props.isAsset && keys[i] === 'Quantity')){
 				list.push(this.makeTextBox(i, "text", keys[i], vals[i]));
 			}
 		}
 
-		if(!this.props.is_asset){
+		if(!this.props.isAsset){
 			list.push(
 				<div className="form-group" key={"asset-checkbox-div"}>
 					<label key={"asset-checkbox-label"} >Make Asset     </label>
 					<input type="checkbox"
-			          checked={this.state.is_asset}
+			          checked={this.state.isAsset}
 			    			onChange={e=>this.handleAssetChange(e)}
 								className="asset-checkbox"
 			          ref={"asset-checkbox"}
@@ -150,7 +149,7 @@ class ItemEditor extends Component {
 	    this.setState({
 	      minstock_enabled: value
 	    });
-	}	
+	}
 
 	makeCheckBox(label, ref, value){
 		return (
@@ -267,16 +266,17 @@ class ItemEditor extends Component {
 		var object = {
 			name: this.refs.Name.value,
  			model_number: this.refs["Model Number"].value,
-  			description: this.refs.Description.value,
-  			vendor_info: this.refs["Vendor Info"].value,
-  			tags: tags ? tags.split(',') : [],
-  			minstock_isEnabled: this.refs["minstock_enabled"].checked,
-  			minstock_threshold: this.refs["Min Stock Threshold"].value
-  		}
+  		description: this.refs.Description.value,
+  		vendor_info: this.refs["Vendor Info"].value,
+  		tags: tags ? tags.split(',') : [],
+  		minstock_isEnabled: this.refs["minstock_enabled"].checked,
+  		minstock_threshold: this.refs["Min Stock Threshold"].value,
+			is_asset: this.state.isAsset
+		}
 
-  		if (String(object.minstock_threshold).length === 0) {
-  			object.minstock_threshold = undefined;
-  		}
+		if (String(object.minstock_threshold).length === 0) {
+			object.minstock_threshold = undefined;
+		}
 
 		if (!this.state.isAsset) {
 			object['quantity'] = this.refs.Quantity.value;
@@ -346,11 +346,11 @@ class ItemEditor extends Component {
 				      <div className="modal-body">
 				        {this.makeForm()}
 				      </div>
-							{this.state.isAsset ?
+							{this.props.isAsset ?
 								(<div className="modal-header">
 					        <h5 className="modal-title" id="editLabel">Edit Instances</h5>
 					      </div>) : null}
-							{this.state.isAsset ?
+							{this.props.isAsset ?
 								(<div className="modal-body no-pad-right">
 									<InstanceEditor
 										allCustomFields={this.state.allCustomFields}
