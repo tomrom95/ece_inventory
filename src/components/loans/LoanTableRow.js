@@ -331,7 +331,16 @@ class LoanTableRow extends Component {
 			        </div>);
 		}
 
-		else return reUploadPdf;
+		else return (<div className="loan-control-bar-3" key={"backfill-controlBar-"+rowIndex}>
+				        { JSON.parse(localStorage.getItem("user"))._id === this.state.userObj._id ? 
+							(<a target={href==="#/" ? "" : "_blank"}
+					        	href={href}
+					        	className="btn btn-sm btn-secondary loantable-button"
+					        	onClick={href==="#/" ? (() => alert("No attachment uploaded for this backfill request")) : null}>
+					        	<span className="fa fa-paperclip"></span>
+				        	</a>) : null }
+			        	{reUploadPdf}
+		        	</div>);
 	}
 
 	approveBackfill(rowIndex) {
