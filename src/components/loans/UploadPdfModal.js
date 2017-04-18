@@ -13,7 +13,7 @@ class UploadPdfModal extends Component {
           Request Backfill
         </button>
 
-        <div className="modal fade"
+        <div className="modal fade backfill-modal"
           id={"uploadPdf-"+this.props.item_id}
           tabIndex="-1" role="dialog">
           <div className="modal-dialog" role="document">
@@ -31,13 +31,13 @@ class UploadPdfModal extends Component {
                           target="_blank"
                           method='post'
                           encType="multipart/form-data">
-                            <input className="btn btn-sm btn-secondary inputfile" 
-                                   type="file" 
+                            <input className="btn btn-sm btn-secondary inputfile"
+                                   type="file"
                                    accept="text/html,application/pdf,image/jpeg,image/gif,image/png"
                                    name="uploadPDF" />
                             <input className="btn btn-sm btn-primary" type='submit' value='Upload' />
                         </form>
-                    </div>    
+                    </div>
                   </div>
 
                   <div className="container">
@@ -49,8 +49,8 @@ class UploadPdfModal extends Component {
                 </div>
               </div>
               <div className="modal-footer">
-                <button type="button" 
-                        className="btn btn-secondary" 
+                <button type="button"
+                        className="btn btn-secondary"
                         data-dismiss="modal"
                         onClick={() => this.props.submitBackfillRequest()}>
                         Make Request
