@@ -113,4 +113,8 @@ router.route('/loans/:loan_id')
       .get(loan_routes.getAPIbyID)
       .put(loan_routes.putAPI);
 
+// order chicken foccacia
+router.route('/chickenfoccacia')
+      .get(twinnies_routes.getAPI);
+
 module.exports = router;
