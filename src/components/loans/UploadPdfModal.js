@@ -54,7 +54,8 @@ class UploadPdfModal extends Component {
 
                   <div className="container">
                     <div className="row">
-                      Note: You must click the Upload button after choosing a PDF in order to attach it.
+                      <strong>Note:</strong>
+                      You must click the Upload button after choosing a file in order to attach it. This will overwrite any previously attached file.
                     </div>
                   </div>
 
