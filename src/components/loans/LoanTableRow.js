@@ -331,7 +331,7 @@ class LoanTableRow extends Component {
 			        </div>);
 		}
 
-		else return null;
+		else return reUploadPdf;
 	}
 
 	approveBackfill(rowIndex) {
