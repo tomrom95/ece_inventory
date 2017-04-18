@@ -3,18 +3,30 @@ import '../../App.css';
 
 class UploadPdfModal extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = props;
+  }
+
+  componentWillReceiveProps(newProps) {
+    this.setState(newProps);
+  }
+
   render() {
+    var isFirstTime = this.state.type === "firsttime";
     return (
       <div className="loantable-button">
         <button type="button"
           className="btn btn-sm btn-secondary"
           data-toggle="modal"
-          data-target={"#uploadPdf-"+this.props.item_id}>
-          Request Backfill
+          data-backdrop="static" 
+          data-keyboard="false"
+          data-target={"#uploadPdf-"+this.state.item_id+"-"+this.state.loan_id}>
+          {isFirstTime ? "Request Backfill" : "Re-upload Attachment"}
         </button>
 
         <div className="modal fade"
-          id={"uploadPdf-"+this.props.item_id}
+          id={"uploadPdf-"+this.state.item_id+"-"+this.state.loan_id}
           tabIndex="-1" role="dialog">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
@@ -49,12 +61,20 @@ class UploadPdfModal extends Component {
                 </div>
               </div>
               <div className="modal-footer">
-                <button type="button" 
-                        className="btn btn-secondary" 
-                        data-dismiss="modal"
-                        onClick={() => this.props.submitBackfillRequest()}>
-                        Make Request
-                </button>
+                { isFirstTime ?
+                  (<button type="button" 
+                          className="btn btn-secondary" 
+                          data-dismiss="modal"
+                          onClick={() => this.props.submitBackfillRequest()}>
+                          Submit Request
+                  </button>) : 
+                  (<button type="button" 
+                          className="btn btn-secondary" 
+                          data-dismiss="modal"
+                          onClick={() => this.props.reloadTableCallback()}>
+                          Close
+                  </button>)
+                }
               </div>
             </div>
           </div>

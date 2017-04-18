@@ -33,6 +33,7 @@ class LoanTableRow extends Component {
 		this.state = {
 			_id: props.params._id,
 			user: props.params.user,
+			userObj: props.params.userObj,
 			created: props.params.created,
 			modified: props.params.modified,
 			items: props.params.items,
@@ -151,6 +152,7 @@ class LoanTableRow extends Component {
 							<div>
 								<UploadPdfModal item_id={items[i].item._id}
 										loan_id={this.state._id}
+										type={"firsttime"}
 										submitBackfillRequest={this.makeOnClickBackfillRequest(i, "BACKFILL_REQUESTED")}
 										key={key+"-request-backfill-button"}
 										className="loantable-button" />
@@ -294,6 +296,17 @@ class LoanTableRow extends Component {
 			href = 'https://'+ location.hostname + '/uploads/'+this.state.items[rowIndex].attachment_name;
 
 		var role = JSON.parse(localStorage.getItem('user')).role;
+		var reUploadPdf = null;
+
+
+		if (JSON.parse(localStorage.getItem("user"))._id === this.state.userObj._id) {
+			reUploadPdf = <UploadPdfModal item_id={this.state.items[rowIndex].item._id}
+										type={"reupload"}
+										loan_id={this.state._id}
+										key={"item-"+rowIndex+"-request-backfill-button"}
+										reloadTableCallback={() => this.props.callback()}
+										className="loantable-button" />
+		}
 
 		if (role === "MANAGER" || role === "ADMIN") {
 			return (
@@ -314,8 +327,10 @@ class LoanTableRow extends Component {
 				        		onClick={() => this.denyBackfill(rowIndex)}>
 					    	<span className="fa fa-times"></span>
 				        </button>
+				        {reUploadPdf}
 			        </div>);
 		}
+
 		else return null;
 	}
 
