@@ -128,9 +128,9 @@ class LoanTableRow extends Component {
 					{this.makeBackfillControlBar(i)}
 				</td>
 			);
-
+      var toggle_string = "toggle-" + items[i].item._id
 			list.push(
-			    <tr key={key} id={items[i].item.name}>
+			    <tr key={key} id={toggle_string}>
 			      <td key={key + "-col1"}>{items[i].item.name}</td>
 			      <td key={key + "-col2"}>{items[i].quantity}</td>
 			      {
@@ -172,13 +172,13 @@ class LoanTableRow extends Component {
 			  	  }
 			    </tr>
 			);
-
+          var toggle_string = "toggle-" + items[i].item._id;
 		      if(items[i].instances !== null) {
 		        if(items[i].instances.length > 0){
 		          list.push(
 		            <Tooltip placement="bottom"
 		               isOpen={this.state.tooltipOpenMap[i]}
-		               target={items[i].item.name}
+		               target={toggle_string}
 		               toggle={this.toggle.bind(this, i)}
 		               autohide={false}
 		               key={items[i]._id}>

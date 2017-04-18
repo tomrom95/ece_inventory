@@ -727,6 +727,10 @@ input[type=checkbox].inventory-checkbox {
   max-width: 100%;
 }
 
+.backfill-modal {
+  z-index: 9999;
+}
+
 .loan-status-dropdown {
   margin-right: 3%;
   margin-left: -0.9%;
@@ -807,6 +811,8 @@ input[type=checkbox].inventory-checkbox {
   white-space: pre-wrap;
   text-align: left;
 }
+
+
 
 .custom-field-buttons {
   margin-top: -3%;
