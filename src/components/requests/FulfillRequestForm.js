@@ -98,6 +98,9 @@ class FulfillRequestForm extends Component {
 
 
 		}
+		var cancel_button = (this.props.cancel) ? (
+			<button onClick={e => {this.clearInstanceForm(), this.props.clearForm()}} type="button" className="btn btn-secondary">Cancel</button>
+		)  : null;
 		var request_body = {
 			action: "FULFILL"
 		}
@@ -124,6 +127,7 @@ class FulfillRequestForm extends Component {
 					</ul>
 				</div>
 				<div className="modal-footer">
+						{cancel_button}
 						<button onClick={e => {this.clearInstanceForm()}} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
 						<button onClick={e => {this.fulfillAssetRequest(this.state.current_request)}} type="button" className="btn btn-primary" >Submit</button>
 				</div>
@@ -248,9 +252,8 @@ class FulfillRequestForm extends Component {
   }
 
   render() {
-		var close_button = this.props.clearForm ? (
-			<button onClick={e => {this.clearInstanceForm(), this.props.clearForm()}} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-		) :
+
+		var close_button =
 		(
 			<button onClick={e => {this.clearInstanceForm()}} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
 		);
@@ -263,8 +266,8 @@ class FulfillRequestForm extends Component {
           <div className="modal-body">
             Success
           </div>
-          <div className="modal-footer">
-						{close_button}
+					<div className="modal-footer">
+            {close_button}
           </div>
         </div>
       </div>
