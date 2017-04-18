@@ -184,7 +184,7 @@ var autoCreateExistingInstances = function(inStockQuantity, itemId, next) {
     if (error) return next(error);
     // find all loans with a matching item that is LENT
     Loan.find(
-      {items: {$elemMatch: {item: itemId, status: 'LENT'}}},
+      {items: {$elemMatch: {item: itemId, status: {$in: ['LENT', 'BACKFILL_REQUESTED']} }}},
       function(error, loans) {
       if (error) return next(error);
       if (!loans) return next();

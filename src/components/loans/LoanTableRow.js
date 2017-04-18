@@ -454,7 +454,7 @@ class LoanTableRow extends Component {
 		    		</div>
 		    		{ (isManager && this.state.containsBackfill === true) ?
 			    		(<div className="row">
-			    			<strong>Manager Backill Note:  </strong> {this.state.manager_comment ? this.state.manager_comment : "N/A"}
+			    			<strong>Manager Backfill Note:  </strong> {this.state.manager_comment ? this.state.manager_comment : "N/A"}
 			    		</div>) : null
 		    		}
 
