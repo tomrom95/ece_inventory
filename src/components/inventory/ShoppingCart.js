@@ -267,6 +267,7 @@ class ShoppingCart extends Component {
 				api={this.props.api}
 				callback={() => this.props.callback()}
 				clearForm={() => this.clearCheckbox()}
+				cancel={true}
 			/>
 		);
 
