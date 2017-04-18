@@ -48,6 +48,7 @@ class LoanTable extends Component {
 			var params = {
 				_id: loanItem._id,
 				user: label,
+				userObj: user,
 				created: loanItem.created,
 				modified: loanItem.modified,
 				items: loanItem.items,

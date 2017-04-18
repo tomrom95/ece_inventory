@@ -280,8 +280,7 @@ class InventoryTable extends Component {
 							allCustomFields={this.state.allCustomFields}
 							isAsset={data.meta.isAsset}
 							minstock_isEnabled={data.meta.minstock_isEnabled}
-							allTags={this.state.allTags}
-					/>
+							allTags={this.state.allTags} />
 
         );
 	}
@@ -343,6 +342,15 @@ class InventoryTable extends Component {
 		this.setState({
 			checked: JSON.parse(localStorage.getItem("checkedItems"))
 		});
+	}
+
+	selectAllCheckboxes(selectAll) {
+		var checked = {target: {checked: selectAll}};
+		for (var i=0; i<this.props.data.length; i++) {
+			var id = this.props.data[i]["meta"]["id"];
+			this.handleCheckedChange(checked, id, this.props.data[i].Name);
+		}
+		return;
 	}
 
 	clearCheckedBoxes() {
@@ -420,7 +428,22 @@ class InventoryTable extends Component {
 								{this.state.checkboxesVisible ? "Hide Checkboxes" : "Select Multiple"}
 							</a>
 			              </li>
-			              {minQtyEditor}
+			              {this.state.checkboxesVisible ? 
+			              	(<li className="nav-item userpage-tab-container">
+			              		<a className="nav-link userpage-tab" href="#"
+			              			onClick={() => this.selectAllCheckboxes(true)}>
+			              			Select All
+			              		</a>
+			              	</li>) : null
+			              }
+			              {this.state.checkboxesVisible ? 
+			              	(<li className="nav-item userpage-tab-container">
+			              		<a className="nav-link userpage-tab" href="#"
+			              			onClick={() => this.selectAllCheckboxes(false)}>
+			              			Deselect All
+			              		</a>
+			              	</li>) : null}
+			              	{minQtyEditor}
 			            </ul>) : null }
 		        </div>
 
