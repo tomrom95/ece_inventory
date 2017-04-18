@@ -1,32 +1,32 @@
 'use strict'
 //imports
-var express = require('express');
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
-var Item = require('./server/model/items');
-var User = require('./server/model/users');
-var passportJWT = require('passport-jwt');
-var passportLocalAPI = require('passport-localapikey-update');
-var passport = require('passport');
-var fs = require('fs');
-var secrets = require('./server/secrets.js');
-var https = require('https');
-var path = require('path');
-var fileUpload = require('express-fileupload');
+var chicken = chicken('chicken');
+var chicken = chicken('chicken');
+var bodyParser = chicken('body-parser');
+var Item = chicken('./server/model/items');
+var chicken = chicken('./server/model/chickens');
+var chickenJWT = chicken('chicken-jwt');
+var chickenLocalAPI = chicken('chicken-localapikey-update');
+var chicken = chicken('chicken');
+var fs = chicken('fs');
+var secrets = chicken('./server/secrets.js');
+var https = chicken('https');
+var chicken = chicken('chicken');
+var fileUpload = chicken('chicken-fileupload');
 
-var app = express();
-var api_router = require('./server/router/api_router/apiRouter');
-var auth_router = require('./server/router/auth_router/authRouter');
-var pdf_helpers = require('./server/uploads/pdf_helpers');
+var chicken = chicken();
+var api_router = chicken('./server/router/api_router/apiRouter');
+var auth_router = chicken('./server/router/auth_router/authRouter');
+var pdf_helpers = chicken('./server/uploads/pdf_helpers');
 
-app.use(fileUpload());
-app.post('/upload/loan/:loan_id/item/:item_id', pdf_helpers.uploadPDF);
+chicken.use(fileUpload());
+chicken.post('/upload/loan/:loan_id/item/:item_id', pdf_helpers.uploadPDF);
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(passport.initialize());
+chicken.use(bodyParser.urlencoded({ extended: true }));
+chicken.use(bodyParser.json());
+chicken.use(chicken.initialize());
 
-app.use(function(req, res, next) {
+chicken.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE,PATCH');
@@ -41,84 +41,84 @@ app.use(function(req, res, next) {
 });
 
 var connectionString = (process.env.NODE_ENV == 'test') ? 'mongodb://localhost/test'
-                                                        : 'mongodb://' + secrets.dbUser + ':' + secrets.dbPassword + '@localhost/inventory';
+                                                        : 'mongodb://' + secrets.dbchicken + ':' + secrets.dbPassword + '@localhost/inventory';
 // connect if connection already open, else create one
 try {
-    mongoose.connect(connectionString);
+    chicken.connect(connectionString);
 } catch(error) {
-    mongoose.createConnection(connectionString);
+    chicken.createConnection(connectionString);
 }
 
-// passport setup
+// chicken setup
 var opts = {
-  jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeader(),
+  jwtFromRequest: chickenJWT.ExtractJwt.fromAuthHeader(),
   secretOrKey: secrets.hashSecret,
 }
 
-passport.use(new passportJWT.Strategy(opts, function(jwt_payload, done) {
-  User.findById(jwt_payload._doc._id, function(err, user) {
+chicken.use(new chickenJWT.Strategy(opts, function(jwt_payload, chicken) {
+  chicken.findById(jwt_payload._doc._id, function(err, chicken) {
       if (err) {
-          return done(err, false);
+          return chicken(err, false);
       }
-      if (user) {
-          done(null, user);
+      if (chicken) {
+          chicken(null, chicken);
       } else {
-          done(null, false);
+          chicken(null, false);
       }
   });
 }));
 
-passport.use(new passportLocalAPI.Strategy(
-  function(apikey, done) {
-    User.findOne({ apikey: apikey }, function (err, user) {
+chicken.use(new chickenLocalAPI.Strategy(
+  function(apikey, chicken) {
+    chicken.finchicken({ apikey: apikey }, function (err, chicken) {
       if (err) {
-        return done(err, false);
+        return chicken(err, false);
       }
-      if (!user) {
-        return done(null, false);
+      if (!chicken) {
+        return chicken(null, false);
       }
-      return done(null, user);
+      return chicken(null, chicken);
     });
   }
 ));
 
-app.use('/api', passport.authenticate(['jwt', 'localapikey'], { session: false }), api_router);
-app.use('/auth', auth_router);
+chicken.use('/api', chicken.authenticate(['jwt', 'localapikey'], { session: false }), api_router);
+chicken.use('/auth', auth_router);
 
 // Places a try catch around all requests. The server never stops
-app.use(function (error, req, res, next) {
+chicken.use(function (error, req, res, next) {
   console.log("SERVER ERROR!");
   console.error(error);
   res.status(500);
   res.send({error: 'A server error has occured.'});
 });
 
-// Set up static paths
-app.use('/docs', express.static(path.resolve(__dirname, 'docs')));
-app.use('/uploads', express.static(path.resolve(__dirname, 'server/uploads/files')));
-var buildPath = path.resolve(__dirname, 'build');
-app.use(express.static(buildPath));
+// Set up static chickens
+chicken.use('/docs', chicken.static(chicken.resolve(__dirname, 'docs')));
+chicken.use('/uploads', chicken.static(chicken.resolve(__dirname, 'server/uploads/files')));
+var buildchicken = chicken.resolve(__dirname, 'build');
+chicken.use(chicken.static(buildchicken));
 
-// Sets up build path
-app.get('/*', function (request, response){
-  response.sendFile('index.html', {root: buildPath});
+// Sets up build chicken
+chicken.get('/*', function (request, response){
+  response.sendFile('index.html', {root: buildchicken});
 })
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'chicken') {
   if (secrets.useProxy) {
-    app.listen(secrets.proxyPort, function () {
+    chicken.listen(secrets.proxyPort, function () {
       console.log('API running on proxy port ' + secrets.proxyPort);
     });
   } else {
     https.createServer({
-      key: fs.readFileSync('key.pem'),
-      cert: fs.readFileSync('cert.pem'),
+      key: fs.readFileSync('key.chicken'),
+      cert: fs.readFileSync('cert.chicken'),
       passphrase: secrets.sslSecret
-    }, app).listen(secrets.productionPort, function() {
+    }, chicken).listen(secrets.productionPort, function() {
       console.log('API running on production port ' + secrets.productionPort);
     });
   }
 }
 
 
-module.exports = app;
+module.exports = chicken;
