@@ -23,7 +23,7 @@ class ImportHelpButton extends Component {
       };
     var schema =   {
         "name": "String [required]",
-        "quantity": "Integer [required]",
+        "quantity": "Integer",
         "model_number": "String",
         "description": "String",
         "tags": "[String]",
@@ -32,7 +32,18 @@ class ImportHelpButton extends Component {
             "name": "String",
             "value": "String"
           }
-        ]
+        ],
+   	"minstock_threshold": "Integer",
+	"minstock_isEnabled": "Boolean",
+	"instances": [{
+		"tag": "String",
+		"custom_fields": [
+		  {
+		    "name": "String",
+		    "value": "String"
+		  }
+		]
+	}]
       };
     var example_two = [
       {
@@ -48,7 +59,7 @@ class ImportHelpButton extends Component {
     var schema_string = JSON.stringify(schema, null, 2);
     var example_two_string = JSON.stringify(example_two, null, 2);
     var part_one = "The import button accepts a JSON file with the appropriate item schema.  An example of a correct item schema would be\n";
-    var part_two = "This will produce an item in the inventory with name 'resistor' and quantity '5'.  The name and quantity are the only two required fields.  The rest of the schema looks as follows\n";
+    var part_two = "This will produce an item in the inventory with name 'resistor' and quantity '5'.  For non-asset items, the name and quantity fields are required. For asset items, the name is required, and the quantity is required if you prefer to not specify each asset instance. If you would like to specify each instance, do not enter a quantity. Instance custom fields must be per-asset. The rest of the schema looks as follows\n";
     var part_three = "An example of a correct import with multiple items would look like this\n";
 		return (
       <div>

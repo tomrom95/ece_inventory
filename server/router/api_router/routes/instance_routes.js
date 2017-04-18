@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var QueryBuilder = require('../../../queries/querybuilder');
 var Logger = require('../../../logging/logger');
 var CustomFieldHelpers = require('../../../customfields/custom_field_helpers');
+var Emailer = require('../../../emails/emailer');
 
 module.exports.getAPI = function (req, res) {
   var query = new QueryBuilder();
@@ -105,7 +106,10 @@ module.exports.deleteAPI = function(req, res){
           if (error) return res.send({error: error});
           Logger.logInstanceDeletion(instance, item, req.user, function(error) {
             if (error) return res.send({error: error});
-            return res.json({message: "Successful"});
+            Emailer.sendStockBelowThresholdEmail(item, function(error){
+              if (error) return res.send({error: error});
+              return res.json({message: "Successful"});
+            });
           });
         }
       );

@@ -10,7 +10,7 @@ import Transactions from '../components/transactions/Transactions.js';
 import LogPage from '../components/logging/LogPage.js';
 import LoanPage from '../components/loans/LoanPage.js';
 import MyLoansPage from '../components/loans/MyLoansPage.js';
-import {Route} from 'react-router';
+import {Route, IndexRoute} from 'react-router';
 import LoanEmailReminders from '../components/emailing/LoanEmailReminders.js';
 
 class UserProfileWrapper extends Component {
@@ -80,6 +80,7 @@ class LoanEmailRemindersWrapper extends Component {
 
 export default (
   <Route path="/" component={Home}>
+    <IndexRoute component={InventoryWrapper}/>
     <Route path="UserProfile" component={UserProfileWrapper}></Route>
     <Route path="Inventory" component={InventoryWrapper}></Route>
     <Route path="CurrentOrders" component={CurrentOrdersWrapper}></Route>

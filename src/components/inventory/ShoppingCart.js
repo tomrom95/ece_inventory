@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ShoppingCartItem from './ShoppingCartItem.js';
 import UserSelect from '../user/UserSelect.js';
+import FulfillRequestForm from '../requests/FulfillRequestForm.js';
 import '../../App.css';
 
 class ShoppingCart extends Component {
@@ -12,7 +13,10 @@ class ShoppingCart extends Component {
 			checked: null,
 			actionType: "Assign to User",
 			requestType: "DISBURSEMENT",
-			requestTypeDisplay: "Request for Disbursement"
+			requestTypeDisplay: "Request for Disbursement",
+			needToFulfill: false,
+			requestSubmitted: false,
+			current_request: null,
 		}
 	}
 
@@ -48,6 +52,14 @@ class ShoppingCart extends Component {
 		return list;
 	}
 
+	refineRequestData(response_request){
+		var new_body = {
+			Items: response_request.items,
+			_id: response_request._id,
+		}
+		return new_body;
+	}
+
 	sendRequests() {
 		var reason = document.getElementById('cart-reason').value;
 		if ((reason.trim()).length === 0 && !this.state.checked) {
@@ -79,21 +91,15 @@ class ShoppingCart extends Component {
 			}
 			else {
 				var requestId = response.data.request._id;
+				this.setState({
+					requestSubmitted: true,
+				})
 				if (this.state.checked === true && this.state.actionType === "Fulfill to User") {
-					this.props.api.patch('/api/requests/' + requestId, { action: "FULFILL" })
-	    			.then(function(response) {
-	      				if(response.data.error){
-	        				alert(response.data.error + ". A request was created but was not fulfilled.");
-	      				} 
-	      				else {
-	      					alert("Successfully checked out " + this.state.items.length + " items.");
-	      				}
-				    }.bind(this))
-				    .catch(function(error) {
-				      alert(error);
-				    }.bind(this));
-				} else {
-					alert("Successfully checked out " + this.state.items.length + " items.");
+					this.setState({
+						needToFulfill: true,
+						current_request: this.refineRequestData(response.data.request),
+					});
+
 				}
 			}
 		}.bind(this));
@@ -223,15 +229,99 @@ class ShoppingCart extends Component {
 
 	clearCheckbox() {
 		this.setState({
-			checked: false
+			checked: false,
+			needToFulfill: false,
+			requestSubmitted: false,
 		});
 	}
 
+
 	render() {
 		var submitDisabled = (this.state.items.length===0) ? "disabled" : "";
+
+		var assign_success = "Successfully checked out "  + this.state.items.length + " items."
+		var EndForm = (
+			<div className="modal-content cart-modal">
+				<div className="modal-header">
+					<h5 className="modal-title">
+						Done
+					</h5>
+				</div>
+				<div className="modal-body">
+					{assign_success}
+				</div>
+				<div className="modal-footer">
+					<button type="button"
+							className="btn btn-secondary"
+							data-dismiss="modal"
+							onClick={() => this.clearCheckbox()}>
+						Close
+					</button>
+
+				</div>
+			</div>
+		);
+		var fulfillForm = (
+			<FulfillRequestForm
+				data={this.state.current_request}
+				api={this.props.api}
+				callback={() => this.props.callback()}
+				clearForm={() => this.clearCheckbox()}
+			/>
+		);
+
+		var ShoppingCartForm = (
+			<div className="modal-content cart-modal">
+				<div className="modal-header">
+					<h5 className="modal-title">
+					{"Shopping Cart (" +
+						this.state.items.length +
+						((this.state.items.length===1) ? " item)" : " items)"
+						)}
+					</h5>
+				</div>
+				<div className="modal-body">
+					<div className="cart-body container">
+						{this.makeCartItems()}
+					</div>
+					<div className="container">
+						{this.makeReasonBox()}
+						{this.makeDirectRequestRegion()}
+						{this.makeRequestTypeDropdown()}
+								</div>
+
+				</div>
+				<div className="modal-footer">
+					<button type="button"
+							className="btn btn-secondary"
+							data-dismiss="modal"
+							onClick={() => this.clearCheckbox()}>
+						Close
+					</button>
+					<button onClick={() => this.sendRequests()}
+							type="button"
+							className={"btn btn-primary " + submitDisabled}>
+							Request These Items
+					</button>
+
+				</div>
+			</div>
+		);
+		var body;
+		if(!this.state.requestSubmitted){
+			body = ShoppingCartForm;
+		}
+		else{
+			if(this.state.needToFulfill){
+				body = fulfillForm;
+			}
+			else{
+				body = EndForm;
+			}
+		}
  		return (
  			<div>
-                <a className="nav-link shopping-cart-tab" href="#"
+        <a className="nav-link shopping-cart-tab" href="#"
                 		data-toggle="modal"
 						data-target={"#cart-button"}
 						onClick={() => this.loadData()}>
@@ -239,42 +329,8 @@ class ShoppingCart extends Component {
 				</a>
 				<div className="modal fade" id="cart-button">
 				  <div className="modal-dialog" role="document">
-				    <div className="modal-content cart-modal">
-				      <div className="modal-header">
-				        <h5 className="modal-title">
-				        {"Shopping Cart (" +
-				        	this.state.items.length +
-				        	((this.state.items.length===1) ? " item)" : " items)"
-				        	)}
-				        </h5>
-				      </div>
-				      <div className="modal-body">
-				      	<div className="cart-body container">
-				      		{this.makeCartItems()}
-			        	</div>
-			        	<div className="container">
-			       			{this.makeReasonBox()}			       			
-			       			{this.makeDirectRequestRegion()}
-			       			{this.makeRequestTypeDropdown()}
-	                    </div>
-
-				      </div>
-				      <div className="modal-footer">
-				      	<button type="button"
-				      			className="btn btn-secondary"
-				      			data-dismiss="modal"
-				      			onClick={() => this.clearCheckbox()}>
-				      		Close
-				      	</button>
-				        <button onClick={() => this.sendRequests()}
-				        		type="button"
-				        		data-dismiss="modal"
-				        		className={"btn btn-primary " + submitDisabled}>
-				        		Request These Items
-				        </button>
-				      </div>
-				    </div>
-				  </div>
+						{body}
+					</div>
 				</div>
 			</div>
 		);

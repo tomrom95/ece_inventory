@@ -4,7 +4,7 @@ import '../../App.css';
 import axios from 'axios';
 import querystring from 'querystring';
 import {browserHistory} from 'react-router';
-import jwtDecode from 'jwt-decode'
+import jwtDecode from 'jwt-decode';
 
 class Home extends Component {
   constructor(props) {

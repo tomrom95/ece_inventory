@@ -278,7 +278,6 @@ class InventoryTable extends Component {
 		          key={"editbutton-"+ id}
 		          ref={"edit-"+id}
 							allCustomFields={this.state.allCustomFields}
-							is_asset={data.meta.isAsset}
 							isAsset={data.meta.isAsset}
 							minstock_isEnabled={data.meta.minstock_isEnabled}
 							allTags={this.state.allTags} />
@@ -368,14 +367,15 @@ class InventoryTable extends Component {
 				|| JSON.parse(localStorage.getItem('user')).role === "MANAGER";
 		var isAdmin = JSON.parse(localStorage.getItem('user')).role === "ADMIN";
 
-		var minQtyEditor = this.state.checkboxesVisible ? 
+		var minQtyEditor = this.state.checkboxesVisible ?
 							(<li className="nav-item userpage-tab-container">
 								<MinQuantityEditor itemsChecked={this.state.checked}
-									   itemsCheckedNames={this.state.itemsCheckedNames} 
+									   itemsCheckedNames={this.state.itemsCheckedNames}
 									   key={"min-qty-editor"}
 									   api={this.props.api}
-									   clearCheckboxes={() => this.clearCheckedBoxes()} />
-						    </li>) : null;	
+									   clearCheckboxes={() => this.clearCheckedBoxes()}
+										 callback={this.props.callback} />
+						    </li>) : null;
 
 		return (
 			<div className="row">
@@ -416,11 +416,11 @@ class InventoryTable extends Component {
 						}
 
 						<li className="nav-item userpage-tab-container">
-	                    	<ShoppingCart api={this.props.api} key={"shopping-cart-button"}/>
+	                    	<ShoppingCart api={this.props.api} key={"shopping-cart-button"} callback={this.props.callback}/>
 		              	</li>
 		            </ul>
 
-		            { isManager ? 
+		            { isManager ?
 			            (<ul className="nav nav-links inventorypage-tabs-container">
 			              <li className="nav-item userpage-tab-container">
 		                    <a className="nav-link userpage-tab" href="#"

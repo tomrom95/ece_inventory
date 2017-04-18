@@ -6,6 +6,7 @@ var Loan = require('../../../model/loans');
 var QueryBuilder = require('../../../queries/querybuilder');
 var Logger = require('../../../logging/logger');
 var CustomFieldHelpers = require('../../../customfields/custom_field_helpers');
+var Emailer = require('../../../emails/emailer');
 var moment = require('moment');
 const quantityReasonStrings = ["LOSS", "MANUAL", "DESTRUCTION", "ACQUISITION"];
 
@@ -240,16 +241,19 @@ module.exports.putAPI = function(req, res){
         obj.tags = trimTags(req.body.tags);
         obj.save((err,item) => {
           if(err) return res.send({error: err});
-          Logger.logEditing(oldItemCopy, changes, req.user, function(err) {
-            if(err) return res.send({error: err});
-            if (createInstances){
-              autoCreateExistingInstances(item.quantity, item._id, function(error) {
-                if(error) return res.send({error: error});
+          Emailer.sendStockBelowThresholdEmail(item, function(error){
+            if(error) return res.send({error: error});
+            Logger.logEditing(oldItemCopy, changes, req.user, function(err) {
+              if(err) return res.send({error: err});
+              if (createInstances){
+                autoCreateExistingInstances(item.quantity, item._id, function(error) {
+                  if(error) return res.send({error: error});
+                  res.json(item);
+                });
+              } else {
                 res.json(item);
-              });
-            } else {
-              res.json(item);
-            }
+              }
+            });
           });
         });
       })
