@@ -46,9 +46,9 @@ module.exports.getAPI = function(req, res) {
 
 function appendItemTypeQuery(query, item_type){
   if(item_type === 'OUTSTANDING'){
-    query.searchExact("items.status",  'LENT');
+    query.searchExact("items.status",  {$in: ['BACKFILL_REQUESTED','LENT']});
   } else if (item_type === 'COMPLETE'){
-    query.searchExact("items.status", {$nin: 'LENT'});
+    query.searchExact("items.status", {$nin: ['BACKFILL_REQUESTED','LENT']});
   }
 }
 
