@@ -16,14 +16,22 @@ class UploadPdfModal extends Component {
     var isFirstTime = this.state.type === "firsttime";
     return (
       <div className="loantable-button">
-        <button type="button"
-          className="btn btn-sm btn-secondary"
-          data-toggle="modal"
-          data-backdrop="static" 
-          data-keyboard="false"
-          data-target={"#uploadPdf-"+this.state.item_id+"-"+this.state.loan_id}>
-          {isFirstTime ? "Request Backfill" : "Re-upload Attachment"}
-        </button>
+        {isFirstTime ?
+          (<button type="button"
+            className="btn btn-sm btn-secondary"
+            data-toggle="modal"
+            data-target={"#uploadPdf-"+this.state.item_id+"-"+this.state.loan_id}>
+            {isFirstTime ? "Request Backfill" : "Re-upload Attachment"}
+          </button>) : 
+          (<button type="button"
+            className="btn btn-sm btn-secondary"
+            data-toggle="modal"
+            data-backdrop="static" 
+            data-keyboard="false"
+            data-target={"#uploadPdf-"+this.state.item_id+"-"+this.state.loan_id}>
+            {isFirstTime ? "Request Backfill" : "Re-upload Attachment"}
+          </button>)
+        }
 
         <div className="modal fade"
           id={"uploadPdf-"+this.state.item_id+"-"+this.state.loan_id}
