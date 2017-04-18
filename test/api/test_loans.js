@@ -170,7 +170,7 @@ describe('Logging API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
-          res.body.length.should.be.eql(3);
+          res.body.length.should.be.eql(4);
           done();
         });
     });
@@ -182,7 +182,7 @@ describe('Logging API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
-          res.body.length.should.be.eql(2);
+          res.body.length.should.be.eql(1);
           res.body.should.satisfy(function(loans){
             return loans.every(function(loan){
               return loan.items.every(function(element){
@@ -233,8 +233,7 @@ describe('Logging API Test', function () {
           should.not.exist(err);
           res.should.have.status(200);
           res.body.should.be.a('array');
-          res.body.length.should.be.eql(1);
-          res.body[0].request.should.be.eql("444444444444444444444444");
+          res.body.length.should.be.eql(2);
           done();
         });
     });

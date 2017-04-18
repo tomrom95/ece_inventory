@@ -41,6 +41,8 @@ var autoCreateInstances = function(quantity, itemID, importId, next, inStock=tru
 
 var importSingleItem = function(data, next) {
   if(data.quantity && data.instances && data.instances.length !== 0) return next("Cannot specify both quantity and instances at the same time", null);
+  if(data.quantity === undefined && (data.instances === undefined || data.instances.length === 0)) return next("Must specify either quantity or non-empty instances array");
+  if(data.instances && (data.is_asset===undefined || data.is_asset === false)) return next("Need to specify is_asset field as true if importing instances");
   CustomField.find({}).then(function(fieldArray){
    if(data.custom_fields){
      var result = updateCustomFields(data.custom_fields, fieldArray, false, next);
@@ -103,6 +105,10 @@ var importMultipleItems = function(data, next){
     var quantityNotSpecifiedArray = [];
     let importId = mongoose.Types.ObjectId();
     for(var i in data){
+      if(data[i].quantity === undefined && (data[i].instances === undefined || data[i].instances.length === 0)) return next("Must specify either quantity or non-empty instances array");
+      if(data[i].instances && (data[i].is_asset===undefined || data[i].is_asset === false)){
+        return next("Need to specify is_asset field as true if importing instances");
+      }
       if(data[i].custom_fields){
           var result = updateCustomFields(data[i].custom_fields, fieldArray, false, next);
           if(result.error) return next(result.error, null);

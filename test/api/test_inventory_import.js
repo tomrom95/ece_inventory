@@ -190,6 +190,7 @@ describe('Inventory Import API Test', function () {
                     });
                      singleItemInstanceswithoutQuantity = {
                       "name": "2k resistor",
+                      "is_asset": true,
                       "custom_fields":[{
                         "name": "location",
                         "value": "CIEMAS"
@@ -218,6 +219,7 @@ describe('Inventory Import API Test', function () {
                     }
                      singleItemInstanceswithQuantity = {
                       "name": "10k resistor",
+                      "is_asset": true,
                       "custom_fields":[{
                         "name": "location",
                         "value": "CIEMAS"
@@ -441,6 +443,84 @@ describe('Inventory Import API Test', function () {
         });
       });
     });
+    it('Does not POST single item with instances with is_asset field not specified',(done)=> {
+      var dataCopy = Object.assign({}, singleItemInstanceswithoutQuantity);
+      delete dataCopy.is_asset;
+      chai.request(server)
+      .post('/api/inventory/import')
+      .set('Authorization', adminToken)
+      .send(dataCopy)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.body.error.should.be.eql("Need to specify is_asset field as true if importing instances");
+        Item.find({}, function(err, items){
+          items.length.should.be.eql(0);
+          Instance.find({}, function(err, instances){
+            instances.length.should.be.eql(0);
+            done();
+          })
+        });
+      });
+    });
+    it('Does not POST single item with instances with is_asset field specified as false',(done)=> {
+      var dataCopy = Object.assign({}, singleItemInstanceswithoutQuantity);
+      dataCopy.is_asset = false;
+      chai.request(server)
+      .post('/api/inventory/import')
+      .set('Authorization', adminToken)
+      .send(dataCopy)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.body.error.should.be.eql("Need to specify is_asset field as true if importing instances");
+        Item.find({}, function(err, items){
+          items.length.should.be.eql(0);
+          Instance.find({}, function(err, instances){
+            instances.length.should.be.eql(0);
+            done();
+          })
+        });
+      });
+    });
+    it('Does not POST single item with instances without quantity and without instances array',(done)=> {
+      var dataCopy = Object.assign({}, singleItemInstanceswithoutQuantity);
+      delete dataCopy.quantity;
+      delete dataCopy.instances;
+      chai.request(server)
+      .post('/api/inventory/import')
+      .set('Authorization', adminToken)
+      .send(dataCopy)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.body.error.should.be.eql("Must specify either quantity or non-empty instances array");
+        Item.find({}, function(err, items){
+          items.length.should.be.eql(0);
+          Instance.find({}, function(err, instances){
+            instances.length.should.be.eql(0);
+            done();
+          })
+        });
+      });
+    });
+    it('Does not POST single item with instances without quantity and a blank instances array',(done)=> {
+      var dataCopy = Object.assign({}, singleItemInstanceswithoutQuantity);
+      delete dataCopy.quantity;
+      dataCopy.instances = [];
+      chai.request(server)
+      .post('/api/inventory/import')
+      .set('Authorization', adminToken)
+      .send(dataCopy)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.body.error.should.be.eql("Must specify either quantity or non-empty instances array");
+        Item.find({}, function(err, items){
+          items.length.should.be.eql(0);
+          Instance.find({}, function(err, instances){
+            instances.length.should.be.eql(0);
+            done();
+          })
+        });
+      });
+    });
     it('Does not POST single item with instances with existing tag',(done)=> {
       var dataCopy = Object.assign({}, singleItemInstanceswithoutQuantity);
       dataCopy.instances[0].tag="101";
@@ -501,6 +581,82 @@ describe('Inventory Import API Test', function () {
       .end((err, res) => {
         should.not.exist(err);
         res.body.error.should.be.eql("The entered custom field location has a value CIEMASS not matching type SHORT_STRING");
+        Item.find({}, function(err, items){
+          items.length.should.be.eql(0);
+          Instance.find({}, function(err, instances){
+            instances.length.should.be.eql(0);
+            done();
+          })
+        });
+      });
+    });
+
+
+    it('Does not POST multiple item with instances without quantity and without instances array',(done)=> {
+      delete multipleItemInstances[1].quantity;
+      delete multipleItemInstances[1].instances;
+      chai.request(server)
+      .post('/api/inventory/import')
+      .set('Authorization', adminToken)
+      .send(multipleItemInstances)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.body.error.should.be.eql("Must specify either quantity or non-empty instances array");
+        Item.find({}, function(err, items){
+          items.length.should.be.eql(0);
+          Instance.find({}, function(err, instances){
+            instances.length.should.be.eql(0);
+            done();
+          })
+        });
+      });
+    });
+    it('Does not POST multiple item with instances without quantity and a blank instances array',(done)=> {
+      delete multipleItemInstances[1].quantity;
+      multipleItemInstances[1].instances = [];
+      chai.request(server)
+      .post('/api/inventory/import')
+      .set('Authorization', adminToken)
+      .send(multipleItemInstances)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.body.error.should.be.eql("Must specify either quantity or non-empty instances array");
+        Item.find({}, function(err, items){
+          items.length.should.be.eql(0);
+          Instance.find({}, function(err, instances){
+            instances.length.should.be.eql(0);
+            done();
+          })
+        });
+      });
+    });
+    it('Does not POST multiple item with instances where is_asset not specified',(done)=> {
+      delete multipleItemInstances[1].is_asset;
+      chai.request(server)
+      .post('/api/inventory/import')
+      .set('Authorization', adminToken)
+      .send(multipleItemInstances)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.body.error.should.be.eql("Need to specify is_asset field as true if importing instances");
+        Item.find({}, function(err, items){
+          items.length.should.be.eql(0);
+          Instance.find({}, function(err, instances){
+            instances.length.should.be.eql(0);
+            done();
+          })
+        });
+      });
+    });
+    it('Does not POST multiple item with instances where is_asset specified as false',(done)=> {
+      multipleItemInstances[1].is_asset = false;
+      chai.request(server)
+      .post('/api/inventory/import')
+      .set('Authorization', adminToken)
+      .send(multipleItemInstances)
+      .end((err, res) => {
+        should.not.exist(err);
+        res.body.error.should.be.eql("Need to specify is_asset field as true if importing instances");
         Item.find({}, function(err, items){
           items.length.should.be.eql(0);
           Instance.find({}, function(err, instances){
