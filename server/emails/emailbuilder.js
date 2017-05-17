@@ -11,11 +11,11 @@ function EmailBuilder() {
     {
       service: 'Gmail',
       auth: {
-          user: 'nullstrings458',
-          pass:  'ece458duke'
+          user: 'USERNAME',
+          pass:  'PASSWORD'
       },
     },
-    {from: 'ECE Inventory <nullstrings458@gmail.com>'}
+    {from: 'ECE Inventory'}
   );
 }
 
